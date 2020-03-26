@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import "./Login.scss";
 import logo from "../../assets/img/logo.png";
 import { Button } from "react-bootstrap";
+import axios from "axios";
 
 const Login = () => {
   const history = useHistory();
@@ -15,6 +16,19 @@ const Login = () => {
   });
 
   const responseGoogle = res => {
+    console.log("daaaaaa res", res.profileObj);
+    axios({
+      method: "POST",
+      url: "http://localhost:3002/send",
+      data: res.profileObj
+    }).then(response => {
+      if (response.data.status === "success") {
+        alert("Message Sent.");
+      } else if (response.data.status === "fail") {
+        alert("Message failed to send.");
+      }
+    });
+
     if (res.profileObj.name) {
       let newState = {
         isSignedIn: true,
