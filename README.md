@@ -10,7 +10,7 @@ RideproApp is a cloud-enabled, mobile-ready, offline-storage, ReactJS and Django
 # New Features!
 
   - Admin
-  - CLiente
+  - Client
   - Executive chief
   - Operations
   - Intructor
