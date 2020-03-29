@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import NavBar from "../../views/NavBar/NavBar";
 import "./DashboardLayout.scss";
 import SideBar from "../../views/SideBar/SideBar";
+import Usuarios from "../../views/Usuarios/Usuarios";
+
 import Dashboard from "../../views/Dashboard/Dashboard";
 import {
   Route,
@@ -17,9 +19,9 @@ const DashboardLayout = () => {
   let { path, url } = useRouteMatch();
   const [userInfo, setUserInfo] = useState({
     isSignedIn: false,
-    userName: "",
-    email: "",
-    imageUrl: ""
+    name: "",
+    token: "",
+    profile: null
   });
 
   useEffect(() => {
@@ -31,22 +33,26 @@ const DashboardLayout = () => {
   if (userInfo.isSignedIn) {
     return (
       <div>
-        <NavBar userInfo={userInfo} />
+        <NavBar profile={userInfo.profile} />
         <div className="container-fluid">
           <div className="row">
-            <SideBar url={url} />
+            <SideBar profile={userInfo.profile} url={url} />
             <main
               role="main"
               className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4"
             >
               <Switch>
                 <Route path={`${path}/dashboard`}>
-                  <Dashboard userInfo={userInfo} />
+                  <Dashboard profile={userInfo.profile} name={userInfo.name} />
+                </Route>
+                <Route path={`${path}/usuarios`}>
+                  <Usuarios userInfo={userInfo} />
                 </Route>
                 <Route path={`${path}/solicitar`}>
                   <Solicitar userInfo={userInfo} />
                 </Route>
-                <Redirect from="/cliente" to="/cliente/solicitar" />
+                <Redirect from="/administrador" to="/administrador/usuarios" />
+                <Redirect from="/cliente" to="/cliente/dashboard" />
               </Switch>
             </main>
           </div>

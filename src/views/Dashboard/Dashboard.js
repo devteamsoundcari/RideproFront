@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
 const Dashboard = props => {
-  const location = useLocation();
-  const [userInfo, setUserInfo] = useState({
-    isSignedIn: false,
-    userName: "",
-    email: "",
-    imageUrl: ""
-  });
+  // const location = useLocation();
+  const [name, setName] = useState("");
+  const [profile, setProfile] = useState("");
+
   useEffect(() => {
-    setUserInfo(props.userInfo);
-  }, [location, props.userInfo]);
+    setName(props.name);
+    switch (props.profile) {
+      case 1:
+        setProfile("Administrador");
+        break;
+      case 2:
+        setProfile("Cliente");
+        break;
+      default:
+        break;
+    }
+  }, [props]);
+
   return (
     <React.Fragment>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <h1 className="h2">Dashboard</h1>
-        <span>Bienvenid@ {userInfo.userName}</span>
+        <span>Bienvenid@ {name}</span>
         <div className="btn-toolbar mb-2 mb-md-0">
           <div className="btn-group mr-2">
             <button className="btn btn-sm btn-outline-secondary">Share</button>

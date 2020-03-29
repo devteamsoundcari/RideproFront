@@ -18,6 +18,9 @@ function App() {
         <Route exact path="/">
           <Home />
         </Route>
+        <Route path="/administrador">
+          <DashboardLayout />
+        </Route>
         <Route path="/cliente">
           <DashboardLayout />
         </Route>

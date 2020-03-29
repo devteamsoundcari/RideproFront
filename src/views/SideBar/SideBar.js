@@ -9,13 +9,14 @@ const SideBar = props => {
           <Link to={`${props.url}/dashboard`} className="nav-link">
             Dashboard
           </Link>
+          {props.profile === 1 && (
+            <Link to={`${props.url}/usuarios`} className="nav-link">
+              Usuarios
+            </Link>
+          )}
           <Link to={`${props.url}/solicitar`} className="nav-link">
             Solicitar
           </Link>
-          {/* <a className="nav-link" href="#123">
-              <span data-feather="file"></span>
-              Solicitar
-            </a> */}
 
           {/* <li className="nav-item">
             <a className="nav-link" href="#123">
