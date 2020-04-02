@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 import "./Login.scss";
 import logo from "../../assets/img/logo.png";
 import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
-import PasswordRecover from "./PasswordRecover/PasswordRecover";
+import PasswordRecover from "../../views/PasswordRecover/PasswordRecover";
 
 const Login = () => {
   const history = useHistory();

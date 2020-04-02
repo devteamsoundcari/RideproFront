@@ -16,11 +16,13 @@ const sendEmail = async data => {
 /* =================================  PASSWORD RESET  ===================================== */
 
 const passwordReset = async data => {
-  console.log("enviando a password reset");
+  console.log("enviando a password reset", data.email);
   await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/rest-auth/password/reset/`,
-    data: data.email
+    data: {
+      email: data.email
+    }
   }).catch(err => {
     console.log(err.response);
   });

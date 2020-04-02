@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import ModalSuccess from "./ModalSuccess/ModalSuccess";
 import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
-import logo from "../../../assets/img/logo.png";
-import { sendEmail } from "../../../controllers/apiRequests";
+import logo from "../../assets/img/logo.png";
+import { sendEmail, passwordReset } from "../../controllers/apiRequests";
 
 const PasswordRecover = props => {
   const [email, setEmail] = useState(null);
@@ -11,11 +11,11 @@ const PasswordRecover = props => {
 
   const onSubmit = async data => {
     console.log(data.email);
-    // passwordReset
-    // Object.assign(data, { emailType: "passwordReset" }); // EMAIL TYPE
-    // await sendEmail(data); // SEND WELCOME EMAIL TO USER
+    await passwordReset(data);
     setEmail(data.email);
     setSmShow(true);
+    // Object.assign(data, { emailType: "passwordReset" }); // EMAIL TYPE
+    // await sendEmail(data); // SEND WELCOME EMAIL TO USER
   };
   const { register, handleSubmit, errors } = useForm();
 
