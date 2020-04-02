@@ -10,11 +10,13 @@ import "./Login.scss";
 import logo from "../../assets/img/logo.png";
 import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
 import PasswordRecover from "../../views/PasswordRecover/PasswordRecover";
+import NewPassword from "../../views/NewPassword/NewPassword";
 
 const Login = () => {
   const history = useHistory();
   const [error, setError] = useState("");
   const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [resetPwd, setResetPwd] = useState(null);
   const [userInfo, setUserInfo] = useState({
     isSignedIn: false,
     name: "",
@@ -49,40 +51,19 @@ const Login = () => {
     }
   };
 
-  // if (response.data.key) {
-  //   let newState = {
-  //     isSignedIn: true,
-  //     name: response.data.name,
-  //     token: response.data.key,
-  //     profile: response.data.profile
-  //   };
-  //   setUserInfo(newState);
-  //   setError("");
-  // }
+  useEffect(() => {
+    const url = window.location.href;
+    let arr = url.split("/");
+    let [uid, token] = arr.slice(Math.max(arr.length - 2, 1));
+    if (uid.length === 3) {
+      console.log(uid.length === 3 && token);
+      setResetPwd({
+        uid,
+        token
+      });
+    }
+  }, []);
 
-  // const responseGoogle = res => {
-  //   axios({
-  //     method: "POST",
-  //     url: "http://localhost:3002/send",
-  //     data: res.profileObj
-  //   }).then(response => {
-  //     if (response.data.status === "success") {
-  //       alert("Message Sent.");
-  //     } else if (response.data.status === "fail") {
-  //       alert("Message failed to send.");
-  //     }
-  //   });
-
-  //   if (res.profileObj.name) {
-  //     let newState = {
-  //       isSignedIn: true,
-  //       userName: res.profileObj.name,
-  //       email: res.profileObj.email,
-  //       imageUrl: res.profileObj.imageUrl
-  //     };
-  //     setUserInfo(newState);
-  //   }
-  // };
   useEffect(() => {
     if (localStorage.token && localStorage.userInfo) {
       const data = JSON.parse(localStorage.userInfo);
@@ -123,6 +104,8 @@ const Login = () => {
 
   if (showPasswordReset) {
     return <PasswordRecover comeBack={renderPasswordReset} />;
+  } else if (resetPwd) {
+    return <NewPassword data={resetPwd} />;
   } else {
     return (
       <Container>

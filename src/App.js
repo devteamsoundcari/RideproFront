@@ -27,8 +27,9 @@ function App() {
         <Route path="/login">
           <Login />
         </Route>
+        {/* <Route path="/login/:id/:token" render={<DashboardLayout />} /> */}
       </Switch>
-      <Redirect from="/" to="/login" />
+      {/* <Redirect from="/" to="/" /> */}
     </Router>
   );
 }

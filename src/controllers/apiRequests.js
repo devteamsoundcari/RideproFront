@@ -16,7 +16,6 @@ const sendEmail = async data => {
 /* =================================  PASSWORD RESET  ===================================== */
 
 const passwordReset = async data => {
-  console.log("enviando a password reset", data.email);
   await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/rest-auth/password/reset/`,
@@ -27,6 +26,30 @@ const passwordReset = async data => {
     console.log(err.response);
   });
   return true;
+};
+
+/* =================================  PASSWORD RESET  ===================================== */
+
+const setNewPassword = async data => {
+  // console.log(data);
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/rest-auth/password/reset/confirm/`,
+    data: {
+      new_password1: data.password,
+      new_password2: data.passwordRepeat,
+      uid: data.uid,
+      token: data.token
+    }
+  }).catch(err => {
+    console.log(err.response.data);
+    return err.response.data;
+  });
+  if (result.status === 200) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 /* =================================     Add a user if not exist in db     ===================================== */
@@ -102,4 +125,11 @@ const getUserByEmail = async email => {
   return x[0];
 };
 
-export { sendEmail, saveNewUser, getLoginToken, getUserByEmail, passwordReset };
+export {
+  sendEmail,
+  saveNewUser,
+  getLoginToken,
+  getUserByEmail,
+  passwordReset,
+  setNewPassword
+};
