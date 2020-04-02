@@ -1,17 +1,17 @@
 import React from "react";
 import RegistrarNuevoUsuario from "./RegistrarNuevoUsuario/RegistrarNuevoUsuario";
-import { Container, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import "./Usuarios.scss";
+import AllUsers from "./AllUsers/AllUsers";
 
 const Usuarios = () => {
   return (
-    <Container>
-      <Row>
-        <Col>
-          <RegistrarNuevoUsuario />
-        </Col>
-      </Row>
-    </Container>
+    <Row>
+      <Col>
+        <RegistrarNuevoUsuario />
+        <AllUsers />
+      </Col>
+    </Row>
   );
 };
 

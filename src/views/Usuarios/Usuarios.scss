@@ -1,7 +1,16 @@
 .usuarios {
   form {
     small {
-      color: red !important;
+      span {
+        color: red !important;
+      }
+    }
+    .showPassword {
+      display: flex;
+      align-items: center;
+      .form-check-label {
+        font-size: 12px;
+      }
     }
   }
 }

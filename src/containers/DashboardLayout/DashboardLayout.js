@@ -52,7 +52,7 @@ const DashboardLayout = () => {
                   <Solicitar userInfo={userInfo} />
                 </Route>
                 <Redirect from="/administrador" to="/administrador/usuarios" />
-                <Redirect from="/cliente" to="/cliente/dashboard" />
+                <Redirect from="/cliente" to="/cliente/solicitar" />
               </Switch>
             </main>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
+import setUserInfoLocal from "../../controllers/setUserInfoLocal";
 // import { GoogleLogout } from "react-google-login";
 import { Button } from "react-bootstrap";
 
@@ -11,6 +12,7 @@ const NavBar = props => {
   const logout = () => {
     console.log("Bye bye");
     setAuthorizationToken();
+    setUserInfoLocal();
     history.push({
       pathname: "/login"
     });
