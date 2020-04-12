@@ -1,0 +1,25 @@
+.setService {
+  //   pointer-events: painted;
+  margin: 3rem auto 2rem auto;
+  tbody {
+    cursor: pointer;
+    tr {
+      transition: 0.2s;
+      &:hover {
+        background: #495057 !important;
+        td {
+          color: #fff;
+        }
+      }
+    }
+    .active {
+      background: red !important;
+      &:hover {
+        background: red !important;
+      }
+      td {
+        color: #fff;
+      }
+    }
+  }
+}

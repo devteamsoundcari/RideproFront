@@ -1,21 +1,41 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
+import { Badge } from "react-bootstrap";
+import "./SideBar.scss";
 
-const SideBar = props => {
+const SideBar = (props) => {
+  const { userInfoContext } = useContext(AuthContext);
   return (
     <nav className="col-md-2 d-none d-md-block bg-light sidebar">
       <div className="sidebar-sticky">
         <ul className="nav flex-column">
+          <li>
+            <img alt="profileImg" src={userInfoContext.picture} />
+          </li>
+          <small>
+            <strong>Bienvenid@ {userInfoContext.name}</strong>
+          </small>
+          <li>
+            <small>{userInfoContext.company.name}</small>
+          </li>
+          <li>
+            {" "}
+            <Badge variant="warning">
+              Rides: {userInfoContext.company.credit}
+            </Badge>
+          </li>
+          <hr />
           <Link to={`${props.url}/dashboard`} className="nav-link">
             Dashboard
           </Link>
-          {props.profile === 1 && (
+          {userInfoContext.profile === 1 && (
             <Link to={`${props.url}/usuarios`} className="nav-link">
               Usuarios
             </Link>
           )}
-          <Link to={`${props.url}/solicitar`} className="nav-link">
-            Solicitar
+          <Link to="/historial" className="nav-link">
+            Historial
           </Link>
 
           {/* <li className="nav-item">

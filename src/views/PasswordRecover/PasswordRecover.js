@@ -3,13 +3,13 @@ import { useForm } from "react-hook-form";
 import ModalSuccess from "./ModalSuccess/ModalSuccess";
 import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
 import logo from "../../assets/img/logo.png";
-import { sendEmail, passwordReset } from "../../controllers/apiRequests";
+import { passwordReset } from "../../controllers/apiRequests";
 
-const PasswordRecover = props => {
+const PasswordRecover = (props) => {
   const [email, setEmail] = useState(null);
   const [smShow, setSmShow] = useState(false);
 
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     console.log(data.email);
     await passwordReset(data);
     setEmail(data.email);
@@ -50,7 +50,7 @@ const PasswordRecover = props => {
                       autoComplete="off"
                       ref={register({
                         required: true,
-                        pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+                        pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                       })}
                     />
                     <Form.Text className="text-muted">

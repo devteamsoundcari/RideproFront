@@ -1,0 +1,16 @@
+.setDate {
+  margin-top: 3rem;
+  //   display: none;
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    input {
+      //   max-width: 50%;
+      margin: 10px auto;
+    }
+    button {
+      margin: 20px auto;
+    }
+  }
+}

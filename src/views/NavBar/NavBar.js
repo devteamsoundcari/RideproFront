@@ -1,27 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
-import setUserInfoLocal from "../../controllers/setUserInfoLocal";
-// import { GoogleLogout } from "react-google-login";
+import { AuthContext } from "../../contexts/AuthContext";
 import { Button } from "react-bootstrap";
 
-const NavBar = props => {
+const NavBar = (props) => {
   const history = useHistory();
+  const {
+    userInfoContext,
+    setUserInfoContext,
+    setIsLoggedInContext,
+  } = useContext(AuthContext);
   const [profile, setProfile] = useState("");
 
   const logout = () => {
     console.log("Bye bye");
     setAuthorizationToken();
-    setUserInfoLocal();
+    setIsLoggedInContext(false);
+    setUserInfoContext({});
     history.push({
-      pathname: "/login"
+      pathname: "/login",
     });
   };
 
   useEffect(() => {
-    switch (props.profile) {
+    switch (userInfoContext.profile) {
       case 1:
-        setProfile("Administrador");
+        setProfile("Admin");
         break;
       case 2:
         setProfile("Cliente");
@@ -29,7 +34,7 @@ const NavBar = props => {
       default:
         break;
     }
-  }, [props]);
+  }, [userInfoContext]);
 
   return (
     <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
@@ -44,21 +49,6 @@ const NavBar = props => {
       />
       <ul className="navbar-nav px-3">
         <li className="nav-item text-nowrap">
-          {/* <GoogleLogout
-            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-            render={renderProps => (
-              <Button
-                variant="secondary"
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-              >
-                {" "}
-                Cerrar Sesion
-              </Button>
-            )}
-            buttonText="Logout"
-            onLogoutSuccess={logout}
-          ></GoogleLogout> */}
           <Button variant="secondary" onClick={logout}>
             Cerrar Sesion
           </Button>

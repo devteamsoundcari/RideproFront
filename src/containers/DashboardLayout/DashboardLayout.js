@@ -1,58 +1,55 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import NavBar from "../../views/NavBar/NavBar";
 import "./DashboardLayout.scss";
 import SideBar from "../../views/SideBar/SideBar";
 import Usuarios from "../../views/Usuarios/Usuarios";
-
 import Dashboard from "../../views/Dashboard/Dashboard";
 import {
   Route,
-  useLocation,
   Switch,
   Redirect,
-  useRouteMatch
+  useRouteMatch,
+  useHistory,
 } from "react-router-dom";
-import Solicitar from "../../views/Solicitar/Solicitar";
+import SolicitarServicio from "../../views/SolicitarServicio/SolicitarServicio";
+import { Spinner } from "react-bootstrap";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const DashboardLayout = () => {
-  const location = useLocation();
+  const { isLoggedInContext } = useContext(AuthContext);
+  const history = useHistory();
   let { path, url } = useRouteMatch();
-  const [userInfo, setUserInfo] = useState({
-    isSignedIn: false,
-    name: "",
-    token: "",
-    profile: null
-  });
 
   useEffect(() => {
-    if (location.state) {
-      setUserInfo(location.state.userInfo);
+    if (!isLoggedInContext) {
+      history.push("/login");
     }
-  }, [location]);
+    // eslint-disable-next-line
+  }, []);
 
-  if (userInfo.isSignedIn) {
+  if (isLoggedInContext) {
     return (
       <div>
-        <NavBar profile={userInfo.profile} />
+        <NavBar />
         <div className="container-fluid">
           <div className="row">
-            <SideBar profile={userInfo.profile} url={url} />
+            <SideBar url={url} />
             <main
               role="main"
               className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4"
             >
               <Switch>
                 <Route path={`${path}/dashboard`}>
-                  <Dashboard profile={userInfo.profile} name={userInfo.name} />
+                  <Dashboard />
                 </Route>
                 <Route path={`${path}/usuarios`}>
-                  <Usuarios userInfo={userInfo} />
+                  <Usuarios />
                 </Route>
                 <Route path={`${path}/solicitar`}>
-                  <Solicitar userInfo={userInfo} />
+                  <SolicitarServicio />
                 </Route>
-                <Redirect from="/administrador" to="/administrador/usuarios" />
-                <Redirect from="/cliente" to="/cliente/solicitar" />
+                <Redirect from="/administrador" to="/administrador/dashboard" />
+                <Redirect from="/cliente" to="/cliente/dashboard" />
               </Switch>
             </main>
           </div>
@@ -60,7 +57,18 @@ const DashboardLayout = () => {
       </div>
     );
   } else {
-    return <p>Loading...</p>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          height: "100vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spinner animation="border" variant="danger" />
+      </div>
+    );
   }
 };
 

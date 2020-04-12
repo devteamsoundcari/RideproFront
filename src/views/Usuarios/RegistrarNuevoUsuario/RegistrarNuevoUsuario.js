@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Col, Card, Spinner, Form, Button } from "react-bootstrap";
-import { saveNewUser, sendEmail } from "../../../controllers/apiRequests";
+import {
+  saveNewUser,
+  sendEmail,
+  getCompanies,
+} from "../../../controllers/apiRequests";
 import ModalSuccess from "./ModalSuccess/ModalSuccess";
 
 const RegistrarNuevoUsuario = () => {
   const { register, handleSubmit, errors } = useForm();
+  const [companies, setCompanies] = useState([]);
   const [passError, setPassError] = useState("");
   const [userSucessMessage, setUserSucessMessage] = useState({
     name: "",
-    email: ""
+    email: "",
   });
   const [userErrorMessage, setUserErrorMessage] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -18,16 +23,18 @@ const RegistrarNuevoUsuario = () => {
     name: "",
     lastName: "",
     email: "",
-    id: "",
+    company: "",
     password: "",
     passwordRepeat: "",
-    profileType: ""
+    profileType: "",
+    charge: "",
   });
 
   // ================================= ON SUMBIT THE FORM ==========================================
 
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     if (!passError) {
+      console.log("Lo que se va a enviar es", data);
       setLoading(true); // SHOW SPINNER
       const response = await saveNewUser(data); // SAVE A NEW USER IN DB
       // IF SUCCESS
@@ -37,7 +44,7 @@ const RegistrarNuevoUsuario = () => {
         setUserSucessMessage({
           // PASS PROPS TO MODAL
           name: data.name,
-          email: data.email
+          email: data.email,
         });
         setSmShow(true); // SHOW MODAL
         setData({
@@ -45,10 +52,11 @@ const RegistrarNuevoUsuario = () => {
           name: "",
           lastName: "",
           email: "",
-          id: "",
+          company: "",
           password: "",
           passwordRepeat: "",
-          profileType: ""
+          profileType: "",
+          charge: "",
         });
         Object.assign(data, { emailType: "welcome" }); // EMAIL TYPE
         await sendEmail(data); // SEND WELCOME EMAIL TO USER
@@ -85,15 +93,26 @@ const RegistrarNuevoUsuario = () => {
       setPassError("");
     }
   }, [data]);
+  // ================================= GET COMPANIES ==========================================
+
+  useEffect(() => {
+    async function fetchCompanies() {
+      let res = await getCompanies();
+      if (res) {
+        setCompanies(res.results);
+      }
+    }
+    fetchCompanies();
+  }, []);
 
   // ================================= UPDATE STATE AS THE USER TYPES ==========================================
 
-  const updateData = e => {
+  const updateData = (e) => {
     let inputName = e.target.name;
     let inputValue = e.target.value; // Cache the value of e.target.value
-    setData(prevState => ({
+    setData((prevState) => ({
       ...prevState,
-      [inputName]: inputValue
+      [inputName]: inputValue,
     }));
   };
 
@@ -169,16 +188,29 @@ const RegistrarNuevoUsuario = () => {
                 </Form.Text>
               </Form.Group>
               <Form.Group as={Col}>
-                <Form.Label>Numero de Identificacion</Form.Label>
+                <Form.Label>Empresa</Form.Label>
                 <Form.Control
                   type="number"
-                  name="id"
+                  name="company"
                   onChange={updateData}
-                  value={data.id}
+                  value={data.empresa}
                   autoComplete="off"
-                  ref={register}
-                  placeholder="No. Identificacion"
-                />
+                  placeholder="Empresa"
+                  as="select"
+                  ref={register({ required: true })}
+                >
+                  <option value="">Seleccione...</option>
+                  {companies.map((comp) => {
+                    return (
+                      <option key={comp.id} value={comp.id}>
+                        {comp.name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+                {errors.company && (
+                  <span>Por favor seleccione una empresa</span>
+                )}
               </Form.Group>
             </Form.Row>
 
@@ -196,7 +228,7 @@ const RegistrarNuevoUsuario = () => {
                   autoComplete="off"
                   ref={register({
                     required: true,
-                    pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i
+                    pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
                   })}
                 />
                 <Form.Text className="text-muted">
@@ -218,7 +250,7 @@ const RegistrarNuevoUsuario = () => {
                   ref={register({
                     required: true,
                     // Min 8 digits, 1 uppercase, 1 number, 1 spec char
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/i
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/i,
                   })}
                 />
                 <Form.Text className="text-muted">
@@ -277,6 +309,20 @@ const RegistrarNuevoUsuario = () => {
                 {errors.profileType && (
                   <small>Por favor seleccione un perfil</small>
                 )}
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  Cargo en la Empresa<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Cargo..."
+                  name="charge"
+                  onChange={updateData}
+                  value={data.charge}
+                  autoComplete="off"
+                  ref={register}
+                />
               </Form.Group>
             </Form.Row>
 

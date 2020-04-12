@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 // import { GoogleLogin } from "react-google-login";
-import { getLoginToken, getUserByEmail } from "../../controllers/apiRequests";
+import { getLoginToken, getUserInfo } from "../../controllers/apiRequests";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
-import setUserInfoLocal from "../../controllers/setUserInfoLocal";
-
+import { AuthContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
 import "./Login.scss";
 import logo from "../../assets/img/logo.png";
@@ -19,37 +18,46 @@ const Login = () => {
   const [resetPwd, setResetPwd] = useState(null);
   const [userInfo, setUserInfo] = useState({
     isSignedIn: false,
-    name: "",
-    profile: null
   });
   const { register, handleSubmit, errors } = useForm();
+  const { setIsLoggedInContext, setUserInfoContext } = useContext(AuthContext);
+
+  // ====================== ON SUBMIT THE FORM ======================
+  const onSubmit = async (data) => {
+    // ======================= GETTING TOKEN ==========================
+    let res = await getLoginToken(data);
+    if (res.error) {
+      // This means the user is not registered
+      setError(res.error);
+    } else {
+      // Save token in LocalStorage
+      await setAuthorizationToken(res.token);
+      setError("");
+      // Get the user info
+      await SetUser();
+    }
+  };
 
   // ====================== GETTING USER'S INFO ======================
-  const getUserInfo = async email => {
-    let res = await getUserByEmail(email);
+  const SetUser = async () => {
+    let res = await getUserInfo();
     if (res) {
       setUserInfo({
         isSignedIn: true,
         name: res.first_name,
+        lastName: res.last_name,
+        id: res.id,
         email: res.email,
         charge: res.charge,
-        profile: res.profile
+        profile: res.profile,
+        picture: res.picture,
+        url: res.url,
+        company: res.company,
       });
-      setUserInfoLocal(res);
     }
   };
 
-  const onSubmit = async data => {
-    // ======================= GETTING TOKEN ==========================
-    let res = await getLoginToken(data);
-    if (res.error) {
-      setError(res.error);
-    } else {
-      await setAuthorizationToken(res.token);
-      setError("");
-      await getUserInfo(data.email);
-    }
-  };
+  // ====================== GETTING THE ACTUAL PATH ======================
 
   useEffect(() => {
     const url = window.location.href;
@@ -59,27 +67,47 @@ const Login = () => {
       console.log(uid.length === 3 && token);
       setResetPwd({
         uid,
-        token
+        token,
       });
     }
   }, []);
 
+  // ====================== IF TOKEN IN STORAGE SET INFO ======================
   useEffect(() => {
-    if (localStorage.token && localStorage.userInfo) {
-      const data = JSON.parse(localStorage.userInfo);
-      // console.log(typeof JSON.parse(localStorage.userInfo));
-      setUserInfo({
-        isSignedIn: true,
-        name: data.first_name,
-        email: data.email,
-        charge: data.charge,
-        profile: data.profile
-      });
+    if (localStorage.token) {
+      async function fetchData() {
+        await setAuthorizationToken(localStorage.token);
+        await SetUser();
+      }
+      fetchData();
     }
+    // eslint-disable-next-line
   }, []);
 
+  // ====================== SETTING UP CONTEXT ======================
   useEffect(() => {
     if (userInfo.isSignedIn) {
+      // Setting AuthContex
+      setIsLoggedInContext(true);
+      setUserInfoContext({
+        name: userInfo.name,
+        lastName: userInfo.lastName,
+        id: userInfo.id,
+        email: userInfo.email,
+        charge: userInfo.charge,
+        profile: userInfo.profile,
+        picture: userInfo.picture,
+        url: userInfo.url,
+        company: userInfo.company,
+      });
+    }
+    // eslint-disable-next-line
+  }, [userInfo.isSignedIn]);
+
+  // ====================== REDIRECT DEPENDING ON PROFILE ======================
+  useEffect(() => {
+    if (userInfo.isSignedIn) {
+      console.log("user", userInfo);
       let path = "/";
       switch (userInfo.profile) {
         case 1:
@@ -93,15 +121,16 @@ const Login = () => {
       }
       history.push({
         pathname: path,
-        state: { userInfo }
       });
     }
   }, [userInfo, history]);
 
+  // ====================== sHOWING PASSWORD RESET FORM ======================
   const renderPasswordReset = () => {
     setShowPasswordReset(!showPasswordReset);
   };
 
+  // ====================== RETURN ======================
   if (showPasswordReset) {
     return <PasswordRecover comeBack={renderPasswordReset} />;
   } else if (resetPwd) {
@@ -135,7 +164,7 @@ const Login = () => {
                         autoComplete="off"
                         ref={register({
                           required: true,
-                          pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+                          pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                         })}
                       />
                       <Form.Text className="text-muted">
