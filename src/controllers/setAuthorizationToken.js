@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const setAuthorizationToken = async token => {
+const setAuthorizationToken = async (token) => {
   if (token) {
     localStorage.setItem("token", token);
     axios.defaults.headers.common["Authorization"] = `Token ${token}`;

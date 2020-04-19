@@ -3,6 +3,7 @@ import NavBar from "../../views/NavBar/NavBar";
 import "./DashboardLayout.scss";
 import SideBar from "../../views/SideBar/SideBar";
 import Usuarios from "../../views/Usuarios/Usuarios";
+import ServicesHistory from "../../views/ServicesHistory/ServicesHistory";
 import Dashboard from "../../views/Dashboard/Dashboard";
 import {
   Route,
@@ -44,6 +45,9 @@ const DashboardLayout = () => {
                 </Route>
                 <Route path={`${path}/usuarios`}>
                   <Usuarios />
+                </Route>
+                <Route path={`${path}/historial`}>
+                  <ServicesHistory />
                 </Route>
                 <Route path={`${path}/solicitar`}>
                   <SolicitarServicio />

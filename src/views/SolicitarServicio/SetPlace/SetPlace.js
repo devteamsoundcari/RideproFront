@@ -29,6 +29,10 @@ const SetPlace = (props) => {
         });
         return await fetchDepartments(response.next);
       }
+      response.results.map((item) => {
+        items.push(item);
+        return true;
+      });
       setDepartments(items);
     }
     fetchDepartments(`${process.env.REACT_APP_API_URL}/api/v1/departments/`);
@@ -37,7 +41,7 @@ const SetPlace = (props) => {
   // =========================== FETCHING CITIES ===================================
 
   useEffect(() => {
-    if (department.length) {
+    if (department.id && department.name) {
       const items = [];
       async function fetchCities(url) {
         const response = await getMunicipalities(url);
@@ -57,7 +61,7 @@ const SetPlace = (props) => {
       }
       setCities([]);
       fetchCities(
-        `${process.env.REACT_APP_API_URL}/api/v1/municipalities/?department_id=${department}`
+        `${process.env.REACT_APP_API_URL}/api/v1/municipalities/?department_id=${department.id}`
       );
     }
   }, [department]);
@@ -65,6 +69,8 @@ const SetPlace = (props) => {
   // ==================================== SUBMIT THE FORM ========================================
 
   const onSubmit = (data) => {
+    data.city = city;
+    data.department = department;
     props.setPlace(data);
   };
 
@@ -78,9 +84,21 @@ const SetPlace = (props) => {
             </Form.Label>
             <Form.Control
               as="select"
-              value={department}
-              onChange={(e) => setDpto(e.target.value)}
-              onBlur={(e) => setDpto(e.target.value)}
+              value={department.id}
+              onChange={(e) => {
+                if (e.target.value !== "Seleccione...") {
+                  setDpto({
+                    id: e.target.value,
+                    name: document.getElementById(e.target.value).innerHTML,
+                  });
+                }
+              }}
+              // onBlur={(e) =>
+              //   setDpto({
+              //     id: e.target.value,
+              //     name: document.getElementById(e.target.value).innerHTML,
+              //   })
+              // }
               name="department"
               ref={register({
                 required: true,
@@ -90,14 +108,13 @@ const SetPlace = (props) => {
               })}
             >
               <option>Seleccione...</option>
-              {departments.map((dep) => {
+              {departments.map((dep, index) => {
                 return (
-                  <option key={dep.id} value={dep.id}>
+                  <option key={index} value={dep.id} id={dep.id}>
                     {dep.name}
                   </option>
                 );
               })}
-              <Form.Text className="text-danger"></Form.Text>
             </Form.Control>
           </Form.Group>
 
@@ -107,9 +124,21 @@ const SetPlace = (props) => {
             </Form.Label>
             <Form.Control
               as="select"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              onBlur={(e) => setCity(e.target.value)}
+              value={city.id}
+              onChange={(e) => {
+                if (e.target.value !== "Seleccione...") {
+                  setCity({
+                    id: e.target.value,
+                    name: document.getElementById(e.target.value).innerHTML,
+                  });
+                }
+              }}
+              // onBlur={(e) =>
+              //   setCity({
+              //     id: e.target.value,
+              //     name: document.getElementById(e.target.value).innerHTML,
+              //   })
+              // }
               disabled={cities.length ? false : true}
               name="city"
               ref={register({
@@ -120,14 +149,28 @@ const SetPlace = (props) => {
               })}
             >
               <option>Seleccione...</option>
-              {cities.map((cit) => {
+              {cities.map((cit, index) => {
                 return (
-                  <option key={cit.id} value={cit.id}>
+                  <option key={index} value={cit.id} id={cit.id}>
                     {cit.name}
                   </option>
                 );
               })}
             </Form.Control>
+          </Form.Group>
+          <Form.Group as={Col} md="4">
+            <Form.Label>
+              <h4>Lugar</h4>
+            </Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Lugar del Servicio"
+              name="place"
+              style={{ margin: "0px" }}
+              ref={register({
+                required: true,
+              })}
+            />
           </Form.Group>
         </Form.Row>
         <Form.Row>

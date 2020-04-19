@@ -1,5 +1,10 @@
 .setParticipants {
-  margin-top: 3rem;
+  margin-top: 1rem;
+  text-align: center;
+  .finalizarBtn {
+    margin-top: 2rem;
+    margin: 2rem auto;
+  }
   td {
     text-align: center;
     button {
@@ -7,6 +12,11 @@
       span {
         font-size: 15px;
       }
+    }
+    small {
+      color: red;
+      font-weight: bold;
+      font-size: 12px;
     }
   }
 }

@@ -5,6 +5,26 @@
     cursor: pointer;
     tr {
       transition: 0.2s;
+      td {
+        .badge {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          max-width: 70px;
+          margin: auto;
+          background-color: red;
+          color: #fff;
+
+          svg {
+            font-size: 20px;
+          }
+          small {
+            font-size: 15px;
+            margin-left: 2px;
+            font-weight: 600;
+          }
+        }
+      }
       &:hover {
         background: #495057 !important;
         td {

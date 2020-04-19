@@ -28,6 +28,7 @@ const Login = () => {
     let res = await getLoginToken(data);
     if (res.error) {
       // This means the user is not registered
+      await setAuthorizationToken(res.token);
       setError(res.error);
     } else {
       // Save token in LocalStorage

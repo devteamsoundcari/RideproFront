@@ -42,7 +42,6 @@ const setNewPassword = async (data) => {
       token: data.token,
     },
   }).catch((err) => {
-    console.error(err.response.data);
     return err.response.data;
   });
   if (result.status === 200) {
@@ -51,105 +50,6 @@ const setNewPassword = async (data) => {
     return false;
   }
 };
-
-// /* =================================  PASSWORD RESET  ===================================== */
-
-// const getTypesOfService = async (data) => {
-//   // console.log(data);
-//   // const result = await axios({
-//   //   method: "POST",
-//   //   url: `${process.env.REACT_APP_API_URL}/rest-auth/password/reset/confirm/`,
-//   //   data: {
-//   //     new_password1: data.password,
-//   //     new_password2: data.passwordRepeat,
-//   //     uid: data.uid,
-//   //     token: data.token,
-//   //   },
-//   // }).catch((err) => {
-//   //   console.log(err.response.data);
-//   //   return err.response.data;
-//   // });
-//   // if (result.status === 200) {
-//   //   return true;
-//   // } else {
-//   //   return false;
-//   // }
-//   return [
-//     {
-//       id: 32,
-//       created_at: "20/04/2020",
-//       updated_ad: "20/04/2020",
-//       name: "Prueba de Ingreso Moto",
-//       ride_value: 3,
-//       service_type: "Persona",
-//       description:
-//         "Prueba para motociclistas que montan moto, y tienen moto y le gustan las motos.",
-//       requirements: "Lorem Ipsum is simply dummy text of the ",
-//       duration: "35",
-//     },
-//     {
-//       id: 62,
-//       created_at: "20/04/2020",
-//       updated_ad: "20/04/2020",
-//       name: "Prueba de Ingreso Taxi",
-//       ride_value: 6,
-//       service_type: "Persona",
-//       description:
-//         "Prueba para conductores que montan carro, y tienen carro y le gustan los carros.",
-//       requirements: "Lorem Ipsum is simply dummy text of the ",
-//       duration: "55",
-//     },
-//     {
-//       id: 22,
-//       created_at: "20/04/2020",
-//       updated_ad: "20/04/2020",
-//       name: "Prueba de Ingreso Carro",
-//       ride_value: 2,
-//       service_type: "Jornada",
-//       description:
-//         "Prueba para conductores que montan carro, y tienen carro y le gustan los carros.",
-//       requirements: "Lorem Ipsum is simply dummy text of the ",
-//       duration: "55",
-//     },
-//     {
-//       id: 52,
-//       created_at: "20/04/2020",
-//       updated_ad: "20/04/2020",
-//       name: "Prueba de Ingreso Taxi",
-//       ride_value: 6,
-//       service_type: "Persona",
-//       description:
-//         "Prueba para conductores que montan carro, y tienen carro y le gustan los carros.",
-//       requirements: "Lorem Ipsum is simply dummy text of the ",
-
-//       duration: "55",
-//     },
-//     {
-//       id: 2,
-//       created_at: "20/04/2020",
-//       updated_ad: "20/04/2020",
-//       name: "Prueba de Ingreso Taxi",
-//       ride_value: 6,
-//       service_type: "Persona",
-//       description:
-//         "Prueba para conductores que montan carro, y tienen carro y le gustan los carros.",
-//       requirements: "Lorem Ipsum is simply dummy text of the ",
-//       duration: "55",
-//     },
-//     {
-//       id: 92,
-//       created_at: "20/04/2020",
-//       updated_ad: "20/04/2020",
-//       name: "Prueba de Ingreso Taxi",
-//       service_type: "Persona",
-//       ride_value: 6,
-//       description:
-//         "Prueba para conductores que montan carro, y tienen carro y le gustan los carros.",
-//       requirements: "Lorem Ipsum is simply dummy text of the ",
-//       duration: "55",
-//     },
-//   ];
-// };
 
 /* =================================     Add a user if not exist in db     ===================================== */
 
@@ -209,7 +109,7 @@ const getUserInfo = async () => {
       method: "GET",
       url,
     }).catch((err) => {
-      console.error(err);
+      return err;
     });
     return userData;
   };
@@ -224,7 +124,7 @@ const getServices = async () => {
       method: "GET",
       url,
     }).catch((err) => {
-      console.error(err);
+      return err;
     });
     return serviceData;
   };
@@ -241,7 +141,7 @@ const getCompanies = async () => {
       method: "GET",
       url,
     }).catch((err) => {
-      console.error(err);
+      return err;
     });
     return compData;
   };
@@ -258,7 +158,7 @@ const getDepartments = async (url) => {
       method: "GET",
       url,
     }).catch((err) => {
-      console.error(err);
+      return err;
     });
     return departmentsData;
   };
@@ -273,13 +173,145 @@ const getMunicipalities = async (url) => {
       method: "GET",
       url,
     }).catch((err) => {
-      console.error(err);
+      return err;
     });
     return citiesData;
   };
   let municipalities = await getInfo();
   return municipalities.data;
 };
+
+/* =================================   CREATE A REQUEST FROM CLIENT   ===================================== */
+const createRequest = async (data) => {
+  let {
+    service,
+    customer,
+    municipality,
+    place,
+    start_time,
+    finish_time,
+    drivers,
+  } = data;
+
+  // =========================== MAPGIN DRIVER TO COVERT THEM INTO URLS ============================================
+  drivers = drivers.map((driver) => {
+    return `${process.env.REACT_APP_API_URL}/api/v1/drivers/${driver}/`;
+  });
+
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/requests/`,
+    data: {
+      service,
+      customer,
+      municipality,
+      operator: null,
+      instructor: "na",
+      place,
+      start_time,
+      finish_time,
+      status: "c25b4036-1d0f-4293-833b-15e342c80856", // This is first step
+      new_request: 0,
+      accept_msg: "na",
+      reject_msg: "na",
+      drivers,
+    },
+  }).catch((err) => {
+    console.log("fallo", err.request.response);
+    return err;
+  });
+  descreaseCredits(data.company, data.used_credits); // Calling decrease
+  return result;
+};
+
+/* =================================   CREATE A DRIVER  ===================================== */
+
+const createDriver = async (data) => {
+  const { first_name, last_name, official_id, cellphone, email } = data;
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/drivers/`,
+    data: {
+      first_name,
+      last_name,
+      official_id,
+      cellphone,
+      email,
+      requests: [], // Empty because it doesnot belong to any request yet
+    },
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+/* =================================   GET ALL DRIVES IN DB  ===================================== */
+
+const getAllDrivers = async (url) => {
+  const getInfo = async () => {
+    const driversData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return driversData;
+  };
+  let drivers = await getInfo();
+  return drivers.data;
+};
+
+/* =================================   GET A DRIVER ===================================== */
+
+const fetchDriver = async (url) => {
+  const getInfo = async () => {
+    const driverData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return driverData;
+  };
+  let driver = await getInfo();
+  return driver.data;
+};
+
+/* =================================   DECREASE CREDITS IN COMPANY   ===================================== */
+const descreaseCredits = async (company, credits) => {
+  const newCredit = company.credit - credits;
+  const { address, arl, name, nit, phone, id } = company;
+  const result = await axios({
+    method: "PUT",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/companies/${id}/`,
+    data: {
+      credit: newCredit,
+      address,
+      arl,
+      name,
+      nit,
+      phone,
+    },
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+
+/* =================================   GET USER REQUESTS   ===================================== */
+const getUserRequests = async (url) => {
+  const getInfo = async () => {
+    const requestsData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return requestsData;
+  };
+  let requests = await getInfo();
+  return requests.data;
+};
+// ================================================================================
 
 export {
   sendEmail,
@@ -288,9 +320,13 @@ export {
   getUserInfo,
   passwordReset,
   setNewPassword,
-  // getTypesOfService,\
+  createRequest,
   getMunicipalities,
+  getUserRequests,
   getDepartments,
   getCompanies,
+  createDriver,
+  getAllDrivers,
+  fetchDriver,
   getServices,
 };

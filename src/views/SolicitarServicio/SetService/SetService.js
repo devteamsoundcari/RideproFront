@@ -1,7 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { getServices } from "../../../controllers/apiRequests";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { Form, Col, Table } from "react-bootstrap";
+import { Form, Col, Table, Badge } from "react-bootstrap";
+import { AiFillDollarCircle } from "react-icons/ai";
+
 import "./SetService.scss";
 
 const SetService = (props) => {
@@ -16,6 +18,8 @@ const SetService = (props) => {
     fetcServices();
   }, []);
 
+  // ===============================CHECK CREDITS AND SET SERVICE ==================================================
+
   const handleClick = (e, service) => {
     const companyCreds = userInfoContext.company.credit;
     const serviceCreds = service.ride_value;
@@ -27,7 +31,7 @@ const SetService = (props) => {
       row.classList.add("active");
       props.setService(service);
     } else {
-      console.log("Creditos insuficientes");
+      alert("Creditos insuficientes");
     }
   };
   return (
@@ -58,7 +62,13 @@ const SetService = (props) => {
                     <td>{service.description}</td>
                     <td>{service.requirements}</td>
                     <td>{service.duration} min</td>
-                    <td>{service.ride_value} rides</td>
+                    <td>
+                      {/* {service.ride_value} */}
+                      <Badge>
+                        <AiFillDollarCircle />
+                        <small>{service.ride_value}</small>
+                      </Badge>
+                    </td>
                   </tr>
                 );
               })}

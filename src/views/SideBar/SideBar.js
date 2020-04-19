@@ -1,13 +1,14 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import { AiFillDollarCircle } from "react-icons/ai";
 import { Badge } from "react-bootstrap";
 import "./SideBar.scss";
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
   return (
-    <nav className="col-md-2 d-none d-md-block bg-light sidebar">
+    <nav className="col-md-2 d-none d-md-block bg-dark sidebar">
       <div className="sidebar-sticky">
         <ul className="nav flex-column">
           <li>
@@ -21,20 +22,21 @@ const SideBar = (props) => {
           </li>
           <li>
             {" "}
-            <Badge variant="warning">
-              Rides: {userInfoContext.company.credit}
+            <Badge>
+              <AiFillDollarCircle />
+              <small>{userInfoContext.company.credit}</small>
             </Badge>
           </li>
           <hr />
           <Link to={`${props.url}/dashboard`} className="nav-link">
-            Dashboard
+            Agenda
           </Link>
           {userInfoContext.profile === 1 && (
             <Link to={`${props.url}/usuarios`} className="nav-link">
               Usuarios
             </Link>
           )}
-          <Link to="/historial" className="nav-link">
+          <Link to={`${props.url}/historial`} className="nav-link">
             Historial
           </Link>
 

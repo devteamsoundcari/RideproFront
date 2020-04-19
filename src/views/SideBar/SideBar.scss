@@ -1,6 +1,7 @@
 .sidebar {
   .flex-column {
     text-align: center;
+    color: #fff;
     img {
       width: 100px;
       height: 100px;
@@ -8,12 +9,39 @@
       margin-top: 2rem;
       margin-bottom: 10px;
     }
+    .badge {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 70px;
+      margin: auto;
+      background-color: red;
+      margin-top: 5px;
+      // font-size: 30px;
+      svg {
+        font-size: 20px;
+        color: #fff;
+      }
+      small {
+        font-size: 15px;
+        margin-left: 2px;
+        font-weight: 600;
+      }
+    }
     hr {
       margin-top: 1rem;
       margin-bottom: 1rem;
       border: 0;
       border-top: 1px solid rgba(0, 0, 0, 0.1);
       width: 50px;
+    }
+    a {
+      color: #fff;
+      transition: 0.3s;
+      &:hover {
+        background-color: red;
+        transform: translateY(-4px);
+      }
     }
   }
 }

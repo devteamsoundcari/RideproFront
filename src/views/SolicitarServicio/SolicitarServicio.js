@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Col, Card, Row, Button, Tabs, Tab } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import "./SolicitarServicio.scss";
@@ -7,12 +7,18 @@ import SetDate from "./SetDate/SetDate";
 import SetService from "./SetService/SetService";
 import SetPlace from "./SetPlace/SetPlace";
 import SetParticipants from "./SetParticipants/SetParticipants";
+import { ServiceContext } from "../../contexts/ServiceContext";
+import ConfirmServiceModal from "./ConfirmServiceModal/ConfrimServiceModal";
 
 const SolicitarServicio = (props) => {
+  const { setServiceInfoContext } = useContext(ServiceContext);
   const [key, setKey] = useState("paso1");
   const [date, setDate] = useState("");
   const [service, setService] = useState("");
   const [place, setPlace] = useState("");
+  const [participants, setParticipants] = useState([]);
+  const [rides, setRides] = useState(0);
+  const [showModal, setShowModal] = useState(false);
 
   // =========================== HANDLING SERVICE ============================
   const handleService = (data) => {
@@ -23,8 +29,10 @@ const SolicitarServicio = (props) => {
   };
   useEffect(() => {
     if (service) {
+      setServiceInfoContext(service);
       setKey("paso2");
     }
+    //eslint-disable-next-line
   }, [service]);
 
   // =========================== HANDLING DATE ============================
@@ -53,15 +61,34 @@ const SolicitarServicio = (props) => {
     }
   }, [place]);
 
+  // =========================== HANDLING PARTICIPANTS AND SUBMITING THE SERVICE ============================
+
+  const handleParticipants = (people, rides) => {
+    if (participants) {
+      setParticipants([]);
+    }
+    if (rides) {
+      setRides([]);
+    }
+    setRides(rides);
+    setParticipants(people);
+  };
+  useEffect(() => {
+    if (participants.length) {
+      // create new service
+      setShowModal(true);
+    }
+  }, [participants]);
+
   return (
     <Row>
       <Col>
         <Button variant="link" onClick={props.selectSlot}>
           <FaArrowCircleLeft /> Volver
         </Button>
+        Solicitar un Servicio
         <Card className="solicitarServicio">
           <Card.Body>
-            <Card.Header as="h5">Solicitar un Servicio</Card.Header>
             <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
               <Tab
                 eventKey="paso1"
@@ -104,12 +131,21 @@ const SolicitarServicio = (props) => {
                 }
                 disabled={place ? false : true}
               >
-                <SetParticipants />
+                <SetParticipants setParticipants={handleParticipants} />
               </Tab>
             </Tabs>
           </Card.Body>
         </Card>
       </Col>
+      <ConfirmServiceModal
+        show={showModal}
+        setShow={(e) => setShowModal(e)}
+        service={service}
+        date={date}
+        place={place}
+        participants={participants}
+        rides={rides}
+      />
     </Row>
   );
 };
