@@ -7,10 +7,9 @@ import { createRequest, createDriver } from "../../../controllers/apiRequests";
 
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
-  const { userInfoContext } = useContext(AuthContext);
+  const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSuccessPropmt, setSuccessPrompt] = useState(false);
-  // const [participantsIDs, setParticipantsIDs] = useState([]);
   const options = {
     weekday: "long",
     year: "numeric",
@@ -58,9 +57,18 @@ const ConfirmServiceModal = (props) => {
         drivers: driversIDs,
       };
       let res = await createRequest(data);
-      if (res.status === 201) {
+      if (res.create.status === 201 && res.decrease.status === 200) {
         setShowSpinner(false);
         setSuccessPrompt(true);
+        // Ubdate company context
+        // setUserInfoContext((prevState) => ({
+        //   ...prevState,
+        //   company: res.decrease.data,
+        // }));
+        setUserInfoContext({...userInfoContext, company: {
+          ...userInfoContext.company,
+          credit: res.decrease.data.credit
+        }});
       }
     });
   };

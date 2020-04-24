@@ -23,7 +23,7 @@ const SetService = (props) => {
   const handleClick = (e, service) => {
     const companyCreds = userInfoContext.company.credit;
     const serviceCreds = service.ride_value;
-    if (companyCreds > serviceCreds) {
+    if (companyCreds >= serviceCreds) {
       e.target.parentNode.parentNode.childNodes.forEach((e) =>
         e.classList.remove("active")
       );

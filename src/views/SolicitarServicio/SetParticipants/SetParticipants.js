@@ -57,7 +57,7 @@ const SetParticipants = (props) => {
       //     data.registered = false;
       //   }
       // }
-      let userIsRegistered = isParticipantRegistered(participantsDB, data);
+      let userIsRegistered = isParticipantRegistered(participantsDB, data); // Check if driver is already in db
       if (userIsRegistered.res) {
         data = userIsRegistered.obj;
         data.registered = true;
@@ -67,8 +67,16 @@ const SetParticipants = (props) => {
       } else {
         data.registered = false;
       }
-      setParticipants([...participants, data]);
-      setRides(temp);
+      // Check if the users is already on the list... if so skip with alert
+      let alreadyAdded = participants.filter(
+        (person) => person.official_id === data.official_id
+      );
+      if (alreadyAdded.length === 0) {
+        setParticipants([...participants, data]);
+        setRides(temp);
+      } else {
+        alert("No puede anadir dos veces al mismo participante");
+      }
     } else {
       alert("Se quedo sin creditos");
     }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Spinner } from "react-bootstrap";
 import { Calendar, momentLocalizer } from "react-big-calendar";
+import { useHistory } from "react-router-dom";
 import { getUserRequests } from "../../controllers/apiRequests";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -10,46 +11,77 @@ const localizer = momentLocalizer(moment);
 
 const MyCalendar = (props) => {
   const [requests, setRequests] = useState([]);
-  const [events] = useState([
-    {
-      start: moment().toDate(),
-      end: moment().add(1, "days").toDate(),
-      title: "Un evento de 2 dias de sde hoy",
-    },
-    {
-      id: 0,
-      title: "Prueba conductorres",
-      allDay: true,
-      start: new Date(2020, 3, 17, 3, 30),
-      end: new Date(2020, 3, 17, 5, 30),
-      desc: "Prueba conductorres",
-      participants: "MihaelSosa",
-    },
-  ]);
+  const [sortedRequests, setSortedRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const history = useHistory();
+
+  // const [events] = useState([
+  //   {
+  //     start: moment().toDate(),
+  //     end: moment().add(1, "days").toDate(),
+  //     title: "Un evento de 2 dias de sde hoy",
+  //   },
+  //   {
+  //     id: 0,
+  //     title: "Prueba conductorres",
+
+  //     start: new Date(2020, 3, 17, 3, 30),
+  //     end: new Date(2020, 3, 17, 5, 30),
+  //   },
+  // ]);
+
+  // =============================== GETTING ALL THE EVENTS AND DISPLAYING THEM TO CALENDAR =============================================
 
   useEffect(() => {
-    console.log("entra");
     async function fetchRequests(url) {
       const response = await getUserRequests(url);
-      response.results.forEach(async (item) => {
-        setRequests((prev) => [...prev, item]);
-      });
-      if (response.next) {
-        return await fetchRequests(response.next);
+      if (response) {
+        response.results.forEach(async (item) => {
+          item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
+          item.start = new Date(item.start_time);
+          item.end = new Date(item.finish_time);
+          if (item.status.step !== 0) {
+            setRequests((prev) => [...prev, item]);
+          }
+        });
+        if (response.next) {
+          return await fetchRequests(response.next);
+        }
       }
     }
     fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/user_requests/`);
   }, []);
 
   useEffect(() => {
-    if (requests.length) {
-      console.log("llegan", requests);
+    // Sorting requests so that the most recent goes on top
+    if (requests.length > 1) {
+      requests.sort((a, b) => {
+        return a.id - b.id;
+      });
+      setSortedRequests(requests.reverse());
+      // Show and hide spinner
+      if (sortedRequests.length > 0) {
+        setLoading(false);
+      }
+    } else {
+      setSortedRequests(requests);
+      if (requests.length > 0) {
+        setLoading(false);
+      }
     }
+    //eslint-disable-next-line
   }, [requests]);
 
+  //============================================ HANDLING CLICKING ON EVENT ===========================================================
+
   const handleClick = (event) => {
-    console.log("JUEPUTA", event);
+    history.push({
+      pathname: "/cliente/historial",
+      state: { id: sortedRequests.findIndex((i) => i.id === event.id) },
+    });
   };
+
+  //============================================ HANDLING CLICKING ON SLOT ===========================================================
 
   const handleSelectSlot = (data) => {
     // ================= GETTING REQUESTING DATE ====================
@@ -62,15 +94,25 @@ const MyCalendar = (props) => {
     }
   };
 
+  // ==============================================================================================================================
+
   return (
     <Card>
       <Card.Body>
+        {/* {loading && (
+          <p>
+            Cargando Eventos...
+            <Spinner animation="border" size="sm" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </p>
+        )} */}
         <Calendar
           selectable
           localizer={localizer}
           defaultDate={new Date()}
           defaultView="month"
-          events={events}
+          events={sortedRequests}
           // min={new Date(2020, 10, 0, 10, 0, 0)}
           // max={new Date(2020, 10, 0, 22, 0, 0)}
           // timeslots={8}

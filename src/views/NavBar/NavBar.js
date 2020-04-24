@@ -38,9 +38,14 @@ const NavBar = (props) => {
 
   return (
     <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-      <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#123">
+      <span
+        className="navbar-brand col-sm-3 col-md-2 mr-0"
+        style={{ cursor: "pointer" }}
+        onClick={() => history.push("/login")}
+      >
         RideProApp | <small style={{ fontSize: "12px" }}>{profile}</small>
-      </a>
+      </span>
+
       <input
         className="form-control form-control-dark w-50"
         type="text"

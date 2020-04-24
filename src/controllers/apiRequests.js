@@ -195,7 +195,7 @@ const createRequest = async (data) => {
 
   // =========================== MAPGIN DRIVER TO COVERT THEM INTO URLS ============================================
   drivers = drivers.map((driver) => {
-    return `${process.env.REACT_APP_API_URL}/api/v1/drivers/${driver}/`;
+    return driver[0];
   });
 
   const result = await axios({
@@ -210,7 +210,7 @@ const createRequest = async (data) => {
       place,
       start_time,
       finish_time,
-      status: "c25b4036-1d0f-4293-833b-15e342c80856", // This is first step
+      status: "d02eaa22-8a5c-4904-b3c4-567782a53f51", // This is first step
       new_request: 0,
       accept_msg: "na",
       reject_msg: "na",
@@ -220,8 +220,25 @@ const createRequest = async (data) => {
     console.log("fallo", err.request.response);
     return err;
   });
-  descreaseCredits(data.company, data.used_credits); // Calling decrease
-  return result;
+  let result2 = await descreaseCredits(data.company, data.used_credits); // Calling decrease
+  return { create: result, decrease: result2 };
+};
+
+// ==================================== CANCEL REQUEST ID AND REFIND CREDITS ==================================================================
+
+const cancelRequestId = async (data) => {
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${data.id}/`,
+    data: {
+      status: "51b85ef7-5054-4bcf-a376-3fcc93097fb6", // Status setp canceled 0
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err;
+  });
+  let result2 = await increaseCredits(data.company, data.refund_credits); // Calling decrease
+  return { canceled: result, refund: result2 };
 };
 
 /* =================================   CREATE A DRIVER  ===================================== */
@@ -238,6 +255,7 @@ const createDriver = async (data) => {
       cellphone,
       email,
       requests: [], // Empty because it doesnot belong to any request yet
+      report: "na"
     },
   }).catch((err) => {
     return err;
@@ -276,27 +294,51 @@ const fetchDriver = async (url) => {
   return driver.data;
 };
 
+/* =================================   UPDATE A DRIVER ===================================== */
+
+const updateDriver = async (data, id) => {
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/drivers/${id}/`,
+    data: { data },
+  }).catch((err) => {
+    console.log("error");
+    return err;
+  });
+  console.log("respuesta");
+  return result;
+};
+
 /* =================================   DECREASE CREDITS IN COMPANY   ===================================== */
 const descreaseCredits = async (company, credits) => {
   const newCredit = company.credit - credits;
-  const { address, arl, name, nit, phone, id } = company;
+  const { id } = company;
   const result = await axios({
-    method: "PUT",
+    method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/companies/${id}/`,
     data: {
       credit: newCredit,
-      address,
-      arl,
-      name,
-      nit,
-      phone,
+    },
+  }).catch((err) => {
+    return err;
+  });
+  console.log("LA RESPUESTA DE CREDITS", result)
+  return result;
+};
+
+/* =================================   INCREASE CREDITS IN COMPANY   ===================================== */
+const increaseCredits = async (companyId, credits) => {
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/companies/${companyId}/`,
+    data: {
+      credit: credits,
     },
   }).catch((err) => {
     return err;
   });
   return result;
 };
-
 /* =================================   GET USER REQUESTS   ===================================== */
 const getUserRequests = async (url) => {
   const getInfo = async () => {
@@ -327,6 +369,8 @@ export {
   getCompanies,
   createDriver,
   getAllDrivers,
+  updateDriver,
   fetchDriver,
+  cancelRequestId,
   getServices,
 };

@@ -12,7 +12,7 @@ const SideBar = (props) => {
       <div className="sidebar-sticky">
         <ul className="nav flex-column">
           <li>
-            <img alt="profileImg" src={userInfoContext.picture} />
+            <img alt="profileImg" src={userInfoContext.company.logo} />
           </li>
           <small>
             <strong>Bienvenid@ {userInfoContext.name}</strong>

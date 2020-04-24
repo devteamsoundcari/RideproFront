@@ -100,6 +100,8 @@ const RegistrarNuevoUsuario = () => {
       let res = await getCompanies();
       if (res) {
         setCompanies(res.results);
+      } else {
+        console.log("No hay empresas registradas")
       }
     }
     fetchCompanies();
