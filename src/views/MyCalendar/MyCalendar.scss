@@ -1,0 +1,21 @@
+.rbc-calendar {
+  .rbc-toolbar {
+    .rbc-btn-group {
+      button:nth-child(1) {
+        // display: none;
+      }
+    }
+    .rbc-toolbar-label {
+      text-transform: capitalize;
+    }
+  }
+  .rbc-header {
+    span {
+      text-transform: capitalize;
+    }
+  }
+  .rbc-event-content {
+    white-space: normal !important;
+    font-size: 12px;
+  }
+}

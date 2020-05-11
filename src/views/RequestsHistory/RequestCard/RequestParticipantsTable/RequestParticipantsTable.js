@@ -14,7 +14,7 @@ const RequestParticipantsTable = (props) => {
             <th>Apellido</th>
             <th>Email</th>
             <th>Telefono</th>
-            {props.status.step !== 0 && <th>Editar</th>}
+            {props.status.step !== 0 && props.editable && <th>Editar</th>}
           </tr>
         </thead>
         <tbody>
@@ -27,6 +27,7 @@ const RequestParticipantsTable = (props) => {
                 requestId={props.requestId}
                 status={props.status}
                 key={index}
+                editable={props.editable}
               />
             );
           })}

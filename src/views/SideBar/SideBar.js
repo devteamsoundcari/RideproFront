@@ -15,8 +15,11 @@ const SideBar = (props) => {
             <img alt="profileImg" src={userInfoContext.company.logo} />
           </li>
           <small>
-            <strong>Bienvenid@ {userInfoContext.name}</strong>
+            <strong>Bienvenido {userInfoContext.name}</strong>
           </small>
+          <li>
+            <small>{userInfoContext.charge}</small>
+          </li>
           <li>
             <small>{userInfoContext.company.name}</small>
           </li>
@@ -29,7 +32,7 @@ const SideBar = (props) => {
           </li>
           <hr />
           <Link to={`${props.url}/dashboard`} className="nav-link">
-            Agenda
+            Calendario
           </Link>
           {userInfoContext.profile === 1 && (
             <Link to={`${props.url}/usuarios`} className="nav-link">
@@ -38,6 +41,12 @@ const SideBar = (props) => {
           )}
           <Link to={`${props.url}/historial`} className="nav-link">
             Historial
+          </Link>
+          <Link to={`${props.url}/solicitar`} className="nav-link">
+            Solicitar{" "}
+            <Badge pill variant="success">
+              Nuevo!
+            </Badge>
           </Link>
 
           {/* <li className="nav-item">

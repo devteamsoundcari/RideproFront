@@ -14,6 +14,8 @@ const EachParticipantForm = (props) => {
   const [loading, setLoading] = useState(false);
   const [participantInfo, setParticipantInfo] = useState({});
 
+  // ================================ CLICK ON EDIT DISABLED FALSE=================================
+
   const handleClick = () => {
     setShowSaveBtn(true);
     [...document.getElementsByClassName(props.cls)].forEach(
@@ -23,26 +25,43 @@ const EachParticipantForm = (props) => {
     );
   };
 
+  // ================================ UPDATE DRIVER =================================
+
   const handleSubmit = async () => {
     setShowSaveBtn(false);
     setLoading(true);
-    if (!isEmpty(participantInfo)) {
+    if (isEmpty(participantInfo)) {
+      setLoading(false);
+      [...document.getElementsByClassName(props.cls)].forEach(
+        (element, index, array) => {
+          element.disabled = true;
+        }
+      );
+    } else {
+      // if (!isEmpty(participantInfo)) {
       // UPDATE DRIVER API
       let res = await updateDriver(participantInfo, props.driver.id);
-      console.log("qpasa,", res);
       if (res.status === 200) {
         setLoading(false);
+        [...document.getElementsByClassName(props.cls)].forEach(
+          (element, index, array) => {
+            element.disabled = true;
+          }
+        );
       } else {
-        console.log("rabona", res);
+        console.log("Eror modificando driver", res);
       }
     }
   };
+
+  // ================================ HANDLE CHANGE INPUTS SAVE STATE =================================
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setParticipantInfo((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  // ================================ RENDER EDIT AND SAVE BUTTONS =================================
   const renderEditButtons = () => {
     if (props.status.step !== 0) {
       if (showSaveBtn) {
@@ -65,6 +84,7 @@ const EachParticipantForm = (props) => {
     }
   };
 
+  //=================================================================================================
   return (
     <tr>
       <td>
@@ -110,7 +130,7 @@ const EachParticipantForm = (props) => {
           onChange={handleChange}
         />
       </td>
-      {renderEditButtons()}
+      {props.editable && renderEditButtons()}
       {loading && (
         <td>
           <Spinner animation="border" role="status" size="sm">

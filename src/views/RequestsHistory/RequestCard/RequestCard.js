@@ -6,7 +6,7 @@ import {
   Row,
   ProgressBar,
   Button,
-  ButtonGroup,
+  Modal,
 } from "react-bootstrap";
 import { IoIosArrowForward } from "react-icons/io";
 import { RequestContext } from "../../../contexts/RequestContext";
@@ -15,7 +15,6 @@ import RequestParticipantsTable from "./RequestParticipantsTable/RequestParticip
 
 const RequestCard = (props) => {
   const today = new Date();
-
   const newCreatedAtDate = new Date(
     props.request.created_at
   ).toLocaleDateString();
@@ -62,18 +61,33 @@ const RequestCard = (props) => {
       </Accordion.Toggle>
       <Accordion.Collapse eventKey={props.index}>
         <Card.Body>
-          <RequestInfoTable request={props.request} />
+          <RequestInfoTable
+            request={props.request}
+            status={props.request.status}
+            editable={
+              props.request.status.step !== 0 &&
+              today < props.request.cancelDate
+                ? true
+                : false
+            }
+          />
           <RequestParticipantsTable
             drivers={props.request.drivers}
             status={props.request.status}
             requestId={props.request.id}
+            editable={
+              props.request.status.step !== 0 &&
+              today < props.request.cancelDate
+                ? true
+                : false
+            }
           />
           {props.request.status.step !== 0 && today < props.request.cancelDate && (
             <footer>
               <Button
                 variant="danger"
                 size="sm"
-                // onClick={() => handleCancelRequest(request)}
+                onClick={() => props.handleCancelRequest(props.request)}
               >
                 Cancelar Solicitud
               </Button>

@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 // import { GoogleLogin } from "react-google-login";
-import { getLoginToken, getUserInfo } from "../../controllers/apiRequests";
+import {
+  getLoginToken,
+  getUserInfo,
+  getGender,
+} from "../../controllers/apiRequests";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
@@ -42,6 +46,7 @@ const Login = () => {
   // ====================== GETTING USER'S INFO ======================
   const SetUser = async () => {
     let res = await getUserInfo();
+    // let gender = await getGender(res.first_name);
     if (res) {
       setUserInfo({
         isSignedIn: true,
@@ -54,6 +59,7 @@ const Login = () => {
         picture: res.picture,
         url: res.url,
         company: res.company,
+        // gender: gender.gender,
       });
     }
   };
@@ -100,6 +106,7 @@ const Login = () => {
         picture: userInfo.picture,
         url: userInfo.url,
         company: userInfo.company,
+        // gender: userInfo.gender,
       });
     }
     // eslint-disable-next-line

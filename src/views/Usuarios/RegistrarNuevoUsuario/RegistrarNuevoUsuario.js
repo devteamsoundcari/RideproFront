@@ -34,7 +34,6 @@ const RegistrarNuevoUsuario = () => {
 
   const onSubmit = async (data) => {
     if (!passError) {
-      console.log("Lo que se va a enviar es", data);
       setLoading(true); // SHOW SPINNER
       const response = await saveNewUser(data); // SAVE A NEW USER IN DB
       // IF SUCCESS
@@ -59,6 +58,9 @@ const RegistrarNuevoUsuario = () => {
           charge: "",
         });
         Object.assign(data, { emailType: "welcome" }); // EMAIL TYPE
+        // EMAIL TYPE AND SUBJECT
+        data.emailType = "welcome";
+        data.subject = "Bienvenid@ a Ridepro 👋";
         await sendEmail(data); // SEND WELCOME EMAIL TO USER
       } else {
         // IF FAILURE
@@ -101,7 +103,7 @@ const RegistrarNuevoUsuario = () => {
       if (res) {
         setCompanies(res.results);
       } else {
-        console.log("No hay empresas registradas")
+        console.log("No hay empresas registradas");
       }
     }
     fetchCompanies();

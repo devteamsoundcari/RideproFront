@@ -46,12 +46,12 @@ const NavBar = (props) => {
         RideProApp | <small style={{ fontSize: "12px" }}>{profile}</small>
       </span>
 
-      <input
+      {/* <input
         className="form-control form-control-dark w-50"
         type="text"
         placeholder="Search"
         aria-label="Search"
-      />
+      /> */}
       <ul className="navbar-nav px-3">
         <li className="nav-item text-nowrap">
           <Button variant="secondary" onClick={logout}>

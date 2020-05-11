@@ -6,6 +6,7 @@ import "./SetParticipants.scss";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { ServiceContext } from "../../../contexts/ServiceContext";
 import { getAllDrivers } from "../../../controllers/apiRequests";
+import UploadExcelFile from "../UploadExcelFile/UploadExcelFile";
 
 function isParticipantRegistered(x, y) {
   for (var index in x) {
@@ -37,26 +38,10 @@ const SetParticipants = (props) => {
   // ==================================== ADD PARTICIPANTS TO LIST ===========================================
 
   const handleAddItem = (data) => {
-    let temp = rides + parseInt(serviceInfoContext.ride_value);
+    let rideVal = parseInt(serviceInfoContext.ride_value);
     // let temp = 100;
-    if (temp <= userInfoContext.company.credit) {
+    if (rideVal + rides <= userInfoContext.company.credit) {
       // if (true) {
-      // for (var index in participantsDB) {
-      //   // data.register = false;
-      //   if (participantsDB[index].official_id === data.id) {
-      //     // ==== HERE IS BEACUSE USER ALREADY EXISTS
-      //     data.name = participantsDB[index].first_name;
-      //     data.lastName = participantsDB[index].last_name;
-      //     data.email = participantsDB[index].email;
-      //     data.id = participantsDB[index].id;
-      //     data.phone = participantsDB[index].cellphone;
-      //     data.registered = true;
-      //     break; // return false;
-      //   } else {
-      //     // USER DOESNT EXISTS
-      //     data.registered = false;
-      //   }
-      // }
       let userIsRegistered = isParticipantRegistered(participantsDB, data); // Check if driver is already in db
       if (userIsRegistered.res) {
         data = userIsRegistered.obj;
@@ -72,8 +57,8 @@ const SetParticipants = (props) => {
         (person) => person.official_id === data.official_id
       );
       if (alreadyAdded.length === 0) {
-        setParticipants([...participants, data]);
-        setRides(temp);
+        setParticipants((prevParticipants) => [...prevParticipants, data]);
+        setRides((prevRides) => prevRides + rideVal);
       } else {
         alert("No puede anadir dos veces al mismo participante");
       }
@@ -85,13 +70,12 @@ const SetParticipants = (props) => {
   // ============================= REMOVE PARTICIPANT FROM LIST ============================================
 
   const removeUserFromList = (idx) => {
-    console.log("si", idx);
-    let tempRides = rides - parseInt(serviceInfoContext.ride_value);
-    if (tempRides <= userInfoContext.company.credit) {
+    let rideVal = parseInt(serviceInfoContext.ride_value);
+    if (rideVal > 0) {
       const temp = [...participants];
       temp.splice(idx, 1);
-      setParticipants(temp);
-      setRides(tempRides);
+      setParticipants(() => temp);
+      setRides((prevRides) => prevRides - rideVal);
       setShowRemoveUserModal({ show: false, idx: null });
     }
   };
@@ -129,6 +113,16 @@ const SetParticipants = (props) => {
   };
 
   // =============================================================================================================
+  // const handleFile = (data, info) => {
+  //   let keys = ["official_id", "first_name", "last_name", "email", "cellphone"];
+  //   data
+  //     .map((x) => x.map((y, i) => ({ [keys[i]]: y })))
+  //     .map((z) => (z = { ...z[0], ...z[1], ...z[2], ...z[3], ...z[4] }))
+  //     .map((y) =>
+  //       setParticipants((prevParticipants) => [...prevParticipants, y])
+  //     );
+  // };
+  // =============================================================================================================
 
   return (
     <Container className="setParticipants">
@@ -141,6 +135,8 @@ const SetParticipants = (props) => {
       >
         Finalizar
       </Button>
+      <UploadExcelFile addItem={handleAddItem} />
+
       <Form onSubmit={handleSubmit(handleAddItem)}>
         <Table striped bordered hover size="sm">
           <thead>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
-import { RequestContext } from "../../contexts/RequestContext";
+// import { RequestContext } from "../../contexts/RequestContext";
 import RequestCard from "./RequestCard/RequestCard";
 import {
   Card,
@@ -30,8 +30,9 @@ const RequestsHistory = (props) => {
   const [updateList, setUpdateList] = useState(false);
   const [sortedRequests, setSortedRequests] = useState([]);
   const [defaultKey] = useState(location.state ? location.state.id : 0);
-  const { setUserInfoContext } = useContext(AuthContext);
-  const { setRequestInfoContext } = useContext(RequestContext);
+  const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
+
+  // const { setRequestInfoContext } = useContext(RequestContext)
 
   const [renderCancelRequesModal, setRenderCancelRequestModal] = useState({
     show: false,
@@ -58,12 +59,14 @@ const RequestsHistory = (props) => {
       setRequests([]);
       setRenderCancelRequestModal({ show: false });
       setUpdateList(!updateList);
-      console.log("DATA", res.refund.data);
       // SET COMPANY CONTEXT
-      setUserInfoContext((prevState) => ({
-        ...prevState,
-        company: res.refund.data,
-      }));
+      setUserInfoContext({
+        ...userInfoContext,
+        company: {
+          ...userInfoContext.company,
+          credit: res.refund.data.credit,
+        },
+      });
     } else {
       alert("No se pudo cancelar");
     }
@@ -105,7 +108,7 @@ const RequestsHistory = (props) => {
       requests.sort((a, b) => {
         return a.id - b.id;
       });
-      setRequestInfoContext(requests.reverse());
+      // setRequestInfoContext(requests.reverse());
       setSortedRequests(requests.reverse());
       // Show and hide spinner
       if (sortedRequests.length) {
@@ -136,9 +139,47 @@ const RequestsHistory = (props) => {
       {!loading && (
         <Accordion defaultActiveKey={defaultKey} className="RequestsHistory">
           {sortedRequests.map((item, index) => {
-            return <RequestCard key={index} index={index} request={item} />;
+            return (
+              <RequestCard
+                key={index}
+                index={index}
+                request={item}
+                handleCancelRequest={handleCancelRequest}
+              />
+            );
           })}
         </Accordion>
+      )}
+
+      {/* =========== CANCEL REQUEST MODAL =============== */}
+      {renderCancelRequesModal.show && (
+        <Modal
+          size="sm"
+          show={renderCancelRequesModal.show}
+          onHide={() => setRenderCancelRequestModal({ show: false })}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Advertencia</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Estas segur@ de que quieres cancelar esta solicitud de servicio?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setRenderCancelRequestModal({ show: false })}
+            >
+              No
+            </Button>
+            <Button
+              variant="danger"
+              // onClick={() => removeUserFromList(showRemoveUserModal.idx)}
+              onClick={cancelRequest}
+            >
+              Si, estoy segur@
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
     </React.Fragment>
   );

@@ -83,10 +83,12 @@ const SolicitarServicio = (props) => {
   return (
     <Row>
       <Col>
-        <Button variant="link" onClick={props.selectSlot}>
-          <FaArrowCircleLeft /> Volver
-        </Button>
-        Solicitar un Servicio
+        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+          <h1 className="h2">Solicitar un servicio</h1>
+          <div className="btn-toolbar mb-2 mb-md-0">
+            <div className="btn-group mr-2"></div>
+          </div>
+        </div>
         <Card className="solicitarServicio">
           <Card.Body>
             <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
@@ -109,7 +111,7 @@ const SolicitarServicio = (props) => {
                 }
                 disabled={service ? false : true}
               >
-                <SetDate date={props.eventDate.start} setDate={handleDate} />
+                <SetDate date={new Date()} setDate={handleDate} />
               </Tab>
               <Tab
                 eventKey="paso3"

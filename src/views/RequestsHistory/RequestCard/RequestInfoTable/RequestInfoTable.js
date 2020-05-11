@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Table } from "react-bootstrap";
-import { FaPenSquare } from "react-icons/fa";
+import InfoForm from "./InfoForm/InfoForm";
 
 const RequestInfoTable = (props) => {
   const newStartDate = new Date(props.request.start_time).toLocaleDateString();
@@ -12,24 +12,22 @@ const RequestInfoTable = (props) => {
         <thead>
           <tr>
             <th>Ciudad</th>
+            <th>Municipio</th>
             <th>Lugar</th>
             <th>Fecha</th>
             <th>Hora</th>
+            {props.status.step !== 0 && props.editable && <th>Editar</th>}
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              {props.request.municipality.name} (
-              {props.request.municipality.department.name})
-            </td>
-            <td>{props.request.place}</td>
-            <td>{newStartDate}</td>
-            <td>{newStartTime}</td>
-            <td>
-              <FaPenSquare />
-            </td>
-          </tr>
+          <InfoForm
+            request={props.request}
+            startDate={newStartDate}
+            time={newStartTime}
+            status={props.request.status}
+            cls={`infoService_${props.request.id}`}
+            editable={props.editable}
+          />
         </tbody>
       </Table>
     </React.Fragment>

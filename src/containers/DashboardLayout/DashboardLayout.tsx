@@ -17,7 +17,7 @@ import { Spinner } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import RequestContextProvider from "../../contexts/RequestContext";
 
-const DashboardLayout = () => {
+const DashboardLayout: React.FC = () => {
   const { isLoggedInContext } = useContext(AuthContext);
   const history = useHistory();
   let { path, url } = useRouteMatch();
@@ -56,7 +56,7 @@ const DashboardLayout = () => {
                   <SolicitarServicio />
                 </Route>
                 <Redirect from="/administrador" to="/administrador/dashboard" />
-                <Redirect from="/cliente" to="/cliente/historial" />
+                <Redirect from="/cliente" to="/cliente/dashboard" />
               </Switch>
             </main>
           </div>

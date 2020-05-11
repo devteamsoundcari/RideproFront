@@ -210,7 +210,7 @@ const createRequest = async (data) => {
       place,
       start_time,
       finish_time,
-      status: "d02eaa22-8a5c-4904-b3c4-567782a53f51", // This is first step
+      status: `${process.env.REACT_APP_STATUS_CONFIRMATION_PROCESS}`, //"d02eaa22-8a5c-4904-b3c4-567782a53f51", // This is first step
       new_request: 0,
       accept_msg: "na",
       reject_msg: "na",
@@ -231,7 +231,7 @@ const cancelRequestId = async (data) => {
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${data.id}/`,
     data: {
-      status: "51b85ef7-5054-4bcf-a376-3fcc93097fb6", // Status setp canceled 0
+      status: `${process.env.REACT_APP_STATUS_CANCELED}`, //"f973cb97-ac8a-4ec9-b288-c003bedd5d93", // Status setp canceled 0
     },
   }).catch((err) => {
     console.error(err);
@@ -255,7 +255,7 @@ const createDriver = async (data) => {
       cellphone,
       email,
       requests: [], // Empty because it doesnot belong to any request yet
-      report: "na"
+      report: "na",
     },
   }).catch((err) => {
     return err;
@@ -300,12 +300,27 @@ const updateDriver = async (data, id) => {
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/drivers/${id}/`,
-    data: { data },
+    data,
   }).catch((err) => {
-    console.log("error");
     return err;
   });
-  console.log("respuesta");
+  return result;
+};
+
+/* =================================   UPDATE A REQUEST ===================================== */
+
+const updateRequest = async (data, id) => {
+  if (data.start_time) {
+    data.finish_time = data.start_time;
+  }
+  console.log("ENVIA", data, id);
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}/`,
+    data,
+  }).catch((err) => {
+    return err;
+  });
   return result;
 };
 
@@ -322,7 +337,6 @@ const descreaseCredits = async (company, credits) => {
   }).catch((err) => {
     return err;
   });
-  console.log("LA RESPUESTA DE CREDITS", result)
   return result;
 };
 
@@ -353,6 +367,23 @@ const getUserRequests = async (url) => {
   let requests = await getInfo();
   return requests.data;
 };
+
+// ====================================== GET GENDER BASED ON NAME =============================================
+
+const getGender = async (name) => {
+  const getInfo = async () => {
+    const requestsData = await axios({
+      method: "GET",
+      url: `https://api.genderize.io/?name=${name}`,
+    }).catch((err) => {
+      return err;
+    });
+    return requestsData;
+  };
+  let requests = await getInfo();
+  return requests.data;
+};
+
 // ================================================================================
 
 export {
@@ -367,8 +398,10 @@ export {
   getUserRequests,
   getDepartments,
   getCompanies,
+  getGender,
   createDriver,
   getAllDrivers,
+  updateRequest,
   updateDriver,
   fetchDriver,
   cancelRequestId,

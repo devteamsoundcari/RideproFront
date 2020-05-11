@@ -3,7 +3,11 @@ import { Modal, Button, Spinner } from "react-bootstrap";
 import { FaCheckCircle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { createRequest, createDriver } from "../../../controllers/apiRequests";
+import {
+  createRequest,
+  createDriver,
+  sendEmail,
+} from "../../../controllers/apiRequests";
 
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
@@ -56,19 +60,25 @@ const ConfirmServiceModal = (props) => {
         used_credits: props.rides,
         drivers: driversIDs,
       };
+      console.log("PARA POSTMAN", data);
       let res = await createRequest(data);
       if (res.create.status === 201 && res.decrease.status === 200) {
         setShowSpinner(false);
         setSuccessPrompt(true);
         // Ubdate company context
-        // setUserInfoContext((prevState) => ({
-        //   ...prevState,
-        //   company: res.decrease.data,
-        // }));
-        setUserInfoContext({...userInfoContext, company: {
-          ...userInfoContext.company,
-          credit: res.decrease.data.credit
-        }});
+        setUserInfoContext({
+          ...userInfoContext,
+          company: {
+            ...userInfoContext.company,
+            credit: res.decrease.data.credit,
+          },
+        });
+
+        // EMAIL TYPE AND SUBJECT
+        res.emailType = "newRequest";
+        res.subject = "Solicitud Exitosa ✔️";
+        res.email = res.create.data.customer.email;
+        await sendEmail(res); // SEND WELCOME EMAIL TO USER
       }
     });
   };

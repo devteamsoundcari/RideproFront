@@ -9,23 +9,25 @@
       margin-top: 2rem;
       margin-bottom: 10px;
     }
-    .badge {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      max-width: 70px;
-      margin: auto;
-      background-color: red;
-      margin-top: 5px;
-      // font-size: 30px;
-      svg {
-        font-size: 20px;
-        color: #fff;
-      }
-      small {
-        font-size: 15px;
-        margin-left: 2px;
-        font-weight: 600;
+    li {
+      .badge {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 70px;
+        margin: auto;
+        background-color: red;
+        margin-top: 5px;
+        // font-size: 30px;
+        svg {
+          font-size: 20px;
+          color: #fff;
+        }
+        small {
+          font-size: 15px;
+          margin-left: 2px;
+          font-weight: 600;
+        }
       }
     }
     hr {
