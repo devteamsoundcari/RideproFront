@@ -63,6 +63,7 @@ const saveNewUser = async (data) => {
       password2: data.passwordRepeat,
       first_name: data.name,
       last_name: data.lastName,
+      gender: data.gender,
       profile: data.profileType,
       company: data.company,
       charge: data.charge,
