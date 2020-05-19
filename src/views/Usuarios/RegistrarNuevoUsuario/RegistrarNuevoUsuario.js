@@ -22,6 +22,7 @@ const RegistrarNuevoUsuario = () => {
   const [data, setData] = useState({
     name: "",
     lastName: "",
+    gender: "",
     email: "",
     company: "",
     password: "",
@@ -50,12 +51,13 @@ const RegistrarNuevoUsuario = () => {
           // CLEAR THE FORM
           name: "",
           lastName: "",
+          gender: "",
           email: "",
           company: "",
           password: "",
           passwordRepeat: "",
           profileType: "",
-          charge: "",
+          charge: ""
         });
         Object.assign(data, { emailType: "welcome" }); // EMAIL TYPE
         // EMAIL TYPE AND SUBJECT
@@ -192,29 +194,24 @@ const RegistrarNuevoUsuario = () => {
                 </Form.Text>
               </Form.Group>
               <Form.Group as={Col}>
-                <Form.Label>Empresa</Form.Label>
+                <Form.Label>
+                  Género<span> *</span>
+                </Form.Label>
                 <Form.Control
-                  type="number"
-                  name="company"
-                  onChange={updateData}
-                  value={data.empresa}
-                  autoComplete="off"
-                  placeholder="Empresa"
                   as="select"
+                  placeholder="Género"
+                  name="gender"
+                  onChange={updateData}
+                  autoComplete="off"
                   ref={register({ required: true })}
                 >
-                  <option value="">Seleccione...</option>
-                  {companies.map((comp) => {
-                    return (
-                      <option key={comp.id} value={comp.id}>
-                        {comp.name}
-                      </option>
-                    );
-                  })}
+                  <option value="M">M</option>
+                  <option value="F">F</option>
+                  <option value="F">O</option>
                 </Form.Control>
-                {errors.company && (
-                  <span>Por favor seleccione una empresa</span>
-                )}
+                <Form.Text>
+                  {errors.gender && <span>Ingrese un género</span>}
+                </Form.Text>
               </Form.Group>
             </Form.Row>
 
@@ -294,6 +291,45 @@ const RegistrarNuevoUsuario = () => {
               </Form.Group>
             </Form.Row>
             <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Empresa</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="company"
+                  onChange={updateData}
+                  value={data.empresa}
+                  autoComplete="off"
+                  placeholder="Empresa"
+                  as="select"
+                  ref={register({ required: true })}
+                >
+                  <option value="">Seleccione...</option>
+                  {companies.map((comp) => {
+                    return (
+                      <option key={comp.id} value={comp.id}>
+                        {comp.name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+                {errors.company && (
+                  <span>Por favor seleccione una empresa</span>
+                )}
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  Cargo en la Empresa<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Cargo..."
+                  name="charge"
+                  onChange={updateData}
+                  value={data.charge}
+                  autoComplete="off"
+                  ref={register}
+                />
+              </Form.Group>
               <Form.Group as={Col} md={4} controlId="formGridState">
                 <Form.Label>
                   Tipo de Perfil<span> *</span>
@@ -313,20 +349,6 @@ const RegistrarNuevoUsuario = () => {
                 {errors.profileType && (
                   <small>Por favor seleccione un perfil</small>
                 )}
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>
-                  Cargo en la Empresa<span> *</span>
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Cargo..."
-                  name="charge"
-                  onChange={updateData}
-                  value={data.charge}
-                  autoComplete="off"
-                  ref={register}
-                />
               </Form.Group>
             </Form.Row>
 
