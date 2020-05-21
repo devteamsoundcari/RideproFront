@@ -67,7 +67,7 @@ const saveNewUser = async (data) => {
       profile: data.profileType,
       company: data.company,
       charge: data.charge,
-      picture: data.picture ? data.picture : "https://via.placeholder.com/200",
+      picture: data.picture ? data.picture : "../assets/img/userdefault.png",
     },
   }).catch((err) => {
     console.error(err);
