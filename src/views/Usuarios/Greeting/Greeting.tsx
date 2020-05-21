@@ -1,19 +1,18 @@
 import React from "react";
 
-
 const Greeting = (props: any) => {
   const name = props.name;
   const gender = props.gender;
-  let greeting : string;
+  let greeting: string;
 
   switch (gender) {
-    case 'M':
+    case "M":
       greeting = `Bienvenido, ${name}.`;
       break;
-    case 'F':
+    case "F":
       greeting = `Bienvenida, ${name}.`;
       break;
-    case 'O':
+    case "O":
       greeting = `Bienvenid@, ${name}.`;
       break;
     default:
@@ -23,11 +22,9 @@ const Greeting = (props: any) => {
 
   return (
     <small>
-      <strong>
-        {greeting}
-      </strong>
+      <strong>{greeting}</strong>
     </small>
-  )
-}
+  );
+};
 
 export default Greeting;
