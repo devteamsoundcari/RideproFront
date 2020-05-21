@@ -84,6 +84,7 @@ const SetDate = (props) => {
             </Form.Label>
             <Controller
               as={DatePicker}
+              minDate={new Date()}
               selected={date.date}
               onChange={dateHandler}
               locale="es"
@@ -108,6 +109,7 @@ const SetDate = (props) => {
             </Form.Label>
             <Controller
               as={DatePicker}
+              minDate={new Date()}
               selected={time.time}
               locale="es"
               control={control}

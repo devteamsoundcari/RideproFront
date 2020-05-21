@@ -1,22 +1,28 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext";
 import { AiFillDollarCircle } from "react-icons/ai";
 import { Badge } from "react-bootstrap";
+import { AuthContext } from "../../contexts/AuthContext";
+import Greeting from "../Usuarios/Greeting/Greeting";
+import defaultCompanyLogo from '../../assets/img/companydefault.png';
 import "./SideBar.scss";
+
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
+  const profilePicture = userInfoContext.company.logo ?
+                         userInfoContext.company.logo : defaultCompanyLogo;
+
+  console.log(userInfoContext);
+
   return (
     <nav className="col-md-2 d-none d-md-block bg-dark sidebar">
       <div className="sidebar-sticky">
         <ul className="nav flex-column">
           <li>
-            <img alt="profileImg" src={userInfoContext.company.logo} />
+            <img alt="profileImg" src={profilePicture} />
           </li>
-          <small>
-            <strong>Bienvenido {userInfoContext.name}</strong>
-          </small>
+          <Greeting name={userInfoContext.name} gender={userInfoContext.gender} />
           <li>
             <small>{userInfoContext.charge}</small>
           </li>
