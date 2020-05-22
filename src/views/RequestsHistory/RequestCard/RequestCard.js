@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import {
   Card,
   Accordion,
@@ -6,10 +6,8 @@ import {
   Row,
   ProgressBar,
   Button,
-  Modal,
 } from "react-bootstrap";
 import { IoIosArrowForward } from "react-icons/io";
-import { RequestContext } from "../../../contexts/RequestContext";
 import RequestInfoTable from "./RequestInfoTable/RequestInfoTable";
 import RequestParticipantsTable from "./RequestParticipantsTable/RequestParticipantsTable";
 
@@ -18,11 +16,11 @@ const RequestCard = (props) => {
   const newCreatedAtDate = new Date(
     props.request.created_at
   ).toLocaleDateString();
-  const newCreatedAtTime = new Date(
-    props.request.created_at
-  ).toLocaleTimeString();
-  const newStartDate = new Date(props.request.start_time).toLocaleDateString();
-  const newStartTime = new Date(props.request.start_time).toLocaleTimeString();
+  // const newCreatedAtTime = new Date(
+  //   props.request.created_at
+  // ).toLocaleTimeString();
+  // const newStartDate = new Date(props.request.start_time).toLocaleDateString();
+  // const newStartTime = new Date(props.request.start_time).toLocaleTimeString();
 
   const requestStyle = {
     backgroundColor: props.request.status.step === 0 ? "#ddd" : "",

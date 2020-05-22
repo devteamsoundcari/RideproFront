@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import MyCalendar from "../MyCalendar/MyCalendar";
-import SolicitarServicio from "../SolicitarServicio/SolicitarServicio";
 
 const Dashboard = () => {
   const [showCalendar, setShowCalendar] = useState(true);
-  const [eventDate, setEventDate] = useState(null);
+  const [setEventDate] = useState(null);
 
   const selectSlot = (data) => {
     setEventDate({

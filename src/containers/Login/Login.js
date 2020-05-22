@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 // import { GoogleLogin } from "react-google-login";
-import {
-  getLoginToken,
-  getUserInfo,
-  getGender,
-} from "../../controllers/apiRequests";
+import { getLoginToken, getUserInfo } from "../../controllers/apiRequests";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
@@ -59,7 +55,7 @@ const Login = () => {
         picture: res.picture,
         url: res.url,
         company: res.company,
-        gender: res.gender
+        gender: res.gender,
       });
     }
   };

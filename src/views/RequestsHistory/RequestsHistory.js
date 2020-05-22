@@ -3,19 +3,7 @@ import { useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 // import { RequestContext } from "../../contexts/RequestContext";
 import RequestCard from "./RequestCard/RequestCard";
-import {
-  Card,
-  Row,
-  Col,
-  Table,
-  ProgressBar,
-  Accordion,
-  Button,
-  ButtonGroup,
-  Spinner,
-  Modal,
-  Form,
-} from "react-bootstrap";
+import { Accordion, Button, Spinner, Modal } from "react-bootstrap";
 import {
   getUserRequests,
   fetchDriver,
@@ -163,7 +151,7 @@ const RequestsHistory = (props) => {
           </Modal.Header>
           <Modal.Body>
             ¿Estás
-              {{ 'M' : 'seguro', 'F': 'segura', 'O': 'segur@' }[userInfoContext.gender]}
+            {{ M: "seguro", F: "segura", O: "segur@" }[userInfoContext.gender]}
             de que quieres cancelar esta solicitud de servicio?
           </Modal.Body>
           <Modal.Footer>
@@ -178,7 +166,12 @@ const RequestsHistory = (props) => {
               // onClick={() => removeUserFromList(showRemoveUserModal.idx)}
               onClick={cancelRequest}
             >
-              Si, estoy {{ 'M' : 'seguro', 'F': 'segura', 'O': 'segur@' }[userInfoContext.gender]}
+              Si, estoy{" "}
+              {
+                { M: "seguro", F: "segura", O: "segur@" }[
+                  userInfoContext.gender
+                ]
+              }
             </Button>
           </Modal.Footer>
         </Modal>

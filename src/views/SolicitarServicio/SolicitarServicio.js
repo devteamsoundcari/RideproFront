@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Col, Card, Row, Button, Tabs, Tab } from "react-bootstrap";
+import { Col, Card, Row, Tabs, Tab } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import "./SolicitarServicio.scss";
-import { FaArrowCircleLeft } from "react-icons/fa";
 import SetDate from "./SetDate/SetDate";
 import SetService from "./SetService/SetService";
 import SetPlace from "./SetPlace/SetPlace";

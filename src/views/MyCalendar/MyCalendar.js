@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Children } from "react";
-import { Card, Spinner } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { useHistory } from "react-router-dom";
 import { getUserRequests } from "../../controllers/apiRequests";
@@ -13,7 +13,7 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = (props) => {
   const [requests, setRequests] = useState([]);
   const [sortedRequests, setSortedRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [setLoading] = useState(true);
   const history = useHistory();
 
   // const [events] = useState([

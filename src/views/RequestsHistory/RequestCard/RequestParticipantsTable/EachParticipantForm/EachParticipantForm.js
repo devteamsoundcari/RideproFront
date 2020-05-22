@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Form, Col, Row, Spinner } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 import { updateDriver } from "../../../../../controllers/apiRequests";
 
 function isEmpty(obj) {
