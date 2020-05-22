@@ -87,7 +87,7 @@ const ConfirmServiceModal = (props) => {
     return (
       <React.Fragment>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmar Servicio</Modal.Title>
+          <Modal.Title>Confirmar servicio</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>
@@ -140,7 +140,7 @@ const ConfirmServiceModal = (props) => {
             Cancelar
           </Button>
           <Button variant="primary" onClick={handleCreateService}>
-            Solicitar Servicio
+            Solicitar servicio
           </Button>
         </Modal.Footer>
       </React.Fragment>
@@ -164,7 +164,7 @@ const ConfirmServiceModal = (props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleOK}>
-            Ver Servicios
+            Ver servicios
           </Button>
         </Modal.Footer>
       </React.Fragment>

@@ -156,7 +156,7 @@ const SetParticipants = (props) => {
               <td>
                 <Form.Control
                   type="number"
-                  placeholder="No. Identifiación"
+                  placeholder="No. Identificación"
                   name="official_id"
                   ref={register({
                     required: true,
@@ -204,7 +204,7 @@ const SetParticipants = (props) => {
               <td>
                 <Form.Control
                   type="number"
-                  placeholder="Telefono"
+                  placeholder="Teléfono"
                   name="cellphone"
                   ref={register({
                     required: true,
