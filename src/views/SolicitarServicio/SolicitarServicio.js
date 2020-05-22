@@ -95,7 +95,7 @@ const SolicitarServicio = (props) => {
                 eventKey="paso1"
                 title={
                   <p>
-                    <span>1</span> Seleccionar Servicio
+                    <span>1</span> Seleccionar servicio
                   </p>
                 }
               >
@@ -105,7 +105,7 @@ const SolicitarServicio = (props) => {
                 eventKey="paso2"
                 title={
                   <p>
-                    <span>2</span> Seleccionar Fecha
+                    <span>2</span> Seleccionar fecha
                   </p>
                 }
                 disabled={service ? false : true}
@@ -116,7 +116,7 @@ const SolicitarServicio = (props) => {
                 eventKey="paso3"
                 title={
                   <p>
-                    <span>3</span> Seleccionar Lugar
+                    <span>3</span> Seleccionar lugar
                   </p>
                 }
                 disabled={date ? false : true}
@@ -127,7 +127,7 @@ const SolicitarServicio = (props) => {
                 eventKey="paso4"
                 title={
                   <p>
-                    <span>4</span> Agregar Participantes
+                    <span>4</span> Agregar participantes
                   </p>
                 }
                 disabled={place ? false : true}
