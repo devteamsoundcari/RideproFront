@@ -33,12 +33,12 @@ const PasswordRecover = (props) => {
               <Card.Title className="text-center">
                 <img className="mb-4" src={logo} alt="" />
                 <h1 className="h3 mb-3 font-weight-normal">
-                  Recuperar Contraseña
+                  Recuperar contraseña
                 </h1>
               </Card.Title>
               <Card.Text className="text-center">
-                Ingresa tu email, recibiras un correo con instrucciones para
-                restrablecer tu contraseña
+                Ingresa tu email. Recibirás un correo con instrucciones para
+                restrablecer tu contraseña.
               </Card.Text>
               <Card.Body>
                 <Form onSubmit={handleSubmit(onSubmit)} className="text-center">
@@ -55,7 +55,7 @@ const PasswordRecover = (props) => {
                     />
                     <Form.Text className="text-muted">
                       {errors.email && (
-                        <span>Por favor ingresa un email valido</span>
+                        <span>Por favor ingresa un email válido</span>
                       )}
                     </Form.Text>
                   </Form.Group>
@@ -63,7 +63,7 @@ const PasswordRecover = (props) => {
                     <small>Volver</small>
                   </Button>
                   <Button variant="primary" type="submit" className="m-auto">
-                    Restrablecer Contraseña
+                    Restrablecer contraseña
                   </Button>
                 </Form>
               </Card.Body>

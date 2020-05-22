@@ -8,7 +8,7 @@ const ModalSuccess = props => {
         <Modal.Title>Perfecto!</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>Tu contrasena ha sido restablecida</p>
+        <p>Tu contraseña ha sido restablecida</p>
       </Modal.Body>
     </Modal>
   );

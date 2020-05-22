@@ -47,7 +47,7 @@ const SetParticipants = (props) => {
         data = userIsRegistered.obj;
         data.registered = true;
         alert(
-          `ADVERTENCIA: Identificacion: ${userIsRegistered.obj.official_id} Nombre: ${userIsRegistered.obj.first_name} ${userIsRegistered.obj.last_name} ya ha sido parte de otros servicios`
+          `ADVERTENCIA: Identificación: ${userIsRegistered.obj.official_id} Nombre: ${userIsRegistered.obj.first_name} ${userIsRegistered.obj.last_name} ya ha sido parte de otros servicios`
         );
       } else {
         data.registered = false;
@@ -60,10 +60,10 @@ const SetParticipants = (props) => {
         setParticipants((prevParticipants) => [...prevParticipants, data]);
         setRides((prevRides) => prevRides + rideVal);
       } else {
-        alert("No puede anadir dos veces al mismo participante");
+        alert("No se puede añadir el mismo participante dos veces.");
       }
     } else {
-      alert("Se quedo sin creditos");
+      alert("Créditos insuificientes");
     }
   };
 
@@ -156,14 +156,14 @@ const SetParticipants = (props) => {
               <td>
                 <Form.Control
                   type="number"
-                  placeholder="No. Identifiacion"
+                  placeholder="No. Identifiación"
                   name="official_id"
                   ref={register({
                     required: true,
                     patter: /^[0-9]*$/i,
                   })}
                 />
-                {errors.official_id && <small>Identificacion Invalida</small>}
+                {errors.official_id && <small>Identificacion inválida</small>}
               </td>
               <td>
                 <Form.Control
@@ -175,7 +175,7 @@ const SetParticipants = (props) => {
                     pattern: /^[A-Za-z]+$/i,
                   })}
                 />
-                {errors.first_name && <small>Nombre Invalido</small>}
+                {errors.first_name && <small>Nombre inválido</small>}
               </td>
               <td>
                 <Form.Control
@@ -187,7 +187,7 @@ const SetParticipants = (props) => {
                     pattern: /^[A-Za-z]+$/i,
                   })}
                 />
-                {errors.last_name && <small>Apellido Invalido</small>}
+                {errors.last_name && <small>Apellido inválido</small>}
               </td>
               <td>
                 <Form.Control
@@ -199,7 +199,7 @@ const SetParticipants = (props) => {
                     pattern: /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/i,
                   })}
                 />
-                {errors.email && <small>Email Invalido</small>}
+                {errors.email && <small>Email inválido</small>}
               </td>
               <td>
                 <Form.Control
@@ -211,7 +211,11 @@ const SetParticipants = (props) => {
                     pattern: /^\d{10}$/i,
                   })}
                 />
-                {errors.cellphone && <small>10 Digitos</small>}
+                {errors.cellphone && 
+                  <small>
+                    El número de teléfono debe contener 10 dígitos
+                  </small>
+                }
               </td>
               <td>
                 <Button variant="success" type="submit">
@@ -255,7 +259,15 @@ const SetParticipants = (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Advertencia</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Estas segur@ de que quieres remover el usuario?</Modal.Body>
+        <Modal.Body>
+          {`¿Estás ` + 
+           `${
+            {
+              'M' : 'seguro',
+              'F': 'segura',
+              'O': 'segur@'
+            }[userInfoContext.gender]} de que quieres remover este usuario?`}
+        </Modal.Body>
         <Modal.Footer>
           <Button
             variant="secondary"
@@ -267,7 +279,13 @@ const SetParticipants = (props) => {
             variant="danger"
             onClick={() => removeUserFromList(showRemoveUserModal.idx)}
           >
-            Si, estoy segur@
+            {`Si, estoy ` +
+             `${
+              {
+                'M' : 'seguro',
+                'F': 'segura',
+                'O': 'segur@'
+              }[userInfoContext.gender]}`}
           </Button>
         </Modal.Footer>
       </Modal>

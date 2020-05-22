@@ -43,7 +43,7 @@ const RequestCard = (props) => {
             {props.request.id}
           </Col>
           <Col className="text-center">
-            <strong>Fecha de Creación: </strong>
+            <strong>Fecha de creación: </strong>
             {newCreatedAtDate}
           </Col>
           <Col>
@@ -89,7 +89,7 @@ const RequestCard = (props) => {
                 size="sm"
                 onClick={() => props.handleCancelRequest(props.request)}
               >
-                Cancelar Solicitud
+                Cancelar solicitud
               </Button>
             </footer>
           )}
