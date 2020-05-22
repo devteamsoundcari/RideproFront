@@ -1,0 +1,20 @@
+.card-service {
+  transition: 0.5s;
+  &:hover {
+    cursor: default;
+    transform: translateY(-8px);
+    -webkit-box-shadow: -4px 14px 28px -9px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: -4px 14px 28px -9px rgba(0, 0, 0, 0.75);
+    box-shadow: -4px 14px 28px -9px rgba(0, 0, 0, 0.75);
+  }
+}
+.card-service-active {
+  -webkit-box-shadow: -4px 14px 28px -9px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -4px 14px 28px -9px rgba(0, 0, 0, 0.75);
+  box-shadow: -4px 14px 28px -9px rgba(0, 0, 0, 0.75);
+  background-color: red !important;
+  color: #fff !important;
+  small {
+    color: #fff !important;
+  }
+}
