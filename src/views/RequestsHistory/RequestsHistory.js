@@ -126,14 +126,14 @@ const RequestsHistory = (props) => {
   return (
     <React.Fragment>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 className="h2">Historial de Solicitudes</h1>
+        <h1 className="h2">Historial de solicitudes</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
           <div className="btn-group mr-2"></div>
         </div>
       </div>
       {loading && (
         <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
+          <span className="sr-only">Cargando...</span>
         </Spinner>
       )}
       {!loading && (
@@ -162,7 +162,9 @@ const RequestsHistory = (props) => {
             <Modal.Title>Advertencia</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Estas segur@ de que quieres cancelar esta solicitud de servicio?
+            ¿Estás
+              {{ 'M' : 'seguro', 'F': 'segura', 'O': 'segur@' }[userInfoContext.gender]}
+            de que quieres cancelar esta solicitud de servicio?
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -176,7 +178,7 @@ const RequestsHistory = (props) => {
               // onClick={() => removeUserFromList(showRemoveUserModal.idx)}
               onClick={cancelRequest}
             >
-              Si, estoy segur@
+              Si, estoy {{ 'M' : 'seguro', 'F': 'segura', 'O': 'segur@' }[userInfoContext.gender]}
             </Button>
           </Modal.Footer>
         </Modal>

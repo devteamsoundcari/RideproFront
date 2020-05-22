@@ -45,7 +45,7 @@ const NewPassword = props => {
 
   useEffect(() => {
     if (data.password !== data.passwordRepeat) {
-      setPassError("Las contrasenas deben ser iguales");
+      setPassError("Las contraseñas deben ser iguales");
     } else {
       setPassError("");
     }
@@ -85,7 +85,7 @@ const NewPassword = props => {
               <Card.Title className="text-center">
                 <img className="mb-4" src={logo} alt="" />
                 <h1 className="h3 mb-3 font-weight-normal">
-                  Generar Nueva Contraseña
+                  Generar nueva contraseña
                 </h1>
               </Card.Title>
 
@@ -94,7 +94,7 @@ const NewPassword = props => {
                   <Form.Row>
                     <Form.Group as={Col}>
                       <Form.Label>
-                        Nueva Contraseña<span> *</span>
+                        Nueva contraseña<span> *</span>
                       </Form.Label>
                       <Form.Control
                         type="password"
@@ -115,17 +115,18 @@ const NewPassword = props => {
                       >
                         {errors.password && (
                           <span style={{ color: "red" }}>
-                            Ingrese una contraseña valida
+                            Ingrese una contraseña válida.
                           </span>
                         )}
-                        Min 8 digitos, 1 Mayuscula, 1 Numero, 1 Caracter
+                        La contraseña debe tener ocho caracteres como mínimo y debe incluír
+                        una mayúscula, un número y un caracter especial (@$!%*?&).
                       </Form.Text>
                     </Form.Group>
                   </Form.Row>
                   <Form.Row>
                     <Form.Group as={Col}>
                       <Form.Label>
-                        Confirmar Nueva Contraseña<span> *</span>
+                        Confirmar nueva contraseña<span> *</span>
                       </Form.Label>
                       <Form.Control
                         type="password"
@@ -157,12 +158,12 @@ const NewPassword = props => {
                   </Form.Row>
 
                   <Button variant="primary" type="submit" className="m-auto">
-                    Restrablecer Contraseña
+                    Restrablecer contraseña
                   </Button>
                   <br></br>
                   {showError && (
                     <span style={{ color: "red" }}>
-                      Lo sentimos este link expiro!
+                      Lo sentimos, !este link expiró!
                     </span>
                   )}
                 </Form>

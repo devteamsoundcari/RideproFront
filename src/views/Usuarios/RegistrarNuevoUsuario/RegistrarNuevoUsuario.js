@@ -62,7 +62,12 @@ const RegistrarNuevoUsuario = () => {
         Object.assign(data, { emailType: "welcome" }); // EMAIL TYPE
         // EMAIL TYPE AND SUBJECT
         data.emailType = "welcome";
-        data.subject = "Bienvenid@ a Ridepro 👋";
+        data.subject = `${
+                          {'M': 'Bienvenido',
+                           'F': 'Bienvenida',
+                           'O': 'Bienvenid@'}
+                          [data.gender]}`
+                         + ` a Ridepro 👋`;
         await sendEmail(data); // SEND WELCOME EMAIL TO USER
       } else {
         // IF FAILURE
@@ -79,7 +84,7 @@ const RegistrarNuevoUsuario = () => {
     if (userErrorMessage) {
       return (
         <small>
-          Oops! Al parecer el email <strong>{userErrorMessage}</strong> ya esta
+          Oops! Al parecer el email <strong>{userErrorMessage}</strong> ya está
           registrado :(
         </small>
       );
@@ -92,7 +97,7 @@ const RegistrarNuevoUsuario = () => {
 
   useEffect(() => {
     if (data.password !== data.passwordRepeat) {
-      setPassError("Las contrasenas deben ser iguales");
+      setPassError("Las contraseñas deben ser iguales");
     } else {
       setPassError("");
     }
@@ -142,7 +147,7 @@ const RegistrarNuevoUsuario = () => {
     if (isLoading) {
       return (
         <Spinner animation="border" role="status" size="sm">
-          <span className="sr-only">Loading...</span>
+          <span className="sr-only">Cargando...</span>
         </Spinner>
       );
     } else {
@@ -156,7 +161,7 @@ const RegistrarNuevoUsuario = () => {
     <React.Fragment>
       <Card className="usuarios">
         <Card.Body>
-          <Card.Title>Registrar Nuevo Usuario</Card.Title>
+          <Card.Title>Registrar nuevo usuario</Card.Title>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Row>
               <Form.Group as={Col}>
@@ -173,7 +178,7 @@ const RegistrarNuevoUsuario = () => {
                   ref={register({ required: true })}
                 />
                 <Form.Text>
-                  {errors.name && <span>Ingrese un nombre valido</span>}
+                  {errors.name && <span>Ingrese un nombre válido.</span>}
                 </Form.Text>
               </Form.Group>
               <Form.Group as={Col}>
@@ -190,7 +195,7 @@ const RegistrarNuevoUsuario = () => {
                   ref={register({ required: true })}
                 />
                 <Form.Text>
-                  {errors.lastName && <span>Ingrese un apellido valido</span>}
+                  {errors.lastName && <span>Ingrese un apellido válido.</span>}
                 </Form.Text>
               </Form.Group>
               <Form.Group as={Col}>
@@ -218,11 +223,11 @@ const RegistrarNuevoUsuario = () => {
             <Form.Row>
               <Form.Group as={Col} controlId="formBasicEmail">
                 <Form.Label>
-                  Correro Electronico<span> *</span>
+                  Correro electrónico<span> *</span>
                 </Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Correo Electronico"
+                  placeholder="Correo electrónico"
                   name="email"
                   onChange={updateData}
                   value={data.email}
@@ -233,7 +238,7 @@ const RegistrarNuevoUsuario = () => {
                   })}
                 />
                 <Form.Text className="text-muted">
-                  {errors.email && <span>Ingrese un email valido</span>}
+                  {errors.email && <span>Ingrese un email válido.</span>}
                 </Form.Text>
               </Form.Group>
               <Form.Group as={Col}>
@@ -255,20 +260,21 @@ const RegistrarNuevoUsuario = () => {
                   })}
                 />
                 <Form.Text className="text-muted">
-                  Min 8 digits, 1 uppercase, 1 number, 1 spec char
+                  La contraseña debe tener ocho caracteres como mínimo y debe incluír
+                  una mayúscula, un número y un caracter especial (@$!%*?&).
                   <br></br>
                   {errors.password && (
-                    <span>Ingrese una contraseña valido</span>
+                    <span>Ingrese una contraseña válida</span>
                   )}
                 </Form.Text>
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
-                  Confirmar Contraseña<span> *</span>
+                  Confirmar contraseña<span> *</span>
                 </Form.Label>
                 <Form.Control
                   type="password"
-                  placeholder="Confirmar Contraseña"
+                  placeholder="Confirmar contraseña"
                   name="passwordRepeat"
                   id="newUserPassword2"
                   onChange={updateData}
@@ -279,13 +285,13 @@ const RegistrarNuevoUsuario = () => {
                 <Form.Text className="text-muted">
                   <span>{passError}</span>
                   <br></br>
-                  {errors.passwordRepeat && <span>Confirme la contraseña</span>}
+                  {errors.passwordRepeat && <span>Confirma la contraseña</span>}
                 </Form.Text>
               </Form.Group>
               <Form.Group className="showPassword">
                 <Form.Check
                   type="checkbox"
-                  label="Mostar Contraseña"
+                  label="Mostar contraseña"
                   onClick={handleShowPass}
                 />
               </Form.Group>
@@ -313,7 +319,7 @@ const RegistrarNuevoUsuario = () => {
                   })}
                 </Form.Control>
                 {errors.company && (
-                  <span>Por favor seleccione una empresa</span>
+                  <span>Por favor, selecciona una empresa.</span>
                 )}
               </Form.Group>
               <Form.Group as={Col}>
@@ -332,7 +338,7 @@ const RegistrarNuevoUsuario = () => {
               </Form.Group>
               <Form.Group as={Col} md={4} controlId="formGridState">
                 <Form.Label>
-                  Tipo de Perfil<span> *</span>
+                  Tipo de perfil<span> *</span>
                 </Form.Label>
                 <Form.Control
                   as="select"
@@ -344,16 +350,16 @@ const RegistrarNuevoUsuario = () => {
                   <option value="">Seleccione...</option>
                   <option value="1">Administrador</option>
                   <option value="2">Cliente</option>
-                  <option value="3">Ejecutivo de Cuenta</option>
+                  <option value="3">Ejecutivo de cuenta</option>
                 </Form.Control>
                 {errors.profileType && (
-                  <small>Por favor seleccione un perfil</small>
+                  <small>Por favor, seleccione un perfil.</small>
                 )}
               </Form.Group>
             </Form.Row>
 
             <Button variant="primary" type="submit" disabled={isLoading}>
-              Registrar Usuario
+              Registrar usuario
             </Button>
             {showSpinner()}
             {showErrorMessage()}

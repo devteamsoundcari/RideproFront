@@ -152,19 +152,19 @@ const Login = () => {
               <Card.Body>
                 <Card.Title className="text-center">
                   <img className="mb-4" src={logo} alt="" />
-                  <h1 className="h3 mb-3 font-weight-normal">Iniciar Sesion</h1>
+                  <h1 className="h3 mb-3 font-weight-normal">Iniciar sesión</h1>
                 </Card.Title>
                 <Card.Text className="text-center">
-                  Tu cuenta sera validada por el administrador, quien te
-                  asignara un tipo de perfil.{" "}
+                  Tu cuenta será validada por el administrador, quien te
+                  asignará un tipo de perfil.{" "}
                   <a href="#test">
-                    <strong>Problemas para iniciar sesion?</strong>
+                    <strong>¿Problemas para iniciar sesión?</strong>
                   </a>
                 </Card.Text>
                 <Card.Body>
                   <Form onSubmit={handleSubmit(onSubmit)}>
                     <Form.Group>
-                      <Form.Label>Tu Email</Form.Label>
+                      <Form.Label>Tu email</Form.Label>
                       <Form.Control
                         name="email"
                         type="email"
@@ -177,31 +177,31 @@ const Login = () => {
                       />
                       <Form.Text className="text-muted">
                         {errors.email && (
-                          <span>Por favor ingresa un email valido</span>
+                          <span>Por favor, ingresa un email válido</span>
                         )}
                       </Form.Text>
                     </Form.Group>
                     <Form.Group>
-                      <Form.Label>Tu Contraseña</Form.Label>
+                      <Form.Label>Tu contraseña</Form.Label>
                       <Form.Control
                         name="password"
                         type="password"
-                        placeholder="Tu Contraseña"
+                        placeholder="Tu contraseña"
                         ref={register({ required: true })}
                         autoComplete="off"
                       />
                       <Form.Text className="text-muted">
-                        {errors.password && <span>Contraseña invalida</span>}
+                        {errors.password && <span>Contraseña inválida</span>}
                       </Form.Text>
                     </Form.Group>
                     <Form.Group>
-                      <Form.Check type="checkbox" label="Recuerdame" />
+                      <Form.Check type="checkbox" label="Recuérdame" />
                     </Form.Group>
                     <Button variant="primary" type="submit" className="m-auto">
                       Ingresar
                     </Button>
                     <Button variant="link" onClick={renderPasswordReset}>
-                      <small>Olvide mi contraseña</small>
+                      <small>Olvidé mi contraseña</small>
                     </Button>
                     <p style={{ color: "red" }}>{error}</p>
                   </Form>

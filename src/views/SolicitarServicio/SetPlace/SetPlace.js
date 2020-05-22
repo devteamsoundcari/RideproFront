@@ -164,7 +164,7 @@ const SetPlace = (props) => {
             </Form.Label>
             <Form.Control
               type="text"
-              placeholder="Lugar del Servicio"
+              placeholder="Lugar del servicio"
               name="place"
               style={{ margin: "0px" }}
               ref={register({
