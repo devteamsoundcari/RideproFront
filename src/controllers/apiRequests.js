@@ -385,6 +385,53 @@ const getGender = async (name) => {
   return requests.data;
 };
 
+
+/* =================================   GET COMPANY TRACKS   ===================================== */
+const getTracks = async (url) => {
+  const getInfo = async () => {
+    const requestsData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return requestsData;
+  };
+  let requests = await getInfo();
+  return requests.data;
+};
+
+/* =================================   CRATE A NEW TRACK   ===================================== */
+
+const createNewTrack = async (data) => {
+  const {
+    companyId,
+    trackAddress,
+    trackDescription,
+    trackMunicipality,
+    trackName,
+  } = data;
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/tracks/`,
+    data: {
+      company: companyId,
+      address: trackAddress,
+      municipality: trackMunicipality,
+      name: trackName,
+      description: trackDescription,
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 201) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 // ================================================================================
 
 export {
@@ -407,4 +454,6 @@ export {
   fetchDriver,
   cancelRequestId,
   getServices,
+  createNewTrack,
+  getTracks
 };

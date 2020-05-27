@@ -13,6 +13,7 @@ import {
   useHistory,
 } from "react-router-dom";
 import SolicitarServicio from "../../views/SolicitarServicio/SolicitarServicio";
+import Tracks from "../../views/Tracks/Tracks";
 import { Spinner } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import RequestContextProvider from "../../contexts/RequestContext";
@@ -54,6 +55,9 @@ const DashboardLayout: React.FC = () => {
                 </Route>
                 <Route path={`${path}/solicitar`}>
                   <SolicitarServicio />
+                </Route>
+                <Route path={`${path}/pistas`}>
+                  <Tracks />
                 </Route>
                 <Redirect from="/administrador" to="/administrador/dashboard" />
                 <Redirect from="/cliente" to="/cliente/dashboard" />
