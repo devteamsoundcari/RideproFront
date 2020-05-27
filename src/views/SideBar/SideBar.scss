@@ -1,4 +1,11 @@
 .sidebar {
+  hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.301);
+    width: 100%;
+  }
   .flex-column {
     text-align: center;
     color: #fff;
@@ -18,6 +25,7 @@
         margin: auto;
         background-color: red;
         margin-top: 5px;
+        margin-bottom: 1rem;
         // font-size: 30px;
         svg {
           font-size: 20px;
@@ -30,16 +38,12 @@
         }
       }
     }
-    hr {
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-      border: 0;
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-      width: 50px;
-    }
+
     a {
+      width: 100%;
       color: #fff;
       transition: 0.3s;
+      text-align: start;
       &:hover {
         background-color: red;
         transform: translateY(-4px);

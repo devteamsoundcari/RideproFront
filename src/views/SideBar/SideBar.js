@@ -1,19 +1,26 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AiFillDollarCircle } from "react-icons/ai";
+import {
+  AiFillDollarCircle,
+  AiFillCalendar,
+  AiOutlineHistory,
+} from "react-icons/ai";
+import {
+  GiFullMotorcycleHelmet,
+  GiTireTracks,
+  GiThreeFriends,
+} from "react-icons/gi";
 import { Badge } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import Greeting from "../Usuarios/Greeting/Greeting";
-import defaultCompanyLogo from '../../assets/img/companydefault.png';
+import defaultCompanyLogo from "../../assets/img/companydefault.png";
 import "./SideBar.scss";
-
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
-  const profilePicture = userInfoContext.company.logo ?
-                         userInfoContext.company.logo : defaultCompanyLogo;
-
-  console.log(userInfoContext);
+  const profilePicture = userInfoContext.company.logo
+    ? userInfoContext.company.logo
+    : defaultCompanyLogo;
 
   return (
     <nav className="col-md-2 d-none d-md-block bg-dark sidebar">
@@ -22,7 +29,10 @@ const SideBar = (props) => {
           <li>
             <img alt="profileImg" src={profilePicture} />
           </li>
-          <Greeting name={userInfoContext.name} gender={userInfoContext.gender} />
+          <Greeting
+            name={userInfoContext.name}
+            gender={userInfoContext.gender}
+          />
           <li>
             <small>{userInfoContext.charge}</small>
           </li>
@@ -36,23 +46,33 @@ const SideBar = (props) => {
               <small>{userInfoContext.company.credit}</small>
             </Badge>
           </li>
-          <hr />
+        </ul>
+        <hr />
+        <ul className="nav flex-column align-items-start">
           <Link to={`${props.url}/dashboard`} className="nav-link">
+            <AiFillCalendar className="mb-1 mr-2" />
             Calendario
           </Link>
           {userInfoContext.profile === 1 && (
             <Link to={`${props.url}/usuarios`} className="nav-link">
+              <GiThreeFriends className="mb-1 mr-2" />
               Usuarios
             </Link>
           )}
           <Link to={`${props.url}/historial`} className="nav-link">
+            <AiOutlineHistory className="mb-1 mr-2" />
             Historial
           </Link>
           <Link to={`${props.url}/solicitar`} className="nav-link">
+            <GiFullMotorcycleHelmet className="mb-1 mr-2" />
             Solicitar{" "}
             <Badge pill variant="success">
               Nuevo!
             </Badge>
+          </Link>
+          <Link to={`${props.url}/pistas`} className="nav-link">
+            <GiTireTracks className="mb-1 mr-2" />
+            Mis Pistas{" "}
           </Link>
 
           {/* <li className="nav-item">
@@ -80,6 +100,7 @@ const SideBar = (props) => {
             </a>
           </li> */}
         </ul>
+        <hr />
 
         {/* <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
           <span>Saved reports</span>
