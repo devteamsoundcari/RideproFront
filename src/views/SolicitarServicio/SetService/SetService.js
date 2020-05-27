@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { getServices } from "../../../controllers/apiRequests";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { Container } from "react-bootstrap";
+import { Container, Spinner } from "react-bootstrap";
 // import { AiFillDollarCircle } from "react-icons/ai";
 import Service from "./Service/Service";
 import "./SetService.scss";
@@ -24,11 +24,17 @@ const SetService = (props) => {
   };
 
   return (
-    <Container className="mt-5">
-      <div class="card-deck mb-3 text-center">
-        {services.map((service) => {
+    <Container className="mt-5 text-center">
+      {services.length === 0 && (
+        <Spinner animation="border" role="status" className="mt-5">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      )}
+      <div className="card-deck mb-3 text-center">
+        {services.map((service, idx) => {
           return (
             <Service
+              key={idx}
               service={service}
               handleClick={handleClick}
               userInfoContext={userInfoContext}

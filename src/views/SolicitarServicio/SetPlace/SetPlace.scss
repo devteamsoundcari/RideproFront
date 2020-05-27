@@ -1,15 +1,39 @@
 .setPlace {
   margin-top: 3rem;
-  .form-group {
+  text-align: center;
+  .card-header-tabs {
     display: flex;
-    flex-direction: column;
-    text-align: center;
-    input {
-      //   max-width: 50%;
-      margin: 10px auto;
+    justify-content: center;
+    .nav-item {
+      font-size: 18px;
+      font-weight: bold;
     }
-    button {
-      margin: 20px auto;
+  }
+  .tab-content {
+    width: 80%;
+    min-height: 10em;
+    margin: auto;
+    margin-top: 13px;
+    border-radius: 5px;
+    background-color: #fff;
+    .tab-pane {
+      padding: 3rem 2rem 1rem 2rem;
+      .lead {
+        font-size: 18px;
+        margin-bottom: 2rem;
+      }
+      .form-group {
+        // display: flex;
+        // flex-direction: column;
+        text-align: center;
+        input {
+          //   max-width: 50%;
+          margin: 10px auto;
+        }
+        button {
+          margin: 20px auto;
+        }
+      }
     }
   }
 }

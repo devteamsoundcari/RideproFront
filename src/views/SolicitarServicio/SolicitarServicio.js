@@ -25,6 +25,7 @@ const SolicitarServicio = (props) => {
       setService("");
     }
     setService(data);
+    setKey("paso2");
   };
   useEffect(() => {
     if (service) {
@@ -33,19 +34,6 @@ const SolicitarServicio = (props) => {
     }
     //eslint-disable-next-line
   }, [service]);
-
-  // =========================== HANDLING DATE ============================
-  const handleDate = (data) => {
-    if (date) {
-      setDate("");
-    }
-    setDate(data);
-  };
-  useEffect(() => {
-    if (date) {
-      setKey("paso3");
-    }
-  }, [date]);
 
   // =========================== HANDLING PLACE ============================
   const handlePlace = (data) => {
@@ -56,9 +44,22 @@ const SolicitarServicio = (props) => {
   };
   useEffect(() => {
     if (place) {
-      setKey("paso4");
+      setKey("paso3");
     }
   }, [place]);
+
+  // =========================== HANDLING DATE ============================
+  const handleDate = (data) => {
+    if (date) {
+      setDate("");
+    }
+    setDate(data);
+  };
+  useEffect(() => {
+    if (date) {
+      setKey("paso4");
+    }
+  }, [date]);
 
   // =========================== HANDLING PARTICIPANTS AND SUBMITING THE SERVICE ============================
 
@@ -90,7 +91,11 @@ const SolicitarServicio = (props) => {
         </div>
         <Card className="solicitarServicio">
           <Card.Body>
-            <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
+            <Tabs
+              activeKey={key}
+              onSelect={(k) => setKey(k)}
+              className="nav-tabs-steps"
+            >
               <Tab
                 eventKey="paso1"
                 title={
@@ -105,23 +110,23 @@ const SolicitarServicio = (props) => {
                 eventKey="paso2"
                 title={
                   <p>
-                    <span>2</span> Seleccionar fecha
+                    <span>2</span> Seleccionar lugar
                   </p>
                 }
                 disabled={service ? false : true}
               >
-                <SetDate date={new Date()} setDate={handleDate} />
+                <SetPlace setPlace={handlePlace} />
               </Tab>
               <Tab
                 eventKey="paso3"
                 title={
                   <p>
-                    <span>3</span> Seleccionar lugar
+                    <span>3</span> Seleccionar fecha
                   </p>
                 }
                 disabled={date ? false : true}
               >
-                <SetPlace setPlace={handlePlace} />
+                <SetDate date={new Date()} setDate={handleDate} />
               </Tab>
               <Tab
                 eventKey="paso4"
