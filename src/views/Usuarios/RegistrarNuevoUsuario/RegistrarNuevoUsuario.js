@@ -62,10 +62,9 @@ const RegistrarNuevoUsuario = () => {
         Object.assign(data, { emailType: "welcome" }); // EMAIL TYPE
         // EMAIL TYPE AND SUBJECT
         data.emailType = "welcome";
-        data.subject =
-          `${
-            { M: "Bienvenido", F: "Bienvenida", O: "Bienvenid@" }[data.gender]
-          }` + ` a Ridepro 👋`;
+        data.subject = `${
+          { M: "Bienvenido", F: "Bienvenida", O: "Bienvenid@" }[data.gender]
+        } a Ridepro 👋`;
         await sendEmail(data); // SEND WELCOME EMAIL TO USER
       } else {
         // IF FAILURE

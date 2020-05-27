@@ -25,6 +25,7 @@ type Tracks = Track[];
 
 const Tracks: React.FC = () => {
   const [showAddTrack, setShowAddTrack] = useState(false);
+  const [filteredTracks, setFilteredTracks] = useState<Tracks>([]);
   const [tracks, setTracks] = useState<Tracks>([]);
   const { userInfoContext } = useContext(AuthContext);
 
@@ -43,6 +44,14 @@ const Tracks: React.FC = () => {
   useEffect(() => {
     fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
   }, []);
+
+  useEffect(() => {
+    tracks.forEach((item) => {
+      if (userInfoContext.company.id === item.company.id) {
+        setFilteredTracks((oldArr: any) => [...oldArr, item]);
+      }
+    });
+  }, [tracks, userInfoContext.company.id]);
 
   const handleFetch = () => {
     fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
@@ -66,7 +75,7 @@ const Tracks: React.FC = () => {
         </div>
         <Row className="text-center tracks">
           <Container>
-            {tracks.length === 0 && (
+            {filteredTracks.length === 0 && (
               <p className="text-muted p-5">
                 Aqui podras administrar tus pistas. Por el momento no tienes
                 ninguna
@@ -76,35 +85,31 @@ const Tracks: React.FC = () => {
               </p>
             )}
             <CardColumns>
-              {tracks.map((item, idx) => {
-                if (userInfoContext.company.id === item.company.id) {
-                  return (
-                    <Card key={idx}>
-                      <FaTimesCircle />
-                      <Card.Body>
-                        <Card.Title>{item.name}</Card.Title>
-                        <Card.Img
-                          variant="top"
-                          src={require("../../assets/img/track.jpg")}
-                          className="mb-3"
-                        />
-                        <Card.Text>{item.description}</Card.Text>
-                      </Card.Body>
-                      <Card.Footer>
-                        {`${item.address}`}
-                        <br />
-                        {`${item.municipality.name} - ${item.municipality.department.name}`}
-                        <br />
-                        <Button variant="link">
-                          <FaEdit />
-                          editar
-                        </Button>
-                      </Card.Footer>
-                    </Card>
-                  );
-                } else {
-                  return "";
-                }
+              {filteredTracks.map((item, idx) => {
+                return (
+                  <Card key={idx}>
+                    <FaTimesCircle />
+                    <Card.Body>
+                      <Card.Title>{item.name}</Card.Title>
+                      <Card.Img
+                        variant="top"
+                        src={require("../../assets/img/track.jpg")}
+                        className="mb-3"
+                      />
+                      <Card.Text>{item.description}</Card.Text>
+                    </Card.Body>
+                    <Card.Footer>
+                      {`${item.address}`}
+                      <br />
+                      {`${item.municipality.name} - ${item.municipality.department.name}`}
+                      <br />
+                      <Button variant="link">
+                        <FaEdit />
+                        editar
+                      </Button>
+                    </Card.Footer>
+                  </Card>
+                );
               })}
             </CardColumns>
           </Container>

@@ -143,12 +143,12 @@ const MyCalendar = (props) => {
     <Card>
       <Card.Body>
         {loading && (
-          <p>
+          <div>
             Cargando Eventos...
             <Spinner animation="border" size="sm" role="status">
               <span className="sr-only">Loading...</span>
             </Spinner>
-          </p>
+          </div>
         )}
         <Calendar
           selectable

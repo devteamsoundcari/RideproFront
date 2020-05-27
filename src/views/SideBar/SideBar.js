@@ -65,19 +65,14 @@ const SideBar = (props) => {
           </Link>
           {userInfoContext.profile !== 3 && (
             <Link to={`${props.url}/solicitar`} className="nav-link">
+              <GiFullMotorcycleHelmet className="mb-1 mr-2" />
               Solicitar{" "}
               <Badge pill variant="success">
                 Nuevo!
               </Badge>
             </Link>
           )}
-          <Link to={`${props.url}/solicitar`} className="nav-link">
-            <GiFullMotorcycleHelmet className="mb-1 mr-2" />
-            Solicitar{" "}
-            <Badge pill variant="success">
-              Nuevo!
-            </Badge>
-          </Link>
+
           <Link to={`${props.url}/pistas`} className="nav-link">
             <GiTireTracks className="mb-1 mr-2" />
             Mis Pistas{" "}

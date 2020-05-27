@@ -59,7 +59,6 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
       setLoading(true);
       data.trackMunicipality = city.id;
       data.companyId = userInfoContext.company.id;
-      console.log(data);
       const response = await createNewTrack(data);
       if (response) {
         setLoading(false);
