@@ -57,17 +57,15 @@ const RegistrarNuevoUsuario = () => {
           password: "",
           passwordRepeat: "",
           profileType: "",
-          charge: ""
+          charge: "",
         });
         Object.assign(data, { emailType: "welcome" }); // EMAIL TYPE
         // EMAIL TYPE AND SUBJECT
         data.emailType = "welcome";
-        data.subject = `${
-                          {'M': 'Bienvenido',
-                           'F': 'Bienvenida',
-                           'O': 'Bienvenid@'}
-                          [data.gender]}`
-                         + ` a Ridepro 👋`;
+        data.subject =
+          `${
+            { M: "Bienvenido", F: "Bienvenida", O: "Bienvenid@" }[data.gender]
+          }` + ` a Ridepro 👋`;
         await sendEmail(data); // SEND WELCOME EMAIL TO USER
       } else {
         // IF FAILURE
@@ -260,8 +258,9 @@ const RegistrarNuevoUsuario = () => {
                   })}
                 />
                 <Form.Text className="text-muted">
-                  La contraseña debe tener ocho caracteres como mínimo y debe incluír
-                  una mayúscula, un número y un caracter especial (@$!%*?&).
+                  La contraseña debe tener ocho caracteres como mínimo y debe
+                  incluír una mayúscula, un número y un caracter especial
+                  (@$!%*?&).
                   <br></br>
                   {errors.password && (
                     <span>Ingrese una contraseña válida</span>
@@ -350,7 +349,7 @@ const RegistrarNuevoUsuario = () => {
                   <option value="">Seleccione...</option>
                   <option value="1">Administrador</option>
                   <option value="2">Cliente</option>
-                  <option value="3">Ejecutivo de cuenta</option>
+                  <option value="3">Operario</option>
                 </Form.Control>
                 {errors.profileType && (
                   <small>Por favor, seleccione un perfil.</small>
