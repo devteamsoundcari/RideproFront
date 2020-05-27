@@ -43,37 +43,37 @@ const SetDate = (props) => {
     });
   };
 
-  const handleProposeDate = () => {
-    if (!date.propose) {
-      setDate({
-        date: "",
-        placeholder: "Ridepro decide",
-        propose: true,
-      });
-    } else {
-      setDate({
-        date: props.date,
-        placeholder: "",
-        propose: false,
-      });
-    }
-  };
+  // const handleProposeDate = () => {
+  //   if (!date.propose) {
+  //     setDate({
+  //       date: "",
+  //       placeholder: "Ridepro decide",
+  //       propose: true,
+  //     });
+  //   } else {
+  //     setDate({
+  //       date: props.date,
+  //       placeholder: "",
+  //       propose: false,
+  //     });
+  //   }
+  // };
 
-  const handleProposeTime = () => {
-    if (!time.propose) {
-      setTime({
-        time: "",
-        placeholder: "Ridepro decide",
-        propose: true,
-      });
-    } else {
-      setTime({
-        time: props.date,
-        placeholder: "",
-        propose: false,
-      });
-    }
-  };
+  // const handleProposeTime = () => {
+  //   if (!time.propose) {
+  //     setTime({
+  //       time: "",
+  //       placeholder: "Ridepro decide",
+  //       propose: true,
+  //     });
+  //   } else {
+  //     setTime({
+  //       time: props.date,
+  //       placeholder: "",
+  //       propose: false,
+  //     });
+  //   }
+  // };
   return (
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)} className="setDate">
@@ -94,13 +94,13 @@ const SetDate = (props) => {
               placeholderText={date.placeholder}
               name="date"
             />
-            <Form.Check
+            {/* <Form.Check
               type="switch"
               label="Proponer Fecha"
               variant="primary"
               id="propseDate"
               onChange={handleProposeDate}
-            />
+            /> */}
           </Form.Group>
 
           <Form.Group as={Col} md="auto" controlId="validationCustom05">
@@ -123,12 +123,12 @@ const SetDate = (props) => {
               name="time"
               placeholderText={time.placeholder}
             />
-            <Form.Check
+            {/* <Form.Check
               type="switch"
               label="Proponer Hora"
               id="propseTime"
               onChange={handleProposeTime}
-            />
+            /> */}
           </Form.Group>
         </Form.Row>
         <Form.Row>
