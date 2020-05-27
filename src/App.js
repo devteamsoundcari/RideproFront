@@ -23,6 +23,9 @@ function App() {
             <Route path="/cliente">
               <DashboardLayout />
             </Route>
+            <Route path="/operario">
+              <DashboardLayout />
+            </Route>
             <Route path="/login">
               <Login />
             </Route>

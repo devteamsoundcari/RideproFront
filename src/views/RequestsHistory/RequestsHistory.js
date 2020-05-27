@@ -63,6 +63,7 @@ const RequestsHistory = (props) => {
   // ================================ FETCH REQUESTS ON LOAD =====================================================
 
   useEffect(() => {
+    let urlType = userInfoContext.profile === 2 ? "user_requests" : "requests";
     async function fetchRequests(url) {
       const response = await getUserRequests(url);
       response.results.map(async (item) => {
@@ -81,8 +82,8 @@ const RequestsHistory = (props) => {
         return await fetchRequests(response.next);
       }
     }
-    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/user_requests/`);
-  }, [updateList]);
+    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
+  }, [updateList, userInfoContext.profile]);
 
   const getDrivers = async (driversUrls) => {
     return Promise.all(driversUrls.map((url) => fetchDriver(url)));

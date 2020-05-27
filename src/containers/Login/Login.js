@@ -120,6 +120,9 @@ const Login = () => {
         case 2:
           path = "/cliente";
           break;
+        case 3:
+          path = "/operario";
+          break;
         default:
           path = "/";
       }

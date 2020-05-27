@@ -24,12 +24,16 @@ const NavBar = (props) => {
   };
 
   useEffect(() => {
+    console.log("na");
     switch (userInfoContext.profile) {
       case 1:
         setProfile("Admin");
         break;
       case 2:
         setProfile("Cliente");
+        break;
+      case 3:
+        setProfile("Operario");
         break;
       default:
         break;

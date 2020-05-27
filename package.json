@@ -12,6 +12,7 @@
     "@types/react-dom": "^16.9.6",
     "@types/react-dropzone": "^5.1.0",
     "@types/react-router": "^5.1.7",
+    "@types/react-router-dom": "^5.1.5",
     "bootstrap": "^4.4.1",
     "date-fns": "^2.11.1",
     "moment": "^2.24.0",

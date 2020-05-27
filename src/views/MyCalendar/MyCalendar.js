@@ -1,11 +1,12 @@
-import React, { useState, useEffect, Children } from "react";
-import { Card } from "react-bootstrap";
+import React, { useState, useEffect, Children, useContext } from "react";
+import { Card, Spinner } from "react-bootstrap";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { useHistory } from "react-router-dom";
 import { getUserRequests } from "../../controllers/apiRequests";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./MyCalendar.scss";
+import { AuthContext } from "../../contexts/AuthContext";
 require("moment/locale/es.js");
 
 const localizer = momentLocalizer(moment);
@@ -13,8 +14,9 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = (props) => {
   const [requests, setRequests] = useState([]);
   const [sortedRequests, setSortedRequests] = useState([]);
-  const [setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const history = useHistory();
+  const { userInfoContext } = useContext(AuthContext);
 
   // const [events] = useState([
   //   {
@@ -34,6 +36,7 @@ const MyCalendar = (props) => {
   // =============================== GETTING ALL THE EVENTS AND DISPLAYING THEM TO CALENDAR =============================================
 
   useEffect(() => {
+    let urlType = userInfoContext.profile === 2 ? "user_requests" : "requests";
     async function fetchRequests(url) {
       const response = await getUserRequests(url);
       if (response) {
@@ -50,8 +53,8 @@ const MyCalendar = (props) => {
         }
       }
     }
-    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/user_requests/`);
-  }, []);
+    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
+  }, [userInfoContext.profile]);
 
   useEffect(() => {
     // Sorting requests so that the most recent goes on top
@@ -139,14 +142,14 @@ const MyCalendar = (props) => {
   return (
     <Card>
       <Card.Body>
-        {/* {loading && (
+        {loading && (
           <p>
             Cargando Eventos...
             <Spinner animation="border" size="sm" role="status">
               <span className="sr-only">Loading...</span>
             </Spinner>
           </p>
-        )} */}
+        )}
         <Calendar
           selectable
           localizer={localizer}
