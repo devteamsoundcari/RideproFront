@@ -1,0 +1,15 @@
+.navbar {
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    box-shadow: none;
+    img {
+      max-width: 60%;
+    }
+    small {
+      font-size: 18px !important;
+      font-weight: 600;
+    }
+  }
+}

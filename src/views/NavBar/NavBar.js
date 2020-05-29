@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button } from "react-bootstrap";
+import "./NavBar.scss";
 
 const NavBar = (props) => {
   const history = useHistory();
@@ -24,7 +25,6 @@ const NavBar = (props) => {
   };
 
   useEffect(() => {
-    console.log("na");
     switch (userInfoContext.profile) {
       case 1:
         setProfile("Admin");
@@ -41,13 +41,19 @@ const NavBar = (props) => {
   }, [userInfoContext]);
 
   return (
-    <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <nav
+      className={`navbar navbar-dark bg-${profile.toLowerCase()} sticky-top flex-md-nowrap p-0 shadow`}
+    >
       <span
-        className="navbar-brand col-sm-3 col-md-2 mr-0"
+        className="navbar-brand"
         style={{ cursor: "pointer" }}
         onClick={() => history.push("/login")}
       >
-        RideProApp | <small style={{ fontSize: "12px" }}>{profile}</small>
+        <img
+          alt="RideproLogo"
+          src="https://www.ridepro.co/wp-content/uploads/2020/03/logo-ride-pro.png"
+        />
+        <small style={{ fontSize: "12px" }}>{profile}</small>
       </span>
 
       {/* <input
@@ -58,7 +64,7 @@ const NavBar = (props) => {
       /> */}
       <ul className="navbar-nav px-3">
         <li className="nav-item text-nowrap">
-          <Button variant="secondary" onClick={logout}>
+          <Button variant="primary" size="sm" onClick={logout}>
             Cerrar Sesion
           </Button>
         </li>

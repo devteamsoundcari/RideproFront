@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  Row,
-  Col,
-  Container,
-  Card,
-  CardColumns,
-  Button,
-} from "react-bootstrap";
+import { Row, Col, Card, CardColumns, Button } from "react-bootstrap";
 import { FaTimesCircle, FaEdit } from "react-icons/fa";
 import ModalNewTrack from "./ModalNewTrack/ModalNewTrack";
 import { getTracks } from "../../controllers/apiRequests";
@@ -73,17 +66,15 @@ const Tracks: React.FC = () => {
             </div>
           </div>
         </div>
-        <Row className="text-center tracks">
-          <Container>
-            {filteredTracks.length === 0 && (
-              <p className="text-muted p-5">
-                Aqui podras administrar tus pistas. Por el momento no tienes
-                ninguna
-                <br />
-                Haz click en el boton "Agregar pista" para crear una nueva
-                pista.
-              </p>
-            )}
+        <Row className="text-center p-3 tracks">
+          {filteredTracks.length === 0 ? (
+            <p className="text-muted p-5 m-auto">
+              Aqui podras administrar tus pistas. Por el momento no tienes
+              ninguna
+              <br />
+              Haz click en el boton "Agregar pista" para crear una nueva pista.
+            </p>
+          ) : (
             <CardColumns>
               {filteredTracks.map((item, idx) => {
                 return (
@@ -112,7 +103,7 @@ const Tracks: React.FC = () => {
                 );
               })}
             </CardColumns>
-          </Container>
+          )}
         </Row>
       </Col>
       {showAddTrack && (

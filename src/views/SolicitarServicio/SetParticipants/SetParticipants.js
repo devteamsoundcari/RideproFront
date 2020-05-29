@@ -136,7 +136,6 @@ const SetParticipants = (props) => {
         Finalizar
       </Button>
       <UploadExcelFile addItem={handleAddItem} />
-
       <Form onSubmit={handleSubmit(handleAddItem)}>
         <Table striped bordered hover size="sm">
           <thead>
@@ -211,11 +210,9 @@ const SetParticipants = (props) => {
                     pattern: /^\d{10}$/i,
                   })}
                 />
-                {errors.cellphone && 
-                  <small>
-                    El número de teléfono debe contener 10 dígitos
-                  </small>
-                }
+                {errors.cellphone && (
+                  <small>El número de teléfono debe contener 10 dígitos</small>
+                )}
               </td>
               <td>
                 <Button variant="success" type="submit">
@@ -260,13 +257,14 @@ const SetParticipants = (props) => {
           <Modal.Title>Advertencia</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {`¿Estás ` + 
-           `${
-            {
-              'M' : 'seguro',
-              'F': 'segura',
-              'O': 'segur@'
-            }[userInfoContext.gender]} de que quieres remover este usuario?`}
+          {`¿Estás ` +
+            `${
+              {
+                M: "seguro",
+                F: "segura",
+                O: "segur@",
+              }[userInfoContext.gender]
+            } de que quieres remover este usuario?`}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -280,12 +278,13 @@ const SetParticipants = (props) => {
             onClick={() => removeUserFromList(showRemoveUserModal.idx)}
           >
             {`Si, estoy ` +
-             `${
-              {
-                'M' : 'seguro',
-                'F': 'segura',
-                'O': 'segur@'
-              }[userInfoContext.gender]}`}
+              `${
+                {
+                  M: "seguro",
+                  F: "segura",
+                  O: "segur@",
+                }[userInfoContext.gender]
+              }`}
           </Button>
         </Modal.Footer>
       </Modal>
