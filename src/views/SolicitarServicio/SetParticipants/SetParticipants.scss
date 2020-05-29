@@ -2,21 +2,38 @@
   margin-top: 1rem;
   text-align: center;
   .finalizarBtn {
-    margin-top: 2rem;
-    margin: 2rem auto;
+    margin: auto;
   }
-  td {
-    text-align: center;
-    button {
-      font-size: 12px;
-      span {
-        font-size: 15px;
-      }
-    }
+  table {
     small {
       color: red;
       font-weight: bold;
       font-size: 12px;
+    }
+    td {
+      text-align: center;
+      .content-editable {
+        padding: 10px 5px;
+        background-color: #dee2e6;
+      }
+      .new-row {
+        padding: 10px 5px;
+        background-color: #adb5bd;
+      }
+      button {
+        font-size: 12px;
+        span {
+          font-size: 15px;
+        }
+      }
+    }
+    .incorrect {
+      .content-editable {
+        border: 2px solid red;
+      }
+      .new-row {
+        border: 2px solid red;
+      }
     }
   }
 }

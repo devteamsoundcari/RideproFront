@@ -1,0 +1,23 @@
+.searchParticipant {
+  .form-group {
+    margin: 0px;
+  }
+  .searchResults {
+    background-color: #dee2e6;
+    position: absolute;
+    width: 94%;
+    z-index: 100;
+    .result {
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      p {
+        margin: 0pc;
+      }
+      &:hover {
+        background-color: #adb5bd;
+        cursor: pointer;
+      }
+    }
+  }
+}

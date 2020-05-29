@@ -1,7 +1,6 @@
 import React, { createRef } from "react";
 import { Table, Button } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FaTimes, FaPlus } from "react-icons/fa";
 import ContentEditable from "react-contenteditable";
 
 interface Error {
@@ -13,12 +12,12 @@ interface InsertionRowError {
   column: string;
 }
 
-export class EditableTable extends React.Component<
+class EditableTable extends React.Component<
   {
     dataSet: any[];
     fields: any;
     onValidate: Function;
-    onUpdate: Function
+    onUpdate: Function;
   },
   {
     dataSet: any[];
@@ -33,7 +32,7 @@ export class EditableTable extends React.Component<
   constructor(props: any) {
     super(props);
 
-    let rowKeys = props.dataSet.flatMap((row: any) => Object.keys(row));
+    let rowKeys = props.fields.map((field: any) => field.basename);
     let insertionRow = new Map<string, string>();
 
     rowKeys = Array.from(new Set(rowKeys));
@@ -118,7 +117,10 @@ export class EditableTable extends React.Component<
 
       let idx: number;
 
-      if (!insertionRow.get(key)?.match(regex) && insertionRow.get(key) !== "") {
+      if (
+        !insertionRow.get(key)?.match(regex) &&
+        insertionRow.get(key) !== ""
+      ) {
         let err: InsertionRowError;
 
         idx = insertionRowErrors.findIndex(
@@ -146,9 +148,8 @@ export class EditableTable extends React.Component<
   showInsertionRowErrors() {
     let ins = this.state.displayErrors;
 
-    ins.forEach(
-      (value: boolean, key: string, map: Map<string, boolean>) =>
-        map.set(key, false)
+    ins.forEach((value: boolean, key: string, map: Map<string, boolean>) =>
+      map.set(key, false)
     );
 
     for (let err of this.state.insertionRowErrors) {
@@ -160,8 +161,8 @@ export class EditableTable extends React.Component<
     }
 
     this.setState((current) => ({
-       ...current,
-       displayErrors: ins
+      ...current,
+      displayErrors: ins,
     }));
   }
 
@@ -204,13 +205,17 @@ export class EditableTable extends React.Component<
   }
 
   isIncorrect(row: number, field: any) {
-    let err = this.state.errors.find((e: Error) => e.id === row && e.column === field);
+    let err = this.state.errors.find(
+      (e: Error) => e.id === row && e.column === field
+    );
 
     return err ? true : false;
   }
 
   isInsertionFieldIncorrect(field: any) {
-    let err = this.state.insertionRowErrors.find((e: InsertionRowError) => e.column === field);
+    let err = this.state.insertionRowErrors.find(
+      (e: InsertionRowError) => e.column === field
+    );
 
     return err ? true : false;
   }
@@ -231,7 +236,22 @@ export class EditableTable extends React.Component<
         { ...row, id: this.state.dataSet.length + 1 },
       ],
     }));
+    this.state.insertionRow.forEach(
+      (value: string, key: string, map: Map<string, string>) => map.set(key, "")
+    );
     this.firstRow.current!.focus();
+  }
+
+  isInsertionRowIncorrect() {
+    return this.state.insertionRowErrors.length === 0 ? false : true;
+  }
+  isInsertionRowEmpty() {
+    let isEmpty: boolean = true;
+    this.state.insertionRow.forEach(
+      (value: string, key: string, map: Map<string, string>) =>
+        (isEmpty = map.get(key) === "")
+    );
+    return isEmpty;
   }
 
   pasteAsPlainText(event: any) {
@@ -268,9 +288,18 @@ export class EditableTable extends React.Component<
     }
   }
 
-  componentDidUpdate(nextProps: any, nextState: any) {
-    console.log(nextProps);
-    console.log(nextState);  
+  componentWillReceiveProps(nextProps) {
+    let dataSet = nextProps.dataSet;
+    if (dataSet !== this.state.dataSet) {
+      for (let i = 0; dataSet[i]; i++) {
+        dataSet[i].id = i;
+      }
+      console.log("dataset", dataSet);
+      this.setState((current) => ({
+        ...current,
+        dataSet: dataSet,
+      }));
+    }
   }
 
   render() {
@@ -283,7 +312,10 @@ export class EditableTable extends React.Component<
                 <th key={field.name}>
                   {field.name}
                   {this.state.displayErrors.get(field.name) === true && (
-                    <div className="error-msg">{field.errorMsg}</div>
+                    <React.Fragment>
+                      <br />
+                      <small className="error-msg">{field.errorMsg}</small>
+                    </React.Fragment>
                   )}
                 </th>
               );
@@ -291,6 +323,45 @@ export class EditableTable extends React.Component<
           </tr>
         </thead>
         <tbody>
+          <tr>
+            {Array.from(this.state.insertionRow.keys()).map((k, i) => {
+              let props: any = {
+                innerRef: this.firstRow,
+              };
+              if (i !== 0) props = {};
+              return (
+                <td
+                  key={k}
+                  className={
+                    this.isInsertionFieldIncorrect(k) ? "incorrect" : ""
+                  }
+                >
+                  <ContentEditable
+                    {...props}
+                    html={this.state.insertionRow.get(k)!}
+                    data-column={k}
+                    className="new-row"
+                    onChange={this.handleNewRow.bind(this)}
+                    onPaste={this.pasteAsPlainText}
+                    onKeyPress={this.disableNewlines}
+                    onFocus={this.highlightAll}
+                  />
+                </td>
+              );
+            })}
+            <td>
+              <Button
+                variant="link"
+                onClick={() => this.addRow()}
+                disabled={
+                  this.isInsertionRowIncorrect() || this.isInsertionRowEmpty()
+                }
+              >
+                <FaPlus />
+              </Button>
+            </td>
+          </tr>
+
           {this.state.dataSet.map((row: any) => {
             return (
               <tr key={row.id}>
@@ -300,7 +371,9 @@ export class EditableTable extends React.Component<
                     return (
                       <td
                         key={k}
-                        className={this.isIncorrect(row.id, k) ? "incorrect" : ""}
+                        className={
+                          this.isIncorrect(row.id, k) ? "incorrect" : ""
+                        }
                       >
                         <ContentEditable
                           html={String(row[k])}
@@ -317,43 +390,16 @@ export class EditableTable extends React.Component<
                   })}
                 <td>
                   <Button variant="link" onClick={() => this.deleteRow(row.id)}>
-                    <FontAwesomeIcon icon={faTimes} />
+                    <FaTimes />
                   </Button>
                 </td>
               </tr>
             );
           })}
-          <tr>
-            {Array.from(this.state.insertionRow.keys()).map((k, i) => {
-              let props: any = {
-                innerRef: this.firstRow,
-              };
-
-              if (i !== 0) props = {};
-
-              return (
-                <td key={k} className={this.isInsertionFieldIncorrect(k) ? "incorrect" : ""}>
-                  <ContentEditable
-                    {...props}
-                    html={this.state.insertionRow.get(k)!}
-                    data-column={k}
-                    className="new-row"
-                    onChange={this.handleNewRow.bind(this)}
-                    onPaste={this.pasteAsPlainText}
-                    onKeyPress={this.disableNewlines}
-                    onFocus={this.highlightAll}
-                  />
-                </td>
-              );
-            })}
-            <td>
-              <Button variant="link" onClick={() => this.addRow()}>
-                <FontAwesomeIcon icon={faPlus} />
-              </Button>
-            </td>
-          </tr>
         </tbody>
       </Table>
     );
   }
 }
+
+export default EditableTable;

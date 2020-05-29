@@ -1,5 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Form, Container, Table, Button, Modal } from "react-bootstrap";
+import {
+  Form,
+  Container,
+  Table,
+  Button,
+  Modal,
+  Row,
+  Col,
+} from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import "./SetParticipants.scss";
@@ -7,6 +15,8 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { ServiceContext } from "../../../contexts/ServiceContext";
 import { getAllDrivers } from "../../../controllers/apiRequests";
 import UploadExcelFile from "../UploadExcelFile/UploadExcelFile";
+import EditableTable from "../../../utils/EditableTable";
+import SearchParticipant from "./SearchParticipant/SearchParticipant";
 
 function isParticipantRegistered(x, y) {
   for (var index in x) {
@@ -26,14 +36,48 @@ function isParticipantRegistered(x, y) {
 const SetParticipants = (props) => {
   const { userInfoContext } = useContext(AuthContext);
   const { serviceInfoContext } = useContext(ServiceContext);
-  const { handleSubmit, register, errors } = useForm();
+  const { handleSubmit, register } = useForm();
   const [participants, setParticipants] = useState([]);
+  const [errors, setErrors] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
   const [showRemoveUserModal, setShowRemoveUserModal] = useState({
     show: false,
     idx: null,
   });
+
+  const fields = [
+    {
+      basename: "officialId",
+      name: "Identificación",
+      regex: /^\d+$/,
+      errorMsg: "Por favor ingrese un número válido",
+    },
+    {
+      basename: "first_name",
+      name: "Nombre",
+      regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
+      errorMsg: "Por favor ingrese un nombre válido",
+    },
+    {
+      basename: "last_name",
+      name: "Apellido",
+      regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
+      errorMsg: "Por favor ingrese un apellido válido",
+    },
+    {
+      basename: "email",
+      name: "Email",
+      regex: /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/i,
+      errorMsg: "Por favor ingrese un email válido",
+    },
+    {
+      basename: "phone",
+      name: "Teléfono",
+      regex: /^\d{7,10}$/,
+      errorMsg: "Por favor ingrese un teléfono válido",
+    },
+  ];
 
   // ==================================== ADD PARTICIPANTS TO LIST ===========================================
 
@@ -84,7 +128,7 @@ const SetParticipants = (props) => {
     setShowRemoveUserModal({ show: true, idx });
   };
 
-  // ================================== GETTING ALL DRIVER FROM DB =================================================
+  // ================================== GETTING ALL DRIVERS FROM DB =================================================
 
   useEffect(() => {
     const items = [];
@@ -101,6 +145,7 @@ const SetParticipants = (props) => {
         items.push(item);
         return true;
       });
+
       setParticipantsDB(items);
     }
     fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers/`);
@@ -124,8 +169,30 @@ const SetParticipants = (props) => {
   // };
   // =============================================================================================================
 
+  useEffect(() => {
+    console.log("uprat", participants);
+  }, [participants]);
+
+  const handleSearchParticipant = (item) => {
+    console.log("kkega", item);
+    setParticipants((oldArr) => [...oldArr, item]);
+  };
+
   return (
     <Container className="setParticipants">
+      <Row className="justify-content-center align-items-center p-3">
+        <Col>
+          <UploadExcelFile addItem={handleAddItem} />
+        </Col>
+        <Col>
+          {participantsDB.length > 0 && (
+            <SearchParticipant
+              participants={participantsDB}
+              returnedItem={handleSearchParticipant}
+            />
+          )}
+        </Col>
+      </Row>
       <Button
         variant="primary"
         size="bg"
@@ -135,119 +202,14 @@ const SetParticipants = (props) => {
       >
         Finalizar
       </Button>
-      <UploadExcelFile addItem={handleAddItem} />
-      <Form onSubmit={handleSubmit(handleAddItem)}>
-        <Table striped bordered hover size="sm">
-          <thead>
-            <tr>
-              <th>Identificacion</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Email</th>
-              <th>Telefono</th>
-              <th>
-                Rides: {rides}/{userInfoContext.company.credit}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <Form.Control
-                  type="number"
-                  placeholder="No. Identificación"
-                  name="official_id"
-                  ref={register({
-                    required: true,
-                    patter: /^[0-9]*$/i,
-                  })}
-                />
-                {errors.official_id && <small>Identificacion inválida</small>}
-              </td>
-              <td>
-                <Form.Control
-                  type="text"
-                  placeholder="Nombre"
-                  name="first_name"
-                  ref={register({
-                    required: true,
-                    pattern: /^[A-Za-z]+$/i,
-                  })}
-                />
-                {errors.first_name && <small>Nombre inválido</small>}
-              </td>
-              <td>
-                <Form.Control
-                  type="text"
-                  placeholder="Apellido"
-                  name="last_name"
-                  ref={register({
-                    required: true,
-                    pattern: /^[A-Za-z]+$/i,
-                  })}
-                />
-                {errors.last_name && <small>Apellido inválido</small>}
-              </td>
-              <td>
-                <Form.Control
-                  type="text"
-                  placeholder="Email"
-                  name="email"
-                  ref={register({
-                    required: true,
-                    pattern: /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/i,
-                  })}
-                />
-                {errors.email && <small>Email inválido</small>}
-              </td>
-              <td>
-                <Form.Control
-                  type="number"
-                  placeholder="Teléfono"
-                  name="cellphone"
-                  ref={register({
-                    required: true,
-                    pattern: /^\d{10}$/i,
-                  })}
-                />
-                {errors.cellphone && (
-                  <small>El número de teléfono debe contener 10 dígitos</small>
-                )}
-              </td>
-              <td>
-                <Button variant="success" type="submit">
-                  <span>
-                    <FaPlus />
-                  </span>{" "}
-                  Agregar
-                </Button>
-              </td>
-            </tr>
-            {participants.map((participant, index) => {
-              return (
-                <tr key={index}>
-                  <td>{participant.official_id}</td>
-                  <td>{participant.first_name}</td>
-                  <td>{participant.last_name}</td>
-                  <td>{participant.email}</td>
-                  <td>{participant.cellphone}</td>
-                  <td>
-                    <Button
-                      variant="danger"
-                      onClick={() => handleRemoveItem(index)}
-                    >
-                      <span>
-                        <FaMinus />
-                      </span>{" "}
-                      Quitar
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      </Form>
+
+      <EditableTable
+        dataSet={participants}
+        fields={fields}
+        onValidate={(x) => setErrors(x)}
+        onUpdate={(x) => setParticipants(x)}
+      />
+
       <Modal
         size="sm"
         show={showRemoveUserModal.show}

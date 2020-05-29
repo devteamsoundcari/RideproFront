@@ -11,7 +11,7 @@ import ConfirmServiceModal from "./ConfirmServiceModal/ConfrimServiceModal";
 
 const SolicitarServicio = (props) => {
   const { setServiceInfoContext } = useContext(ServiceContext);
-  const [key, setKey] = useState("paso1");
+  const [key, setKey] = useState("paso4");
   const [date, setDate] = useState("");
   const [service, setService] = useState("");
   const [place, setPlace] = useState("");
