@@ -170,7 +170,9 @@ class EditableTable extends React.Component<
     this.setState((current) => ({
       ...current,
       dataSet: this.state.dataSet.filter((item: any) => id !== item.id),
-    }));
+    }), () => {
+      this.props.onUpdate(this.state.dataSet)
+    });
   }
 
   handleNewRow(event: any) {
@@ -187,6 +189,7 @@ class EditableTable extends React.Component<
   }
 
   handleRow(event: any) {
+    const { dataSet } = this.state;
     const {
       currentTarget: {
         dataset: { column },
@@ -194,11 +197,19 @@ class EditableTable extends React.Component<
       },
       target: { value },
     } = event;
+    const prevDataSet = [...dataSet];
 
-    const data = this.state.dataSet.find(
+    const data = prevDataSet.find(
       (item: any) => item.id === parseInt(id)
     );
     data[column] = value;
+
+    this.setState((current) => ({
+      ...current,
+      dataSet: prevDataSet
+    }), () => {
+      this.props.onUpdate(this.state.dataSet)
+    });
 
     this.validate(data, column);
     this.props.onUpdate(this.state.dataSet);
@@ -221,6 +232,7 @@ class EditableTable extends React.Component<
   }
 
   addRow() {
+    const { dataSet } = this.state;
     let row = Array.from(this.state.insertionRow).reduce(
       (obj: any, [key, value]) => {
         obj[key] = this.trimSpaces(value);
@@ -231,11 +243,11 @@ class EditableTable extends React.Component<
 
     this.setState((current) => ({
       ...current,
-      dataSet: [
-        ...this.state.dataSet,
-        { ...row, id: this.state.dataSet.length + 1 },
-      ],
-    }));
+      dataSet: [...dataSet, {...row, id: dataSet.length + 1 }]
+    }), () => {
+      this.props.onUpdate(this.state.dataSet);
+    });
+
     this.state.insertionRow.forEach(
       (value: string, key: string, map: Map<string, string>) => map.set(key, "")
     );
@@ -245,6 +257,7 @@ class EditableTable extends React.Component<
   isInsertionRowIncorrect() {
     return this.state.insertionRowErrors.length === 0 ? false : true;
   }
+
   isInsertionRowEmpty() {
     let isEmpty: boolean = true;
     this.state.insertionRow.forEach(
@@ -285,20 +298,6 @@ class EditableTable extends React.Component<
       setTimeout(() => {
         document.execCommand("selectAll", false, null!);
       }, 0);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    let dataSet = nextProps.dataSet;
-    if (dataSet !== this.state.dataSet) {
-      for (let i = 0; dataSet[i]; i++) {
-        dataSet[i].id = i;
-      }
-      console.log("dataset", dataSet);
-      this.setState((current) => ({
-        ...current,
-        dataSet: dataSet,
-      }));
     }
   }
 
