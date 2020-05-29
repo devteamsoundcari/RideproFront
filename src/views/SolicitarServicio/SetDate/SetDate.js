@@ -26,8 +26,6 @@ const SetDate = (props) => {
     if (date && time) {
       date.date.setTime(time.time.getTime());
       props.setDate(date);
-    } else {
-      props.setDate(undefined);
     }
   };
 

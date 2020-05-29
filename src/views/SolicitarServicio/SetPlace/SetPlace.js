@@ -224,7 +224,7 @@ const SetPlace = (props) => {
                     onClick={handleClick}
                     disabled={noTrack}
                   >
-                    Agregar pista
+                    Ver pistas
                   </Button>
                   <Form.Check
                     onChange={handleCheckChange}

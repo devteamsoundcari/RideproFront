@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   AiFillDollarCircle,
@@ -18,16 +18,35 @@ import "./SideBar.scss";
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
+  const [profile, setProfile] = useState("");
   const profilePicture = userInfoContext.company.logo
     ? userInfoContext.company.logo
     : defaultCompanyLogo;
 
+  useEffect(() => {
+    switch (userInfoContext.profile) {
+      case 1:
+        setProfile("Admin");
+        break;
+      case 2:
+        setProfile("Cliente");
+        break;
+      case 3:
+        setProfile("Operario");
+        break;
+      default:
+        break;
+    }
+  }, [userInfoContext]);
+
   return (
-    <nav className="col-md-2 d-none d-md-block bg-dark sidebar">
+    <nav
+      className={`col-md-2 d-none d-md-block bg-dark bg-${profile.toLowerCase()} sidebar`}
+    >
       <div className="sidebar-sticky">
         <ul className="nav flex-column">
           <li>
-            <img alt="profileImg" src={profilePicture} />
+            <img alt="profileImg" className="shadow" src={profilePicture} />
           </li>
           <Greeting
             name={userInfoContext.name}
