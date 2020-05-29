@@ -170,12 +170,18 @@ const SetParticipants = (props) => {
   // =============================================================================================================
 
   useEffect(() => {
-    console.log("uprat", participants);
+    console.log("participants", participants);
   }, [participants]);
 
   const handleSearchParticipant = (item) => {
     console.log("kkega", item);
     setParticipants((oldArr) => [...oldArr, item]);
+  };
+
+  const handleUpdateTable = (data) => {
+    console.log("hanlde update", data);
+
+    setParticipants((oldArr) => [...oldArr, data[0]]);
   };
 
   return (
@@ -207,7 +213,7 @@ const SetParticipants = (props) => {
         dataSet={participants}
         fields={fields}
         onValidate={(x) => setErrors(x)}
-        onUpdate={(x) => setParticipants(x)}
+        onUpdate={handleUpdateTable}
       />
 
       <Modal

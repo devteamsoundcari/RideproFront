@@ -167,12 +167,15 @@ class EditableTable extends React.Component<
   }
 
   deleteRow(id: number) {
-    this.setState((current) => ({
-      ...current,
-      dataSet: this.state.dataSet.filter((item: any) => id !== item.id),
-    }), () => {
-      this.props.onUpdate(this.state.dataSet)
-    });
+    this.setState(
+      (current) => ({
+        ...current,
+        dataSet: this.state.dataSet.filter((item: any) => id !== item.id),
+      }),
+      () => {
+        this.props.onUpdate(this.state.dataSet);
+      }
+    );
   }
 
   handleNewRow(event: any) {
@@ -199,19 +202,21 @@ class EditableTable extends React.Component<
     } = event;
     const prevDataSet = [...dataSet];
 
-    const data = prevDataSet.find(
-      (item: any) => item.id === parseInt(id)
-    );
+    const data = prevDataSet.find((item: any) => item.id === parseInt(id));
     data[column] = value;
 
-    this.setState((current) => ({
-      ...current,
-      dataSet: prevDataSet
-    }), () => {
-      this.props.onUpdate(this.state.dataSet)
-    });
+    this.setState(
+      (current) => ({
+        ...current,
+        dataSet: prevDataSet,
+      }),
+      () => {
+        this.props.onUpdate(this.state.dataSet);
+      }
+    );
 
     this.validate(data, column);
+    console.log("QUE PASAAA");
     this.props.onUpdate(this.state.dataSet);
   }
 
@@ -241,12 +246,15 @@ class EditableTable extends React.Component<
       {}
     );
 
-    this.setState((current) => ({
-      ...current,
-      dataSet: [...dataSet, {...row, id: dataSet.length + 1 }]
-    }), () => {
-      this.props.onUpdate(this.state.dataSet);
-    });
+    this.setState(
+      (current) => ({
+        ...current,
+        dataSet: [...dataSet, { ...row, id: dataSet.length + 1 }],
+      }),
+      () => {
+        this.props.onUpdate(this.state.dataSet);
+      }
+    );
 
     this.state.insertionRow.forEach(
       (value: string, key: string, map: Map<string, string>) => map.set(key, "")
@@ -298,6 +306,21 @@ class EditableTable extends React.Component<
       setTimeout(() => {
         document.execCommand("selectAll", false, null!);
       }, 0);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log("willreceiveprops", nextProps.dataSet === this.state.dataSet);
+    let x = nextProps.dataSet;
+    if (x !== this.state.dataSet) {
+      for (let i = 0; x[i]; i++) {
+        x[i].id = i;
+      }
+      // console.log("x: ", X);
+      this.setState((current) => ({
+        ...current,
+        dataSet: x,
+      }));
     }
   }
 
