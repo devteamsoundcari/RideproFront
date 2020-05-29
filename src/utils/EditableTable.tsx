@@ -309,21 +309,6 @@ class EditableTable extends React.Component<
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log("willreceiveprops", nextProps.dataSet === this.state.dataSet);
-    let x = nextProps.dataSet;
-    if (x !== this.state.dataSet) {
-      for (let i = 0; x[i]; i++) {
-        x[i].id = i;
-      }
-      // console.log("x: ", X);
-      this.setState((current) => ({
-        ...current,
-        dataSet: x,
-      }));
-    }
-  }
-
   render() {
     return (
       <Table>

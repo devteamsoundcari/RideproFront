@@ -175,7 +175,7 @@ const SetParticipants = (props) => {
 
   const handleSearchParticipant = (item) => {
     console.log("kkega", item);
-    setParticipants((oldArr) => [...oldArr, item]);
+    // setParticipants((oldArr) => [...oldArr, item]);
   };
 
   const handleUpdateTable = (data) => {
