@@ -26,7 +26,7 @@ const DataTable = (props) => {
   }, [props.data]);
 
   return (
-    <div>
+    <React.Fragment>
       <h5>Participantes previamente registrados</h5>
       <Table striped bordered hover size="sm">
         <thead>
@@ -58,7 +58,7 @@ const DataTable = (props) => {
           })}
         </tbody>
       </Table>
-    </div>
+    </React.Fragment>
   );
 };
 

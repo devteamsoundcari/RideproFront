@@ -49,7 +49,8 @@ const SeachParticipant = (props) => {
           return (
             <div className="result" key={idx} onClick={() => handleClick(item)}>
               <p>
-                {item.official_id} - {item.first_name} {item.last_name}
+                <strong>{item.official_id}</strong> - {item.first_name}{" "}
+                {item.last_name}
               </p>
             </div>
           );

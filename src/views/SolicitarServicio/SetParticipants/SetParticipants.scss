@@ -33,39 +33,6 @@
     margin-top: 3px;
     padding: 2rem;
     border-radius: 10px;
-    table {
-      small {
-        color: red;
-        font-weight: bold;
-        font-size: 12px;
-      }
-      td {
-        text-align: center;
-        padding: 0px 2px;
-        .content-editable {
-          padding: 10px 5px;
-          background-color: #dee2e6;
-        }
-        .new-row {
-          padding: 10px 5px;
-          background-color: #adb5bd;
-        }
-        button {
-          font-size: 12px;
-          span {
-            font-size: 15px;
-          }
-        }
-      }
-      .incorrect {
-        .content-editable {
-          border: 2px solid red;
-        }
-        .new-row {
-          border: 2px solid red;
-        }
-      }
-    }
   }
 
   .dataTable {
@@ -75,5 +42,46 @@
     margin-top: 3px;
     padding: 2rem;
     border-radius: 10px;
+  }
+
+  table {
+    small {
+      color: red;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    td {
+      text-align: center;
+      padding: 0px 2px;
+      .content-editable {
+        background-color: #adb5bd;
+      }
+      .new-row {
+        border: 1px solid rgb(196, 196, 196);
+        border-radius: 2px;
+        background-color: #fff;
+      }
+      span {
+        svg {
+          margin-bottom: 2px;
+          &:hover {
+            color: red;
+          }
+        }
+      }
+      button {
+        font-size: 15px;
+        padding: 0px;
+        padding-bottom: 5px;
+      }
+    }
+    .incorrect {
+      .content-editable {
+        border: 2px solid red;
+      }
+      .new-row {
+        border: 2px solid red;
+      }
+    }
   }
 }

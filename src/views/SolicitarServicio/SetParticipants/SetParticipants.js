@@ -1,14 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import {
-  Form,
-  Container,
-  Table,
-  Button,
-  Modal,
-  Row,
-  Col,
-} from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import { Container, Button, Row, Col } from "react-bootstrap";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import "./SetParticipants.scss";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -42,13 +33,14 @@ const SetParticipants = (props) => {
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
   } = useContext(ParticipantsContext);
-  const { handleSubmit, register } = useForm();
   const [participants, setParticipants] = useState([]);
   const [errors, setErrors] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
   const [dataTable, setDataTable] = useState([]);
   const [registeredParticipants, setRegisteredParticipants] = useState([]);
+
+  // ============================================  EDITABLE TABLE SETUP  ================================================
 
   const fields = [
     {
@@ -141,8 +133,10 @@ const SetParticipants = (props) => {
   // ============================================  HANDLE SUMBIT  ================================================
 
   const handleFinalizar = () => {
-    props.setParticipants(participants, rides);
+    props.setParticipants(registeredParticipants, participants, rides);
   };
+
+  // ============================================  CHECK TYPE OF SERVICE  ================================================
 
   useEffect(() => {
     if (serviceInfoContext.service_type === "Persona") {
@@ -152,6 +146,8 @@ const SetParticipants = (props) => {
       setRides(serviceInfoContext.ride_value);
     }
   }, [registeredParticipants, serviceInfoContext]);
+
+  // =================================  UPDATE DATA TABLE AND REGISTERED PARTICIPANTS  ================================================
 
   const handleSearchParticipant = (item) => {
     const temp = participantsDB.filter((i) => {
@@ -166,6 +162,8 @@ const SetParticipants = (props) => {
     setParticipants((oldArr) => [...oldArr, data[0]]);
   };
 
+  // =========================================================================================================
+
   useEffect(() => {
     console.log(serviceInfoContext);
   }, [serviceInfoContext]);
@@ -173,7 +171,7 @@ const SetParticipants = (props) => {
   return (
     <Container className="setParticipants">
       <Row className="participantsTools">
-        <Col>
+        <Col md="3">
           <UploadExcelFile addItem={handleAddItem} />
         </Col>
         <Col>
@@ -186,7 +184,7 @@ const SetParticipants = (props) => {
             />
           )}
         </Col>
-        <Col className="stats">
+        <Col md="3" className="stats">
           <Button
             variant="primary"
             size="bg"
