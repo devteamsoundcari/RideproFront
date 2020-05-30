@@ -7,7 +7,7 @@ import { ServiceContext } from "../../../contexts/ServiceContext";
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import { getAllDrivers } from "../../../controllers/apiRequests";
 import UploadExcelFile from "../UploadExcelFile/UploadExcelFile";
-import EditableTable from "../../../utils/EditableTable";
+import { EditableTable } from "../../../utils/EditableTable";
 import SearchByDocument from "../../../utils/SearchByDocument/SearchByDocument";
 import DataTable from "./DataTable/DataTable";
 
@@ -42,38 +42,55 @@ const SetParticipants = (props) => {
 
   // ============================================  EDITABLE TABLE SETUP  ================================================
 
-  const fields = [
+  const fields = {
+    "officialId":
     {
-      basename: "officialId",
       name: "Identificación",
+      format: "String",
       regex: /^\d+$/,
-      errorMsg: "Por favor ingrese un número válido",
+      unique: true,
+      errorMessages: {
+        regex: 'Por favor, ingresa un número válido.',
+        unique: ''
+      }
     },
+    "name":
     {
-      basename: "first_name",
       name: "Nombre",
       regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
-      errorMsg: "Por favor ingrese un nombre válido",
+      unique: false,
+      errorMessages: {
+        regex: 'Por favor, ingresa un nombre válido.'    
+      }
     },
+    "last_name":
     {
-      basename: "last_name",
       name: "Apellido",
       regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
-      errorMsg: "Por favor ingrese un apellido válido",
+      unique: false,
+      errorMessages: {
+        regex: "Por favor, ingresa un apellido válido."
+      }
     },
+    "email":
     {
-      basename: "email",
       name: "Email",
       regex: /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/i,
-      errorMsg: "Por favor ingrese un email válido",
+      unique: false,
+      errorMessages: {
+        regex: "Por favor, ingresa un email válido."
+      }
     },
+    "phone":
     {
-      basename: "phone",
       name: "Teléfono",
       regex: /^\d{7,10}$/,
-      errorMsg: "Por favor ingrese un teléfono válido",
-    },
-  ];
+      unique: false,
+      errorMessages: {
+        errorMsg: "Por favor ingrese un teléfono válido",
+      }
+    }
+  }
 
   // ==================================== ADD PARTICIPANTS TO LIST ===========================================
 
