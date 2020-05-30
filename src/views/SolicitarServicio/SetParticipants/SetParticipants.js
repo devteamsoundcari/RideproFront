@@ -32,6 +32,7 @@ const SetParticipants = (props) => {
   const {
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
+    setParticipantsToRegisterContext,
   } = useContext(ParticipantsContext);
   const [participants, setParticipants] = useState([]);
   const [errors, setErrors] = useState(false);
@@ -43,54 +44,49 @@ const SetParticipants = (props) => {
   // ============================================  EDITABLE TABLE SETUP  ================================================
 
   const fields = {
-    "officialId":
-    {
+    officialId: {
       name: "Identificación",
       format: "String",
       regex: /^\d+$/,
       unique: true,
       errorMessages: {
-        regex: 'Por favor, ingresa un número válido.',
-        unique: ''
-      }
+        regex: "Por favor, ingresa un número válido.",
+        unique: "Oops, este documento ya esta siendo usado por otra persona.",
+      },
     },
-    "name":
-    {
+    name: {
       name: "Nombre",
       regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
       unique: false,
       errorMessages: {
-        regex: 'Por favor, ingresa un nombre válido.'    
-      }
+        regex: "Por favor, ingresa un nombre válido.",
+      },
     },
-    "last_name":
-    {
+    last_name: {
       name: "Apellido",
       regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un apellido válido."
-      }
+        regex: "Por favor, ingresa un apellido válido.",
+      },
     },
-    "email":
-    {
+    email: {
       name: "Email",
       regex: /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/i,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un email válido."
-      }
+        regex: "Por favor, ingresa un email válido.",
+      },
     },
-    "phone":
-    {
+    phone: {
       name: "Teléfono",
       regex: /^\d{7,10}$/,
       unique: false,
       errorMessages: {
         errorMsg: "Por favor ingrese un teléfono válido",
-      }
-    }
-  }
+      },
+    },
+  };
 
   // ==================================== ADD PARTICIPANTS TO LIST ===========================================
 
@@ -157,12 +153,14 @@ const SetParticipants = (props) => {
 
   useEffect(() => {
     if (serviceInfoContext.service_type === "Persona") {
-      let creds = serviceInfoContext.ride_value * registeredParticipants.length;
-      setRides(creds);
+      const rideVal = serviceInfoContext.ride_value;
+      let registeredCreds = rideVal * registeredParticipants.length;
+      let unregisteredCreds = rideVal * participants.length;
+      setRides(registeredCreds + unregisteredCreds);
     } else {
       setRides(serviceInfoContext.ride_value);
     }
-  }, [registeredParticipants, serviceInfoContext]);
+  }, [registeredParticipants, serviceInfoContext, participants]);
 
   // =================================  UPDATE DATA TABLE AND REGISTERED PARTICIPANTS  ================================================
 
@@ -175,10 +173,14 @@ const SetParticipants = (props) => {
   };
 
   const handleUpdateTable = (data) => {
-    setRegisteredParticipantsContext((oldArr) => [...oldArr, data[0]]);
-    setParticipants((oldArr) => [...oldArr, data[0]]);
+    setParticipantsToRegisterContext(data);
+    setParticipants(data);
   };
 
+  const handleRedisteredParticipants = (data) => {
+    setRegisteredParticipants(data);
+    setRegisteredParticipantsContext(data);
+  };
   // =========================================================================================================
 
   useEffect(() => {
@@ -225,7 +227,8 @@ const SetParticipants = (props) => {
             </small>
           </p>
           <p>
-            Participantes: <small>{registeredParticipants.length}</small>
+            Participantes:{" "}
+            <small>{registeredParticipants.length + participants.length}</small>
           </p>
         </Col>
       </Row>
@@ -237,7 +240,7 @@ const SetParticipants = (props) => {
       >
         <DataTable
           data={dataTable}
-          registeredParticipants={(x) => setRegisteredParticipants(x)}
+          registeredParticipants={handleRedisteredParticipants}
           deletedItem={(x) => setParticipantsDB((oldArray) => [...oldArray, x])}
         />
       </Row>
