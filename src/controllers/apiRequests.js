@@ -166,6 +166,22 @@ const getDepartments = async (url) => {
   let departments = await getInfo();
   return departments.data;
 };
+/* =================================   GET ALL USERS IN DB   ===================================== */
+
+const getUsers = async (url) => {
+  const getInfo = async () => {
+    const usersData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      console.log("JUEPUTA", err);
+      return err;
+    });
+    return usersData;
+  };
+  let users = await getInfo();
+  return users.data;
+};
 
 /* =================================   GET MUNICIPALITIES   ===================================== */
 const getMunicipalities = async (url) => {
@@ -385,7 +401,6 @@ const getGender = async (name) => {
   return requests.data;
 };
 
-
 /* =================================   GET COMPANY TRACKS   ===================================== */
 const getTracks = async (url) => {
   const getInfo = async () => {
@@ -437,6 +452,7 @@ const createNewTrack = async (data) => {
 export {
   sendEmail,
   saveNewUser,
+  getUsers,
   getLoginToken,
   getUserInfo,
   passwordReset,
@@ -455,5 +471,5 @@ export {
   cancelRequestId,
   getServices,
   createNewTrack,
-  getTracks
+  getTracks,
 };
