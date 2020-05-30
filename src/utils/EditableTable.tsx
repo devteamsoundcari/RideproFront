@@ -11,6 +11,7 @@ interface Error {
 
 interface InsertionRowError {
   column: string;
+  type: string;
 }
 
 export class EditableTable extends React.Component<
@@ -38,7 +39,7 @@ export class EditableTable extends React.Component<
     let insertionRow = new Map<string, string>();
     let headings = new Map<string, boolean>();
     rowKeys.forEach((field: any) => {
-      headings.set(props.fields[field].name, false);
+      headings.set(field, false);
     });
     rowKeys.forEach((field: any) => {
       insertionRow.set(field, "");
@@ -176,6 +177,7 @@ export class EditableTable extends React.Component<
         if (idx < 0) {
           err = {
             column: key,
+            type: 'regex'
           };
           insertionRowErrors.push(err);
         }
@@ -187,6 +189,7 @@ export class EditableTable extends React.Component<
           insertionRowErrors.splice(idx);
         }
       }
+      console.log(this.state.insertionRowErrors);
     }
 
     this.showInsertionRowErrors();
@@ -200,9 +203,7 @@ export class EditableTable extends React.Component<
     );
 
     for (let err of this.state.insertionRowErrors) {
-      let field = this.props.fields[err.column];
-
-      ins.set(field.name, true);
+      ins.set(err.column, true);
     }
 
     this.setState((current) => ({
@@ -250,7 +251,6 @@ export class EditableTable extends React.Component<
     const row = prevDataSet.find((item: any) => item.id === parseInt(id));
     row.data[column] = value;
 
-    console.log("prevDataSet: ", prevDataSet);
     this.setState(
       (current) => ({
         ...current,
