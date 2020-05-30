@@ -5,6 +5,7 @@ import Home from "./containers/Home/Home";
 import DashboardLayout from "./containers/DashboardLayout/DashboardLayout.tsx";
 import AuthContextProvider from "./contexts/AuthContext";
 import ServiceContextProvider from "./contexts/ServiceContext";
+import ParticipantsContextProvicer from "./contexts/ParticipantsContext";
 
 function App() {
   // ========================================================================
@@ -12,27 +13,29 @@ function App() {
   return (
     <AuthContextProvider>
       <ServiceContextProvider>
-        <Router>
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route path="/administrador">
-              <DashboardLayout />
-            </Route>
-            <Route path="/cliente">
-              <DashboardLayout />
-            </Route>
-            <Route path="/operario">
-              <DashboardLayout />
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            {/* <Route path="/login/:id/:token" render={<DashboardLayout />} /> */}
-          </Switch>
-          {/* <Redirect from="/" to="/" /> */}
-        </Router>
+        <ParticipantsContextProvicer>
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route path="/administrador">
+                <DashboardLayout />
+              </Route>
+              <Route path="/cliente">
+                <DashboardLayout />
+              </Route>
+              <Route path="/operario">
+                <DashboardLayout />
+              </Route>
+              <Route path="/login">
+                <Login />
+              </Route>
+              {/* <Route path="/login/:id/:token" render={<DashboardLayout />} /> */}
+            </Switch>
+            {/* <Redirect from="/" to="/" /> */}
+          </Router>
+        </ParticipantsContextProvicer>
       </ServiceContextProvider>
     </AuthContextProvider>
   );

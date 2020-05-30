@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import "./SearchParticipant.scss";
+import { FaSearch } from "react-icons/fa";
 
 const SeachParticipant = (props) => {
   const [filteredItems, setFilteredItems] = useState({
@@ -32,28 +33,24 @@ const SeachParticipant = (props) => {
   return (
     <Form className="searchParticipant">
       <Form.Group>
-        <Form.Label>Buscar por identificación:</Form.Label>
+        <Form.Label>
+          {props.title} <FaSearch />
+        </Form.Label>
         <Form.Control
           type="text"
           id="searchField"
-          placeholder="Número de identificación"
+          placeholder={props.placeholder}
           onChange={(e) => handleChange(e)}
+          autoComplete="off"
         />
       </Form.Group>
       <div className="searchResults">
         {filteredItems.suggestions.map((item, idx) => {
           return (
-            <div className="result" key={idx}>
+            <div className="result" key={idx} onClick={() => handleClick(item)}>
               <p>
                 {item.official_id} - {item.first_name} {item.last_name}
               </p>
-              <Button
-                varitant={"primary"}
-                size="sm"
-                onClick={() => handleClick(item)}
-              >
-                Add
-              </Button>
             </div>
           );
         })}

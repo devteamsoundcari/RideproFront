@@ -1,39 +1,79 @@
 .setParticipants {
   margin-top: 1rem;
   text-align: center;
-  .finalizarBtn {
-    margin: auto;
-  }
-  table {
-    small {
-      color: red;
-      font-weight: bold;
-      font-size: 12px;
+  .participantsTools {
+    padding: 2rem;
+    justify-content: center;
+    align-items: center;
+    background-color: gainsboro;
+    margin-top: 2rem;
+    border-radius: 10px;
+    .stats {
+      p {
+        font-size: 13px;
+        margin: 0px;
+        font-weight: 500;
+        // padding: 0px;
+        small {
+          font-size: 13px;
+          margin-left: 10px;
+          font-weight: bold;
+          color: teal;
+        }
+      }
+      .finalizarBtn {
+        margin-bottom: 10px;
+      }
     }
-    td {
-      text-align: center;
-      .content-editable {
-        padding: 10px 5px;
-        background-color: #dee2e6;
-      }
-      .new-row {
-        padding: 10px 5px;
-        background-color: #adb5bd;
-      }
-      button {
+  }
+  .editableTable {
+    justify-content: center;
+    align-items: center;
+    background-color: gainsboro;
+    margin-top: 3px;
+    padding: 2rem;
+    border-radius: 10px;
+    table {
+      small {
+        color: red;
+        font-weight: bold;
         font-size: 12px;
-        span {
-          font-size: 15px;
+      }
+      td {
+        text-align: center;
+        padding: 0px 2px;
+        .content-editable {
+          padding: 10px 5px;
+          background-color: #dee2e6;
+        }
+        .new-row {
+          padding: 10px 5px;
+          background-color: #adb5bd;
+        }
+        button {
+          font-size: 12px;
+          span {
+            font-size: 15px;
+          }
+        }
+      }
+      .incorrect {
+        .content-editable {
+          border: 2px solid red;
+        }
+        .new-row {
+          border: 2px solid red;
         }
       }
     }
-    .incorrect {
-      .content-editable {
-        border: 2px solid red;
-      }
-      .new-row {
-        border: 2px solid red;
-      }
-    }
+  }
+
+  .dataTable {
+    justify-content: center;
+    align-items: center;
+    background-color: gainsboro;
+    margin-top: 3px;
+    padding: 2rem;
+    border-radius: 10px;
   }
 }

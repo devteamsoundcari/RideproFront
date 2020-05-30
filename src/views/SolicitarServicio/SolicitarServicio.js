@@ -11,7 +11,7 @@ import ConfirmServiceModal from "./ConfirmServiceModal/ConfrimServiceModal";
 
 const SolicitarServicio = (props) => {
   const { setServiceInfoContext } = useContext(ServiceContext);
-  const [key, setKey] = useState("paso4");
+  const [key, setKey] = useState("paso1");
   const [date, setDate] = useState("");
   const [service, setService] = useState("");
   const [place, setPlace] = useState("");
@@ -132,7 +132,7 @@ const SolicitarServicio = (props) => {
                 eventKey="paso4"
                 title={
                   <p>
-                    <span>4</span> Agregar participantes
+                    <span>4</span> Participantes
                   </p>
                 }
                 disabled={place ? false : true}

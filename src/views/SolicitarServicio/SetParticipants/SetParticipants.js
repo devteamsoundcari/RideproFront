@@ -13,10 +13,12 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import "./SetParticipants.scss";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { ServiceContext } from "../../../contexts/ServiceContext";
+import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import { getAllDrivers } from "../../../controllers/apiRequests";
 import UploadExcelFile from "../UploadExcelFile/UploadExcelFile";
 import EditableTable from "../../../utils/EditableTable";
-import SearchParticipant from "./SearchParticipant/SearchParticipant";
+import SearchByDocument from "../../../utils/SearchByDocument/SearchByDocument";
+import DataTable from "./DataTable/DataTable";
 
 function isParticipantRegistered(x, y) {
   for (var index in x) {
@@ -36,15 +38,17 @@ function isParticipantRegistered(x, y) {
 const SetParticipants = (props) => {
   const { userInfoContext } = useContext(AuthContext);
   const { serviceInfoContext } = useContext(ServiceContext);
+  const {
+    setAllParticipantsInfoContext,
+    setRegisteredParticipantsContext,
+  } = useContext(ParticipantsContext);
   const { handleSubmit, register } = useForm();
   const [participants, setParticipants] = useState([]);
   const [errors, setErrors] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
-  const [showRemoveUserModal, setShowRemoveUserModal] = useState({
-    show: false,
-    idx: null,
-  });
+  const [dataTable, setDataTable] = useState([]);
+  const [registeredParticipants, setRegisteredParticipants] = useState([]);
 
   const fields = [
     {
@@ -111,23 +115,6 @@ const SetParticipants = (props) => {
     }
   };
 
-  // ============================= REMOVE PARTICIPANT FROM LIST ============================================
-
-  const removeUserFromList = (idx) => {
-    let rideVal = parseInt(serviceInfoContext.ride_value);
-    if (rideVal > 0) {
-      const temp = [...participants];
-      temp.splice(idx, 1);
-      setParticipants(() => temp);
-      setRides((prevRides) => prevRides - rideVal);
-      setShowRemoveUserModal({ show: false, idx: null });
-    }
-  };
-
-  const handleRemoveItem = (idx) => {
-    setShowRemoveUserModal({ show: true, idx });
-  };
-
   // ================================== GETTING ALL DRIVERS FROM DB =================================================
 
   useEffect(() => {
@@ -145,7 +132,7 @@ const SetParticipants = (props) => {
         items.push(item);
         return true;
       });
-
+      setAllParticipantsInfoContext(items);
       setParticipantsDB(items);
     }
     fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers/`);
@@ -157,105 +144,97 @@ const SetParticipants = (props) => {
     props.setParticipants(participants, rides);
   };
 
-  // =============================================================================================================
-  // const handleFile = (data, info) => {
-  //   let keys = ["official_id", "first_name", "last_name", "email", "cellphone"];
-  //   data
-  //     .map((x) => x.map((y, i) => ({ [keys[i]]: y })))
-  //     .map((z) => (z = { ...z[0], ...z[1], ...z[2], ...z[3], ...z[4] }))
-  //     .map((y) =>
-  //       setParticipants((prevParticipants) => [...prevParticipants, y])
-  //     );
-  // };
-  // =============================================================================================================
-
   useEffect(() => {
-    console.log("participants", participants);
-  }, [participants]);
+    if (serviceInfoContext.service_type === "Persona") {
+      let creds = serviceInfoContext.ride_value * registeredParticipants.length;
+      setRides(creds);
+    } else {
+      setRides(serviceInfoContext.ride_value);
+    }
+  }, [registeredParticipants, serviceInfoContext]);
 
   const handleSearchParticipant = (item) => {
-    console.log("kkega", item);
-    // setParticipants((oldArr) => [...oldArr, item]);
+    const temp = participantsDB.filter((i) => {
+      return i.official_id !== item.official_id;
+    });
+    setParticipantsDB(temp);
+    setDataTable((oldArr) => [...oldArr, item]);
   };
 
   const handleUpdateTable = (data) => {
-    console.log("hanlde update", data);
-
+    setRegisteredParticipantsContext((oldArr) => [...oldArr, data[0]]);
     setParticipants((oldArr) => [...oldArr, data[0]]);
   };
 
+  useEffect(() => {
+    console.log(serviceInfoContext);
+  }, [serviceInfoContext]);
+
   return (
     <Container className="setParticipants">
-      <Row className="justify-content-center align-items-center p-3">
+      <Row className="participantsTools">
         <Col>
           <UploadExcelFile addItem={handleAddItem} />
         </Col>
         <Col>
           {participantsDB.length > 0 && (
-            <SearchParticipant
+            <SearchByDocument
               participants={participantsDB}
               returnedItem={handleSearchParticipant}
+              title="Buscar por documento"
+              placeholder="Buscar por Identificación"
             />
           )}
         </Col>
+        <Col className="stats">
+          <Button
+            variant="primary"
+            size="bg"
+            onClick={handleFinalizar}
+            className="finalizarBtn"
+            disabled={rides ? false : true}
+          >
+            Finalizar
+          </Button>
+          <p>
+            Tipo de Servicio:
+            <small>
+              {serviceInfoContext.ride_value} x{" "}
+              {serviceInfoContext.service_type}
+            </small>
+          </p>
+          <p>
+            Creditos a utilizar:
+            <small>
+              {rides} / {userInfoContext.company.credit}
+            </small>
+          </p>
+          <p>
+            Participantes: <small>{registeredParticipants.length}</small>
+          </p>
+        </Col>
       </Row>
-      <Button
-        variant="primary"
-        size="bg"
-        onClick={handleFinalizar}
-        className="finalizarBtn"
-        disabled={rides ? false : true}
+      <Row
+        className="dataTable"
+        style={{
+          display: `${registeredParticipants.length > 0 ? "" : "none"}`,
+        }}
       >
-        Finalizar
-      </Button>
-
-      <EditableTable
-        dataSet={participants}
-        fields={fields}
-        onValidate={(x) => setErrors(x)}
-        onUpdate={handleUpdateTable}
-      />
-
-      <Modal
-        size="sm"
-        show={showRemoveUserModal.show}
-        onHide={() => setShowRemoveUserModal({ show: false })}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Advertencia</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {`¿Estás ` +
-            `${
-              {
-                M: "seguro",
-                F: "segura",
-                O: "segur@",
-              }[userInfoContext.gender]
-            } de que quieres remover este usuario?`}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowRemoveUserModal({ show: false })}
-          >
-            No
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => removeUserFromList(showRemoveUserModal.idx)}
-          >
-            {`Si, estoy ` +
-              `${
-                {
-                  M: "seguro",
-                  F: "segura",
-                  O: "segur@",
-                }[userInfoContext.gender]
-              }`}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <DataTable
+          data={dataTable}
+          registeredParticipants={(x) => setRegisteredParticipants(x)}
+          deletedItem={(x) => setParticipantsDB((oldArray) => [...oldArray, x])}
+        />
+      </Row>
+      <Row className="editableTable">
+        <h5>Registrar nuevos participantes</h5>
+        <EditableTable
+          dataSet={participants}
+          fields={fields}
+          onValidate={(x) => setErrors(x)}
+          onUpdate={handleUpdateTable}
+        />
+      </Row>
     </Container>
   );
 };
