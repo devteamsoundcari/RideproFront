@@ -44,7 +44,7 @@ const SetParticipants = (props) => {
   // ============================================  EDITABLE TABLE SETUP  ================================================
 
   const fields = {
-    officialId: {
+    official_id: {
       name: "Identificación",
       format: "String",
       regex: /^\d+$/,
@@ -54,7 +54,7 @@ const SetParticipants = (props) => {
         unique: "Oops, este documento ya esta siendo usado por otra persona.",
       },
     },
-    name: {
+    first_name: {
       name: "Nombre",
       regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
       unique: false,
@@ -146,7 +146,7 @@ const SetParticipants = (props) => {
   // ============================================  HANDLE SUMBIT  ================================================
 
   const handleFinalizar = () => {
-    props.setParticipants(registeredParticipants, participants, rides);
+    props.setParticipants(rides);
   };
 
   // ============================================  CHECK TYPE OF SERVICE  ================================================
@@ -184,8 +184,8 @@ const SetParticipants = (props) => {
   // =========================================================================================================
 
   useEffect(() => {
-    console.log(serviceInfoContext);
-  }, [serviceInfoContext]);
+    console.log("errors", errors);
+  }, [errors]);
 
   return (
     <Container className="setParticipants">

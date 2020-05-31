@@ -25,12 +25,12 @@ const SolicitarServicio = (props) => {
       setService("");
     }
     setService(data);
-    setKey("paso4");
+    setKey("paso2");
   };
   useEffect(() => {
     if (service) {
       setServiceInfoContext(service);
-      setKey("paso4");
+      setKey("paso2");
     }
     //eslint-disable-next-line
   }, [service]);
@@ -63,22 +63,13 @@ const SolicitarServicio = (props) => {
 
   // =========================== HANDLING PARTICIPANTS AND SUBMITING THE SERVICE ============================
 
-  const handleParticipants = (people, rides) => {
-    if (participants) {
-      setParticipants([]);
-    }
+  const handleParticipants = (rides) => {
     if (rides) {
       setRides([]);
     }
     setRides(rides);
-    setParticipants(people);
+    setShowModal(true);
   };
-  useEffect(() => {
-    if (participants.length) {
-      // create new service
-      setShowModal(true);
-    }
-  }, [participants]);
 
   return (
     <Row>
@@ -143,15 +134,16 @@ const SolicitarServicio = (props) => {
           </Card.Body>
         </Card>
       </Col>
-      <ConfirmServiceModal
-        show={showModal}
-        setShow={(e) => setShowModal(e)}
-        service={service}
-        date={date}
-        place={place}
-        participants={participants}
-        rides={rides}
-      />
+      {showModal && (
+        <ConfirmServiceModal
+          show={true}
+          setShow={(e) => setShowModal(e)}
+          service={service}
+          date={date}
+          place={place}
+          rides={rides}
+        />
+      )}
     </Row>
   );
 };
