@@ -192,39 +192,36 @@ export class EditableTable extends React.Component<
     this.showInsertionRowErrors();
   }
 
-  checkInsertionRowDuplicates() {
+  checkInsertionRowDuplicates(field: string) {
     const { insertionRow, insertionRowErrors } = this.state;
 
-    for (let field of Array.from(insertionRow.keys())) {
-      let idx: number;
+    let idx: number;
 
-      if (insertionRow.get(field) !== "") {
-        if (
-          this.state.dataSet.find(
-            (r: any) => r.data[field] === insertionRow.get(field)
-          )
-        ) {
-          let err: InsertionRowError;
+    if (
+      insertionRow.get(field) !== "" &&
+      this.state.dataSet.find(
+        (r: any) => r.data[field] === insertionRow.get(field)
+      )
+    ) {
+      let err: InsertionRowError;
 
-          idx = insertionRowErrors.findIndex(
-            (e: InsertionRowError) => e.column === field && e.type === "unique"
-          );
-          if (idx < 0) {
-            err = {
-              column: field,
-              type: "unique",
-              message: this.props.fields[field].errorMessages.unique,
-            };
-            insertionRowErrors.push(err);
-          }
-        } else {
-          idx = insertionRowErrors.findIndex(
-            (e: InsertionRowError) => e.column === field && e.type === "unique"
-          );
-          if (idx >= 0) {
-            insertionRowErrors.splice(idx);
-          }
-        }
+      idx = insertionRowErrors.findIndex(
+        (e: InsertionRowError) => e.column === field && e.type === "unique"
+      );
+      if (idx < 0) {
+        err = {
+          column: field,
+          type: "unique",
+          message: this.props.fields[field].errorMessages.unique,
+        };
+        insertionRowErrors.push(err);
+      }
+    } else {
+      idx = insertionRowErrors.findIndex(
+        (e: InsertionRowError) => e.column === field && e.type === "unique"
+      );
+      if (idx >= 0) {
+        insertionRowErrors.splice(idx);
       }
     }
   }
@@ -277,6 +274,9 @@ export class EditableTable extends React.Component<
     this.state.insertionRow.set(column, value);
 
     this.validateInsertionRow();
+    if (this.props.fields[column].unique === true) {
+      this.checkInsertionRowDuplicates(column);
+    }
   }
 
   handleRow(event: any) {
@@ -440,6 +440,10 @@ export class EditableTable extends React.Component<
         document.execCommand("selectAll", false, null!);
       }, 0);
     }
+  }
+
+  componentDidUpdate(nextProps, nextState) {
+    console.log(nextState);
   }
 
   render() {
