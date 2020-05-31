@@ -1,22 +1,87 @@
 .setParticipants {
   margin-top: 1rem;
   text-align: center;
-  .finalizarBtn {
+  .participantsTools {
+    padding: 2rem;
+    justify-content: center;
+    align-items: center;
+    background-color: gainsboro;
     margin-top: 2rem;
-    margin: 2rem auto;
-  }
-  td {
-    text-align: center;
-    button {
-      font-size: 12px;
-      span {
-        font-size: 15px;
+    border-radius: 10px;
+    .stats {
+      p {
+        font-size: 13px;
+        margin: 0px;
+        font-weight: 500;
+        // padding: 0px;
+        small {
+          font-size: 13px;
+          margin-left: 10px;
+          font-weight: bold;
+          color: teal;
+        }
+      }
+      .finalizarBtn {
+        margin-bottom: 10px;
       }
     }
+  }
+  .editableTable {
+    justify-content: center;
+    align-items: center;
+    background-color: gainsboro;
+    margin-top: 3px;
+    padding: 2rem;
+    border-radius: 10px;
+  }
+
+  .dataTable {
+    justify-content: center;
+    align-items: center;
+    background-color: gainsboro;
+    margin-top: 3px;
+    padding: 2rem;
+    border-radius: 10px;
+  }
+
+  table {
     small {
       color: red;
       font-weight: bold;
       font-size: 12px;
+    }
+    td {
+      text-align: center;
+      padding: 0px 2px;
+      .content-editable {
+        background-color: #adb5bd;
+      }
+      .new-row {
+        border: 1px solid rgb(196, 196, 196);
+        border-radius: 2px;
+        background-color: #fff;
+      }
+      span {
+        svg {
+          margin-bottom: 2px;
+          &:hover {
+            color: red;
+          }
+        }
+      }
+      button {
+        font-size: 15px;
+        padding: 0px;
+        padding-bottom: 5px;
+      }
+    }
+    .incorrect {
+      .content-editable {
+        border: 2px solid red;
+      }
+      .new-row {
+        border: 2px solid red;
+      }
     }
   }
 }

@@ -1,8 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { FaCheckCircle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import {
   createRequest,
   createDriver,
@@ -12,14 +13,69 @@ import {
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
+
+  const {
+    participantsToRegisterContext,
+    setParticipantsToRegisterContext,
+    registeredParticipantsContext,
+    allParticipantsInfoContext,
+    setRegisteredParticipantsContext,
+  } = useContext(ParticipantsContext);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSuccessPropmt, setSuccessPrompt] = useState(false);
+  const [badParticipants, setBadParticipants] = useState([]);
+  const [displayData, setDisplayData] = useState(false);
+  const [newRegistered, setNewRegistered] = useState(
+    registeredParticipantsContext
+  );
+  const [newToRegister, setNewToRegister] = useState([]);
+  const [rides, setRides] = useState(props.rides);
+
   const options = {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   };
+
+  const canBeRegistered = (arrToRegister) => {
+    let badItems = [];
+    for (let item of allParticipantsInfoContext) {
+      for (let item2 of arrToRegister) {
+        if (item.official_id === item2.official_id) {
+          badItems.push(item2);
+          // TODO: here a bug... we nedd to figure it out
+          if (
+            newRegistered.findIndex(
+              (i) => i.official_id === item.official_id
+            ) === -1
+          ) {
+            setNewRegistered((oldArr) => [...oldArr, item]);
+          }
+        }
+      }
+    }
+    return badItems;
+  };
+
+  // =============================== CHECK IF ALREADY REGISTERED PARTICIPANTS ========================================
+
+  useEffect(() => {
+    if (participantsToRegisterContext.length > 0) {
+      let result = canBeRegistered(participantsToRegisterContext);
+      console.log("RESUTL", result);
+      if (result.length > 0) {
+        setBadParticipants(result);
+      }
+    } else {
+      setDisplayData(true);
+    }
+    // eslint-disable-next-line
+  }, [
+    participantsToRegisterContext,
+    registeredParticipantsContext,
+    allParticipantsInfoContext,
+  ]);
 
   // =============================== REGISTER UNRESTIGERED DRIVERS ===================================
 
@@ -83,7 +139,11 @@ const ConfirmServiceModal = (props) => {
     });
   };
 
-  const displayData = () => {
+  useEffect(() => {
+    console.log("props", props);
+  });
+
+  const requestResume = () => {
     return (
       <React.Fragment>
         <Modal.Header closeButton>
@@ -120,12 +180,25 @@ const ConfirmServiceModal = (props) => {
           </p>
           <p>
             <strong>Rides utilizados: </strong>
-            {props.rides}
+            {rides}
           </p>
 
-          <strong>Participantes ({props.participants.length}): </strong>
+          <strong>
+            Participantes ({newRegistered.length + newToRegister.length}
+            ):{" "}
+          </strong>
           <ul>
-            {props.participants.map((participant, idx) => {
+            {/* <li>Ya registrados</li> */}
+            {newRegistered.map((participant, idx) => {
+              return (
+                <li key={idx}>
+                  {participant.first_name} {participant.last_name} (
+                  {participant.email})
+                </li>
+              );
+            })}
+            {/* <li>new to register</li> */}
+            {newToRegister.map((participant, idx) => {
               return (
                 <li key={idx}>
                   {participant.first_name} {participant.last_name} (
@@ -136,7 +209,7 @@ const ConfirmServiceModal = (props) => {
           </ul>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => props.setShow(false)}>
+          <Button variant="secondary" onClick={handleCancel}>
             Cancelar
           </Button>
           <Button variant="primary" onClick={handleCreateService}>
@@ -179,11 +252,77 @@ const ConfirmServiceModal = (props) => {
     );
   };
 
+  const handleContinue = () => {
+    for (let item of participantsToRegisterContext) {
+      for (let item2 of badParticipants) {
+        if (item.official_id !== item2.official_id)
+          setNewToRegister((oldArr) => [...oldArr, item]);
+      }
+    }
+    setBadParticipants([]);
+    setDisplayData(true);
+  };
+  useEffect(() => {
+    if (props.service.service_type === "Persona") {
+      console.log(newToRegister.length, newRegistered.length);
+      let r =
+        props.service.ride_value * newToRegister.length +
+        props.service.ride_value * newRegistered.length;
+      setRides(r);
+    } else {
+      setRides(props.service.ride_value);
+    }
+    //eslint-disable-next-line
+  }, [newToRegister, newRegistered]);
+
+  const handleCancel = () => {
+    props.setShow(false);
+  };
+
+  const displayErrorParticipants = () => {
+    return (
+      <React.Fragment>
+        <Modal.Header closeButton>
+          <Modal.Title>Adveretencia</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h5>Los siguientes participantes ya han sido registrados:</h5>
+          <ul>
+            {badParticipants.map((participant, idx) => {
+              return (
+                <li key={idx}>
+                  {participant.official_id} {participant.first_name}{" "}
+                  {participant.last_name} ({participant.email})
+                </li>
+              );
+            })}
+          </ul>
+          <p>
+            Haz click en "Continuar" si deseas agendar el servicio con la
+            información original que tenemos de estos participantes ó click en
+            "Cancelar" para modificar los datos.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCancel}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleContinue}>
+            Continuar
+          </Button>
+        </Modal.Footer>
+      </React.Fragment>
+    );
+  };
+
   return (
     <Modal show={props.show} onHide={() => props.setShow(false)}>
-      {showSpinner && loader()}
-      {showSuccessPropmt && successPropmt()}
-      {showSpinner || showSuccessPropmt ? "" : displayData()}
+      {badParticipants.length > 0 && displayErrorParticipants()}
+      {displayData && requestResume()}
+
+      {/* {showSpinner && loader()} */}
+      {/* {showSuccessPropmt && successPropmt()} */}
+      {/* {showSpinner || showSuccessPropmt ? "" : displayData()} */}
       {/* {displayData()} */}
     </Modal>
   );

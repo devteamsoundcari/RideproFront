@@ -63,22 +63,13 @@ const SolicitarServicio = (props) => {
 
   // =========================== HANDLING PARTICIPANTS AND SUBMITING THE SERVICE ============================
 
-  const handleParticipants = (people, rides) => {
-    if (participants) {
-      setParticipants([]);
-    }
+  const handleParticipants = (rides) => {
     if (rides) {
       setRides([]);
     }
     setRides(rides);
-    setParticipants(people);
+    setShowModal(true);
   };
-  useEffect(() => {
-    if (participants.length) {
-      // create new service
-      setShowModal(true);
-    }
-  }, [participants]);
 
   return (
     <Row>
@@ -132,7 +123,7 @@ const SolicitarServicio = (props) => {
                 eventKey="paso4"
                 title={
                   <p>
-                    <span>4</span> Agregar participantes
+                    <span>4</span> Participantes
                   </p>
                 }
                 disabled={place ? false : true}
@@ -143,15 +134,16 @@ const SolicitarServicio = (props) => {
           </Card.Body>
         </Card>
       </Col>
-      <ConfirmServiceModal
-        show={showModal}
-        setShow={(e) => setShowModal(e)}
-        service={service}
-        date={date}
-        place={place}
-        participants={participants}
-        rides={rides}
-      />
+      {showModal && (
+        <ConfirmServiceModal
+          show={true}
+          setShow={(e) => setShowModal(e)}
+          service={service}
+          date={date}
+          place={place}
+          rides={rides}
+        />
+      )}
     </Row>
   );
 };
