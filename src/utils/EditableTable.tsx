@@ -1,17 +1,26 @@
 import React, { createRef } from "react";
-import { Table, Button, OverlayTrigger, Popover } from "react-bootstrap";
+import {
+  Table,
+  Button,
+  Overlay,
+  OverlayTrigger,
+  Popover,
+} from "react-bootstrap";
 import { FaTimes, FaPlus } from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 import ContentEditable from "react-contenteditable";
 
 interface Error {
   id: number;
   column: string;
   type: string;
+  message: string;
 }
 
 interface InsertionRowError {
   column: string;
   type: string;
+  message: string;
 }
 
 export class EditableTable extends React.Component<
@@ -83,6 +92,7 @@ export class EditableTable extends React.Component<
           id: row.id,
           column: fieldName,
           type: "regex",
+          message: this.props.fields[fieldName].errorMessages.regex,
         };
         this.state.errors.push(err);
       }
@@ -94,15 +104,12 @@ export class EditableTable extends React.Component<
         this.state.errors.splice(idx);
       }
     }
-
-    this.showErrors();
     this.props.onValidate(this.state.errors.length <= 0 ? true : false);
   }
 
   checkDuplicates(row: any, fieldName: string) {
     let idx: number;
 
-    console.log(row);
     if (
       this.state.dataSet.find(
         (r: any) => r.id !== row.id && r.data[fieldName] === row.data[fieldName]
@@ -117,7 +124,8 @@ export class EditableTable extends React.Component<
         err = {
           id: row.id,
           column: fieldName,
-          type: 'unique',
+          type: "unique",
+          message: this.props.fields[fieldName].errorMessages.unique,
         };
         this.state.errors.push(err);
       }
@@ -133,21 +141,10 @@ export class EditableTable extends React.Component<
     this.props.onValidate(this.state.errors.length <= 0 ? true : false);
   }
 
-  showErrors() {
-    this.state.displayErrors.forEach(
-      (value: boolean, key: string, map: Map<string, boolean>) =>
-        map.set(key, false)
-    );
-
-    for (let err of this.state.errors) {
-      let field = this.props.fields[err.column];
-      this.state.displayErrors.set(field.name, true);
-    }
-  }
-
   getErrors(id: number, field: string) {
     const errors = this.state.errors.filter(
-      (err: Error) => err.id === id && err.column === field);
+      (err: Error) => err.id === id && err.column === field
+    );
 
     return errors;
   }
@@ -172,27 +169,64 @@ export class EditableTable extends React.Component<
         let err: InsertionRowError;
 
         idx = insertionRowErrors.findIndex(
-          (e: InsertionRowError) => e.column === key
+          (e: InsertionRowError) => e.column === key && e.type === "regex"
         );
         if (idx < 0) {
           err = {
             column: key,
-            type: 'regex'
+            type: "regex",
+            message: this.props.fields[key].errorMessages.regex,
           };
           insertionRowErrors.push(err);
         }
       } else {
         idx = insertionRowErrors.findIndex(
-          (e: InsertionRowError) => e.column === key
+          (e: InsertionRowError) => e.column === key && e.type === "regex"
         );
         if (idx >= 0) {
           insertionRowErrors.splice(idx);
         }
       }
-      console.log(this.state.insertionRowErrors);
     }
 
     this.showInsertionRowErrors();
+  }
+
+  checkInsertionRowDuplicates() {
+    const { insertionRow, insertionRowErrors } = this.state;
+
+    for (let field of Array.from(insertionRow.keys())) {
+      let idx: number;
+
+      if (insertionRow.get(field) !== "") {
+        if (
+          this.state.dataSet.find(
+            (r: any) => r.data[field] === insertionRow.get(field)
+          )
+        ) {
+          let err: InsertionRowError;
+
+          idx = insertionRowErrors.findIndex(
+            (e: InsertionRowError) => e.column === field && e.type === "unique"
+          );
+          if (idx < 0) {
+            err = {
+              column: field,
+              type: "unique",
+              message: this.props.fields[field].errorMessages.unique,
+            };
+            insertionRowErrors.push(err);
+          }
+        } else {
+          idx = insertionRowErrors.findIndex(
+            (e: InsertionRowError) => e.column === field && e.type === "unique"
+          );
+          if (idx >= 0) {
+            insertionRowErrors.splice(idx);
+          }
+        }
+      }
+    }
   }
 
   showInsertionRowErrors() {
@@ -210,6 +244,14 @@ export class EditableTable extends React.Component<
       ...current,
       displayErrors: ins,
     }));
+  }
+
+  getInsertionRowErrors(field: string) {
+    const errors = this.state.insertionRowErrors.filter(
+      (err: InsertionRowError) => err.column === field
+    );
+
+    return errors;
   }
 
   deleteRow(id: number) {
@@ -257,7 +299,6 @@ export class EditableTable extends React.Component<
         dataSet: prevDataSet,
       }),
       () => {
-        console.log(this.state.dataSet);
         this.validate(row, column);
         if (this.props.fields[column].unique === true) {
           this.checkDuplicates(row, column);
@@ -265,6 +306,17 @@ export class EditableTable extends React.Component<
         this.updateDataSetProp();
       }
     );
+  }
+
+  handleClickOnInsertionRow(event: any) {
+    const {
+      currentTarget: {
+        dataset: { column },
+      },
+      target: { value },
+    } = event;
+
+    return this.isInsertionFieldIncorrect(column);
   }
 
   isIncorrect(row: number, field: any) {
@@ -347,13 +399,12 @@ export class EditableTable extends React.Component<
           }
         }
         return record.data;
-      }
-    ));
+      })
+    );
 
-    this.setState(
-      (current) => ({
-        ...current,
-        dataSet: dataSet,
+    this.setState((current) => ({
+      ...current,
+      dataSet: dataSet,
     }));
   }
 
@@ -391,149 +442,132 @@ export class EditableTable extends React.Component<
     }
   }
 
-  componentDidUpdate(nextProps: any, nextState: any) {
-    console.log(nextProps);
-    console.log(nextState);
-    console.log(this.state.errors);
-  }
-
   render() {
-    return (
-      <Table>
-        <thead>
-          <tr>
-            {Object.keys(this.props.fields).map((name: string) => {
-              return (
-                <th key={name}>
-                  {this.props.fields[name].name}
-                  {this.state.displayErrors.get(name) === true && (
-                    <div className="error-msg">
-                      {this.props.fields[name].errorMessages.regex}
-                    </div>
-                  )}
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {Array.from(this.state.insertionRow.keys()).map((k, i) => {
-              let props: any = {
-                innerRef: this.firstRow,
-              };
+    let ConditionalWrapper = ({ condition, wrapper, children }) =>
+      condition ? wrapper(children) : children;
 
-              if (i !== 0) props = {};
+    let headers = Object.keys(this.props.fields).map((name: string) => {
+      return <th key={name}>{this.props.fields[name].name}</th>;
+    });
 
+    let InsertButton = (props: any) => {
+      return (
+        <Button
+          variant="link"
+          onClick={() => this.addRow()}
+          disabled={
+            this.isInsertionRowIncorrect() || this.isInsertionRowEmpty()
+          }
+        >
+          <FaPlus />
+        </Button>
+      );
+    };
+
+    let insertionRow = Array.from(this.state.insertionRow.keys()).map(
+      (field, index) => {
+        let props: any = {
+          innerRef: this.firstRow,
+        };
+
+        if (index !== 0) {
+          props = {};
+        }
+
+        return (
+          <td
+            key={field}
+            className={this.isInsertionFieldIncorrect(field) ? "incorrect" : ""}
+          >
+            <ContentEditable
+              data-tip
+              data-for={`ir-${field}`}
+              data-event="focus keyup"
+              data-event-off="blur"
+              {...props}
+              html={this.state.insertionRow.get(field)!}
+              data-column={field}
+              className="new-row"
+              onChange={this.handleNewRow.bind(this)}
+              onPaste={this.pasteAsPlainText}
+              onKeyPress={this.disableNewlines}
+              onFocus={this.highlightAll}
+            />
+            {this.isInsertionFieldIncorrect(field) && (
+              <ReactTooltip id={`ir-${field}`} type="error" effect="solid">
+                <h6>Error</h6>
+                {this.getInsertionRowErrors(field).map(
+                  (e: InsertionRowError) => {
+                    return e.message;
+                  }
+                )}
+              </ReactTooltip>
+            )}
+          </td>
+        );
+      }
+    );
+
+    let insertedRows = this.state.dataSet.map((row: any) => {
+      return (
+        <tr key={row.id}>
+          {Object.keys(row.data)
+            .filter((field: any) => field !== "id")
+            .map((field) => {
               return (
                 <td
-                  key={k}
-                  className={
-                    this.isInsertionFieldIncorrect(k) ? "incorrect" : ""
-                  }
+                  key={field}
+                  className={this.isIncorrect(row.id, field) ? "incorrect" : ""}
                 >
                   <ContentEditable
-                    {...props}
-                    html={this.state.insertionRow.get(k)!}
-                    data-column={k}
-                    className="new-row"
-                    onChange={this.handleNewRow.bind(this)}
+                    data-tip
+                    data-for={`row-${row.id}-${field}`}
+                    data-event="focus keyup"
+                    data-event-off="blur"
+                    html={String(row.data[field])}
+                    className="content-editable"
+                    data-column={field}
+                    data-id={row.id}
+                    onChange={this.handleRow.bind(this)}
                     onPaste={this.pasteAsPlainText}
                     onKeyPress={this.disableNewlines}
                     onFocus={this.highlightAll}
                   />
+                  {this.isIncorrect(row.id, field) && (
+                    <ReactTooltip
+                      id={`row-${row.id}-${field}`}
+                      type="error"
+                      effect="solid"
+                    >
+                      <h6>Error</h6>
+                      {this.getErrors(row.id, field).map((e: Error) => {
+                        return e.message;
+                      })}
+                    </ReactTooltip>
+                  )}
                 </td>
               );
             })}
-            <td>
-              <Button
-                variant="link"
-                onClick={() => this.addRow()}
-                disabled={
-                  this.isInsertionRowIncorrect() || this.isInsertionRowEmpty()
-                }
-              >
-                <FaPlus/>
-              </Button>
-            </td>
+          <td>
+            <Button variant="link" onClick={() => this.deleteRow(row.id)}>
+              <FaTimes />
+            </Button>
+          </td>
+        </tr>
+      );
+    });
+
+    return (
+      <Table>
+        <thead>
+          <tr>{headers}</tr>
+        </thead>
+        <tbody>
+          <tr>
+            {insertionRow}
+            <InsertButton />
           </tr>
-          {this.state.dataSet.map((row: any) => {
-            return (
-              <tr key={row.id}>
-                {Object.keys(row.data)
-                  .filter((field: any) => field !== "id")
-                  .map((k) => {
-                    return (
-                      <td
-                        key={k}
-                        className={
-                          this.isIncorrect(row.id, k) ? "incorrect" : ""
-                        }
-                      >
-                        {this.getErrors(row.id, k).length ? (
-                          <>
-                            <OverlayTrigger
-                              trigger="focus"
-                              key={row.id}
-                              placement="top"
-                              overlay={
-                                <Popover id="tooltip-error">
-                                  <Popover.Title as="h3">
-                                    {"Error"}
-                                  </Popover.Title>
-                                  <Popover.Content>
-                                    {this.getErrors(row.id, k).map(
-                                      (err: Error) => {
-                                        return (
-                                          <strong>
-                                            {
-                                              this.props.fields[err.column]
-                                                .errorMessages[err.type]
-                                            }
-                                          </strong>
-                                        );
-                                      }
-                                    )}
-                                  </Popover.Content>
-                                </Popover>
-                              }
-                            >
-                              <ContentEditable
-                                html={String(row.data[k])}
-                                className="content-editable"
-                                data-column={k}
-                                data-id={row.id}
-                                onChange={this.handleRow.bind(this)}
-                                onPaste={this.pasteAsPlainText}
-                                onKeyPress={this.disableNewlines}
-                                onFocus={this.highlightAll}
-                              />
-                            </OverlayTrigger>
-                          </>
-                        ) :
-                        <>
-                              <ContentEditable
-                                html={String(row.data[k])}
-                                className="content-editable"
-                                data-column={k}
-                                data-id={row.id}
-                                onChange={this.handleRow.bind(this)}
-                                onPaste={this.pasteAsPlainText}
-                                onKeyPress={this.disableNewlines}
-                                onFocus={this.highlightAll}
-                              />
-                        </>}
-                      </td>
-                    );
-                  })}
-                <td>
-                  <Button variant="link" onClick={() => this.deleteRow(row.id)}>
-                    <FaTimes/>
-                  </Button>
-                </td>
-              </tr>
-            );
-          })}
+          {insertedRows}
         </tbody>
       </Table>
     );
