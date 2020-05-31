@@ -78,7 +78,7 @@ const SetParticipants = (props) => {
         regex: "Por favor, ingresa un email válido.",
       },
     },
-    phone: {
+    cellphone: {
       name: "Teléfono",
       regex: /^\d{7,10}$/,
       unique: false,

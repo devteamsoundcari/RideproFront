@@ -192,12 +192,9 @@ const createRequest = async (data) => {
     start_time,
     finish_time,
     drivers,
+    spent_credit,
+    track,
   } = data;
-
-  // =========================== MAPGIN DRIVER TO COVERT THEM INTO URLS ============================================
-  drivers = drivers.map((driver) => {
-    return driver[0];
-  });
 
   const result = await axios({
     method: "POST",
@@ -209,6 +206,8 @@ const createRequest = async (data) => {
       operator: null,
       instructor: "na",
       place,
+      track,
+      spent_credit,
       start_time,
       finish_time,
       status: `${process.env.REACT_APP_STATUS_CONFIRMATION_PROCESS}`, //"d02eaa22-8a5c-4904-b3c4-567782a53f51", // This is first step
@@ -221,7 +220,7 @@ const createRequest = async (data) => {
     console.log("fallo", err.request.response);
     return err;
   });
-  let result2 = await descreaseCredits(data.company, data.used_credits); // Calling decrease
+  let result2 = await descreaseCredits(data.company, data.spent_credit); // Calling decrease
   return { create: result, decrease: result2 };
 };
 
@@ -385,7 +384,6 @@ const getGender = async (name) => {
   return requests.data;
 };
 
-
 /* =================================   GET COMPANY TRACKS   ===================================== */
 const getTracks = async (url) => {
   const getInfo = async () => {
@@ -455,5 +453,5 @@ export {
   cancelRequestId,
   getServices,
   createNewTrack,
-  getTracks
+  getTracks,
 };
