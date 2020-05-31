@@ -488,6 +488,7 @@ export class EditableTable extends React.Component<
               data-for={`ir-${field}`}
               data-event="focus keyup"
               data-event-off="blur"
+              data-multiline={true}
               {...props}
               html={this.state.insertionRow.get(field)!}
               data-column={field}
@@ -502,7 +503,12 @@ export class EditableTable extends React.Component<
                 <h6>Error</h6>
                 {this.getInsertionRowErrors(field).map(
                   (e: InsertionRowError) => {
-                    return e.message;
+                    return (
+                      <>
+                        {e.message}
+                        <br/>
+                      </>
+                    );
                   }
                 )}
               </ReactTooltip>
@@ -528,6 +534,7 @@ export class EditableTable extends React.Component<
                     data-for={`row-${row.id}-${field}`}
                     data-event="focus keyup"
                     data-event-off="blur"
+                    data-multiline={true}
                     html={String(row.data[field])}
                     className="content-editable"
                     data-column={field}
@@ -545,7 +552,12 @@ export class EditableTable extends React.Component<
                     >
                       <h6>Error</h6>
                       {this.getErrors(row.id, field).map((e: Error) => {
-                        return e.message;
+                        return (
+                          <>
+                            {e.message}
+                            <br/>
+                          </>
+                        );
                       })}
                     </ReactTooltip>
                   )}
