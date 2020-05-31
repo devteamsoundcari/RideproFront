@@ -442,9 +442,9 @@ export class EditableTable extends React.Component<
     }
   }
 
-  componentDidUpdate(nextProps, nextState) {
-    console.log(nextState);
-  }
+  // componentDidUpdate(nextProps, nextState) {
+  //   console.log(nextState);
+  // }
 
   render() {
     let ConditionalWrapper = ({ condition, wrapper, children }) =>
@@ -506,7 +506,7 @@ export class EditableTable extends React.Component<
                     return (
                       <>
                         {e.message}
-                        <br/>
+                        <br />
                       </>
                     );
                   }
@@ -555,7 +555,7 @@ export class EditableTable extends React.Component<
                         return (
                           <>
                             {e.message}
-                            <br/>
+                            <br />
                           </>
                         );
                       })}
