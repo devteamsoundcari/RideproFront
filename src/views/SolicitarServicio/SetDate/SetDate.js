@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Form, Col, Container, Button } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -10,21 +10,29 @@ const SetDate = (props) => {
   const { handleSubmit, control } = useForm();
 
   const [date, setDate] = useState({
-    date: props.eventDate ? new Date() : props.date,
+    date: props.date || new Date(),
     placeholder: "",
     propose: false,
   });
 
   const [time, setTime] = useState({
-    time: props.eventDate ? new Date() : props.date,
+    time: props.date || new Date(),
     placeholder: "",
     propose: false,
   });
 
   const onSubmit = () => {
-    // Updatine the time so we send only one date
+    // Combining time and date returned by the datepicker components
     if (date && time) {
-      date.date.setTime(time.time.getTime());
+      let d = new Date(date.date.getTime());
+      let t = new Date(time.time.getTime());
+      d.setHours(t.getHours());
+      d.setMinutes(t.getMinutes());
+      d.setSeconds(0);
+      d.setMilliseconds(0);
+
+      setDate(d);
+      setTime(d);
       props.setDate(date);
     }
   };
