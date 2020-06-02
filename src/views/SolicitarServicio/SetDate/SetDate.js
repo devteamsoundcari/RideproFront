@@ -8,6 +8,7 @@ registerLocale("es", es);
 
 const SetDate = (props) => {
   const { handleSubmit, control } = useForm();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const [date, setDate] = useState({
     date: props.date || new Date(),
@@ -31,9 +32,16 @@ const SetDate = (props) => {
       d.setSeconds(0);
       d.setMilliseconds(0);
 
-      setDate(d);
-      setTime(d);
-      props.setDate(date);
+      console.log(d);
+      setDate((prevDate) => ({
+        ...prevDate,
+        date: d
+      }));
+      setTime((prevTime) => ({
+        ...prevTime,
+        time: d
+      }));
+      setIsSubmitted(true);
     }
   };
 
@@ -48,6 +56,13 @@ const SetDate = (props) => {
       time: data[0],
     });
   };
+
+  useEffect(() => {
+    if (isSubmitted) {
+      props.setDate(date);
+      setIsSubmitted(false);
+    }
+  }, [date, time, isSubmitted]);
 
   // const handleProposeDate = () => {
   //   if (!date.propose) {
