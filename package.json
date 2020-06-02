@@ -28,7 +28,8 @@
     "react-icons": "^3.9.0",
     "react-scripts": "^3.4.1",
     "react-tooltip": "^4.2.6",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "xlsx": "^0.16.1"
   },
   "scripts": {
     "start": "env-cmd -f .env react-scripts start",
