@@ -21,6 +21,8 @@
     "parcel-bundler": "^1.12.4",
     "react": "^16.13.1",
     "react-big-calendar": "^0.24.1",
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-bootstrap-table2-paginator": "^2.1.2",
     "react-contenteditable": "^3.3.4",
     "react-csv-reader": "^3.0.5",
     "react-dom": "^16.13.1",

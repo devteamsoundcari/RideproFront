@@ -24,15 +24,11 @@ const Usuarios = () => {
     fetchUsers(`${process.env.REACT_APP_API_URL}/api/v1/users/`);
   }, []);
 
-  useEffect(() => {
-    console.log("all users", users);
-  }, [users]);
-
   return (
     <Row>
       <Col>
         <RegistrarNuevoUsuario />
-        <AllUsers />
+        <AllUsers users={users} />
       </Col>
     </Row>
   );
