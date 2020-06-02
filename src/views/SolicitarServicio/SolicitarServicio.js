@@ -15,7 +15,7 @@ const SolicitarServicio = (props) => {
   const [date, setDate] = useState("");
   const [service, setService] = useState("");
   const [place, setPlace] = useState("");
-  const [participants, setParticipants] = useState([]);
+  // const [participants, setParticipants] = useState([]);
   const [rides, setRides] = useState(0);
   const [showModal, setShowModal] = useState(false);
 

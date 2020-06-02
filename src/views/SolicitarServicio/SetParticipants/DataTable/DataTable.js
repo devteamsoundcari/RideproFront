@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Table } from "react-bootstrap";
 import { FaTimesCircle } from "react-icons/fa";
-import { ParticipantsContext } from "../../../../contexts/ParticipantsContext";
+// import { ParticipantsContext } from "../../../../contexts/ParticipantsContext";
 
 const DataTable = (props) => {
   const [data, setData] = useState([]);
-  const { allParticipantsInfoContext } = useContext(ParticipantsContext);
+  // const { allParticipantsInfoContext } = useContext(ParticipantsContext);
 
   const handleClick = (participant, idx) => {
     const temp = [...data];

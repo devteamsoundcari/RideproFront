@@ -1,11 +1,5 @@
 import React, { createRef } from "react";
-import {
-  Table,
-  Button,
-  Overlay,
-  OverlayTrigger,
-  Popover,
-} from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 import { FaTimes, FaPlus } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
 import ContentEditable from "react-contenteditable";
@@ -313,6 +307,7 @@ export class EditableTable extends React.Component<
       currentTarget: {
         dataset: { column },
       },
+      // eslint-disable-next-line
       target: { value },
     } = event;
 
@@ -442,13 +437,19 @@ export class EditableTable extends React.Component<
     }
   }
 
-  // componentDidUpdate(nextProps, nextState) {
-  //   console.log(nextState);
-  // }
-
+  componentWillReceiveProps(nextProps) {
+    // TODO: Javier please make this component to update acording to the dataset I send to it
+    if (nextProps.dataSet.length !== this.state.dataSet.length) {
+      console.log(
+        "This is what the excel file sends: ",
+        nextProps.dataSet,
+        this.state.dataSet
+      );
+    }
+  }
   render() {
-    let ConditionalWrapper = ({ condition, wrapper, children }) =>
-      condition ? wrapper(children) : children;
+    // let ConditionalWrapper = ({ condition, wrapper, children }) =>
+    //   condition ? wrapper(children) : children;
 
     let headers = Object.keys(this.props.fields).map((name: string) => {
       return <th key={name}>{this.props.fields[name].name}</th>;

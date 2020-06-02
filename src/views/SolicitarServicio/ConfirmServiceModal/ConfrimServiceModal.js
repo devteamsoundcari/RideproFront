@@ -7,7 +7,7 @@ import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import {
   createRequest,
   createDriver,
-  sendEmail,
+  // sendEmail,
 } from "../../../controllers/apiRequests";
 
 const ConfirmServiceModal = (props) => {

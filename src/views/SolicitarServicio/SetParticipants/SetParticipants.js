@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Container, Button, Row, Col } from "react-bootstrap";
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
 import "./SetParticipants.scss";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { ServiceContext } from "../../../contexts/ServiceContext";
@@ -20,6 +20,7 @@ function isParticipantRegistered(x, y) {
       };
     }
   }
+
   return {
     res: false,
     obj: null,
@@ -90,35 +91,35 @@ const SetParticipants = (props) => {
 
   // ==================================== ADD PARTICIPANTS TO LIST ===========================================
 
-  const handleAddItem = (data) => {
-    let rideVal = parseInt(serviceInfoContext.ride_value);
-    // let temp = 100;
-    if (rideVal + rides <= userInfoContext.company.credit) {
-      // if (true) {
-      let userIsRegistered = isParticipantRegistered(participantsDB, data); // Check if driver is already in db
-      if (userIsRegistered.res) {
-        data = userIsRegistered.obj;
-        data.registered = true;
-        alert(
-          `ADVERTENCIA: Identificación: ${userIsRegistered.obj.official_id} Nombre: ${userIsRegistered.obj.first_name} ${userIsRegistered.obj.last_name} ya ha sido parte de otros servicios`
-        );
-      } else {
-        data.registered = false;
-      }
-      // Check if the users is already on the list... if so skip with alert
-      let alreadyAdded = participants.filter(
-        (person) => person.official_id === data.official_id
-      );
-      if (alreadyAdded.length === 0) {
-        setParticipants((prevParticipants) => [...prevParticipants, data]);
-        setRides((prevRides) => prevRides + rideVal);
-      } else {
-        alert("No se puede añadir el mismo participante dos veces.");
-      }
-    } else {
-      alert("Créditos insuificientes");
-    }
-  };
+  // const handleAddItem = (data) => {
+  //   let rideVal = parseInt(serviceInfoContext.ride_value);
+  //   // let temp = 100;
+  //   if (rideVal + rides <= userInfoContext.company.credit) {
+  //     // if (true) {
+  //     let userIsRegistered = isParticipantRegistered(participantsDB, data); // Check if driver is already in db
+  //     if (userIsRegistered.res) {
+  //       data = userIsRegistered.obj;
+  //       data.registered = true;
+  //       alert(
+  //         `ADVERTENCIA: Identificación: ${userIsRegistered.obj.official_id} Nombre: ${userIsRegistered.obj.first_name} ${userIsRegistered.obj.last_name} ya ha sido parte de otros servicios`
+  //       );
+  //     } else {
+  //       data.registered = false;
+  //     }
+  //     // Check if the users is already on the list... if so skip with alert
+  //     let alreadyAdded = participants.filter(
+  //       (person) => person.official_id === data.official_id
+  //     );
+  //     if (alreadyAdded.length === 0) {
+  //       setParticipants((prevParticipants) => [...prevParticipants, data]);
+  //       setRides((prevRides) => prevRides + rideVal);
+  //     } else {
+  //       alert("No se puede añadir el mismo participante dos veces.");
+  //     }
+  //   } else {
+  //     alert("Créditos insuificientes");
+  //   }
+  // };
 
   // ================================== GETTING ALL DRIVERS FROM DB =================================================
 
@@ -141,6 +142,7 @@ const SetParticipants = (props) => {
       setParticipantsDB(items);
     }
     fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers/`);
+    // eslint-disable-next-line
   }, []);
 
   // ============================================  HANDLE SUMBIT  ================================================
@@ -183,15 +185,20 @@ const SetParticipants = (props) => {
   };
   // =========================================================================================================
 
-  useEffect(() => {
-    console.log("errors", errors);
-  }, [errors]);
-
   return (
     <Container className="setParticipants">
       <Row className="participantsTools">
-        <Col md="3">
-          <UploadExcelFile addItem={handleAddItem} />
+        <Col md="3" className="from-excel">
+          <UploadExcelFile addItem={(a) => setParticipants(a)} />
+          <a
+            href={require("../../../assets/BulkParticipantesRidepro.xlsx")}
+            download
+          >
+            Plantilla Excel
+            <span>
+              <FaDownload />
+            </span>
+          </a>
         </Col>
         <Col>
           {participantsDB.length > 0 && (
