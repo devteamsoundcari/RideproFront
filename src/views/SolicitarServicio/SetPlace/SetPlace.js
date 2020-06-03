@@ -146,10 +146,12 @@ const SetPlace = (props) => {
 
   useEffect(() => {
     if (!isNaN(selectedCity)) {
+      let city = cities.find((city) => city.id === parseInt(selectedCity));
       setCity({
         id: selectedCity,
         name: document.getElementById(`use-dropdown-option-${selectedCity}`)
           .innerHTML,
+        service_priority: city.service_priority
       });
     }
   }, [selectedCity]);
