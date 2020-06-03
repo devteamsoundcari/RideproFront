@@ -4,6 +4,7 @@ import "./DashboardLayout.scss";
 import SideBar from "../../views/SideBar/SideBar";
 import Usuarios from "../../views/Usuarios/Usuarios";
 import RequestsHistory from "../../views/RequestsHistory/RequestsHistory";
+import AdminRequestHistory from "../../views/AdminRequestHistory/AdminRequestHistory";
 import Dashboard from "../../views/Dashboard/Dashboard";
 import {
   Route,
@@ -14,12 +15,12 @@ import {
 } from "react-router-dom";
 import SolicitarServicio from "../../views/SolicitarServicio/SolicitarServicio";
 import Tracks from "../../views/Tracks/Tracks";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Container } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import RequestContextProvider from "../../contexts/RequestContext";
 
 const DashboardLayout: React.FC = () => {
-  const { isLoggedInContext } = useContext(AuthContext);
+  const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
   const history = useHistory();
   let { path, url } = useRouteMatch();
 
@@ -33,36 +34,42 @@ const DashboardLayout: React.FC = () => {
   if (isLoggedInContext) {
     return (
       <div>
-        <NavBar />
         <div className="container-fluid">
           <div className="row">
             <SideBar url={url} />
-            <main
-              role="main"
-              className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4"
-            >
-              <Switch>
-                <Route path={`${path}/dashboard`}>
-                  <Dashboard />
-                </Route>
-                <Route path={`${path}/usuarios`}>
-                  <Usuarios />
-                </Route>
-                <Route path={`${path}/historial`}>
-                  <RequestContextProvider>
-                    <RequestsHistory />
-                  </RequestContextProvider>
-                </Route>
-                <Route path={`${path}/solicitar`}>
-                  <SolicitarServicio />
-                </Route>
-                <Route path={`${path}/pistas`}>
-                  <Tracks />
-                </Route>
-                <Redirect from="/administrador" to="/administrador/solicitar" />
-                <Redirect from="/cliente" to="/cliente/solicitar" />
-                <Redirect from="/operario" to="/operario/dashboard" />
-              </Switch>
+            <main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-0">
+              <NavBar />
+              <Container fluid className="mt-2">
+                <Switch>
+                  <Route path={`${path}/dashboard`}>
+                    <Dashboard />
+                  </Route>
+                  <Route path={`${path}/usuarios`}>
+                    <Usuarios />
+                  </Route>
+                  <Route path={`${path}/historial`}>
+                    <RequestContextProvider>
+                      {userInfoContext.profile === 2 ? (
+                        <RequestsHistory />
+                      ) : (
+                        <AdminRequestHistory />
+                      )}
+                    </RequestContextProvider>
+                  </Route>
+                  <Route path={`${path}/solicitar`}>
+                    <SolicitarServicio />
+                  </Route>
+                  <Route path={`${path}/pistas`}>
+                    <Tracks />
+                  </Route>
+                  <Redirect
+                    from="/administrador"
+                    to="/administrador/dashboard"
+                  />
+                  <Redirect from="/cliente" to="/cliente/dashboard" />
+                  <Redirect from="/operario" to="/operario/dashboard" />
+                </Switch>
+              </Container>
             </main>
           </div>
         </div>

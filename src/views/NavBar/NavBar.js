@@ -1,12 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import {
+  FaBell,
+  FaSearch,
+  FaPowerOff,
+  FaQuestionCircle,
+  FaRoute,
+} from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Button } from "react-bootstrap";
+import { Button, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import "./NavBar.scss";
 
 const NavBar = (props) => {
   const history = useHistory();
+  const [filled, setFilled] = useState(false);
   const {
     userInfoContext,
     setUserInfoContext,
@@ -40,36 +48,58 @@ const NavBar = (props) => {
     }
   }, [userInfoContext]);
 
-  return (
-    <nav
-      className={`navbar navbar-dark bg-${profile.toLowerCase()} sticky-top flex-md-nowrap p-0 shadow`}
-    >
-      <span
-        className="navbar-brand"
-        style={{ cursor: "pointer" }}
-        onClick={() => history.push("/login")}
-      >
-        <img
-          alt="RideproLogo"
-          src="https://www.ridepro.co/wp-content/uploads/2020/03/logo-ride-pro.png"
-        />
-        <small style={{ fontSize: "12px" }}>{profile}</small>
-      </span>
+  useState(() => {
+    window.addEventListener("scroll", () => {
+      // let activeClass = 'normal';
+      if (window.scrollY < 100) {
+        // activeClass = 'top';
+        setFilled(false);
+        console.log("NORMAL");
+      } else {
+        console.log("CAMBIAR");
+        setFilled(true);
+      }
+    });
+  });
 
-      {/* <input
-        className="form-control form-control-dark w-50"
-        type="text"
-        placeholder="Search"
-        aria-label="Search"
-      /> */}
-      <ul className="navbar-nav px-3">
-        <li className="nav-item text-nowrap">
-          <Button variant="primary" size="sm" onClick={logout}>
-            Cerrar Sesion
-          </Button>
-        </li>
-      </ul>
-    </nav>
+  return (
+    <Navbar
+      bg={filled ? "white" : ""}
+      className={filled ? "nav-scrolled" : ""}
+      sticky="top"
+      expand="lg"
+    >
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link href="#home">
+            <FaQuestionCircle /> Ayuda
+          </Nav.Link>
+          <Nav.Link href="#link">
+            <FaRoute />
+          </Nav.Link>
+        </Nav>
+        <Nav className="ml-auto">
+          <Nav.Link href="#home">
+            <FaSearch />
+          </Nav.Link>
+          <Nav.Link href="#link">
+            <FaBell />
+          </Nav.Link>
+          <NavDropdown
+            alignRight
+            title={userInfoContext.name}
+            id="basic-nav-dropdown"
+          >
+            {/* <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item> */}
+            {/* <NavDropdown.Divider /> */}
+            <NavDropdown.Item onClick={logout}>
+              <FaPowerOff /> Cerrar sesión
+            </NavDropdown.Item>
+          </NavDropdown>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 };
 

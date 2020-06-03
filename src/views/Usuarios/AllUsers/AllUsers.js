@@ -41,8 +41,8 @@ const AllUsers = (props) => {
       dataField: "profile",
       text: "Perfil",
       sort: true,
-      classes: "small-column",
-      headerClasses: "small-column",
+      classes: "md-column",
+      headerClasses: "md-column",
       formatter: profileFormatter,
     },
 
