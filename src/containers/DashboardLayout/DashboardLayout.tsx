@@ -59,7 +59,7 @@ const DashboardLayout: React.FC = () => {
                 <Route path={`${path}/pistas`}>
                   <Tracks />
                 </Route>
-                <Redirect from="/administrador" to="/administrador/usuarios" />
+                <Redirect from="/administrador" to="/administrador/solicitar" />
                 <Redirect from="/cliente" to="/cliente/solicitar" />
                 <Redirect from="/operario" to="/operario/dashboard" />
               </Switch>

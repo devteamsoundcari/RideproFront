@@ -25,12 +25,12 @@ const SolicitarServicio = (props) => {
       setService("");
     }
     setService(data);
-    setKey("paso2");
+    setKey("paso4");
   };
   useEffect(() => {
     if (service) {
       setServiceInfoContext(service);
-      setKey("paso2");
+      setKey("paso4");
     }
     //eslint-disable-next-line
   }, [service]);

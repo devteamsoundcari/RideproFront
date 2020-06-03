@@ -6,7 +6,6 @@ import "./AllUsers.scss";
 
 const AllUsers = (props) => {
   const profileFormatter = (cell, row) => {
-    console.log("cell", cell, "row", row);
     let profileName = "";
     switch (row.profile) {
       case 1:

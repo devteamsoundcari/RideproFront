@@ -114,7 +114,6 @@ const SetDate = (props) => {
   };
 
   const timeHandler = (data) => {
-    console.log(data);
     setTime((prevTime) => ({
       ...prevTime,
       date: data[0],
@@ -126,6 +125,8 @@ const SetDate = (props) => {
       props.setDate(date);
       setIsSubmitted(false);
     }
+
+    //eslint-disable-next-line
   }, [date, time, isSubmitted]);
 
   useEffect(() => {

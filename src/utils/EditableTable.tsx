@@ -79,7 +79,7 @@ export class EditableTable extends React.Component<
       let err: Error;
 
       idx = this.state.errors.findIndex(
-        (e: Error) => e.id === row.id && e.type === "regex"
+        (e: Error) => e.id === row.id && e.type === "regex" && e.column === fieldName
       );
       if (idx < 0) {
         err = {
@@ -92,7 +92,7 @@ export class EditableTable extends React.Component<
       }
     } else {
       idx = this.state.errors.findIndex(
-        (e: Error) => e.id === row.id && e.type === "regex"
+        (e: Error) => e.id === row.id && e.type === "regex" && e.column === fieldName
       );
       if (idx >= 0) {
         this.state.errors.splice(idx);
@@ -437,19 +437,52 @@ export class EditableTable extends React.Component<
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    // TODO: Javier please make this component to update acording to the dataset I send to it
-    if (nextProps.dataSet.length !== this.state.dataSet.length) {
-      console.log(
-        "This is what the excel file sends: ",
-        nextProps.dataSet,
-        this.state.dataSet
-      );
+  areDataSetsEqual(a: any, b: any) {
+    const aKeys = Object.keys(a).sort();
+    const bKeys = Object.keys(b).sort();
+
+    if (aKeys.length !== bKeys.length) {
+      return false;
+    }
+
+    for (let key of aKeys) {
+      if (a[key] !== b[key]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!this.areDataSetsEqual(prevProps.dataSet, this.props.dataSet)) {
+      const dataSet = [...this.props.dataSet].map((record: any, index: number) => {
+        for (let key in record) {
+          if (Object.keys(this.props.fields).find((field: string) => key === field)) {
+            record[key] = String(record[key]);
+          }
+        }
+        return { id: index, readOnly: false, data: record };
+      });
+
+      this.setState((current) => ({
+        ...current,
+        dataSet: dataSet
+      }), () => {
+        this.state.dataSet.forEach((row: any) => {
+          for (const field in row.data) {
+            this.validate(row, field);
+            if (this.props.fields[field].unique === true) {
+              this.checkDuplicates(row, field);
+            }
+          }
+        })
+        this.setState(this.state);
+      });
     }
   }
+
   render() {
-    // let ConditionalWrapper = ({ condition, wrapper, children }) =>
-    //   condition ? wrapper(children) : children;
 
     let headers = Object.keys(this.props.fields).map((name: string) => {
       return <th key={name}>{this.props.fields[name].name}</th>;
