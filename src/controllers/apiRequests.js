@@ -174,7 +174,6 @@ const getUsers = async (url) => {
       method: "GET",
       url,
     }).catch((err) => {
-      console.log("JUEPUTA", err);
       return err;
     });
     return usersData;

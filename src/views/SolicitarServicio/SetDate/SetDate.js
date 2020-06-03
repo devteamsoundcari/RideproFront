@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Form, Col, Container, Button } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -31,15 +31,13 @@ const SetDate = (props) => {
       d.setMinutes(t.getMinutes());
       d.setSeconds(0);
       d.setMilliseconds(0);
-
-      console.log(d);
       setDate((prevDate) => ({
         ...prevDate,
-        date: d
+        date: d,
       }));
       setTime((prevTime) => ({
         ...prevTime,
-        time: d
+        time: d,
       }));
       setIsSubmitted(true);
     }
@@ -62,6 +60,8 @@ const SetDate = (props) => {
       props.setDate(date);
       setIsSubmitted(false);
     }
+
+    //eslint-disable-next-line
   }, [date, time, isSubmitted]);
 
   // const handleProposeDate = () => {
