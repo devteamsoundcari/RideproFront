@@ -5,11 +5,11 @@ import { useForm } from "react-hook-form";
 import {
   getDepartments,
   getMunicipalities,
+  getTracks,
 } from "../../../controllers/apiRequests";
 import { Container, Form, Col, Button, Card } from "react-bootstrap";
 import "./SetPlace.scss";
 import useDropdown from "../../../utils/useDropdown";
-import { getTracks } from "../../../controllers/apiRequests";
 
 const SetPlace = (props) => {
   const { userInfoContext } = useContext(AuthContext);

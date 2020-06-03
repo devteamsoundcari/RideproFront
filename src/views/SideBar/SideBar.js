@@ -44,6 +44,17 @@ const SideBar = (props) => {
       className={`col-md-2 d-none d-md-block bg-dark bg-${profile.toLowerCase()} sidebar`}
     >
       <div className="sidebar-sticky">
+        <div
+          className="sidebar-brand"
+          style={{ cursor: "pointer" }}
+          // onClick={() => history.push("/login")}
+        >
+          <img
+            alt="RideproLogo"
+            src="https://www.ridepro.co/wp-content/uploads/2020/03/logo-ride-pro.png"
+          />
+          <small style={{ fontSize: "12px" }}>{profile}</small>
+        </div>
         <ul className="nav flex-column">
           <li>
             <img alt="profileImg" className="shadow" src={profilePicture} />
@@ -58,13 +69,16 @@ const SideBar = (props) => {
           <li>
             <small>{userInfoContext.company.name}</small>
           </li>
-          <li>
-            {" "}
-            <Badge>
-              <AiFillDollarCircle />
-              <small>{userInfoContext.company.credit}</small>
-            </Badge>
-          </li>
+          {profile === "Cliente" ? (
+            <li>
+              <Badge>
+                <AiFillDollarCircle />
+                <small>{userInfoContext.company.credit}</small>
+              </Badge>
+            </li>
+          ) : (
+            ""
+          )}
         </ul>
         <hr />
         <ul className="nav flex-column align-items-start">

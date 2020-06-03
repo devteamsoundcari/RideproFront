@@ -1,0 +1,17 @@
+.admin-requests-history {
+  table {
+    text-align: center;
+    th {
+      padding: 0px;
+    }
+    td {
+      vertical-align: middle;
+    }
+    .selected-row {
+      background-color: lightskyblue;
+    }
+    .selected-expanding-row {
+      background-color: rgb(226, 247, 247);
+    }
+  }
+}

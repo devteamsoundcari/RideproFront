@@ -1,15 +1,12 @@
 .navbar {
-  .navbar-brand {
-    display: flex;
-    align-items: center;
-    background-color: transparent;
-    box-shadow: none;
-    img {
-      max-width: 60%;
-    }
-    small {
-      font-size: 18px !important;
-      font-weight: 600;
+  // transition: all 0.1s ease-in-out;
+  .navbar-nav {
+    a {
+      font-size: 1rem;
     }
   }
+}
+.nav-scrolled {
+  box-shadow: rgba(25, 42, 70, 0.13) -8px 12px 18px 0px;
+  padding: 10px 15px !important;
 }
