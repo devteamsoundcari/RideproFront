@@ -11,22 +11,6 @@ import { EditableTable } from "../../../utils/EditableTable";
 import SearchByDocument from "../../../utils/SearchByDocument/SearchByDocument";
 import DataTable from "./DataTable/DataTable";
 
-function isParticipantRegistered(x, y) {
-  for (var index in x) {
-    if (x[index].official_id === y.official_id) {
-      return {
-        res: true,
-        obj: x[index],
-      };
-    }
-  }
-
-  return {
-    res: false,
-    obj: null,
-  };
-}
-
 const SetParticipants = (props) => {
   const { userInfoContext } = useContext(AuthContext);
   const { serviceInfoContext } = useContext(ServiceContext);
@@ -194,7 +178,7 @@ const SetParticipants = (props) => {
             href={require("../../../assets/BulkParticipantesRidepro.xlsx")}
             download
           >
-            Plantilla Excel
+            Descargar Plantilla
             <span>
               <FaDownload />
             </span>

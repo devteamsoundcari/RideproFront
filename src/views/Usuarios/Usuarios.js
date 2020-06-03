@@ -11,7 +11,6 @@ const Usuarios = () => {
   const fetchUsers = async (url) => {
     let tempUsers = [];
     const response = await getUsers(url);
-    console.log("fuck", response);
     response.results.forEach(async (item) => {
       tempUsers.push(item);
     });

@@ -13,7 +13,6 @@ import {
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
-
   const {
     participantsToRegisterContext,
     setParticipantsToRegisterContext,
@@ -274,7 +273,7 @@ const ConfirmServiceModal = (props) => {
             ):{" "}
           </strong>
           <ul>
-            {/* <li>Ya registrados</li> */}
+            <li>Old</li>
             {newRegistered.map((participant, idx) => {
               return (
                 <li key={idx}>
@@ -283,7 +282,7 @@ const ConfirmServiceModal = (props) => {
                 </li>
               );
             })}
-            {/* <li>new to register</li> */}
+            <li>New</li>
             {newToRegister.map((participant, idx) => {
               return (
                 <li key={idx}>

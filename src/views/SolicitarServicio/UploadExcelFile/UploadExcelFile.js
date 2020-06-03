@@ -58,7 +58,14 @@ const UploadExcelFile = (props) => {
 
   useEffect(() => {
     props.addItem(participants);
-  }, [participants, props]);
+    if (fileUploaded && participants.length > 0) {
+      document.getElementById("custom-file").value = "";
+      setFileUploaded("");
+      setParticipants([]);
+      setFileName("Cargar archivo Excel");
+    }
+    //eslint-disable-next-line
+  }, [participants, fileName]);
 
   return (
     <Form className="form-excel-file">
