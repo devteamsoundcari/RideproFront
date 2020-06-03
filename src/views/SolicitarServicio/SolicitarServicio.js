@@ -41,6 +41,7 @@ const SolicitarServicio = (props) => {
       setPlace("");
     }
     setPlace(data);
+    console.log(data);
   };
   useEffect(() => {
     if (place) {
@@ -117,7 +118,7 @@ const SolicitarServicio = (props) => {
                 }
                 disabled={date ? false : true}
               >
-                <SetDate date={new Date()} setDate={handleDate} />
+                {place && <SetDate setDate={handleDate} place={place}/>}
               </Tab>
               <Tab
                 eventKey="paso4"
