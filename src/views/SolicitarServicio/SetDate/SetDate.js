@@ -7,6 +7,7 @@ import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import addDays from "date-fns/addDays";
 import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
+import differenceInHours from "date-fns/differenceInHours";
 import es from "date-fns/locale/es";
 import "./SetDate.scss";
 registerLocale("es", es);
@@ -16,23 +17,20 @@ const useSingleton = (initializer) => {
 }
 
 const SetDate = (props) => {
-  const [minDate, setMinDate] = useState("");
-  const [minHour, setMinHour] = useState([]);
-  const [maxHour, setMaxHour] = useState([]);
+  const [minDate, setMinDate] = useState(null);
+  const [minHour, setMinHour] = useState(null);
+  const [maxHour, setMaxHour] = useState(null);
   const {city: {service_priority} } = props.place;
   const { handleSubmit, control } = useForm();
-  const [isSubmitted, setIsSubmitted] = useState(false); 
 
   const [date, setDate] = useState({
-    date:
-      props.date || new Date(),
+    date: null,
     placeholder: "",
     propose: false,
   });
 
   const [time, setTime] = useState({
-    date:
-      props.date ||  new Date(),
+    date: null,
     placeholder: "",
     propose: false,
   });
@@ -48,21 +46,21 @@ const SetDate = (props) => {
     switch (priority) {
       case 0:
         if (today.getHours() < 16) {
+          return 2;
+        } else {
+          return 3;
+        }
+      case 1:
+        if (today.getHours() < 16) {
           return 1;
         } else {
           return 2;
         }
-      case 1:
+      default:
         if (today.getHours() < 16) {
           return 2;
         } else {
           return 3;
-        }
-      case 2:
-        if (today.getHours() < 16) {
-          return 3;
-        } else {
-          return 4;
         }
     }
   };
@@ -77,34 +75,8 @@ const SetDate = (props) => {
     }
   };
 
-  useSingleton(() => {
-    determineMinDate(getMinDays(service_priority), 4);
-  });
-
-  useEffect(() => {
-    determineHourRange(date.date, minDate, service_priority);
-  }, [date]);
-
   const onSubmit = () => {
-    // Combining time and date returned by the datepicker components
-    if (date && time) {
-      let d = new Date(date.date.getTime());
-      let t = new Date(time.date.getTime());
-      d.setHours(t.getHours());
-      d.setMinutes(t.getMinutes());
-      d.setSeconds(0);
-      d.setMilliseconds(0);
-
-      setDate((prevDate) => ({
-        ...prevDate,
-        date: d,
-      }));
-      setTime((prevTime) => ({
-        ...prevTime,
-        date: d,
-      }));
-      setIsSubmitted(true);
-    }
+    props.afterSubmit();
   };
 
   const dateHandler = (data) => {
@@ -120,67 +92,56 @@ const SetDate = (props) => {
     }));
   };
 
-  useEffect(() => {
-    if (isSubmitted) {
-      props.setDate(date);
-      setIsSubmitted(false);
-    }
+  useSingleton(() => {
+    determineMinDate(getMinDays(service_priority), 4);
+  });
 
-    //eslint-disable-next-line
-  }, [date, time, isSubmitted]);
+  useEffect(() => {
+    if (date.date === null)
+      setDate((prevDate) => ({
+          ...prevDate,
+          date: minDate
+      }));
+  }, [minDate])
+
+  useEffect(() => {
+    determineHourRange(date.date, minDate, service_priority);
+  }, [date.date]);
 
   useEffect(() => {
     determineMinDate(getMinDays(service_priority), 4);
   }, [props.place])
 
   useEffect(() => {
-    setDate((prevDate) => ({
-      ...prevDate,
-      date: minDate
-    }));
-  }, [minDate])
-
-  useEffect(() => {
-    if (minHour.length > 0)
+    if (minHour !== null && (time.date === null || differenceInHours(
+      time.date,
+      setHours(setMinutes(new Date(), minHour[1]), minHour[0])) < 0))
     {
       setTime((prevTime) => ({
         ...prevTime,
         date: setHours(setMinutes(new Date(), minHour[1]), minHour[0])
       })); 
-    } 
+    }
   }, [minHour])
 
-  // const handleProposeDate = () => {
-  //   if (!date.propose) {
-  //     setDate({
-  //       date: "",
-  //       placeholder: "Ridepro decide",
-  //       propose: true,
-  //     });
-  //   } else {
-  //     setDate({
-  //       date: props.date,
-  //       placeholder: "",
-  //       propose: false,
-  //     });
-  //   }
-  // };
+  useEffect(() => {
+    if (date.date && time.date) {
+      let d = new Date(date.date.getTime());
+      let t = new Date(time.date.getTime());
+      d.setHours(t.getHours());
+      d.setMinutes(t.getMinutes());
+      d.setSeconds(0);
+      d.setMilliseconds(0);
 
-  // const handleProposeTime = () => {
-  //   if (!time.propose) {
-  //     setTime({
-  //       time: "",
-  //       placeholder: "Ridepro decide",
-  //       propose: true,
-  //     });
-  //   } else {
-  //     setTime({
-  //       time: props.date,
-  //       placeholder: "",
-  //       propose: false,
-  //     });
-  //   }
-  // };
+      props.setDate({
+        date: d,
+        placeholder: "",
+        propose: false
+      });
+    }
+  }, [date.date, time.date]);
+
+
   return (
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)} className="setDate">
@@ -189,6 +150,7 @@ const SetDate = (props) => {
             <Form.Label>
               <h4>Fecha del Evento</h4>
             </Form.Label>
+            {minHour && maxHour &&
             <Controller
               as={DatePicker}
               minDate={minDate}
@@ -201,19 +163,14 @@ const SetDate = (props) => {
               placeholderText={date.placeholder}
               name="date"
             />
-            {/* <Form.Check
-            type="switch"
-            label="Proponer Fecha"
-            variant="primary"
-            id="propseDate"
-            onChange={handleProposeDate}
-          /> */}
+            }
           </Form.Group>
 
           <Form.Group as={Col} md="auto" controlId="validationCustom05">
             <Form.Label>
               <h4>Hora del Evento</h4>
             </Form.Label>
+            {minHour && maxHour &&
             <Controller
               as={DatePicker}
               minTime={setHours(setMinutes(new Date(), minHour[1]), minHour[0])}
@@ -231,12 +188,7 @@ const SetDate = (props) => {
               name="time"
               placeholderText={time.placeholder}
             />
-            {/* <Form.Check
-            type="switch"
-            label="Proponer Hora"
-            id="propseTime"
-            onChange={handleProposeTime}
-          /> */}
+          }
           </Form.Group>
         </Form.Row>
         <Form.Row>
