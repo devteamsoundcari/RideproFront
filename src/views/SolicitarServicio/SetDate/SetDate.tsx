@@ -17,23 +17,32 @@ const useSingleton = (initializer) => {
 }
 
 const SetDate = (props) => {
-  const [minDate, setMinDate] = useState(null);
-  const [minHour, setMinHour] = useState(null);
-  const [maxHour, setMaxHour] = useState(null);
+  const [minDate, setMinDate] = useState<Date | null>(null);
+  const [minHour, setMinHour] = useState<number[] | null>(null);
+  const [maxHour, setMaxHour] = useState<number[] | null>(null);
+
+  const [date, setDate] = useState<{
+    date: Date | null;
+    placeholder: string;
+    propose: boolean;
+  }>({
+    date: null,
+    placeholder: "",
+    propose: false,
+  });
+
+  const [time, setTime] =  useState<{
+    date: Date | null;
+    placeholder: string;
+    propose: boolean;
+  }>({
+    date: null,
+    placeholder: "",
+    propose: false,
+  });
+
   const {city: {service_priority} } = props.place;
   const { handleSubmit, control } = useForm();
-
-  const [date, setDate] = useState({
-    date: null,
-    placeholder: "",
-    propose: false,
-  });
-
-  const [time, setTime] = useState({
-    date: null,
-    placeholder: "",
-    propose: false,
-  });
 
   const determineMinDate = (minDays, minHours) => {
       const minDate = addDays(setHours(new Date(), minHours), minDays);
@@ -80,9 +89,10 @@ const SetDate = (props) => {
   };
 
   const dateHandler = (data) => {
-    setDate({
+    setDate((prevDate) => ({
+      ...prevDate,
       date: data[0],
-    });
+    }));
   };
 
   const timeHandler = (data) => {
