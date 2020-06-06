@@ -56,11 +56,10 @@ const SolicitarServicio = (props) => {
     }
     setDate(data);
   };
-  useEffect(() => {
-    if (date) {
-      setKey("paso4");
-    }
-  }, [date]);
+
+  const goToParticipantSelection = () => {
+    setKey("paso4");
+  }
 
   // =========================== HANDLING PARTICIPANTS AND SUBMITING THE SERVICE ============================
 
@@ -118,7 +117,7 @@ const SolicitarServicio = (props) => {
                 }
                 disabled={date ? false : true}
               >
-                {place && <SetDate setDate={handleDate} place={place}/>}
+                {place && <SetDate setDate={handleDate} afterSubmit={goToParticipantSelection} place={place}/>}
               </Tab>
               <Tab
                 eventKey="paso4"
