@@ -151,9 +151,10 @@ const SetPlace = (props) => {
         id: selectedCity,
         name: document.getElementById(`use-dropdown-option-${selectedCity}`)
           .innerHTML,
-        service_priority: city.service_priority
+        service_priority: city.service_priority,
       });
     }
+    // eslint-disable-next-line
   }, [selectedCity]);
 
   // =============================== SET TRACK ==========================================

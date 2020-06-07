@@ -20,6 +20,7 @@ const SetParticipants = (props) => {
     setParticipantsToRegisterContext,
   } = useContext(ParticipantsContext);
   const [participants, setParticipants] = useState([]);
+  // eslint-disable-next-line
   const [errors, setErrors] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
