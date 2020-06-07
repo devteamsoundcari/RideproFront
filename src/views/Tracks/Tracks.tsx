@@ -47,6 +47,7 @@ const Tracks: React.FC = () => {
   }, [tracks, userInfoContext.company.id]);
 
   const handleFetch = () => {
+    setFilteredTracks([]);
     fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
   };
 
