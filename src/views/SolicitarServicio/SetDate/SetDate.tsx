@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Form, Col, Container, Button } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
-import setDay from "date-fns/setDay";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import addDays from "date-fns/addDays";
@@ -14,7 +13,7 @@ registerLocale("es", es);
 
 const useSingleton = (initializer) => {
   React.useState(initializer);
-}
+};
 
 const SetDate = (props) => {
   const [minDate, setMinDate] = useState<Date | null>(null);
@@ -31,7 +30,7 @@ const SetDate = (props) => {
     propose: false,
   });
 
-  const [time, setTime] =  useState<{
+  const [time, setTime] = useState<{
     date: Date | null;
     placeholder: string;
     propose: boolean;
@@ -41,12 +40,14 @@ const SetDate = (props) => {
     propose: false,
   });
 
-  const {city: {service_priority} } = props.place;
+  const {
+    city: { service_priority },
+  } = props.place;
   const { handleSubmit, control } = useForm();
 
   const determineMinDate = (minDays, minHours) => {
-      const minDate = addDays(setHours(new Date(), minHours), minDays);
-      setMinDate(prevDate => minDate);
+    const minDate = addDays(setHours(new Date(), minHours), minDays);
+    setMinDate((prevDate) => minDate);
   };
 
   const getMinDays = (priority) => {
@@ -109,30 +110,38 @@ const SetDate = (props) => {
   useEffect(() => {
     if (date.date === null)
       setDate((prevDate) => ({
-          ...prevDate,
-          date: minDate
+        ...prevDate,
+        date: minDate,
       }));
-  }, [minDate])
+    // eslint-disable-next-line
+  }, [minDate]);
 
   useEffect(() => {
     determineHourRange(date.date, minDate, service_priority);
+    // eslint-disable-next-line
   }, [date.date]);
 
   useEffect(() => {
     determineMinDate(getMinDays(service_priority), 4);
-  }, [props.place])
+    // eslint-disable-next-line
+  }, [props.place]);
 
   useEffect(() => {
-    if (minHour !== null && (time.date === null || differenceInHours(
-      time.date,
-      setHours(setMinutes(new Date(), minHour[1]), minHour[0])) < 0))
-    {
+    if (
+      minHour !== null &&
+      (time.date === null ||
+        differenceInHours(
+          time.date,
+          setHours(setMinutes(new Date(), minHour[1]), minHour[0])
+        ) < 0)
+    ) {
       setTime((prevTime) => ({
         ...prevTime,
-        date: setHours(setMinutes(new Date(), minHour[1]), minHour[0])
-      })); 
+        date: setHours(setMinutes(new Date(), minHour[1]), minHour[0]),
+      }));
     }
-  }, [minHour])
+    // eslint-disable-next-line
+  }, [minHour]);
 
   useEffect(() => {
     if (date.date && time.date) {
@@ -146,11 +155,11 @@ const SetDate = (props) => {
       props.setDate({
         date: d,
         placeholder: "",
-        propose: false
+        propose: false,
       });
     }
+    // eslint-disable-next-line
   }, [date.date, time.date]);
-
 
   return (
     <Container>
@@ -160,45 +169,51 @@ const SetDate = (props) => {
             <Form.Label>
               <h4>Fecha del Evento</h4>
             </Form.Label>
-            {minHour && maxHour &&
-            <Controller
-              as={DatePicker}
-              minDate={minDate}
-              selected={date.date}
-              onChange={dateHandler}
-              locale="es"
-              disabled={date.propose}
-              control={control}
-              dateFormat="MMMM d, yyyy"
-              placeholderText={date.placeholder}
-              name="date"
-            />
-            }
+            {minHour && maxHour && (
+              <Controller
+                as={DatePicker}
+                minDate={minDate}
+                selected={date.date}
+                onChange={dateHandler}
+                locale="es"
+                disabled={date.propose}
+                control={control}
+                dateFormat="MMMM d, yyyy"
+                placeholderText={date.placeholder}
+                name="date"
+              />
+            )}
           </Form.Group>
 
           <Form.Group as={Col} md="auto" controlId="validationCustom05">
             <Form.Label>
               <h4>Hora del Evento</h4>
             </Form.Label>
-            {minHour && maxHour &&
-            <Controller
-              as={DatePicker}
-              minTime={setHours(setMinutes(new Date(), minHour[1]), minHour[0])}
-              maxTime={setHours(setMinutes(new Date(), maxHour[1]), maxHour[0])}
-              selected={time.date}
-              locale="es"
-              control={control}
-              onChange={timeHandler}
-              disabled={time.propose}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={30}
-              timeCaption="Hora"
-              dateFormat="h:mm aa"
-              name="time"
-              placeholderText={time.placeholder}
-            />
-          }
+            {minHour && maxHour && (
+              <Controller
+                as={DatePicker}
+                minTime={setHours(
+                  setMinutes(new Date(), minHour[1]),
+                  minHour[0]
+                )}
+                maxTime={setHours(
+                  setMinutes(new Date(), maxHour[1]),
+                  maxHour[0]
+                )}
+                selected={time.date}
+                locale="es"
+                control={control}
+                onChange={timeHandler}
+                disabled={time.propose}
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={30}
+                timeCaption="Hora"
+                dateFormat="h:mm aa"
+                name="time"
+                placeholderText={time.placeholder}
+              />
+            )}
           </Form.Group>
         </Form.Row>
         <Form.Row>

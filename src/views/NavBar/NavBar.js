@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Button, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import "./NavBar.scss";
 
 const NavBar = (props) => {
