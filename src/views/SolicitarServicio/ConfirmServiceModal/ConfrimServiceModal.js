@@ -85,28 +85,25 @@ const ConfirmServiceModal = (props) => {
 
   // =============================== REGISTER UNRESTIGERED DRIVERS ===================================
 
-  const postParticipantsToRegister = async (participant) => {
-    const participantsIDs = [];
+  const postParticipantToRegister = async (participant) => {
     const { registered } = participant;
     if (!registered) {
       let res = await createDriver(participant);
       if (res.status === 201) {
         console.log("REGISTRADO ", res.data);
-        participantsIDs.push(res.data.id);
+        return res.data.id;
       } else {
         console.log(res.request.response);
+        return null;
       }
-    } else {
-      participantsIDs.push(participant.id);
     }
-    console.log("PARTICIPANS ID FUCNTION: ", participantsIDs);
-    return participantsIDs;
+    return participant.id;
   };
 
   const registerDrivers = async () => {
     return Promise.all(
       participantsToRegisterContext.map((participant) =>
-        postParticipantsToRegister(participant)
+        postParticipantToRegister(participant)
       )
     );
   };
