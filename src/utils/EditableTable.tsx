@@ -1,5 +1,5 @@
 import React, { createRef } from "react";
-import { Table, Button } from "react-bootstrap";
+import { Table, Button, Form } from "react-bootstrap";
 import { FaTimes, FaPlus } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
 import ContentEditable from "react-contenteditable";
@@ -37,6 +37,7 @@ export class EditableTable extends React.Component<
 
   constructor(props: any) {
     super(props);
+    document.execCommand("defaultParagraphSeparator", false, "br");
 
     let rowKeys = Object.keys(props.fields);
     let insertionRow = new Map<string, string>();
@@ -415,7 +416,8 @@ export class EditableTable extends React.Component<
       .replace(/&nbsp;/g, "")
       .replace(/&amp;/g, "&")
       .replace(/&gt;/g, ">")
-      .replace(/&lt;/g, "<");
+      .replace(/&lt;/g, "<")
+      .replace(/<br>;/g, "");
   }
 
   disableNewlines(event: any) {
@@ -505,7 +507,7 @@ export class EditableTable extends React.Component<
     let insertionRow = Array.from(this.state.insertionRow.keys()).map(
       (field, index) => {
         let props: any = {
-          innerRef: this.firstRow,
+          ref: this.firstRow,
         };
 
         if (index !== 0) {
@@ -517,14 +519,15 @@ export class EditableTable extends React.Component<
             key={field}
             className={this.isInsertionFieldIncorrect(field) ? "incorrect" : ""}
           >
-            <ContentEditable
+            <Form.Control
+              type="text"
               data-tip
               data-for={`ir-${field}`}
               data-event="focus keyup"
               data-event-off="blur"
               data-multiline={true}
               {...props}
-              html={this.state.insertionRow.get(field)!}
+              value={this.state.insertionRow.get(field)!}
               data-column={field}
               className="new-row"
               onChange={this.handleNewRow.bind(this)}
@@ -563,13 +566,14 @@ export class EditableTable extends React.Component<
                   key={field}
                   className={this.isIncorrect(row.id, field) ? "incorrect" : ""}
                 >
-                  <ContentEditable
+                  <Form.Control
+                    type="text"
                     data-tip
                     data-for={`row-${row.id}-${field}`}
                     data-event="focus keyup"
                     data-event-off="blur"
                     data-multiline={true}
-                    html={String(row.data[field])}
+                    value={String(row.data[field])}
                     className="content-editable"
                     data-column={field}
                     data-id={row.id}
