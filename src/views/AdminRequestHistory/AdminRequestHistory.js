@@ -313,7 +313,7 @@ const AdminRequestHistory = () => {
                             {driver.first_name} {driver.last_name}
                           </td>
                           <td>
-                            {driver.first_name} {driver.last_name}
+                            {driver.email}
                           </td>
                           <td>{driver.cellphone}</td>
                         </tr>

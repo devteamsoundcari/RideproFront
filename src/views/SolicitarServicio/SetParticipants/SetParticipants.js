@@ -170,6 +170,10 @@ const SetParticipants = (props) => {
   };
   // =========================================================================================================
 
+  useEffect(() => {
+    console.log(participants);
+  }, [participants]);
+
   return (
     <Container className="setParticipants">
       <Row className="participantsTools">
