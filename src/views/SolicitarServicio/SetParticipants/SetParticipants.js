@@ -32,8 +32,8 @@ const SetParticipants = (props) => {
   const fields = {
     official_id: {
       name: "Identificación",
-      format: "String",
-      regex: /^\d+$/,
+      format: "string",
+      regex: /^E?\d+$/,
       unique: true,
       errorMessages: {
         regex: "Por favor, ingresa un número válido.",
@@ -45,7 +45,7 @@ const SetParticipants = (props) => {
       regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un nombre válido.",
+        regex: "Por favor, ingresa un nombre válido."
       },
     },
     last_name: {
@@ -53,7 +53,7 @@ const SetParticipants = (props) => {
       regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un apellido válido.",
+        regex: "Por favor, ingresa un apellido válido."
       },
     },
     email: {
@@ -61,7 +61,7 @@ const SetParticipants = (props) => {
       regex: /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/i,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un email válido.",
+        regex: "Por favor, ingresa un email válido."
       },
     },
     cellphone: {
@@ -69,7 +69,7 @@ const SetParticipants = (props) => {
       regex: /^\d{7,10}$/,
       unique: false,
       errorMessages: {
-        errorMsg: "Por favor ingrese un teléfono válido",
+        regex: "Por favor ingrese un teléfono válido"
       },
     },
   };
