@@ -339,7 +339,7 @@ const ConfirmServiceModal = (props) => {
   };
 
   return (
-    <Modal show={props.show} onHide={() => props.setShow(false)}>
+    <Modal show={props.show} onHide={showSuccessPropmt ? handleOK : () => props.setShow(false)}>
       {showSpinner && loader()}
       {badParticipants.length > 0 && displayErrorParticipants()}
       {displayData && requestResume()}
