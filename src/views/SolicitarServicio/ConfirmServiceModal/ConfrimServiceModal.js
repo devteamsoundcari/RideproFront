@@ -23,6 +23,7 @@ const ConfirmServiceModal = (props) => {
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSuccessPropmt, setShowSuccessPrompt] = useState(false);
   const [badParticipants, setBadParticipants] = useState([]);
+  const [originalParticipants, setOriginalParticipants] = useState([]);
   const [displayData, setDisplayData] = useState(false);
   const [newRegistered, setNewRegistered] = useState(
     registeredParticipantsContext
@@ -270,7 +271,6 @@ const ConfirmServiceModal = (props) => {
             ):{" "}
           </strong>
           <ul>
-            <li>Old</li>
             {newRegistered.map((participant, idx) => {
               return (
                 <li key={idx}>
@@ -279,7 +279,6 @@ const ConfirmServiceModal = (props) => {
                 </li>
               );
             })}
-            <li>New</li>
             {newToRegister.map((participant, idx) => {
               return (
                 <li key={idx}>

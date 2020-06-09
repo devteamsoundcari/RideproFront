@@ -126,7 +126,7 @@ const SetParticipants = (props) => {
       setAllParticipantsInfoContext(items);
       setParticipantsDB(items);
     }
-    fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers/`);
+    fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers_company/`);
     // eslint-disable-next-line
   }, []);
 
