@@ -6,6 +6,8 @@ import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
 import "./Login.scss";
+import bgImage from "../../assets/img/loginImage.jpg";
+import bgPage from "../../assets/img/bgLogin.jpg";
 import logo from "../../assets/img/logo.png";
 import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
 import PasswordRecover from "../../views/PasswordRecover/PasswordRecover";
@@ -144,71 +146,86 @@ const Login = () => {
     return <NewPassword data={resetPwd} />;
   } else {
     return (
-      <Container>
-        <Row className="justify-content-md-center">
-          <Col md={6} sm={12}>
-            <Card>
-              <Card.Body>
-                <Card.Title className="text-center">
-                  <img className="mb-4" src={logo} alt="" />
-                  <h1 className="h3 mb-3 font-weight-normal">Iniciar sesión</h1>
-                </Card.Title>
-                <Card.Text className="text-center">
-                  Tu cuenta será validada por el administrador, quien te
-                  asignará un tipo de perfil.{" "}
-                  <a href="#test">
-                    <strong>¿Problemas para iniciar sesión?</strong>
-                  </a>
-                </Card.Text>
+      <Container className="justify-content-md-center d-flex mt-5 mb-5 loginForm">
+        <Col md={8}>
+          <Card className="mb-0">
+            <Row className="m-0">
+              <Col md={6} sm={12}>
                 <Card.Body>
-                  <Form onSubmit={handleSubmit(onSubmit)}>
-                    <Form.Group>
-                      <Form.Label>Tu email</Form.Label>
-                      <Form.Control
-                        name="email"
-                        type="email"
-                        placeholder="Tu email"
-                        autoComplete="off"
-                        ref={register({
-                          required: true,
-                          pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        })}
-                      />
-                      <Form.Text className="text-muted">
-                        {errors.email && (
-                          <span>Por favor, ingresa un email válido</span>
-                        )}
-                      </Form.Text>
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Label>Tu contraseña</Form.Label>
-                      <Form.Control
-                        name="password"
-                        type="password"
-                        placeholder="Tu contraseña"
-                        ref={register({ required: true })}
-                        autoComplete="off"
-                      />
-                      <Form.Text className="text-muted">
-                        {errors.password && <span>Contraseña inválida</span>}
-                      </Form.Text>
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Check type="checkbox" label="Recuérdame" />
-                    </Form.Group>
-                    <Button variant="primary" type="submit" className="m-auto">
-                      Ingresar
-                    </Button>
-                    <Button variant="link" onClick={renderPasswordReset}>
-                      <small>Olvidé mi contraseña</small>
-                    </Button>
-                    <p style={{ color: "red" }}>{error}</p>
-                  </Form>
+                  <Card.Title className="text-center">
+                    <img src={logo} alt="RideproLogo" />
+                    <h1 className="h3 mb-2 mt-1 font-weight-normal">
+                      Iniciar sesión
+                    </h1>
+                  </Card.Title>
+                  <Card.Text className="text-center">
+                    Tu cuenta será validada por el administrador, quien te
+                    asignará un tipo de perfil.{" "}
+                    <a href="#test">
+                      <strong>¿Problemas para iniciar sesión?</strong>
+                    </a>
+                  </Card.Text>
+                  <Card.Body>
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                      <Form.Group>
+                        <Form.Label>Tu email</Form.Label>
+                        <Form.Control
+                          name="email"
+                          type="email"
+                          placeholder="Tu email"
+                          autoComplete="off"
+                          ref={register({
+                            required: true,
+                            pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          })}
+                        />
+                        <Form.Text className="text-muted">
+                          {errors.email && (
+                            <span>Por favor, ingresa un email válido</span>
+                          )}
+                        </Form.Text>
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label>Tu contraseña</Form.Label>
+                        <Form.Control
+                          name="password"
+                          type="password"
+                          placeholder="Tu contraseña"
+                          ref={register({ required: true })}
+                          autoComplete="off"
+                        />
+                        <Form.Text className="text-muted">
+                          {errors.password && <span>Contraseña inválida</span>}
+                        </Form.Text>
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Check type="checkbox" label="Recuérdame" />
+                      </Form.Group>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        className="m-auto"
+                      >
+                        Ingresar
+                      </Button>
+                      <Button variant="link" onClick={renderPasswordReset}>
+                        <small>Olvidé mi contraseña</small>
+                      </Button>
+                      <p style={{ color: "red" }}>{error}</p>
+                    </Form>
+                  </Card.Body>
                 </Card.Body>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+              </Col>
+              <Col
+                md={6}
+                className="bgImageLogin"
+                style={{
+                  background: `url(${bgImage}) no-repeat center`,
+                }}
+              ></Col>
+            </Row>
+          </Card>
+        </Col>
       </Container>
     );
   }

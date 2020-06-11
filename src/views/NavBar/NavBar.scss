@@ -4,6 +4,14 @@
     a {
       font-size: 1rem;
     }
+    .userOptions {
+      margin-right: 1rem;
+      display: flex;
+      img {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+    }
   }
 }
 .nav-scrolled {

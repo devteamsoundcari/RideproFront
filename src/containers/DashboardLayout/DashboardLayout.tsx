@@ -33,45 +33,40 @@ const DashboardLayout: React.FC = () => {
 
   if (isLoggedInContext) {
     return (
-      <div>
-        <div className="container-fluid">
-          <div className="row">
-            <SideBar url={url} />
-            <main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-0">
-              <NavBar />
-              <Container fluid className="mt-2">
-                <Switch>
-                  <Route path={`${path}/dashboard`}>
-                    <Dashboard />
-                  </Route>
-                  <Route path={`${path}/usuarios`}>
-                    <Usuarios />
-                  </Route>
-                  <Route path={`${path}/historial`}>
-                    <RequestContextProvider>
-                      {userInfoContext.profile === 2 ? (
-                        <RequestsHistory />
-                      ) : (
-                        <AdminRequestHistory />
-                      )}
-                    </RequestContextProvider>
-                  </Route>
-                  <Route path={`${path}/solicitar`}>
-                    <SolicitarServicio />
-                  </Route>
-                  <Route path={`${path}/pistas`}>
-                    <Tracks />
-                  </Route>
-                  <Redirect
-                    from="/administrador"
-                    to="/administrador/dashboard"
-                  />
-                  <Redirect from="/cliente" to="/cliente/dashboard" />
-                  <Redirect from="/operario" to="/operario/dashboard" />
-                </Switch>
-              </Container>
-            </main>
-          </div>
+      <div className="container-fluid" style={{ height: "100%" }}>
+        <div className="row">
+          <SideBar url={url} />
+          <main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-0">
+            <NavBar />
+            <Container fluid className="mt-2">
+              <Switch>
+                <Route path={`${path}/dashboard`}>
+                  <Dashboard />
+                </Route>
+                <Route path={`${path}/usuarios`}>
+                  <Usuarios />
+                </Route>
+                <Route path={`${path}/historial`}>
+                  <RequestContextProvider>
+                    {userInfoContext.profile === 2 ? (
+                      <RequestsHistory />
+                    ) : (
+                      <AdminRequestHistory />
+                    )}
+                  </RequestContextProvider>
+                </Route>
+                <Route path={`${path}/solicitar`}>
+                  <SolicitarServicio />
+                </Route>
+                <Route path={`${path}/pistas`}>
+                  <Tracks />
+                </Route>
+                <Redirect from="/administrador" to="/administrador/dashboard" />
+                <Redirect from="/cliente" to="/cliente/dashboard" />
+                <Redirect from="/operario" to="/operario/dashboard" />
+              </Switch>
+            </Container>
+          </main>
         </div>
       </div>
     );

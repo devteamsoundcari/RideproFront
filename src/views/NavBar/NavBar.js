@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Nav, Navbar, NavDropdown, Image } from "react-bootstrap";
 import "./NavBar.scss";
 
 const NavBar = (props) => {
@@ -86,17 +86,22 @@ const NavBar = (props) => {
           <Nav.Link href="#link">
             <FaBell />
           </Nav.Link>
-          <NavDropdown
-            alignRight
-            title={userInfoContext.name}
-            id="basic-nav-dropdown"
-          >
-            {/* <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item> */}
-            {/* <NavDropdown.Divider /> */}
-            <NavDropdown.Item onClick={logout}>
-              <FaPowerOff /> Cerrar sesión
-            </NavDropdown.Item>
-          </NavDropdown>
+          <div className="userOptions">
+            <NavDropdown
+              alignRight
+              title={`${userInfoContext.name} ${userInfoContext.lastName}`}
+              id="basic-nav-dropdown"
+            >
+              <NavDropdown.Item onClick={logout}>
+                <FaPowerOff /> Cerrar sesión
+              </NavDropdown.Item>
+            </NavDropdown>
+            <Image
+              src={userInfoContext.company.logo}
+              roundedCircle
+              className="shadow-sm"
+            />
+          </div>
         </Nav>
       </Navbar.Collapse>
     </Navbar>
