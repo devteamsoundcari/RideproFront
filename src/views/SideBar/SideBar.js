@@ -14,6 +14,8 @@ import { Badge } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import Greeting from "../Usuarios/Greeting/Greeting";
 import defaultCompanyLogo from "../../assets/img/companydefault.png";
+import defaultCompanyImg from "../../assets/img/defaultCompanyImg.png";
+
 import "./SideBar.scss";
 
 const SideBar = (props) => {
@@ -57,7 +59,15 @@ const SideBar = (props) => {
         </div>
         <ul className="nav flex-column">
           <li>
-            <img alt="profileImg" className="shadow" src={profilePicture} />
+            <img
+              alt="profileImg"
+              className="shadow"
+              src={
+                userInfoContext.profile === 2
+                  ? profilePicture
+                  : defaultCompanyImg
+              }
+            />
           </li>
           <Greeting
             name={userInfoContext.name}

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Children, useContext } from "react";
-import { Card, Spinner } from "react-bootstrap";
+import { Card, Spinner, Row, Col, ListGroup, Button } from "react-bootstrap";
+import { FaDotCircle } from "react-icons/fa";
+
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { useHistory } from "react-router-dom";
 import { getUserRequests } from "../../controllers/apiRequests";
@@ -140,44 +142,72 @@ const MyCalendar = (props) => {
   };
 
   return (
-    <Card>
-      <Card.Body>
-        {loading && (
-          <div>
-            Cargando Eventos...
-            <Spinner animation="border" size="sm" role="status">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-          </div>
-        )}
-        <Calendar
-          selectable
-          localizer={localizer}
-          defaultDate={new Date()}
-          defaultView="month"
-          views={{ month: true }}
-          events={sortedRequests}
-          // min={new Date(2020, 10, 0, 10, 0, 0)}
-          // max={new Date(2020, 10, 0, 22, 0, 0)}
-          // timeslots={8}
-          style={{ height: "100vh" }}
-          onSelectEvent={(event) => handleClick(event)}
-          // onSelectSlot={handleSelectSlot}
-          components={{
-            dateCellWrapper: ColoredDateCellWrapper,
-          }}
-          eventPropGetter={styleEvents}
-          messages={{
-            next: "Siguiente >",
-            previous: "< Anterior",
-            today: "Hoy",
-            month: "Mes",
-            week: "Semana",
-            day: "Día",
-          }}
-        />
-      </Card.Body>
-    </Card>
+    <Row className="calendarSection ml-1 mr-1">
+      <Col md={2} className="conventions">
+        <Button
+          variant="primary"
+          block
+          className="mb-3 mt-3"
+          disabled={userInfoContext.profile !== 2 ? true : false}
+        >
+          SOLICITAR
+        </Button>
+        <ListGroup>
+          <ListGroup.Item className="conv-1">
+            <FaDotCircle /> <small>SIN CONFIRMAR</small>
+          </ListGroup.Item>
+          <ListGroup.Item className="conv-2">
+            <FaDotCircle /> <small>CONFIRMADO</small>
+          </ListGroup.Item>
+          <ListGroup.Item className="conv-3">
+            <FaDotCircle /> <small>EJECUTADO</small>
+          </ListGroup.Item>
+          <ListGroup.Item className="conv-4">
+            <FaDotCircle /> <small>CANCELADO</small>
+          </ListGroup.Item>
+        </ListGroup>
+      </Col>
+      <Col md={10} className="eventsCalendar pl-0">
+        <Card>
+          <Card.Body>
+            {loading && (
+              <div>
+                Cargando Eventos...
+                <Spinner animation="border" size="sm" role="status">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              </div>
+            )}
+            <Calendar
+              selectable
+              localizer={localizer}
+              defaultDate={new Date()}
+              defaultView="month"
+              views={{ month: true }}
+              events={sortedRequests}
+              // min={new Date(2020, 10, 0, 10, 0, 0)}
+              // max={new Date(2020, 10, 0, 22, 0, 0)}
+              // timeslots={8}
+              style={{ height: "100vh" }}
+              onSelectEvent={(event) => handleClick(event)}
+              // onSelectSlot={handleSelectSlot}
+              components={{
+                dateCellWrapper: ColoredDateCellWrapper,
+              }}
+              eventPropGetter={styleEvents}
+              messages={{
+                next: "Siguiente >",
+                previous: "< Anterior",
+                today: "Hoy",
+                month: "Mes",
+                week: "Semana",
+                day: "Día",
+              }}
+            />
+          </Card.Body>
+        </Card>
+      </Col>
+    </Row>
   );
 };
 

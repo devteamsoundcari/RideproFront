@@ -1,21 +1,57 @@
-.rbc-calendar {
-  .rbc-toolbar {
-    .rbc-btn-group {
-      button:nth-child(1) {
-        // display: none;
+.calendarSection {
+  .conventions {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    .list-group-item {
+      padding: 0.75rem 0.3rem;
+      background: transparent;
+      border: none;
+      transition: 0.3s;
+      cursor: pointer;
+      small {
+        font-weight: 500;
+        margin-left: 6px;
+      }
+      &:hover {
+        transform: translateY(-5px);
       }
     }
-    .rbc-toolbar-label {
-      text-transform: capitalize;
+    .conv-1 {
+      svg {
+        color: lightgreen;
+      }
+    }
+    .conv-2 {
+      svg {
+        color: dodgerblue;
+      }
+    }
+    .conv-3 {
+      svg {
+        color: yellow;
+      }
+    }
+    .conv-4 {
+      svg {
+        color: red;
+      }
     }
   }
-  .rbc-header {
-    span {
-      text-transform: capitalize;
+  .eventsCalendar {
+    .rbc-calendar {
+      .rbc-toolbar {
+        .rbc-toolbar-label {
+          text-transform: capitalize;
+        }
+      }
+      .rbc-header {
+        span {
+          text-transform: capitalize;
+        }
+      }
+      .rbc-event-content {
+        white-space: normal !important;
+        font-size: 12px;
+      }
     }
-  }
-  .rbc-event-content {
-    white-space: normal !important;
-    font-size: 12px;
   }
 }
