@@ -269,7 +269,7 @@ const createDriver = async (data) => {
       official_id,
       cellphone,
       email,
-      requests: [], // Empty because it doesnot belong to any request yet
+      requests: [],
       report: "na",
     },
   }).catch((err) => {

@@ -28,7 +28,6 @@ const UploadExcelFile = (props) => {
   };
 
   useEffect(() => {
-    // console.log("DATA", fileUploaded);
     for (let index = 1; index < fileUploaded.length; index++) {
       let newPerson = {};
       const item = fileUploaded[index];

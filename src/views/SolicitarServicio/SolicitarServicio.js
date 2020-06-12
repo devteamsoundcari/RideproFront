@@ -7,7 +7,7 @@ import SetService from "./SetService/SetService";
 import SetPlace from "./SetPlace/SetPlace";
 import SetParticipants from "./SetParticipants/SetParticipants";
 import { ServiceContext } from "../../contexts/ServiceContext";
-import ConfirmServiceModal from "./ConfirmServiceModal/ConfrimServiceModal";
+import ServiceConfirmationModal from "./ConfirmServiceModal/ServiceConfirmationModal";
 
 const SolicitarServicio = (props) => {
   const { setServiceInfoContext } = useContext(ServiceContext);
@@ -134,7 +134,7 @@ const SolicitarServicio = (props) => {
         </Card>
       </Col>
       {showModal && (
-        <ConfirmServiceModal
+        <ServiceConfirmationModal
           show={true}
           setShow={(e) => setShowModal(e)}
           service={service}

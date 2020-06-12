@@ -2,7 +2,6 @@ import React, { createRef } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import { FaTimes, FaPlus } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
-import ContentEditable from "react-contenteditable";
 
 interface Error {
   id: number;
@@ -17,13 +16,14 @@ interface InsertionRowError {
   message: string;
 }
 
-export class EditableTable extends React.Component<
-  {
+export class EditableTable extends React.Component<{
     dataSet: any[];
-    forbidden: any[];
     fields: any;
+    readOnlyIf: Function;
     onValidate: Function;
     onUpdate: Function;
+    recordToAdd: any[];
+    recordsForReplacing: any[];
   },
   {
     dataSet: any[];
@@ -31,22 +31,24 @@ export class EditableTable extends React.Component<
     insertionRow: Map<string, string>;
     insertionRowErrors: InsertionRowError[];
     displayErrors: Map<string, boolean>;
-  }
-> {
+  }> {
   private firstRow: React.RefObject<HTMLInputElement>;
 
   constructor(props: any) {
     super(props);
-    document.execCommand("defaultParagraphSeparator", false, "br");
 
     let rowKeys = Object.keys(props.fields);
     let insertionRow = new Map<string, string>();
     let headings = new Map<string, boolean>();
     rowKeys.forEach((field: any) => {
-      headings.set(field, false);
+      if (!this.props.fields[field].hidden) {
+        headings.set(field, false);
+      }
     });
     rowKeys.forEach((field: any) => {
-      insertionRow.set(field, "");
+      if (!this.props.fields[field].hidden) {
+        insertionRow.set(field, "");
+      } 
     });
 
     let dataSet = [...props.dataSet].map((record: any, index: number) => {
@@ -61,7 +63,7 @@ export class EditableTable extends React.Component<
       errors: [],
       insertionRow: insertionRow,
       insertionRowErrors: [],
-      displayErrors: headings,
+      displayErrors: headings
     };
 
     this.firstRow = createRef();
@@ -355,6 +357,14 @@ export class EditableTable extends React.Component<
       },
       {}
     );
+
+    for (let field in this.props.fields) {
+      if (this.props.fields[field].hidden) {
+        if (!(field in data)) {
+          data[field] = this.props.fields[field].default;
+        }
+      }
+    }
     dataSet.unshift({
       id: dataSet.length + 1,
       readOnly: false,
@@ -397,11 +407,6 @@ export class EditableTable extends React.Component<
         return record.data;
       })
     );
-
-    this.setState((current) => ({
-      ...current,
-      dataSet: dataSet,
-    }));
   }
 
   pasteAsPlainText(event: any) {
@@ -457,37 +462,88 @@ export class EditableTable extends React.Component<
   }
 
   componentDidUpdate(prevProps) {
-    if (!this.areDataSetsEqual(prevProps.dataSet, this.props.dataSet)) {
-      const dataSet = [...this.props.dataSet].map((record: any, index: number) => {
-        for (let key in record) {
-          if (Object.keys(this.props.fields).find((field: string) => key === field)) {
-            record[key] = String(record[key]);
+    if (prevProps.recordToAdd !== this.props.recordToAdd) {
+      let dataSetLength: number = this.state.dataSet.length;
+      let newRow: any = {};
+      let filtered: any = {};
+      for (let key in this.props.recordToAdd) {
+        if (key in this.props.fields) {
+          filtered[key] = String(this.props.recordToAdd[key]);
+        }
+      }
+      if (this.props.readOnlyIf(filtered)) {
+        newRow.readOnly = true;
+      }
+      newRow.data = filtered;
+      newRow.id = dataSetLength + 1;
+      for (let field in this.props.fields) {
+        if (this.props.fields[field].hidden) {
+          if (!(field in newRow)) {
+            newRow[field] = this.props.fields[field].default;
           }
         }
-        return { id: index, readOnly: false, data: record };
-      });
-
+      }
       this.setState((current) => ({
         ...current,
-        dataSet: dataSet
+        dataSet: [newRow, ...this.state.dataSet]
       }), () => {
         this.state.dataSet.forEach((row: any) => {
           for (const field in row.data) {
-            this.validate(row, field);
+            if (this.props.fields[field].format !== 'boolean') {
+              this.validate(row, field);
+            }
             if (this.props.fields[field].unique === true) {
               this.checkDuplicates(row, field);
             }
           }
         })
         this.setState(this.state);
+        this.updateDataSetProp();
       });
-    }
+    } else if (prevProps.recordsForReplacing !== this.props.recordsForReplacing) {
+      let newRecords = this.props.recordsForReplacing.map((record: any, index: number) => {
+        let filtered: any = {};
+        for (let field in record) {
+          if (field in this.props.fields) {
+            filtered[field] = String(record[field]);
+          }
+        }
+        for (let field in this.props.fields) {
+            if (this.props.fields[field].hidden) {
+              if (!(field in filtered)) {
+                filtered[field] = this.props.fields[field].default;
+              }
+            }
+          }
+        return {id: index, readOnly: false, data: filtered}
+      });
+
+      this.setState((current) => ({
+        ...current,
+        dataSet: newRecords
+      }), () => {
+        this.state.dataSet.forEach((row: any) => {
+          for (const field in row.data) {
+            if (this.props.fields[field].format !== 'boolean') {
+              this.validate(row, field);
+            }
+            if (this.props.fields[field].unique === true) {
+              this.checkDuplicates(row, field);
+            }
+          }
+        })
+        this.setState(this.state);
+        this.updateDataSetProp();
+      });
+    } 
   }
 
   render() {
 
     let headers = Object.keys(this.props.fields).map((name: string) => {
-      return <th key={name}>{this.props.fields[name].name}</th>;
+      if (!this.props.fields[name].hidden) {
+        return <th key={name}>{this.props.fields[name].name}</th>;
+      }
     });
 
     let InsertButton = (props: any) => {
@@ -558,14 +614,21 @@ export class EditableTable extends React.Component<
     let insertedRows = this.state.dataSet.map((row: any) => {
       return (
         <tr key={row.id}>
-          {Object.keys(row.data)
-            .filter((field: any) => field !== "id")
-            .map((field) => {
-              return (
-                <td
-                  key={field}
-                  className={this.isIncorrect(row.id, field) ? "incorrect" : ""}
-                >
+          {Object.keys(row.data).map((field) => {
+              let props: any = {
+                readOnly: true
+              }
+
+              if (row.readOnly === false) {
+                props.readOnly = false;
+              }
+
+              if (!this.props.fields[field].hidden) {
+                return (
+                  <td
+                    key={field}
+                    className={this.isIncorrect(row.id, field) ? "incorrect" : ""}
+                  >
                   <Form.Control
                     type="text"
                     data-tip
@@ -581,6 +644,7 @@ export class EditableTable extends React.Component<
                     onPaste={this.pasteAsPlainText}
                     onKeyPress={this.disableNewlines}
                     onFocus={this.highlightAll}
+                    {...props}
                   />
                   {this.isIncorrect(row.id, field) && (
                     <ReactTooltip
@@ -588,19 +652,20 @@ export class EditableTable extends React.Component<
                       type="error"
                       effect="solid"
                     >
-                      <h6>Error</h6>
-                      {this.getErrors(row.id, field).map((e: Error) => {
-                        return (
-                          <>
-                            {e.message}
-                            <br />
-                          </>
+                    <h6>Error</h6>
+                    {this.getErrors(row.id, field).map((e: Error) => {
+                      return (
+                        <>
+                          {e.message}
+                          <br />
+                        </>
                         );
-                      })}
+                    })}
                     </ReactTooltip>
-                  )}
-                </td>
-              );
+                    )}
+                  </td>
+                  );
+              }
             })}
           <td>
             <Button variant="link" onClick={() => this.deleteRow(row.id)}>
