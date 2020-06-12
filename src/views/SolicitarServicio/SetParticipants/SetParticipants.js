@@ -10,6 +10,8 @@ import UploadExcelFile from "../UploadExcelFile/UploadExcelFile";
 import { EditableTable } from "../../../utils/EditableTable";
 import SearchByDocument from "../../../utils/SearchByDocument/SearchByDocument";
 import DataTable from "./DataTable/DataTable";
+import RegularExpressions from "../../../utils/RegularExpressions";
+
 
 const SetParticipants = (props) => {
   const { userInfoContext } = useContext(AuthContext);
@@ -18,8 +20,11 @@ const SetParticipants = (props) => {
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
     setParticipantsToRegisterContext,
+    setRepeatedParticipantsContext
   } = useContext(ParticipantsContext);
   const [participants, setParticipants] = useState([]);
+  const [participantToAdd, setParticipantToAdd] = useState({});
+  const [participantsForReplacing, setParticipantsForReplacing] = useState([]);
   // eslint-disable-next-line
   const [errors, setErrors] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
@@ -42,7 +47,7 @@ const SetParticipants = (props) => {
     },
     first_name: {
       name: "Nombre",
-      regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
+      regex: RegularExpressions.name,
       unique: false,
       errorMessages: {
         regex: "Por favor, ingresa un nombre válido."
@@ -50,7 +55,7 @@ const SetParticipants = (props) => {
     },
     last_name: {
       name: "Apellido",
-      regex: /^[a-z\u00C0-\u02AB'´`]+$/i,
+      regex: RegularExpressions.name,
       unique: false,
       errorMessages: {
         regex: "Por favor, ingresa un apellido válido."
@@ -58,7 +63,7 @@ const SetParticipants = (props) => {
     },
     email: {
       name: "Email",
-      regex: /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/i,
+      regex: RegularExpressions.email,
       unique: false,
       errorMessages: {
         regex: "Por favor, ingresa un email válido."
@@ -69,42 +74,16 @@ const SetParticipants = (props) => {
       regex: /^\d{7,10}$/,
       unique: false,
       errorMessages: {
-        regex: "Por favor ingrese un teléfono válido"
+        regex: "Por favor, ingresa un teléfono válido.."
       },
     },
+    isRegistered: {
+      name: "",
+      format: "boolean",
+      hidden: true,
+      default: false
+    }
   };
-
-  // ==================================== ADD PARTICIPANTS TO LIST ===========================================
-
-  // const handleAddItem = (data) => {
-  //   let rideVal = parseInt(serviceInfoContext.ride_value);
-  //   // let temp = 100;
-  //   if (rideVal + rides <= userInfoContext.company.credit) {
-  //     // if (true) {
-  //     let userIsRegistered = isParticipantRegistered(participantsDB, data); // Check if driver is already in db
-  //     if (userIsRegistered.res) {
-  //       data = userIsRegistered.obj;
-  //       data.registered = true;
-  //       alert(
-  //         `ADVERTENCIA: Identificación: ${userIsRegistered.obj.official_id} Nombre: ${userIsRegistered.obj.first_name} ${userIsRegistered.obj.last_name} ya ha sido parte de otros servicios`
-  //       );
-  //     } else {
-  //       data.registered = false;
-  //     }
-  //     // Check if the users is already on the list... if so skip with alert
-  //     let alreadyAdded = participants.filter(
-  //       (person) => person.official_id === data.official_id
-  //     );
-  //     if (alreadyAdded.length === 0) {
-  //       setParticipants((prevParticipants) => [...prevParticipants, data]);
-  //       setRides((prevRides) => prevRides + rideVal);
-  //     } else {
-  //       alert("No se puede añadir el mismo participante dos veces.");
-  //     }
-  //   } else {
-  //     alert("Créditos insuificientes");
-  //   }
-  // };
 
   // ================================== GETTING ALL DRIVERS FROM DB =================================================
 
@@ -141,9 +120,8 @@ const SetParticipants = (props) => {
   useEffect(() => {
     if (serviceInfoContext.service_type === "Persona") {
       const rideVal = serviceInfoContext.ride_value;
-      let registeredCreds = rideVal * registeredParticipants.length;
-      let unregisteredCreds = rideVal * participants.length;
-      setRides(registeredCreds + unregisteredCreds);
+      let credits = rideVal * participants.length;
+      setRides(credits);
     } else {
       setRides(serviceInfoContext.ride_value);
     }
@@ -156,7 +134,7 @@ const SetParticipants = (props) => {
       return i.official_id !== item.official_id;
     });
     setParticipantsDB(temp);
-    setDataTable((oldArr) => [...oldArr, item]);
+    setParticipantToAdd({...item, isRegistered: true});
   };
 
   const handleUpdateTable = (data) => {
@@ -164,21 +142,33 @@ const SetParticipants = (props) => {
     setParticipants(data);
   };
 
-  const handleRedisteredParticipants = (data) => {
+  const handleRegisteredParticipants = (data) => {
     setRegisteredParticipants(data);
     setRegisteredParticipantsContext(data);
   };
+
+  const handleXLSXLoadUp = (data) => {
+    setParticipantsForReplacing([...data]);
+  }
+
   // =========================================================================================================
 
-  useEffect(() => {
-    console.log(participants);
-  }, [participants]);
+  const isParticipantAlreadyRegistered = (participant) => {
+    const alreadyRegisteredIDs = participantsDB.map((p) => {
+      return p.official_id;
+    });
+
+    if (alreadyRegisteredIDs.find((p) => p.official_id === participant.official_id)) {
+      return true;
+    }
+    return false;
+  }
 
   return (
     <Container className="setParticipants">
       <Row className="participantsTools">
         <Col md="3" className="from-excel">
-          <UploadExcelFile addItem={(a) => setParticipants(a)} />
+          <UploadExcelFile addItem={(a) => handleXLSXLoadUp(a)} />
           <a
             href={require("../../../assets/BulkParticipantesRidepro.xlsx")}
             download
@@ -236,7 +226,7 @@ const SetParticipants = (props) => {
       >
         <DataTable
           data={dataTable}
-          registeredParticipants={handleRedisteredParticipants}
+          registeredParticipants={handleRegisteredParticipants}
           deletedItem={(x) => setParticipantsDB((oldArray) => [...oldArray, x])}
         />
       </Row>
@@ -247,6 +237,9 @@ const SetParticipants = (props) => {
           fields={fields}
           onValidate={(x) => setErrors(x)}
           onUpdate={handleUpdateTable}
+          readOnlyIf={isParticipantAlreadyRegistered}
+          recordToAdd={participantToAdd}
+          recordsForReplacing={participantsForReplacing}
         />
       </Row>
     </Container>

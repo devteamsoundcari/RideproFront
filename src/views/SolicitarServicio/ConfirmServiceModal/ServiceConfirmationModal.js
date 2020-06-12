@@ -7,7 +7,6 @@ import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import {
   createRequest,
   createDriver,
-  // sendEmail,
 } from "../../../controllers/apiRequests";
 
 const ConfirmServiceModal = (props) => {
@@ -17,17 +16,21 @@ const ConfirmServiceModal = (props) => {
     participantsToRegisterContext,
     setParticipantsToRegisterContext,
     registeredParticipantsContext,
-    allParticipantsInfoContext,
     setRegisteredParticipantsContext,
+    unregisteredParticipantsContext,
+    setUnregisteredParticipantsContext,
+    allParticipantsInfoContext
   } = useContext(ParticipantsContext);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSuccessPropmt, setShowSuccessPrompt] = useState(false);
-  const [badParticipants, setBadParticipants] = useState([]);
-  const [originalParticipants, setOriginalParticipants] = useState([]);
+  const [registeredParticipants, setRegisteredParticipants] = useState([]);
+  const [alreadyRegisteredParticipants, setAlreadyRegisteredParticipants] = useState([]);
+  const [unregisteredParticipants, setUnregisteredParticipants] = useState([]);
   const [displayData, setDisplayData] = useState(false);
   const [newRegistered, setNewRegistered] = useState(
     registeredParticipantsContext
   );
+  const [finalParticipants, setFinalParticipants] = useState([]);
   const [newToRegister, setNewToRegister] = useState(
     participantsToRegisterContext
   );
@@ -39,6 +42,19 @@ const ConfirmServiceModal = (props) => {
     month: "long",
     day: "numeric",
   };
+
+  const isParticipantRegistered = (participant) => {
+    const registeredIDs = allParticipantsInfoContext.map((p) => {
+      return p.official_id;
+    });
+
+    for (let id of registeredIDs) {
+      if (id === participant.official_id) {
+        return true;
+      } 
+    }
+    return false;
+  }
 
   const canBeRegistered = (arrToRegister) => {
     let badItems = [];
@@ -68,22 +84,29 @@ const ConfirmServiceModal = (props) => {
 
   useEffect(() => {
     if (participantsToRegisterContext.length > 0) {
-      let result = canBeRegistered(participantsToRegisterContext);
-      if (result.length > 0) {
-        setBadParticipants(result);
-      } else {
-        setDisplayData(true);
+      for (const participant of participantsToRegisterContext) {
+        if (isParticipantRegistered(participant)) {
+          if (!participant.isRegistered) {
+            setAlreadyRegisteredParticipants((current) => [...current, participant]);
+          }
+          setRegisteredParticipants((current) => 
+            [...current,
+            allParticipantsInfoContext.find((p) => p.official_id === participant.official_id)]);
+        } else {
+          setUnregisteredParticipants((current) => [...current, participant]);
+        }
       }
-    } else {
-      setDisplayData(true);
     }
     // eslint-disable-next-line
-  }, [
-    participantsToRegisterContext,
-    registeredParticipantsContext,
-    allParticipantsInfoContext,
-  ]);
+  }, [participantsToRegisterContext]);
 
+  useEffect(() => {
+    if (alreadyRegisteredParticipants.length <= 0) {
+      setDisplayData(true);
+    } else {
+      setDisplayData(false);
+    }
+  }, [alreadyRegisteredParticipants]);
   // =============================== REGISTER UNRESTIGERED DRIVERS ===================================
 
   const postParticipantToRegister = async (participant) => {
@@ -91,10 +114,8 @@ const ConfirmServiceModal = (props) => {
     if (!registered) {
       let res = await createDriver(participant);
       if (res.status === 201) {
-        console.log("REGISTRADO ", res.data);
         return res.data.id;
       } else {
-        console.log(res.request.response);
         return null;
       }
     }
@@ -103,19 +124,22 @@ const ConfirmServiceModal = (props) => {
 
   const registerDrivers = async () => {
     return Promise.all(
-      participantsToRegisterContext.map((participant) =>
+      unregisteredParticipantsContext.map((participant) =>
         postParticipantToRegister(participant)
       )
     );
   };
+
+  useEffect(() => {
+    setUnregisteredParticipantsContext(unregisteredParticipants);
+    setRegisteredParticipantsContext(registeredParticipants);
+  }, [unregisteredParticipants, registeredParticipants])
 
   // ======================================= HANDLE SUBMIT =================================
   const handleCreateService = async () => {
     setShowSpinner(true);
     setDisplayData(false);
     // SETUP ALL CONTEXTS...
-    setParticipantsToRegisterContext(newToRegister);
-    setRegisteredParticipantsContext(newRegistered);
     // REGITER PARTICIPANTS
     registerDrivers().then(async (registeredIDs) => {
       // THEN CREATE THE DATA TO THE SERVICE
@@ -187,34 +211,25 @@ const ConfirmServiceModal = (props) => {
   const loader = () => {
     return (
       <Modal.Body>
-        <Spinner animation="border" variant="danger" />
+        <Spinner animation="border" variant="danger"/>
       </Modal.Body>
     );
   };
 
   const handleContinue = () => {
-    for (let item of participantsToRegisterContext) {
-      for (let item2 of badParticipants) {
-        if (item.official_id !== item2.official_id)
-          setNewToRegister((oldArr) => [...oldArr, item]);
-      }
-    }
-    setBadParticipants([]);
+    setAlreadyRegisteredParticipants([]);
+    setNewToRegister(participantsToRegisterContext);
     setDisplayData(true);
   };
 
   useEffect(() => {
     if (props.service.service_type === "Persona") {
-      console.log(newToRegister.length, newRegistered.length);
-      let r =
-        props.service.ride_value * newToRegister.length +
-        props.service.ride_value * newRegistered.length;
-      setRides(r);
+      setRides(props.service.ride_value * newToRegister.length)
     } else {
       setRides(props.service.ride_value);
     }
     //eslint-disable-next-line
-  }, [newToRegister, newRegistered]);
+  }, [newToRegister]);
 
   const handleCancel = () => {
     props.setShow(false);
@@ -267,18 +282,10 @@ const ConfirmServiceModal = (props) => {
           </p>
 
           <strong>
-            Participantes ({newRegistered.length + newToRegister.length}
+            Participantes ({newToRegister.length}
             ):{" "}
           </strong>
           <ul>
-            {newRegistered.map((participant, idx) => {
-              return (
-                <li key={idx}>
-                  {participant.first_name} {participant.last_name} (
-                  {participant.email})
-                </li>
-              );
-            })}
             {newToRegister.map((participant, idx) => {
               return (
                 <li key={idx}>
@@ -305,12 +312,12 @@ const ConfirmServiceModal = (props) => {
     return (
       <React.Fragment>
         <Modal.Header closeButton>
-          <Modal.Title>Adveretencia</Modal.Title>
+          <Modal.Title>Advertencia</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h5>Los siguientes participantes ya han sido registrados:</h5>
           <ul>
-            {badParticipants.map((participant, idx) => {
+            {alreadyRegisteredParticipants.map((participant, idx) => {
               return (
                 <li key={idx}>
                   {participant.official_id} {participant.first_name}{" "}
@@ -340,7 +347,7 @@ const ConfirmServiceModal = (props) => {
   return (
     <Modal show={props.show} onHide={showSuccessPropmt ? handleOK : () => props.setShow(false)}>
       {showSpinner && loader()}
-      {badParticipants.length > 0 && displayErrorParticipants()}
+      {alreadyRegisteredParticipants.length > 0 && displayErrorParticipants()}
       {displayData && requestResume()}
       {showSuccessPropmt && successPropmt()}
       {/* {showSpinner || showSuccessPropmt ? "" : displayData()} */}

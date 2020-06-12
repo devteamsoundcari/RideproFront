@@ -11,9 +11,14 @@ const ParticipantsContextProvider = (props) => {
     registeredParticipantsContext,
     setRegisteredParticipantsContext,
   ] = useState([]);
-  const [allParticipantsInfoContext, setAllParticipantsInfoContext] = useState(
-    []
-  );
+  const [
+    allParticipantsInfoContext,
+    setAllParticipantsInfoContext
+  ] = useState([]);
+  const [
+    unregisteredParticipantsContext,
+    setUnregisteredParticipantsContext
+  ] = useState([]);
 
   return (
     <ParticipantsContext.Provider
@@ -24,6 +29,8 @@ const ParticipantsContextProvider = (props) => {
         setRegisteredParticipantsContext,
         allParticipantsInfoContext,
         setAllParticipantsInfoContext,
+        unregisteredParticipantsContext,
+        setUnregisteredParticipantsContext
       }}
     >
       {props.children}
