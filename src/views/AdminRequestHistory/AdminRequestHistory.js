@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import { RequestsContext } from "../../contexts/RequestsContext";
 import { getTracks } from "../../controllers/apiRequests";
 import {
   Table,
@@ -20,11 +21,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import "./AdminRequestHistory.scss";
-import {
-  getUserRequests,
-  fetchDriver,
-  cancelRequestId,
-} from "../../controllers/apiRequests";
+import { cancelRequestId } from "../../controllers/apiRequests";
 
 const AdminRequestHistory = () => {
   const location = useLocation();
@@ -35,9 +32,7 @@ const AdminRequestHistory = () => {
   const [sortedRequests, setSortedRequests] = useState([]);
   const [defaultKey] = useState(location.state ? location.state.id : 0);
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
-
-  // const { setRequestInfoContext } = useContext(RequestContext)
-
+  const { requestsInfoContext } = useContext(RequestsContext);
   const [renderCancelRequesModal, setRenderCancelRequestModal] = useState({
     show: false,
     item: null,
@@ -96,36 +91,12 @@ const AdminRequestHistory = () => {
   // ================================ FETCH REQUESTS ON LOAD =====================================================
 
   useEffect(() => {
-    let urlType = userInfoContext.profile === 2 ? "user_requests" : "requests";
-    async function fetchRequests(url) {
-      const response = await getUserRequests(url);
-      response.results.map(async (item) => {
-        // ================= GETTING CANCELING DATE ====================
-        let cancelDate = new Date(item.start_time);
-        cancelDate.setDate(cancelDate.getDate() - 1);
-        item.cancelDate = cancelDate;
-        // =========== GETTING INFO OF EACH DRIVER =================
-        getDrivers(item.drivers).then((data) => {
-          item.drivers = data;
-          setRequests((prev) => [...prev, item]);
-        });
-        return true;
-      });
-      if (response.next) {
-        return await fetchRequests(response.next);
-      }
-    }
-    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
-  }, [updateList, userInfoContext.profile]);
-
-  const getDrivers = async (driversUrls) => {
-    return Promise.all(driversUrls.map((url) => fetchDriver(url)));
-  };
+    setRequests(requestsInfoContext);
+  }, [requestsInfoContext]);
 
   // ========================================= LOADING SPINNER =====================================
 
   useEffect(() => {
-    console.log("reqiest", requests);
     // Sorting requests so that the most recent goes on top
     if (requests.length > 1) {
       requests.sort((a, b) => {
@@ -312,9 +283,7 @@ const AdminRequestHistory = () => {
                           <td>
                             {driver.first_name} {driver.last_name}
                           </td>
-                          <td>
-                            {driver.email}
-                          </td>
+                          <td>{driver.email}</td>
                           <td>{driver.cellphone}</td>
                         </tr>
                       );

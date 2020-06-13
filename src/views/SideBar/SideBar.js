@@ -12,14 +12,17 @@ import {
 } from "react-icons/gi";
 import { Badge } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
+import { RequestsContext } from "../../contexts/RequestsContext";
 import Greeting from "../Usuarios/Greeting/Greeting";
 import defaultCompanyLogo from "../../assets/img/companydefault.png";
 import defaultCompanyImg from "../../assets/img/defaultCompanyImg.png";
+import { getUserRequests, fetchDriver } from "../../controllers/apiRequests";
 
 import "./SideBar.scss";
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
+  const { setRequestsInfoContext } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
   const profilePicture = userInfoContext.company.logo
     ? userInfoContext.company.logo
@@ -40,6 +43,43 @@ const SideBar = (props) => {
         break;
     }
   }, [userInfoContext]);
+
+  // ========================= SETTING REQUESTS CONTEXT ON LOAD =======================================
+
+  useEffect(() => {
+    let urlType = userInfoContext.profile === 2 ? "user_requests" : "requests";
+    async function fetchRequests(url) {
+      const response = await getUserRequests(url);
+      response.results.map(async (item) => {
+        // ================= GETTING CANCELING DATE ====================
+        let cancelDate = new Date(item.start_time);
+        cancelDate.setDate(cancelDate.getDate() - 1);
+        item.cancelDate = cancelDate;
+
+        item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
+        item.start = new Date(item.start_time);
+        item.end = new Date(item.finish_time);
+
+        // =========== GETTING INFO OF EACH DRIVER =================
+        getDrivers(item.drivers).then((data) => {
+          item.drivers = data;
+          setRequestsInfoContext((prev) => [...prev, item]);
+        });
+        return true;
+      });
+      if (response.next) {
+        return await fetchRequests(response.next);
+      }
+    }
+    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
+    // eslint-disable-next-line
+  }, []);
+
+  const getDrivers = async (driversUrls) => {
+    return Promise.all(driversUrls.map((url) => fetchDriver(url)));
+  };
+
+  //========================================================================================================
 
   return (
     <nav
