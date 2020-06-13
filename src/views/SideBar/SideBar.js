@@ -75,8 +75,8 @@ const SideBar = (props) => {
     // eslint-disable-next-line
   }, []);
 
-  const getDrivers = async (driversUrls) => {
-    return Promise.all(driversUrls.map((url) => fetchDriver(url)));
+  const getDrivers = async (driversIds) => {
+    return Promise.all(driversIds.map((id) => fetchDriver(id)));
   };
 
   //========================================================================================================

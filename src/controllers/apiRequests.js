@@ -295,11 +295,11 @@ const getAllDrivers = async (url) => {
 
 /* =================================   GET A DRIVER ===================================== */
 
-const fetchDriver = async (url) => {
+const fetchDriver = async (id) => {
   const getInfo = async () => {
     const driverData = await axios({
       method: "GET",
-      url,
+      url: `${process.env.REACT_APP_API_URL}/api/v1/drivers/${id}`,
     }).catch((err) => {
       return err;
     });
