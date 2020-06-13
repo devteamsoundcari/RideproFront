@@ -17,7 +17,6 @@ import SolicitarServicio from "../../views/SolicitarServicio/SolicitarServicio";
 import Tracks from "../../views/Tracks/Tracks";
 import { Spinner, Container } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
-import RequestContextProvider from "../../contexts/RequestContext";
 
 const DashboardLayout: React.FC = () => {
   const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
@@ -47,13 +46,11 @@ const DashboardLayout: React.FC = () => {
                   <Usuarios />
                 </Route>
                 <Route path={`${path}/historial`}>
-                  <RequestContextProvider>
-                    {userInfoContext.profile === 2 ? (
-                      <RequestsHistory />
-                    ) : (
-                      <AdminRequestHistory />
-                    )}
-                  </RequestContextProvider>
+                  {userInfoContext.profile === 2 ? (
+                    <RequestsHistory />
+                  ) : (
+                    <AdminRequestHistory />
+                  )}
                 </Route>
                 <Route path={`${path}/solicitar`}>
                   <SolicitarServicio />

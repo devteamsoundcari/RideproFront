@@ -4,59 +4,29 @@ import { FaDotCircle } from "react-icons/fa";
 
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { useHistory } from "react-router-dom";
-import { getUserRequests } from "../../controllers/apiRequests";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./MyCalendar.scss";
 import { AuthContext } from "../../contexts/AuthContext";
+import { RequestsContext } from "../../contexts/RequestsContext";
+
 require("moment/locale/es.js");
 
 const localizer = momentLocalizer(moment);
 
-const MyCalendar = (props) => {
+const MyCalendar = () => {
   const [requests, setRequests] = useState([]);
   const [sortedRequests, setSortedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const history = useHistory();
   const { userInfoContext } = useContext(AuthContext);
-
-  // const [events] = useState([
-  //   {
-  //     start: moment().toDate(),
-  //     end: moment().add(1, "days").toDate(),
-  //     title: "Un evento de 2 dias de sde hoy",
-  //   },
-  //   {
-  //     id: 0,
-  //     title: "Prueba conductorres",
-
-  //     start: new Date(2020, 3, 17, 3, 30),
-  //     end: new Date(2020, 3, 17, 5, 30),
-  //   },
-  // ]);
+  const { requestsInfoContext } = useContext(RequestsContext);
 
   // =============================== GETTING ALL THE EVENTS AND DISPLAYING THEM TO CALENDAR =============================================
 
   useEffect(() => {
-    let urlType = userInfoContext.profile === 2 ? "user_requests" : "requests";
-    async function fetchRequests(url) {
-      const response = await getUserRequests(url);
-      if (response) {
-        response.results.forEach(async (item) => {
-          item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
-          item.start = new Date(item.start_time);
-          item.end = new Date(item.finish_time);
-          // if (item.status.step !== 0) { // I was filtering only by no cancelled
-          setRequests((prev) => [...prev, item]);
-          // }
-        });
-        if (response.next) {
-          return await fetchRequests(response.next);
-        }
-      }
-    }
-    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
-  }, [userInfoContext.profile]);
+    setRequests(requestsInfoContext);
+  }, [requestsInfoContext]);
 
   useEffect(() => {
     // Sorting requests so that the most recent goes on top
@@ -64,9 +34,9 @@ const MyCalendar = (props) => {
       requests.sort((a, b) => {
         return a.id - b.id;
       });
-      setSortedRequests(requests.reverse());
+      setSortedRequests(() => requests.reverse());
       // Show and hide spinner
-      if (sortedRequests.length > 0) {
+      if (requests.length > 0) {
         setLoading(false);
       }
     } else {

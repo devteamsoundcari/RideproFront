@@ -9,10 +9,12 @@ import {
 } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
+import { RequestsContext } from "../../contexts/RequestsContext";
+
 import { Nav, Navbar, NavDropdown, Image } from "react-bootstrap";
 import "./NavBar.scss";
 
-const NavBar = (props) => {
+const NavBar = () => {
   const history = useHistory();
   const [filled, setFilled] = useState(false);
   const {
@@ -20,6 +22,7 @@ const NavBar = (props) => {
     setUserInfoContext,
     setIsLoggedInContext,
   } = useContext(AuthContext);
+  const { setRequestsInfoContext } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
 
   const logout = () => {
@@ -27,6 +30,8 @@ const NavBar = (props) => {
     setAuthorizationToken();
     setIsLoggedInContext(false);
     setUserInfoContext({});
+    setRequestsInfoContext([]);
+
     history.push({
       pathname: "/login",
     });
@@ -46,17 +51,14 @@ const NavBar = (props) => {
       default:
         break;
     }
+    // eslint-disable-next-line
   }, [userInfoContext]);
 
   useState(() => {
     window.addEventListener("scroll", () => {
-      // let activeClass = 'normal';
       if (window.scrollY < 100) {
-        // activeClass = 'top';
         setFilled(false);
-        console.log("NORMAL");
       } else {
-        console.log("CAMBIAR");
         setFilled(true);
       }
     });
