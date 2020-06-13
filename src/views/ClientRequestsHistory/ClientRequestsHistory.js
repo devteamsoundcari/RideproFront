@@ -22,10 +22,13 @@ import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import "./ClientRequestsHistory.scss";
 import { cancelRequestId } from "../../controllers/apiRequests";
+import SingleRequestModal from "./SingleRequestModal/SingleRequestModal";
 
 const ClientRequestsHistory = () => {
   const location = useLocation();
   const [tracks, setTracks] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
+  const [selectedRow, setSelectedRow] = useState({});
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   const [updateList, setUpdateList] = useState(false);
@@ -148,16 +151,20 @@ const ClientRequestsHistory = () => {
 
   const dateFormatter = (cell) => {
     let d = new Date(cell);
-    const options = {
-      weekday: "long",
+    const dateTimeFormat = new Intl.DateTimeFormat("en", {
       year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    };
-    return d.toLocaleTimeString("es-ES", options);
+      month: "short",
+      day: "2-digit",
+    });
+    const [
+      { value: month },
+      ,
+      { value: day },
+      ,
+      { value: year },
+    ] = dateTimeFormat.formatToParts(d);
+
+    return `${day}-${month}-${year}`;
   };
 
   const columns = [
@@ -168,12 +175,21 @@ const ClientRequestsHistory = () => {
       sort: true,
     },
     {
+      dataField: "spent_credit",
+      text: "Rides gastados",
+    },
+    {
       dataField: "created_at",
       text: "Fecha de solicitud",
       formatter: dateFormatter,
       sort: true,
     },
-
+    {
+      dataField: "municipality.name",
+      text: "Ciudad",
+      formatter: cityFormatter,
+      sort: true,
+    },
     {
       dataField: "service.name",
       text: "Producto",
@@ -289,14 +305,21 @@ const ClientRequestsHistory = () => {
     },
   };
 
+  const handleOnSelect = (row) => {
+    console.log("row", row);
+    setSelectedRow(row);
+    setModalShow(true);
+  };
+
+  const selectRow = {
+    mode: "radio",
+    clickToSelect: true,
+    hideSelectColumn: true,
+    onSelect: handleOnSelect,
+  };
+
   return (
-    <Container fluid="md" className="client-requests-history">
-      {/* <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 className="h2">Historial de solicitudes</h1>
-        <div className="btn-toolbar mb-2 mb-md-0">
-          <div className="btn-group mr-2"></div>
-        </div>
-      </div> */}
+    <Container fluid="md" id="client-requests-history">
       {requests.length === 0 ? (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
@@ -308,11 +331,19 @@ const ClientRequestsHistory = () => {
             keyField="id"
             data={requests}
             columns={columns}
-            expandRow={expandRow}
+            // expandRow={expandRow}
+            selectRow={selectRow}
             filter={filterFactory()}
             pagination={paginationFactory()}
           />
         </Card>
+      )}
+      {modalShow && (
+        <SingleRequestModal
+          show={true}
+          onHide={() => setModalShow(false)}
+          selectedRow={selectedRow}
+        />
       )}
     </Container>
   );
