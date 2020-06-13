@@ -17,6 +17,7 @@ const SingleRequestModal = (props) => {
     track,
     start,
     spent_credit,
+    drivers,
   } = props.selectedRow;
 
   const renderStatus = () => {
@@ -94,19 +95,23 @@ const SingleRequestModal = (props) => {
                 <Table responsive hover size="sm">
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Username</th>
+                      <th>Identificación</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Email</th>
+                      <th>Teléfono</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
+                    {drivers.map((driver, idx) => (
+                      <tr key={idx}>
+                        <td>{driver.official_id}</td>
+                        <td>{driver.first_name}</td>
+                        <td>{driver.last_name}</td>
+                        <td>{driver.email}</td>
+                        <td>{driver.cellphone}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
               </React.Fragment>
@@ -115,30 +120,28 @@ const SingleRequestModal = (props) => {
             <Table responsive hover size="sm">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Username</th>
+                  <th>Identificación</th>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>Email</th>
+                  <th>Teléfono</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td colSpan="2">Larry the Bird</td>
-                  <td>@twitter</td>
-                </tr>
+                {drivers.map((driver, idx) => (
+                  <tr key={idx}>
+                    <td>{driver.official_id}</td>
+                    <td>{driver.first_name}</td>
+                    <td>{driver.last_name}</td>
+                    <td>{driver.email}</td>
+                    <td>{driver.cellphone}</td>
+                    <td>
+                      <Button variant="danger" size="sm">
+                        Borrar
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </Row>
@@ -146,7 +149,7 @@ const SingleRequestModal = (props) => {
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Cerrar</Button>
-        <Button onClick={props.onHide}>Cancelar Solicitud</Button>
+        <Button variant="danger">Cancelar solicitud</Button>
       </Modal.Footer>
     </Modal>
   );
