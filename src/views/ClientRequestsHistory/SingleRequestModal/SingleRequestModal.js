@@ -148,8 +148,8 @@ const SingleRequestModal = (props) => {
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={props.onHide}>Cerrar</Button>
         <Button variant="danger">Cancelar solicitud</Button>
+        <Button onClick={props.onHide}>Cerrar</Button>
       </Modal.Footer>
     </Modal>
   );
