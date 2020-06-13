@@ -3,7 +3,6 @@ import NavBar from "../../views/NavBar/NavBar";
 import "./DashboardLayout.scss";
 import SideBar from "../../views/SideBar/SideBar";
 import Usuarios from "../../views/Usuarios/Usuarios";
-import RequestsHistory from "../../views/RequestsHistory/RequestsHistory";
 import AdminRequestHistory from "../../views/AdminRequestHistory/AdminRequestHistory";
 import Dashboard from "../../views/Dashboard/Dashboard";
 import {
@@ -17,6 +16,7 @@ import SolicitarServicio from "../../views/SolicitarServicio/SolicitarServicio";
 import Tracks from "../../views/Tracks/Tracks";
 import { Spinner, Container } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
+import ClientRequestsHistory from "../../views/ClientRequestsHistory/ClientRequestsHistory";
 
 const DashboardLayout: React.FC = () => {
   const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
@@ -47,7 +47,7 @@ const DashboardLayout: React.FC = () => {
                 </Route>
                 <Route path={`${path}/historial`}>
                   {userInfoContext.profile === 2 ? (
-                    <RequestsHistory />
+                    <ClientRequestsHistory />
                   ) : (
                     <AdminRequestHistory />
                   )}
@@ -59,7 +59,7 @@ const DashboardLayout: React.FC = () => {
                   <Tracks />
                 </Route>
                 <Redirect from="/administrador" to="/administrador/dashboard" />
-                <Redirect from="/cliente" to="/cliente/dashboard" />
+                <Redirect from="/cliente" to="/cliente/historial" />
                 <Redirect from="/operario" to="/operario/dashboard" />
               </Switch>
             </Container>
