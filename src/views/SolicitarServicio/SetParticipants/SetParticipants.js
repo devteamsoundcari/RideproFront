@@ -24,6 +24,7 @@ const SetParticipants = (props) => {
   const [participants, setParticipants] = useState([]);
   const [participantToAdd, setParticipantToAdd] = useState({});
   const [participantsForReplacing, setParticipantsForReplacing] = useState([]);
+  const [addedRegisteredParticipants, setAddedRegisteredParticipants] = useState([]);
   const [areParticipantsValid, setAreParticipantsValid] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
@@ -128,12 +129,42 @@ const SetParticipants = (props) => {
   // =================================  UPDATE DATA TABLE AND REGISTERED PARTICIPANTS  ================================================
 
   const handleSearchParticipant = (item) => {
-    const temp = participantsDB.filter((i) => {
-      return i.official_id !== item.official_id;
-    });
-    setParticipantsDB(temp);
+    setAddedRegisteredParticipants((current) => [...current, item])
     setParticipantToAdd({...item, isRegistered: true});
   };
+
+  useEffect(() => {
+    const participants = [...participantsDB];
+
+    for (const participant of addedRegisteredParticipants) {
+      const index = participants.findIndex((i) => {
+        return i.official_id === participant.official_id;
+      });
+      if (index >= 0) {
+        participants.splice(index, 1);
+      } 
+    }
+    setParticipantsDB(participants);
+  }, [addedRegisteredParticipants]);
+
+  useEffect(() => {
+    const newParticipantsDB = [...participantsDB];
+    const newAddedRegisteredParticipants = [...addedRegisteredParticipants];
+
+    for (const participant of newAddedRegisteredParticipants) {
+      const index = participants.findIndex((i) => {
+        return i.official_id === participant.official_id;
+      });
+      if (index < 0) {
+        newParticipantsDB.unshift(participant);
+        newAddedRegisteredParticipants.splice(index, 1);
+      }
+    }
+
+    setParticipantsDB(newParticipantsDB);
+    setAddedRegisteredParticipants(newAddedRegisteredParticipants);
+  }, [participants])
+
 
   const handleUpdateTable = (data) => {
     setParticipantsToRegisterContext(data);
