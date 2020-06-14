@@ -30,7 +30,6 @@ export class EditableTable extends React.Component<
     dataSet: any[];
     errors: Error[];
     insertionRow: Map<string, string>;
-    ins: any;
     insertionRowErrors: InsertionRowError[];
     displayErrors: Map<string, boolean>;
   }
@@ -52,7 +51,6 @@ export class EditableTable extends React.Component<
     rowKeys.forEach((field: any) => {
       if (!this.props.fields[field].hidden) {
         insertionRow.set(field, "");
-        ins[field] = "";
       }
     });
 
@@ -69,7 +67,6 @@ export class EditableTable extends React.Component<
       insertionRow: insertionRow,
       insertionRowErrors: [],
       displayErrors: headings,
-      ins: ins,
     };
 
     this.firstRow = createRef();
@@ -142,8 +139,6 @@ export class EditableTable extends React.Component<
         this.state.errors.splice(idx);
       }
     }
-
-    this.props.onValidate(this.state.errors.length <= 0 ? true : false);
   }
 
   getErrors(id: number, field: string) {
@@ -256,6 +251,15 @@ export class EditableTable extends React.Component<
     return errors;
   }
 
+  removeErrors(id: number) {
+    this.setState((current) => ({
+      ...current,
+      errors: this.state.errors.filter((err: Error) => id !== err.id),
+    }), () => {
+      this.onDataSetValidation();
+    });
+  }
+
   deleteRow(id: number) {
     this.setState(
       (current) => ({
@@ -263,7 +267,8 @@ export class EditableTable extends React.Component<
         dataSet: this.state.dataSet.filter((item: any) => id !== item.id),
       }),
       () => {
-        this.updateDataSetProp();
+        this.onDataSetUpdate();
+        this.removeErrors(id);
       }
     );
   }
@@ -317,7 +322,8 @@ export class EditableTable extends React.Component<
         if (this.props.fields[column].unique === true) {
           this.checkDuplicates(row, column);
         }
-        this.updateDataSetProp();
+        this.onDataSetUpdate();
+        this.onDataSetValidation();
       }
     );
   }
@@ -394,7 +400,8 @@ export class EditableTable extends React.Component<
         dataSet: dataSet,
       }),
       () => {
-        this.updateDataSetProp();
+        this.onDataSetUpdate();
+        this.onDataSetValidation();
       }
     );
 
@@ -405,7 +412,7 @@ export class EditableTable extends React.Component<
     this.firstRow.current!.focus();
   }
 
-  updateDataSetProp() {
+  onDataSetUpdate() {
     const dataSet = JSON.parse(JSON.stringify(this.state.dataSet));
 
     this.props.onUpdate(
@@ -424,6 +431,10 @@ export class EditableTable extends React.Component<
         return record.data;
       })
     );
+  }
+
+  onDataSetValidation() {
+    this.props.onValidate(this.state.errors.length <= 0 ? true : false);
   }
 
   pasteAsPlainText(event: any) {
@@ -517,7 +528,8 @@ export class EditableTable extends React.Component<
             }
           });
           this.setState(this.state);
-          this.updateDataSetProp();
+          this.onDataSetUpdate();
+          this.onDataSetValidation();
         }
       );
     } else if (
@@ -559,7 +571,8 @@ export class EditableTable extends React.Component<
             }
           });
           this.setState(this.state);
-          this.updateDataSetProp();
+          this.onDataSetUpdate();
+          this.onDataSetValidation();
         }
       );
     }
@@ -576,15 +589,15 @@ export class EditableTable extends React.Component<
       return (
         <td>
           <div className="cell-button">
-          <Button
-            variant="link"
-            onClick={() => this.addRow()}
-            disabled={
-              this.isInsertionRowIncorrect() || this.isInsertionRowEmpty()
-            }
-          >
-            <FaPlus />
-          </Button>
+            <Button
+              variant="link"
+              onClick={() => this.addRow()}
+              disabled={
+                this.isInsertionRowIncorrect() || this.isInsertionRowEmpty()
+              }
+            >
+              <FaPlus />
+            </Button>
           </div>
         </td>
       );
@@ -663,10 +676,7 @@ export class EditableTable extends React.Component<
 
             if (!this.props.fields[field].hidden) {
               return (
-                <td
-                  key={field}
-                  className={cls}
-                >
+                <td key={field} className={cls}>
                   <Form.Control
                     type="text"
                     data-tip
@@ -707,9 +717,9 @@ export class EditableTable extends React.Component<
           })}
           <td>
             <div className="cell-button">
-            <Button variant="link" onClick={() => this.deleteRow(row.id)}>
-              <FaTimes />
-            </Button>
+              <Button variant="link" onClick={() => this.deleteRow(row.id)}>
+                <FaTimes />
+              </Button>
             </div>
           </td>
         </tr>
