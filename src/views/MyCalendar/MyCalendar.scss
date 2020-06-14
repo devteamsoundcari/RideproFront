@@ -1,12 +1,16 @@
 .calendarSection {
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
   .conventions {
     border: 1px solid rgba(0, 0, 0, 0.125);
+    border-right: none;
     .list-group-item {
       padding: 0.75rem 0.3rem;
       background: transparent;
       border: none;
       transition: 0.3s;
-      cursor: pointer;
+      cursor: default;
       small {
         font-weight: 500;
         margin-left: 6px;
@@ -15,28 +19,9 @@
         transform: translateY(-5px);
       }
     }
-    .conv-1 {
-      svg {
-        color: lightgreen;
-      }
-    }
-    .conv-2 {
-      svg {
-        color: dodgerblue;
-      }
-    }
-    .conv-3 {
-      svg {
-        color: yellow;
-      }
-    }
-    .conv-4 {
-      svg {
-        color: red;
-      }
-    }
   }
   .eventsCalendar {
+    padding-right: 0px;
     .rbc-calendar {
       .rbc-toolbar {
         .rbc-toolbar-label {
@@ -45,6 +30,14 @@
       }
       .rbc-month-row {
         overflow: visible;
+        .rbc-date-cell {
+          a {
+            &:hover {
+              cursor: default;
+              text-decoration: none;
+            }
+          }
+        }
       }
       .rbc-header {
         span {

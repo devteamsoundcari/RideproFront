@@ -56,7 +56,7 @@ const NavBar = () => {
 
   useState(() => {
     window.addEventListener("scroll", () => {
-      if (window.scrollY < 100) {
+      if (window.scrollY < 30) {
         setFilled(false);
       } else {
         setFilled(true);
@@ -73,18 +73,18 @@ const NavBar = () => {
     >
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto">
+        {/* <Nav className="mr-auto">
           <Nav.Link href="#home">
             <FaQuestionCircle /> Ayuda
           </Nav.Link>
           <Nav.Link href="#link">
             <FaRoute />
           </Nav.Link>
-        </Nav>
+        </Nav> */}
         <Nav className="ml-auto">
-          <Nav.Link href="#home">
+          {/* <Nav.Link href="#home">
             <FaSearch />
-          </Nav.Link>
+          </Nav.Link> */}
           <Nav.Link href="#link">
             <FaBell />
           </Nav.Link>
@@ -98,11 +98,11 @@ const NavBar = () => {
                 <FaPowerOff /> Cerrar sesión
               </NavDropdown.Item>
             </NavDropdown>
-            <Image
+            {/* <Image
               src={userInfoContext.company.logo}
               roundedCircle
               className="shadow-sm"
-            />
+            /> */}
           </div>
         </Nav>
       </Navbar.Collapse>

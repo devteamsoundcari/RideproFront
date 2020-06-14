@@ -4,6 +4,7 @@ import {
   AiFillDollarCircle,
   AiFillCalendar,
   AiOutlineHistory,
+  AiOutlinePlus,
 } from "react-icons/ai";
 import {
   GiFullMotorcycleHelmet,
@@ -83,12 +84,11 @@ const SideBar = (props) => {
 
   return (
     <nav
-      className={`col-md-2 d-none d-md-block bg-dark bg-${profile.toLowerCase()} sidebar`}
+      className={`col-md-2 d-md-block bg-dark bg-${profile.toLowerCase()} sidebar pr-0 pl-0`}
     >
       <div className="sidebar-sticky">
         <div
           className="sidebar-brand"
-          style={{ cursor: "pointer" }}
           // onClick={() => history.push("/login")}
         >
           <img
@@ -109,15 +109,17 @@ const SideBar = (props) => {
               }
             />
           </li>
-          <Greeting
-            name={userInfoContext.name}
-            gender={userInfoContext.gender}
-          />
           <li>
-            <small>{userInfoContext.charge}</small>
-          </li>
-          <li>
-            <small>{userInfoContext.company.name}</small>
+            <div className="greeting">
+              <Greeting
+                name={userInfoContext.name}
+                gender={userInfoContext.gender}
+              />
+              <br />
+              <small>{userInfoContext.charge}</small>
+              <br />
+              <small>{userInfoContext.company.name}</small>
+            </div>
           </li>
           {profile === "Cliente" ? (
             <li>
@@ -130,8 +132,25 @@ const SideBar = (props) => {
             ""
           )}
         </ul>
+
         <hr />
         <ul className="nav flex-column align-items-start">
+          {userInfoContext.profile !== 3 && (
+            <React.Fragment>
+              <li className="sidebar-nav-header">Destacado</li>
+
+              <Link to={`${props.url}/solicitar`} className="nav-link">
+                <GiFullMotorcycleHelmet className="mb-1 mr-2" />
+                Solicitar{" "}
+                <Badge pill variant="success">
+                  Nuevo!
+                </Badge>
+              </Link>
+              <hr />
+            </React.Fragment>
+          )}
+          <li className="sidebar-nav-header">Menú</li>
+
           <Link to={`${props.url}/dashboard`} className="nav-link">
             <AiFillCalendar className="mb-1 mr-2" />
             Calendario
@@ -146,19 +165,16 @@ const SideBar = (props) => {
             <AiOutlineHistory className="mb-1 mr-2" />
             Historial
           </Link>
-          {userInfoContext.profile !== 3 && (
-            <Link to={`${props.url}/solicitar`} className="nav-link">
-              <GiFullMotorcycleHelmet className="mb-1 mr-2" />
-              Solicitar{" "}
-              <Badge pill variant="success">
-                Nuevo!
-              </Badge>
-            </Link>
-          )}
 
+          <hr />
+          <li className="sidebar-nav-header">Mis pistas</li>
           <Link to={`${props.url}/pistas`} className="nav-link">
             <GiTireTracks className="mb-1 mr-2" />
-            Mis Pistas{" "}
+            Ver pistas{" "}
+          </Link>
+          <Link to={`${props.url}/pistas`} className="nav-link">
+            <AiOutlinePlus className="mb-1 mr-2" />
+            Añadir pista{" "}
           </Link>
 
           {/* <li className="nav-item">
