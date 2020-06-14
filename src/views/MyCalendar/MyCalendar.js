@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Children, useContext } from "react";
 import { Card, Spinner, Row, Col, ListGroup, Button } from "react-bootstrap";
-import { FaDotCircle } from "react-icons/fa";
-
+import { FaDotCircle, FaUsers } from "react-icons/fa";
+import { MdPlace } from "react-icons/md";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { useHistory } from "react-router-dom";
 import moment from "moment";
@@ -53,7 +53,7 @@ const MyCalendar = () => {
   const handleClick = (event) => {
     history.push({
       pathname: "/cliente/historial",
-      state: { id: sortedRequests.findIndex((i) => i.id === event.id) },
+      state: { event: event },
     });
   };
 
@@ -111,6 +111,29 @@ const MyCalendar = () => {
     };
   };
 
+  const eventFormatter = (event) => {
+    const { service, municipality, drivers } = event.event;
+    return (
+      <div className="event-formated">
+        <h5>{service.name}</h5>
+        <div className="event-details">
+          <p>
+            <span className="mr-1">
+              <FaUsers />
+            </span>
+            {drivers.length}
+          </p>
+          <p className="ml-1">
+            <span>
+              <MdPlace />
+            </span>
+            {municipality.name.toLowerCase()}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Row className="calendarSection ml-1 mr-1">
       <Col md={2} className="conventions">
@@ -163,6 +186,7 @@ const MyCalendar = () => {
               // onSelectSlot={handleSelectSlot}
               components={{
                 dateCellWrapper: ColoredDateCellWrapper,
+                event: eventFormatter,
               }}
               eventPropGetter={styleEvents}
               messages={{
