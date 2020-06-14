@@ -35,6 +35,7 @@
       }
     }
   }
+
   .editableTable {
     justify-content: center;
     align-items: center;
@@ -53,35 +54,40 @@
     border-radius: 10px;
   }
 
+  .cell-button {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+  }
+
+
   table {
     small {
       color: red;
       font-weight: bold;
       font-size: 12px;
     }
+    tr {
+      height: 100%;
+    }
     td {
+      height: 100%;
       text-align: center;
       padding: 0px 2px;
       .content-editable {
-        background-color: #adb5bd;
+        background-color: #e6e6e6;
       }
       .new-row {
         border: 1px solid rgb(196, 196, 196);
         border-radius: 2px;
         background-color: #fff;
       }
-      span {
-        svg {
-          margin-bottom: 2px;
-          &:hover {
-            color: red;
-          }
-        }
-      }
+
       button {
         font-size: 15px;
         padding: 0px;
-        padding-bottom: 5px;
+        width: 100%;
+        height: 100%;
       }
     }
     .incorrect {
@@ -90,6 +96,12 @@
       }
       .new-row {
         border: 2px solid red;
+      }
+    }
+    .read-only {
+      .content-editable {
+        background-color: #cccccc;
+        color: #74818c;
       }
     }
   }

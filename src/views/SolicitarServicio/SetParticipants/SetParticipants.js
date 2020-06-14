@@ -19,14 +19,12 @@ const SetParticipants = (props) => {
   const {
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
-    setParticipantsToRegisterContext,
-    setRepeatedParticipantsContext
+    setParticipantsToRegisterContext
   } = useContext(ParticipantsContext);
   const [participants, setParticipants] = useState([]);
   const [participantToAdd, setParticipantToAdd] = useState({});
   const [participantsForReplacing, setParticipantsForReplacing] = useState([]);
-  // eslint-disable-next-line
-  const [errors, setErrors] = useState(false);
+  const [areParticipantsValid, setAreParticipantsValid] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
   const [dataTable, setDataTable] = useState([]);
@@ -195,7 +193,7 @@ const SetParticipants = (props) => {
             size="bg"
             onClick={handleFinalizar}
             className="finalizarBtn"
-            disabled={rides ? false : true}
+            disabled={areParticipantsValid && rides ? false : true}
           >
             Finalizar
           </Button>
@@ -235,7 +233,7 @@ const SetParticipants = (props) => {
         <EditableTable
           dataSet={participants}
           fields={fields}
-          onValidate={(x) => setErrors(x)}
+          onValidate={(x) => setAreParticipantsValid(x)}
           onUpdate={handleUpdateTable}
           readOnlyIf={isParticipantAlreadyRegistered}
           recordToAdd={participantToAdd}
