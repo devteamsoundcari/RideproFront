@@ -33,13 +33,18 @@ const ClientRequestsHistory = () => {
   const [requests, setRequests] = useState([]);
   const [updateList, setUpdateList] = useState(false);
   const [sortedRequests, setSortedRequests] = useState([]);
-  const [defaultKey] = useState(location.state ? location.state.id : 0);
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const { requestsInfoContext } = useContext(RequestsContext);
   const [renderCancelRequesModal, setRenderCancelRequestModal] = useState({
     show: false,
     item: null,
   });
+
+  useEffect(() => {
+    if (location.state) {
+      handleOnSelect(location.state.event);
+    }
+  }, [location]);
 
   // ================================ FETCH TRACKS ON LOAD =====================================================
   const fetchTracks = async (url) => {
@@ -151,9 +156,9 @@ const ClientRequestsHistory = () => {
 
   const dateFormatter = (cell) => {
     let d = new Date(cell);
-    const dateTimeFormat = new Intl.DateTimeFormat("en", {
+    const dateTimeFormat = new Intl.DateTimeFormat("es-CO", {
       year: "numeric",
-      month: "short",
+      month: "2-digit",
       day: "2-digit",
     });
     const [
@@ -163,8 +168,7 @@ const ClientRequestsHistory = () => {
       ,
       { value: year },
     ] = dateTimeFormat.formatToParts(d);
-
-    return `${day}-${month}-${year}`;
+    return `${month}/${day}/${year}`;
   };
 
   const columns = [

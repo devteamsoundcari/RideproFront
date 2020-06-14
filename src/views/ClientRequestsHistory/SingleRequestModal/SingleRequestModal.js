@@ -18,6 +18,7 @@ const SingleRequestModal = (props) => {
     start,
     spent_credit,
     drivers,
+    start_time,
   } = props.selectedRow;
 
   const renderStatus = () => {
@@ -47,6 +48,23 @@ const SingleRequestModal = (props) => {
     return strTime;
   };
 
+  const dateFormatter = () => {
+    let d = new Date(start_time);
+    const dateTimeFormat = new Intl.DateTimeFormat("es-CO", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const [
+      { value: month },
+      ,
+      { value: day },
+      ,
+      { value: year },
+    ] = dateTimeFormat.formatToParts(d);
+    return `${month}/${day}/${year}`;
+  };
+
   return (
     <Modal
       {...props}
@@ -64,6 +82,7 @@ const SingleRequestModal = (props) => {
             {municipality.department.name}
           </p>
         </div>
+        <p className="mb-0">{dateFormatter()}</p>
         <div>{renderStatus()}</div>
       </Modal.Header>
       <Modal.Body>
