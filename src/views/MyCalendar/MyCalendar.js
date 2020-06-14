@@ -137,26 +137,30 @@ const MyCalendar = () => {
   return (
     <Row className="calendarSection ml-1 mr-1">
       <Col md={2} className="conventions">
-        <Button
+        {/* <Button
           variant="primary"
           block
           className="mb-3 mt-3"
           disabled={userInfoContext.profile !== 2 ? true : false}
         >
           SOLICITAR
-        </Button>
+        </Button> */}
         <ListGroup>
-          <ListGroup.Item className="conv-1">
-            <FaDotCircle /> <small>SIN CONFIRMAR</small>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-requested" />{" "}
+            <small>SIN CONFIRMAR</small>
           </ListGroup.Item>
-          <ListGroup.Item className="conv-2">
-            <FaDotCircle /> <small>CONFIRMADO</small>
+          <ListGroup.Item>
+            <FaDotCircle className="text-confirm-event" />{" "}
+            <small>CONFIRMAR PROGRAMACIÓN</small>
           </ListGroup.Item>
-          <ListGroup.Item className="conv-3">
-            <FaDotCircle /> <small>EJECUTADO</small>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-confirmed" />{" "}
+            <small>CONFIRMADO</small>
           </ListGroup.Item>
-          <ListGroup.Item className="conv-4">
-            <FaDotCircle /> <small>CANCELADO</small>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-finished" />{" "}
+            <small>TERMINADO</small>
           </ListGroup.Item>
         </ListGroup>
       </Col>

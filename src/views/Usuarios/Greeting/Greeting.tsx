@@ -7,24 +7,20 @@ const Greeting = (props: any) => {
 
   switch (gender) {
     case "M":
-      greeting = `Bienvenido, ${name}.`;
+      greeting = `Bienvenido ${name}`;
       break;
     case "F":
-      greeting = `Bienvenida, ${name}.`;
+      greeting = `Bienvenida ${name}`;
       break;
     case "O":
-      greeting = `Bienvenid@, ${name}.`;
+      greeting = `Bienvenid@ ${name}`;
       break;
     default:
-      greeting = `Bienvenid@, ${name}.`;
+      greeting = `Bienvenid@ ${name}`;
       break;
   }
 
-  return (
-    <small>
-      <strong>{greeting}</strong>
-    </small>
-  );
+  return <small>{greeting}</small>;
 };
 
 export default Greeting;
