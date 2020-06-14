@@ -1,0 +1,32 @@
+#client-requests-history {
+  table {
+    text-align: center;
+    th {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      vertical-align: middle;
+      text-transform: uppercase;
+      font-weight: 400;
+      font-size: 0.99rem;
+      color: #475f7b;
+      letter-spacing: 1px;
+    }
+    td {
+      vertical-align: middle;
+    }
+    tbody {
+      tr {
+        &:hover {
+          background-color: gainsboro;
+          cursor: pointer;
+        }
+      }
+    }
+    .selected-row {
+      background-color: lightskyblue;
+    }
+    .selected-expanding-row {
+      background-color: rgb(226, 247, 247);
+    }
+  }
+}
