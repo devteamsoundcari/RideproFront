@@ -17,6 +17,7 @@ const SetParticipants = (props) => {
   const { userInfoContext } = useContext(AuthContext);
   const { serviceInfoContext } = useContext(ServiceContext);
   const {
+    allParticipantsInfoContext,
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
     setParticipantsToRegisterContext
@@ -24,7 +25,6 @@ const SetParticipants = (props) => {
   const [participants, setParticipants] = useState([]);
   const [participantToAdd, setParticipantToAdd] = useState({});
   const [participantsForReplacing, setParticipantsForReplacing] = useState([]);
-  const [addedRegisteredParticipants, setAddedRegisteredParticipants] = useState([]);
   const [areParticipantsValid, setAreParticipantsValid] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
@@ -129,42 +129,35 @@ const SetParticipants = (props) => {
   // =================================  UPDATE DATA TABLE AND REGISTERED PARTICIPANTS  ================================================
 
   const handleSearchParticipant = (item) => {
-    setAddedRegisteredParticipants((current) => [...current, item])
+    const newParticipantsDB = participantsDB.filter((i) => {
+      return i.official_id !== item.official_id;
+    });
+    setParticipantsDB(newParticipantsDB);
     setParticipantToAdd({...item, isRegistered: true});
   };
 
   useEffect(() => {
-    const participants = [...participantsDB];
+    const newParticipantsDB = [...allParticipantsInfoContext];
+    const registeredParticipants = participants.filter((participant) => {
+      return participant.isRegistered;
+    });
 
-    for (const participant of addedRegisteredParticipants) {
-      const index = participants.findIndex((i) => {
+    for (const participant of allParticipantsInfoContext) {
+      const index = registeredParticipants.findIndex((i) => {
         return i.official_id === participant.official_id;
       });
       if (index >= 0) {
-        participants.splice(index, 1);
-      } 
-    }
-    setParticipantsDB(participants);
-  }, [addedRegisteredParticipants]);
-
-  useEffect(() => {
-    const newParticipantsDB = [...participantsDB];
-    const newAddedRegisteredParticipants = [...addedRegisteredParticipants];
-
-    for (const participant of newAddedRegisteredParticipants) {
-      const index = participants.findIndex((i) => {
-        return i.official_id === participant.official_id;
-      });
-      if (index < 0) {
-        newParticipantsDB.unshift(participant);
-        newAddedRegisteredParticipants.splice(index, 1);
+        let participantIndex = newParticipantsDB.findIndex((p) => {
+          return p.official_id === participant.official_id;
+        });
+        if (participantIndex >= 0) {
+          newParticipantsDB.splice(participantIndex, 1);
+        }
       }
     }
 
     setParticipantsDB(newParticipantsDB);
-    setAddedRegisteredParticipants(newAddedRegisteredParticipants);
-  }, [participants])
-
+  }, [participants]);
 
   const handleUpdateTable = (data) => {
     setParticipantsToRegisterContext(data);
