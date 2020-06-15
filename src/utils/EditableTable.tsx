@@ -32,6 +32,7 @@ export class EditableTable extends React.Component<
     insertionRow: Map<string, string>;
     insertionRowErrors: InsertionRowError[];
     displayErrors: Map<string, boolean>;
+    autoIncrement: number;
   }
 > {
   private firstRow: React.RefObject<HTMLInputElement>;
@@ -67,6 +68,7 @@ export class EditableTable extends React.Component<
       insertionRow: insertionRow,
       insertionRowErrors: [],
       displayErrors: headings,
+      autoIncrement: 1
     };
 
     this.firstRow = createRef();
@@ -389,7 +391,7 @@ export class EditableTable extends React.Component<
       }
     }
     dataSet.unshift({
-      id: dataSet.length + 1,
+      id: this.state.autoIncrement,
       readOnly: false,
       data: data,
     });
@@ -398,6 +400,7 @@ export class EditableTable extends React.Component<
       (current) => ({
         ...current,
         dataSet: dataSet,
+        autoIncrement: this.state.autoIncrement + 1
       }),
       () => {
         this.onDataSetUpdate();
@@ -491,7 +494,6 @@ export class EditableTable extends React.Component<
 
   componentDidUpdate(prevProps) {
     if (prevProps.recordToAdd !== this.props.recordToAdd) {
-      let dataSetLength: number = this.state.dataSet.length;
       let newRow: any = {};
       let filtered: any = {};
       for (let key in this.props.recordToAdd) {
@@ -503,7 +505,7 @@ export class EditableTable extends React.Component<
         newRow.readOnly = true;
       }
       newRow.data = filtered;
-      newRow.id = dataSetLength + 1;
+      newRow.id = this.state.autoIncrement;
       for (let field in this.props.fields) {
         if (this.props.fields[field].hidden) {
           if (!(field in newRow)) {
@@ -515,6 +517,7 @@ export class EditableTable extends React.Component<
         (current) => ({
           ...current,
           dataSet: [newRow, ...this.state.dataSet],
+          autoIncrement: this.state.autoIncrement + 1
         }),
         () => {
           this.state.dataSet.forEach((row: any) => {
@@ -558,6 +561,7 @@ export class EditableTable extends React.Component<
         (current) => ({
           ...current,
           dataSet: newRecords,
+          autoIncrement: newRecords.length + 1
         }),
         () => {
           this.state.dataSet.forEach((row: any) => {
