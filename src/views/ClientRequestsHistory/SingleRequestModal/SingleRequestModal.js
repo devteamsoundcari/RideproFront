@@ -277,12 +277,12 @@ const SingleRequestModal = (props) => {
             </React.Fragment>
           ) : success ? (
             <React.Fragment>
-              <Modal.Header closeButton>
+              <Modal.Header>
                 <Modal.Title>Listo!</Modal.Title>
               </Modal.Header>
               <Modal.Body>La solicitud fue cancelada exitosamente</Modal.Body>
               <Modal.Footer>
-                <Button variant="primary" onClick={cancelEvent}>
+                <Button variant="primary" onClick={props.onHide}>
                   Volver
                 </Button>
               </Modal.Footer>
