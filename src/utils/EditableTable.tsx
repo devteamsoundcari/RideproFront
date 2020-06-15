@@ -41,7 +41,6 @@ export class EditableTable extends React.Component<
     super(props);
 
     let rowKeys = Object.keys(props.fields);
-    let ins: any = {};
     let insertionRow = new Map<string, string>();
     let headings = new Map<string, boolean>();
     rowKeys.forEach((field: any) => {
@@ -587,6 +586,7 @@ export class EditableTable extends React.Component<
       if (!this.props.fields[name].hidden) {
         return <th key={name}>{this.props.fields[name].name}</th>;
       }
+      return null;
     });
 
     let InsertButton = (props: any) => {
@@ -717,6 +717,8 @@ export class EditableTable extends React.Component<
                   )}
                 </td>
               );
+            } else {
+              return null;
             }
           })}
           <td>
