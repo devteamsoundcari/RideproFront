@@ -2,16 +2,16 @@ import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import {
   FaBell,
-  FaSearch,
+  // FaSearch,
   FaPowerOff,
-  FaQuestionCircle,
-  FaRoute,
+  // FaQuestionCircle,
+  // FaRoute,
 } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 
-import { Nav, Navbar, NavDropdown, Image } from "react-bootstrap";
+import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import "./NavBar.scss";
 
 const NavBar = () => {
@@ -22,7 +22,9 @@ const NavBar = () => {
     setUserInfoContext,
     setIsLoggedInContext,
   } = useContext(AuthContext);
-  const { setRequestsInfoContext } = useContext(RequestsContext);
+  const { setRequestsInfoContext, setCanceledRequestContext } = useContext(
+    RequestsContext
+  );
   const [profile, setProfile] = useState("");
 
   const logout = () => {
@@ -31,7 +33,7 @@ const NavBar = () => {
     setIsLoggedInContext(false);
     setUserInfoContext({});
     setRequestsInfoContext([]);
-
+    setCanceledRequestContext([]);
     history.push({
       pathname: "/login",
     });

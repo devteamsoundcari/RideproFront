@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Children, useContext } from "react";
-import { Card, Spinner, Row, Col, ListGroup, Button } from "react-bootstrap";
+import { Card, Spinner, Row, Col, ListGroup, Form } from "react-bootstrap";
 import { FaDotCircle, FaUsers } from "react-icons/fa";
 import { MdPlace } from "react-icons/md";
 import { Calendar, momentLocalizer } from "react-big-calendar";
@@ -16,31 +16,31 @@ const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
   const [requests, setRequests] = useState([]);
-  const [sortedRequests, setSortedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const history = useHistory();
-  const { userInfoContext } = useContext(AuthContext);
-  const { requestsInfoContext } = useContext(RequestsContext);
+  const { requestsInfoContext, canceledRequestContext } = useContext(
+    RequestsContext
+  );
+  const [seeCanceledEvents, setSeeCanceledEvents] = useState(false);
+  const [withCanceledRequests, setWithCanceledRequests] = useState({});
 
   // =============================== GETTING ALL THE EVENTS AND DISPLAYING THEM TO CALENDAR =============================================
 
   useEffect(() => {
     setRequests(requestsInfoContext);
-  }, [requestsInfoContext]);
+    setWithCanceledRequests(requestsInfoContext);
+    canceledRequestContext.forEach((item) => {
+      setWithCanceledRequests((prev) => [...prev, item]);
+    });
+  }, [requestsInfoContext, canceledRequestContext]);
 
   useEffect(() => {
-    // Sorting requests so that the most recent goes on top
     if (requests.length > 1) {
-      requests.sort((a, b) => {
-        return a.id - b.id;
-      });
-      setSortedRequests(() => requests.reverse());
       // Show and hide spinner
       if (requests.length > 0) {
         setLoading(false);
       }
     } else {
-      setSortedRequests(requests);
       if (requests.length > 0) {
         setLoading(false);
       }
@@ -94,17 +94,21 @@ const MyCalendar = () => {
     };
     switch (event.status.step) {
       case 0:
-        newStyle.backgroundColor = "indianred";
+        newStyle.backgroundColor = "red";
+        newStyle.color = "#f5f5f5";
         break;
       case 1:
-        newStyle.backgroundColor = "lightgreen";
+        newStyle.backgroundColor = "yellow";
+        break;
+      case 2:
+        newStyle.backgroundColor = "orange";
         break;
       default:
         break;
     }
-    if (start < now && event.status.step !== 0) {
-      newStyle.backgroundColor = "dodgerblue";
-    }
+    // if (start < now && event.status.step !== 0) {
+    //   newStyle.backgroundColor = "dodgerblue";
+    // }
     return {
       className: "",
       style: newStyle,
@@ -162,6 +166,15 @@ const MyCalendar = () => {
             <FaDotCircle className="text-event-finished" />{" "}
             <small>TERMINADO</small>
           </ListGroup.Item>
+          <ListGroup.Item>
+            <Form.Check
+              custom
+              type="checkbox"
+              id="custom-checkbox"
+              label="VER CANCELADOS"
+              onClick={() => setSeeCanceledEvents(!seeCanceledEvents)}
+            />
+          </ListGroup.Item>
         </ListGroup>
       </Col>
       <Col md={10} className="eventsCalendar pl-0">
@@ -181,7 +194,7 @@ const MyCalendar = () => {
               defaultDate={new Date()}
               defaultView="month"
               views={{ month: true }}
-              events={sortedRequests}
+              events={seeCanceledEvents ? withCanceledRequests : requests}
               // min={new Date(2020, 10, 0, 10, 0, 0)}
               // max={new Date(2020, 10, 0, 22, 0, 0)}
               // timeslots={8}

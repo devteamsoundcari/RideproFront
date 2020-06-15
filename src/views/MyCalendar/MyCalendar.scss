@@ -18,6 +18,17 @@
       &:hover {
         transform: translateY(-5px);
       }
+
+      input[type="checkbox"]:checked + label:after {
+        background: red;
+      }
+
+      label {
+        font-weight: 500;
+        font-size: 80%;
+        padding-left: 3px;
+        padding-top: 2px;
+      }
     }
   }
   .eventsCalendar {
@@ -79,7 +90,6 @@
               p {
                 span {
                   font-size: 13px;
-                  color: rgb(65, 65, 65);
                 }
                 font-size: 11px;
                 font-weight: 600;
