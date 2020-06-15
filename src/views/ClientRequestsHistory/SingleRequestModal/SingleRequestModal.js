@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import {
   Modal,
   Button,
@@ -7,12 +7,29 @@ import {
   Row,
   Col,
   Container,
+  Spinner,
 } from "react-bootstrap";
+import { cancelRequestId } from "../../../controllers/apiRequests";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { RequestsContext } from "../../../contexts/RequestsContext";
+import "./SingleRequestModal.scss";
 
 const SingleRequestModal = (props) => {
+  const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const {
+    requestsInfoContext,
+    setRequestsInfoContext,
+    canceledRequestContext,
+    setCanceledRequestContext,
+  } = useContext(RequestsContext);
   const {
     service,
     municipality,
+    id,
+    customer,
     status,
     track,
     start,
@@ -23,15 +40,36 @@ const SingleRequestModal = (props) => {
 
   const renderStatus = () => {
     switch (status.step) {
+      case 0:
+        return (
+          <div className="text-center">
+            <small>Evento cancelado</small>
+          </div>
+        );
       case 1:
         return (
           <div className="text-center">
             <small>Esperando confirmación</small>
-            <ProgressBar variant="danger" now={20} label={`${60}%`} srOnly />
+            <ProgressBar
+              variant="event-requested"
+              now={20}
+              label={`${60}%`}
+              srOnly
+            />
           </div>
         );
       case 2:
-        return <ProgressBar now={80} label={`${80}%`} srOnly />;
+        return (
+          <div className="text-center">
+            <small>Confirmar programación</small>
+            <ProgressBar
+              variant="confirm-event"
+              now={40}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
       default:
         return <p>Undefined</p>;
     }
@@ -63,6 +101,50 @@ const SingleRequestModal = (props) => {
       { value: year },
     ] = dateTimeFormat.formatToParts(d);
     return `${month}/${day}/${year}`;
+  };
+
+  const cancelEvent = async () => {
+    setLoading(true);
+    if (status.step === 1) {
+      let payload = {
+        id,
+        company: customer.company.id,
+        refund_credits: customer.company.credit + spent_credit,
+      };
+      const res = await cancelRequestId(payload);
+      if (res.canceled.status === 200 && res.refund.status === 200) {
+        setLoading(false);
+        setSuccess(true);
+
+        // console.log("CANCELED =========");
+        // console.log(res.canceled);
+        // console.log("REFUND =========");
+        // console.log(res.refund);
+        // let objIdx = requestsInfoContext.findIndex((obj => obj.id === res.canceled.data.id))
+        // setCanceledRequestContext[objIdx].status.step = res.canceled.data.status.step
+
+        // setRequests([]);
+        // setRenderCancelRequestModal({ show: false });
+        // setUpdateList(!updateList);
+        // // SET COMPANY CONTEXT
+        setUserInfoContext({
+          ...userInfoContext,
+          company: {
+            ...userInfoContext.company,
+            credit: res.refund.data.credit,
+          },
+        });
+      } else {
+        alert("No se pudo cancelar");
+      }
+    } else {
+      // Check cancelation rules and disccount credit
+      alert("Te vamos a descontar rides");
+    }
+  };
+
+  const handleCancelEvent = async () => {
+    setShowCancelModal(true);
   };
 
   return (
@@ -167,9 +249,67 @@ const SingleRequestModal = (props) => {
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="danger">Cancelar solicitud</Button>
+        {status.step !== 0 && (
+          <Button variant="danger" onClick={handleCancelEvent}>
+            Cancelar solicitud
+          </Button>
+        )}
         <Button onClick={props.onHide}>Cerrar</Button>
       </Modal.Footer>
+      {showCancelModal && (
+        <Modal
+          show={true}
+          centered
+          size="sm"
+          className="cancelModal"
+          onHide={loading ? "" : () => setShowCancelModal(false)}
+        >
+          {loading ? (
+            <React.Fragment>
+              <Modal.Header>
+                <Modal.Title>Cancelando...</Modal.Title>
+              </Modal.Header>
+              <Modal.Body className="text-center">
+                <Spinner animation="border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              </Modal.Body>
+            </React.Fragment>
+          ) : success ? (
+            <React.Fragment>
+              <Modal.Header closeButton>
+                <Modal.Title>Listo!</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>La solicitud fue cancelada exitosamente</Modal.Body>
+              <Modal.Footer>
+                <Button variant="primary" onClick={cancelEvent}>
+                  Volver
+                </Button>
+              </Modal.Footer>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <Modal.Header closeButton>
+                <Modal.Title>Atención!</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¿Estas seguro que deseas cancelar esta solicitud?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowCancelModal(false)}
+                >
+                  No, volver
+                </Button>
+                <Button variant="primary" onClick={cancelEvent}>
+                  Si, cancelar
+                </Button>
+              </Modal.Footer>
+            </React.Fragment>
+          )}
+        </Modal>
+      )}
     </Modal>
   );
 };

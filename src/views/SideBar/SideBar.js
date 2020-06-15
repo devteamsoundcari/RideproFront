@@ -23,7 +23,9 @@ import "./SideBar.scss";
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
-  const { setRequestsInfoContext } = useContext(RequestsContext);
+  const { setRequestsInfoContext, setCanceledRequestContext } = useContext(
+    RequestsContext
+  );
   const [profile, setProfile] = useState("");
   const profilePicture = userInfoContext.company.logo
     ? userInfoContext.company.logo
@@ -64,7 +66,12 @@ const SideBar = (props) => {
         // =========== GETTING INFO OF EACH DRIVER =================
         getDrivers(item.drivers).then((data) => {
           item.drivers = data;
-          setRequestsInfoContext((prev) => [...prev, item]);
+
+          if (item.status.step === 0) {
+            setCanceledRequestContext((prev) => [...prev, item]);
+          } else {
+            setRequestsInfoContext((prev) => [...prev, item]);
+          }
         });
         return true;
       });

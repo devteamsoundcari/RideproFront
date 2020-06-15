@@ -129,15 +129,36 @@ const ClientRequestsHistory = () => {
 
   const statusFormatter = (cell, row) => {
     switch (row.status.step) {
+      case 0:
+        return (
+          <div className="text-center">
+            <small>Evento cancelado</small>
+          </div>
+        );
       case 1:
         return (
           <div className="text-center">
             <small>Esperando confirmación</small>
-            <ProgressBar variant="danger" now={20} label={`${60}%`} srOnly />
+            <ProgressBar
+              variant="event-requested"
+              now={20}
+              label={`${60}%`}
+              srOnly
+            />
           </div>
         );
       case 2:
-        return <ProgressBar now={80} label={`${80}%`} srOnly />;
+        return (
+          <div className="text-center">
+            <small>Confirmar programación</small>
+            <ProgressBar
+              variant="confirm-event"
+              now={40}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
       default:
         return <p>Undefined</p>;
     }
