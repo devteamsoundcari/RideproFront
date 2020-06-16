@@ -3,7 +3,7 @@ import NavBar from "../../views/NavBar/NavBar";
 import "./DashboardLayout.scss";
 import SideBar from "../../views/SideBar/SideBar";
 import Usuarios from "../../views/Usuarios/Usuarios";
-import AdminRequestHistory from "../../views/AdminRequestHistory/AdminRequestHistory";
+import AdminRequestsHistory from "../../views/AdminRequestsHistory/AdminRequestsHistory";
 import Dashboard from "../../views/Dashboard/Dashboard";
 import {
   Route,
@@ -49,7 +49,7 @@ const DashboardLayout: React.FC = () => {
                   {userInfoContext.profile === 2 ? (
                     <ClientRequestsHistory />
                   ) : (
-                    <AdminRequestHistory />
+                    <AdminRequestsHistory />
                   )}
                 </Route>
                 <Route path={`${path}/solicitar`}>
@@ -60,7 +60,7 @@ const DashboardLayout: React.FC = () => {
                 </Route>
                 <Redirect from="/administrador" to="/administrador/dashboard" />
                 <Redirect from="/cliente" to="/cliente/dashboard" />
-                <Redirect from="/operario" to="/operario/dashboard" />
+                <Redirect from="/operario" to="/operario/historial" />
               </Switch>
             </Container>
           </main>
