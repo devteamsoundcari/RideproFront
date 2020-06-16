@@ -19,12 +19,7 @@ const SingleRequestModal = (props) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const {
-    requestsInfoContext,
-    setRequestsInfoContext,
-    canceledRequestContext,
-    setCanceledRequestContext,
-  } = useContext(RequestsContext);
+  const { updateRequestsContex } = useContext(RequestsContext);
   const {
     service,
     municipality,
@@ -36,6 +31,7 @@ const SingleRequestModal = (props) => {
     spent_credit,
     drivers,
     start_time,
+    accept_msg,
   } = props.selectedRow;
 
   const renderStatus = () => {
@@ -115,18 +111,7 @@ const SingleRequestModal = (props) => {
       if (res.canceled.status === 200 && res.refund.status === 200) {
         setLoading(false);
         setSuccess(true);
-
-        // console.log("CANCELED =========");
-        // console.log(res.canceled);
-        // console.log("REFUND =========");
-        // console.log(res.refund);
-        // let objIdx = requestsInfoContext.findIndex((obj => obj.id === res.canceled.data.id))
-        // setCanceledRequestContext[objIdx].status.step = res.canceled.data.status.step
-
-        // setRequests([]);
-        // setRenderCancelRequestModal({ show: false });
-        // setUpdateList(!updateList);
-        // // SET COMPANY CONTEXT
+        updateRequestsContex();
         setUserInfoContext({
           ...userInfoContext,
           company: {
@@ -153,6 +138,7 @@ const SingleRequestModal = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
       size="lg"
+      className="single-request-modal"
     >
       <Modal.Header className="align-items-center">
         <div>
@@ -185,7 +171,10 @@ const SingleRequestModal = (props) => {
               </ul>
             </Col>
             <Col md={6}>
-              <p>Observaciones:</p>
+              <div className="comments">
+                <p>Observaciones:</p>
+                <small>{accept_msg}</small>
+              </div>
             </Col>
           </Row>
           <hr />
