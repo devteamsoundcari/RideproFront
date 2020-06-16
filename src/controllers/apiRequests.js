@@ -209,6 +209,7 @@ const createRequest = async (data) => {
     drivers,
     spent_credit,
     track,
+    accept_msg 
   } = data;
 
   const result = await axios({
@@ -227,7 +228,7 @@ const createRequest = async (data) => {
       finish_time,
       status: `${process.env.REACT_APP_STATUS_CONFIRMATION_PROCESS}`, //"d02eaa22-8a5c-4904-b3c4-567782a53f51", // This is first step
       new_request: 0,
-      accept_msg: "na",
+      accept_msg: accept_msg,
       reject_msg: "na",
       drivers,
     },

@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { FaCheckCircle } from "react-icons/fa";
+import { Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
@@ -35,6 +36,7 @@ const ConfirmServiceModal = (props) => {
     participantsToRegisterContext
   );
   const [rides, setRides] = useState(props.rides);
+  const [comment, setComment] = useState("");
 
   const options = {
     weekday: "long",
@@ -158,6 +160,7 @@ const ConfirmServiceModal = (props) => {
         company: userInfoContext.company,
         spent_credit: rides,
         drivers: driversIDs,
+        accept_msg: comment
       };
       // THEN CREATE THE SERVICE
       let res = await createRequest(data);
@@ -221,6 +224,10 @@ const ConfirmServiceModal = (props) => {
     setNewToRegister(participantsToRegisterContext);
     setDisplayData(true);
   };
+
+  const handleComment = (event) => {
+    setComment(event.target.value);
+  }
 
   useEffect(() => {
     if (props.service.service_type === "Persona") {
@@ -295,6 +302,8 @@ const ConfirmServiceModal = (props) => {
               );
             })}
           </ul>
+        <strong>Comentarios adicionales:</strong>
+        <Form.Control as="textarea" rows="4" value={comment} onChange={handleComment} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCancel}>
@@ -350,8 +359,6 @@ const ConfirmServiceModal = (props) => {
       {alreadyRegisteredParticipants.length > 0 && displayErrorParticipants()}
       {displayData && requestResume()}
       {showSuccessPropmt && successPropmt()}
-      {/* {showSpinner || showSuccessPropmt ? "" : displayData()} */}
-      {/* {displayData()} */}
     </Modal>
   );
 };
