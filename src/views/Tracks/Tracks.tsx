@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Row, Col, Card, CardColumns, Button } from "react-bootstrap";
+import { useLocation } from "react-router-dom";
 import { FaTimesCircle, FaEdit } from "react-icons/fa";
 import ModalNewTrack from "./ModalNewTrack/ModalNewTrack";
 import { getTracks } from "../../controllers/apiRequests";
@@ -21,6 +22,13 @@ const Tracks: React.FC = () => {
   const [filteredTracks, setFilteredTracks] = useState<Tracks>([]);
   const [tracks, setTracks] = useState<Tracks>([]);
   const { userInfoContext } = useContext(AuthContext);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state !== undefined) {
+      setShowAddTrack(true);
+    }
+  }, [location]);
 
   // ================================ FETCH TRACKS ON LOAD =====================================================
   const fetchTracks = async (url: string) => {
