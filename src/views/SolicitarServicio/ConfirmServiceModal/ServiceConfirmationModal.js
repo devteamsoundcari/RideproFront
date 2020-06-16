@@ -4,15 +4,16 @@ import { FaCheckCircle } from "react-icons/fa";
 import { Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { RequestsContext } from "../../../contexts/RequestsContext";
+
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
-import {
-  createRequest,
-  createDriver,
-} from "../../../controllers/apiRequests";
+import { createRequest, createDriver } from "../../../controllers/apiRequests";
 
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
+  const { updateRequestsContex } = useContext(RequestsContext);
+
   const {
     participantsToRegisterContext,
     setParticipantsToRegisterContext,
@@ -20,12 +21,15 @@ const ConfirmServiceModal = (props) => {
     setRegisteredParticipantsContext,
     unregisteredParticipantsContext,
     setUnregisteredParticipantsContext,
-    allParticipantsInfoContext
+    allParticipantsInfoContext,
   } = useContext(ParticipantsContext);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSuccessPropmt, setShowSuccessPrompt] = useState(false);
   const [registeredParticipants, setRegisteredParticipants] = useState([]);
-  const [alreadyRegisteredParticipants, setAlreadyRegisteredParticipants] = useState([]);
+  const [
+    alreadyRegisteredParticipants,
+    setAlreadyRegisteredParticipants,
+  ] = useState([]);
   const [unregisteredParticipants, setUnregisteredParticipants] = useState([]);
   const [displayData, setDisplayData] = useState(false);
   const [newRegistered, setNewRegistered] = useState(
@@ -53,10 +57,10 @@ const ConfirmServiceModal = (props) => {
     for (let id of registeredIDs) {
       if (id === participant.official_id) {
         return true;
-      } 
+      }
     }
     return false;
-  }
+  };
 
   const canBeRegistered = (arrToRegister) => {
     let badItems = [];
@@ -89,11 +93,17 @@ const ConfirmServiceModal = (props) => {
       for (const participant of participantsToRegisterContext) {
         if (isParticipantRegistered(participant)) {
           if (!participant.isRegistered) {
-            setAlreadyRegisteredParticipants((current) => [...current, participant]);
+            setAlreadyRegisteredParticipants((current) => [
+              ...current,
+              participant,
+            ]);
           }
-          setRegisteredParticipants((current) => 
-            [...current,
-            allParticipantsInfoContext.find((p) => p.official_id === participant.official_id)]);
+          setRegisteredParticipants((current) => [
+            ...current,
+            allParticipantsInfoContext.find(
+              (p) => p.official_id === participant.official_id
+            ),
+          ]);
         } else {
           setUnregisteredParticipants((current) => [...current, participant]);
         }
@@ -135,7 +145,7 @@ const ConfirmServiceModal = (props) => {
   useEffect(() => {
     setUnregisteredParticipantsContext(unregisteredParticipants);
     setRegisteredParticipantsContext(registeredParticipants);
-  }, [unregisteredParticipants, registeredParticipants])
+  }, [unregisteredParticipants, registeredParticipants]);
 
   // ======================================= HANDLE SUBMIT =================================
   const handleCreateService = async () => {
@@ -160,7 +170,7 @@ const ConfirmServiceModal = (props) => {
         company: userInfoContext.company,
         spent_credit: rides,
         drivers: driversIDs,
-        accept_msg: comment
+        accept_msg: comment,
       };
       // THEN CREATE THE SERVICE
       let res = await createRequest(data);
@@ -168,6 +178,7 @@ const ConfirmServiceModal = (props) => {
       if (res.create.status === 201 && res.decrease.status === 200) {
         setShowSpinner(false);
         setShowSuccessPrompt(true);
+        updateRequestsContex();
         // Ubdate company context
         setUserInfoContext({
           ...userInfoContext,
@@ -214,7 +225,7 @@ const ConfirmServiceModal = (props) => {
   const loader = () => {
     return (
       <Modal.Body>
-        <Spinner animation="border" variant="danger"/>
+        <Spinner animation="border" variant="danger" />
       </Modal.Body>
     );
   };
@@ -227,11 +238,11 @@ const ConfirmServiceModal = (props) => {
 
   const handleComment = (event) => {
     setComment(event.target.value);
-  }
+  };
 
   useEffect(() => {
     if (props.service.service_type === "Persona") {
-      setRides(props.service.ride_value * newToRegister.length)
+      setRides(props.service.ride_value * newToRegister.length);
     } else {
       setRides(props.service.ride_value);
     }
@@ -302,8 +313,13 @@ const ConfirmServiceModal = (props) => {
               );
             })}
           </ul>
-        <strong>Comentarios adicionales:</strong>
-        <Form.Control as="textarea" rows="4" value={comment} onChange={handleComment} />
+          <strong>Comentarios adicionales:</strong>
+          <Form.Control
+            as="textarea"
+            rows="4"
+            value={comment}
+            onChange={handleComment}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCancel}>
@@ -354,7 +370,10 @@ const ConfirmServiceModal = (props) => {
   };
 
   return (
-    <Modal show={props.show} onHide={showSuccessPropmt ? handleOK : () => props.setShow(false)}>
+    <Modal
+      show={props.show}
+      onHide={showSuccessPropmt ? handleOK : () => props.setShow(false)}
+    >
       {showSpinner && loader()}
       {alreadyRegisteredParticipants.length > 0 && displayErrorParticipants()}
       {displayData && requestResume()}
