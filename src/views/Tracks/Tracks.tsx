@@ -60,7 +60,7 @@ const Tracks: React.FC = () => {
   };
 
   return (
-    <Row>
+    <Row style={{ overflow: "hidden" }}>
       <Col>
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 border-bottom">
           {/* <h1 className="h2">Mis pistas</h1> */}
