@@ -179,7 +179,10 @@ const SideBar = (props) => {
             <GiTireTracks className="mb-1 mr-2" />
             Ver pistas{" "}
           </Link>
-          <Link to={`${props.url}/pistas`} className="nav-link">
+          <Link
+            to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
+            className="nav-link"
+          >
             <AiOutlinePlus className="mb-1 mr-2" />
             Añadir pista{" "}
           </Link>
