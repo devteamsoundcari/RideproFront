@@ -3,7 +3,6 @@ import {
   Modal,
   Button,
   ProgressBar,
-  Table,
   Row,
   Col,
   Container,
@@ -14,6 +13,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
 import "./SingleRequestModalAdmin.scss";
 import { FaStopwatch } from "react-icons/fa";
+import InfoTabs from "./InfoTabs/InfoTabs";
 
 const SingleRequestModal = (props) => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
@@ -31,7 +31,6 @@ const SingleRequestModal = (props) => {
     track,
     start,
     spent_credit,
-    drivers,
     start_time,
     accept_msg,
   } = props.selectedRow;
@@ -178,7 +177,7 @@ const SingleRequestModal = (props) => {
       </Modal.Header>
       <Modal.Body>
         <Container>
-          <Row>
+          <Row className="service-details">
             <Col md={6}>
               <ul className="list-unstyled">
                 <li>
@@ -226,63 +225,8 @@ const SingleRequestModal = (props) => {
               </div>
             </Col>
           </Row>
-          <hr />
           <Row>
-            {status.step !== 1 && (
-              <React.Fragment>
-                <h6>Instructores</h6>
-                <Table responsive hover size="sm">
-                  <thead>
-                    <tr>
-                      <th>Identificación</th>
-                      <th>Nombre</th>
-                      <th>Apellido</th>
-                      <th>Email</th>
-                      <th>Teléfono</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {drivers.map((driver, idx) => (
-                      <tr key={idx}>
-                        <td>{driver.official_id}</td>
-                        <td>{driver.first_name}</td>
-                        <td>{driver.last_name}</td>
-                        <td>{driver.email}</td>
-                        <td>{driver.cellphone}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </React.Fragment>
-            )}
-            <h6>Participantes</h6>
-            <Table responsive hover size="sm">
-              <thead>
-                <tr>
-                  <th>Identificación</th>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                  <th>Email</th>
-                  <th>Teléfono</th>
-                </tr>
-              </thead>
-              <tbody>
-                {drivers.map((driver, idx) => (
-                  <tr key={idx}>
-                    <td>{driver.official_id}</td>
-                    <td>{driver.first_name}</td>
-                    <td>{driver.last_name}</td>
-                    <td>{driver.email}</td>
-                    <td>{driver.cellphone}</td>
-                    <td>
-                      <Button variant="danger" size="sm">
-                        Borrar
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            <InfoTabs request={props.selectedRow} />
           </Row>
         </Container>
       </Modal.Body>

@@ -1,52 +1,27 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
-import { getTracks } from "../../controllers/apiRequests";
-import { Container, Card, ProgressBar, Alert, Spinner } from "react-bootstrap";
+import { Container, Card, ProgressBar, Spinner } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
-import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
+import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import "./AdminRequestsHistory.scss";
 import SingleRequestModalAdmin from "./SingleRequestModalAdmin/SingleRequestModalAdmin";
 
 const AdminRequestsHistory = () => {
   const location = useLocation();
-  const [tracks, setTracks] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
-  const [updateList, setUpdateList] = useState(false);
   const [sortedRequests, setSortedRequests] = useState([]);
-  const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const { requestsInfoContext } = useContext(RequestsContext);
-  const [renderCancelRequesModal, setRenderCancelRequestModal] = useState({
-    show: false,
-    item: null,
-  });
 
   useEffect(() => {
     if (location.state) {
       handleOnSelect(location.state.event);
     }
   }, [location]);
-
-  // ================================ FETCH TRACKS ON LOAD =====================================================
-  const fetchTracks = async (url) => {
-    let tempTracks = [];
-    const response = await getTracks(url);
-    response.results.forEach(async (item) => {
-      tempTracks.push(item);
-    });
-    setTracks(tempTracks);
-    if (response.next) {
-      return await getTracks(response.next);
-    }
-  };
-  useEffect(() => {
-    fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
-  }, []);
 
   // ================================ FETCH REQUESTS ON LOAD =====================================================
 
@@ -113,14 +88,6 @@ const AdminRequestsHistory = () => {
         );
       default:
         return <p>Undefined</p>;
-    }
-  };
-
-  const trackFormatter = (cell) => {
-    if (cell !== null) {
-      return cell.name;
-    } else {
-      return <Alert variant="danger">Sin pista</Alert>;
     }
   };
 
@@ -216,7 +183,7 @@ const AdminRequestsHistory = () => {
 
   return (
     <Container fluid="md" id="client-requests-history">
-      {requests.length === 0 ? (
+      {loading ? (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>

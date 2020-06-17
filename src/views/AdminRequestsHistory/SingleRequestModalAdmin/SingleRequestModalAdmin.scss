@@ -11,21 +11,28 @@
       margin-bottom: 0px;
     }
   }
-  .comments {
-    background-color: gainsboro;
-    line-height: 1rem;
-    border-radius: 10px;
-    padding: 10px;
-    p {
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
+  .service-details {
+    margin-bottom: 1rem;
     small {
-      font-style: italic;
+      font-weight: 700;
     }
-  }
-  .cancelModal {
-    background: #383d419e;
+    .comments {
+      background-color: gainsboro;
+      line-height: 1rem;
+      border-radius: 10px;
+      padding: 10px;
+      p {
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      small {
+        font-style: italic;
+        font-weight: 400;
+      }
+    }
+    .cancelModal {
+      background: #383d419e;
+    }
   }
 }
 
