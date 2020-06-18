@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Modal,
   Button,
@@ -9,22 +9,40 @@ import {
   Container,
   Spinner,
 } from "react-bootstrap";
-import { cancelRequestId } from "../../../controllers/apiRequests";
+import { EditableTable } from "../../../utils/EditableTable";
+import RegularExpressions from "../../../utils/RegularExpressions";
+import {
+  cancelRequestId,
+  getAllDrivers,
+} from "../../../controllers/apiRequests";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
+import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
+import ServiceEditConfirmationModal from "./ServiceEditConfirmationModal";
 import "./SingleRequestModal.scss";
+
 
 const SingleRequestModal = (props) => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
-  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showCancellationModal, setShowCancellationModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
   const {
     requestsInfoContext,
     setRequestsInfoContext,
     canceledRequestContext,
     setCanceledRequestContext,
   } = useContext(RequestsContext);
+
+  const {
+    allParticipantsInfoContext,
+    setAllParticipantsInfoContext,
+    setRegisteredParticipantsContext,
+    setParticipantsToRegisterContext
+  } = useContext(ParticipantsContext);
+
   const {
     service,
     municipality,
@@ -38,42 +56,137 @@ const SingleRequestModal = (props) => {
     start_time,
   } = props.selectedRow;
 
-  const renderStatus = () => {
-    switch (status.step) {
-      case 0:
-        return (
-          <div className="text-center">
-            <small>Evento cancelado</small>
-          </div>
-        );
-      case 1:
-        return (
-          <div className="text-center">
-            <small>Esperando confirmación</small>
-            <ProgressBar
-              variant="event-requested"
-              now={20}
-              label={`${60}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 2:
-        return (
-          <div className="text-center">
-            <small>Confirmar programación</small>
-            <ProgressBar
-              variant="confirm-event"
-              now={40}
-              label={`${60}%`}
-              srOnly
-            />
-          </div>
-        );
-      default:
-        return <p>Undefined</p>;
-    }
+  const [allRegisteredDrivers, setAllRegisteredDrivers] = useState([]);
+  const [allDrivers, setAllDrivers] = useState(drivers.map((driver) => {
+      driver.isRegistered = true;
+      return driver;
+    }));
+  const initialRegisteredDrivers = [...drivers];
+  const [registeredDrivers, setRegisteredDrivers] = useState([...drivers]);
+  const [newDrivers, setNewDrivers] = useState([]);
+  const [areDriversValid, setAreDriversValid] = useState(true);
+  const [canSaveDrivers, setCanSaveDrivers] = useState(false);
+  const fields = {
+    official_id: {
+      name: "Identificación",
+      format: "string",
+      regex: /^E?\d+$/,
+      unique: true,
+      errorMessages: {
+        regex: "Por favor, ingresa un número válido.",
+        unique: "Oops, este documento ya esta siendo usado por otra persona.",
+      },
+    },
+    first_name: {
+      name: "Nombre",
+      regex: RegularExpressions.name,
+      unique: false,
+      errorMessages: {
+        regex: "Por favor, ingresa un nombre válido.",
+      },
+    },
+    last_name: {
+      name: "Apellido",
+      regex: RegularExpressions.name,
+      unique: false,
+      errorMessages: {
+        regex: "Por favor, ingresa un apellido válido.",
+      },
+    },
+    email: {
+      name: "Email",
+      regex: RegularExpressions.email,
+      unique: false,
+      errorMessages: {
+        regex: "Por favor, ingresa un email válido.",
+      },
+    },
+    cellphone: {
+      name: "Teléfono",
+      regex: /^\d{7,10}$/,
+      unique: false,
+      errorMessages: {
+        regex: "Por favor, ingresa un teléfono válido..",
+      },
+    },
+    isRegistered: {
+      name: "",
+      format: "boolean",
+      hidden: true,
+      default: false,
+    },
   };
+
+  useEffect(() => {
+    const items = [];
+    async function fetchDrivers(url) {
+      const response = await getAllDrivers(url);
+      if (response.next) {
+        response.results.map((item) => {
+          items.push(item);
+          return true;
+        });
+        return await fetchDrivers(response.next);
+      }
+      response.results.map((item) => {
+        items.push(item);
+        return true;
+      });
+      setAllRegisteredDrivers(items);
+      setAllParticipantsInfoContext(items);
+    }
+    fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers_company/`);
+    // eslint-disable-next-line
+  }, []);
+
+  const handleAllDrivers = (x) => {
+    setAllDrivers(x);
+  };
+
+  const handleNewDriversValidation = (x) => {
+    setAreDriversValid(x);
+  };
+
+  const saveDrivers = () => {
+    setShowConfirmationModal(true);
+  }
+
+  useEffect(() => {
+    let registeredIDs = registeredDrivers.map((driver) => {
+      return driver.official_id;
+    });
+    let unregistered = allDrivers.filter((driver) => {
+      let index = registeredIDs.findIndex((id) => {
+        return id === driver.official_id;
+      });
+      return index < 0 ? true : false;
+    });
+    let registered = allDrivers.filter((driver) => {
+      let index = registeredIDs.findIndex((id) => {
+        return id === driver.official_id;
+      });
+      return index >= 0 ? true : false;
+    });
+    setRegisteredDrivers(registered);
+    setRegisteredParticipantsContext(registered);
+    setNewDrivers(unregistered);
+    setParticipantsToRegisterContext(allDrivers);
+  }, [allDrivers]);
+
+  useEffect(() => {
+    if (
+      registeredDrivers.length !== initialRegisteredDrivers.length ||
+      newDrivers.length > 0
+    ) {
+      if (registeredDrivers.length === 0) {
+        setCanSaveDrivers(false);
+      } else {
+        setCanSaveDrivers(true);
+      }
+    } else {
+      setCanSaveDrivers(false);
+    }
+  }, [newDrivers, registeredDrivers]);
 
   const formatAMPM = (date) => {
     let hours = date.getHours();
@@ -115,18 +228,6 @@ const SingleRequestModal = (props) => {
       if (res.canceled.status === 200 && res.refund.status === 200) {
         setLoading(false);
         setSuccess(true);
-
-        // console.log("CANCELED =========");
-        // console.log(res.canceled);
-        // console.log("REFUND =========");
-        // console.log(res.refund);
-        // let objIdx = requestsInfoContext.findIndex((obj => obj.id === res.canceled.data.id))
-        // setCanceledRequestContext[objIdx].status.step = res.canceled.data.status.step
-
-        // setRequests([]);
-        // setRenderCancelRequestModal({ show: false });
-        // setUpdateList(!updateList);
-        // // SET COMPANY CONTEXT
         setUserInfoContext({
           ...userInfoContext,
           company: {
@@ -144,7 +245,52 @@ const SingleRequestModal = (props) => {
   };
 
   const handleCancelEvent = async () => {
-    setShowCancelModal(true);
+    setShowCancellationModal(true);
+  };
+
+  const loadingSpinner = () => {
+    return (
+      <Modal.Body>
+        <Spinner animation="border" variant="danger" />
+      </Modal.Body>
+    );
+  };
+
+  const renderStatus = () => {
+    switch (status.step) {
+      case 0:
+        return (
+          <div className="text-center">
+            <small>Evento cancelado</small>
+          </div>
+        );
+      case 1:
+        return (
+          <div className="text-center">
+            <small>Esperando confirmación</small>
+            <ProgressBar
+              variant="event-requested"
+              now={20}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
+      case 2:
+        return (
+          <div className="text-center">
+            <small>Confirmar programación</small>
+            <ProgressBar
+              variant="confirm-event"
+              now={40}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
+      default:
+        return <p>Undefined</p>;
+    }
   };
 
   return (
@@ -218,37 +364,27 @@ const SingleRequestModal = (props) => {
               </React.Fragment>
             )}
             <h6>Participantes</h6>
-            <Table responsive hover size="sm">
-              <thead>
-                <tr>
-                  <th>Identificación</th>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                  <th>Email</th>
-                  <th>Teléfono</th>
-                </tr>
-              </thead>
-              <tbody>
-                {drivers.map((driver, idx) => (
-                  <tr key={idx}>
-                    <td>{driver.official_id}</td>
-                    <td>{driver.first_name}</td>
-                    <td>{driver.last_name}</td>
-                    <td>{driver.email}</td>
-                    <td>{driver.cellphone}</td>
-                    <td>
-                      <Button variant="danger" size="sm">
-                        Borrar
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            <EditableTable
+              size="sm"
+              dataSet={allDrivers}
+              fields={fields}
+              onValidate={handleNewDriversValidation}
+              onUpdate={handleAllDrivers}
+              readOnly={true}
+            />
           </Row>
         </Container>
       </Modal.Body>
       <Modal.Footer>
+        {
+          <Button
+            variant="dark"
+            onClick={saveDrivers}
+            {...(!canSaveDrivers ? { disabled: "true" } : {})}
+          >
+            Guardar
+          </Button>
+        }
         {status.step !== 0 && (
           <Button variant="danger" onClick={handleCancelEvent}>
             Cancelar solicitud
@@ -256,13 +392,13 @@ const SingleRequestModal = (props) => {
         )}
         <Button onClick={props.onHide}>Cerrar</Button>
       </Modal.Footer>
-      {showCancelModal && (
+      {showCancellationModal && (
         <Modal
           show={true}
           centered
           size="sm"
-          className="cancelModal"
-          onHide={loading ? "" : () => setShowCancelModal(false)}
+          className="childModal"
+          onHide={loading ? "" : () => setShowCancellationModal(false)}
         >
           {loading ? (
             <React.Fragment>
@@ -278,7 +414,7 @@ const SingleRequestModal = (props) => {
           ) : success ? (
             <React.Fragment>
               <Modal.Header>
-                <Modal.Title>Listo!</Modal.Title>
+                <Modal.Title>¡Listo!</Modal.Title>
               </Modal.Header>
               <Modal.Body>La solicitud fue cancelada exitosamente</Modal.Body>
               <Modal.Footer>
@@ -298,7 +434,7 @@ const SingleRequestModal = (props) => {
               <Modal.Footer>
                 <Button
                   variant="secondary"
-                  onClick={() => setShowCancelModal(false)}
+                  onClick={() => setShowCancellationModal(false)}
                 >
                   No, volver
                 </Button>
@@ -309,7 +445,15 @@ const SingleRequestModal = (props) => {
             </React.Fragment>
           )}
         </Modal>
+
       )}
+      {showConfirmationModal && (
+       <ServiceEditConfirmationModal
+         show={true}
+         setShow={(e) => setShowConfirmationModal(e)}
+         request={props.selectedRow}
+      /> 
+      )} 
     </Modal>
   );
 };

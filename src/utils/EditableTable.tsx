@@ -18,8 +18,10 @@ interface InsertionRowError {
 
 export class EditableTable extends React.Component<
   {
+    size: string;
     dataSet: any[];
     fields: any;
+    readOnly: boolean;
     readOnlyIf: Function;
     onValidate: Function;
     onUpdate: Function;
@@ -44,21 +46,27 @@ export class EditableTable extends React.Component<
     let insertionRow = new Map<string, string>();
     let headings = new Map<string, boolean>();
     rowKeys.forEach((field: any) => {
-      if (!this.props.fields[field].hidden) {
-        headings.set(field, false);
-      }
-    });
-    rowKeys.forEach((field: any) => {
-      if (!this.props.fields[field].hidden) {
-        insertionRow.set(field, "");
-      }
+      if (field in this.props.fields) {
+        if (!this.props.fields[field].hidden) {
+          headings.set(field, false);
+          insertionRow.set(field, "");
+        }
+      } 
     });
 
     let dataSet = [...props.dataSet].map((record: any, index: number) => {
+      let newRecord: any = {};
+
       for (let key in record) {
-        record[key] = String(record[key]);
+        if (key in this.props.fields) {
+          newRecord[key] = String(record[key]);
+        }
       }
-      return { id: index, readOnly: false, data: record };
+      return {
+        id: index,
+        readOnly: this.props.readOnly || false,
+        data: newRecord
+      };
     });
 
     this.state = {
@@ -67,7 +75,7 @@ export class EditableTable extends React.Component<
       insertionRow: insertionRow,
       insertionRowErrors: [],
       displayErrors: headings,
-      autoIncrement: 1
+      autoIncrement: dataSet.length + 1
     };
 
     this.firstRow = createRef();
@@ -734,7 +742,7 @@ export class EditableTable extends React.Component<
 
     return (
       <>
-        <Table responsive>
+        <Table size={this.props.size} responsive>
           <thead>
             <tr>{headers}</tr>
           </thead>

@@ -209,7 +209,7 @@ const createRequest = async (data) => {
     drivers,
     spent_credit,
     track,
-    accept_msg 
+    accept_msg,
   } = data;
 
   const result = await axios({
@@ -233,11 +233,57 @@ const createRequest = async (data) => {
       drivers,
     },
   }).catch((err) => {
-    console.log("fallo", err.request.response);
+    console.log(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
-  let result2 = await descreaseCredits(data.company, data.spent_credit); // Calling decrease
-  return { create: result, decrease: result2 };
+  let creditDecreasing = await decreaseCredits(data.company, data.spent_credit); // Calling decrease
+  return { response: result, creditDecreasingResponse: creditDecreasing };
+};
+
+const editRequest = async (id, data) => {
+  let {
+    service,
+    customer,
+    municipality,
+    place,
+    start_time,
+    finish_time,
+    drivers,
+    prev_credits,
+    spent_credit,
+    track,
+    accept_msg,
+  } = data;
+
+  const result = await axios({
+    method: "PUT",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}/`,
+    data: {
+      service,
+      customer,
+      municipality,
+      operator: null,
+      instructor: "na",
+      place,
+      track,
+      spent_credit,
+      start_time,
+      finish_time,
+      status: `${process.env.REACT_APP_STATUS_CONFIRMATION_PROCESS}`,
+      new_request: 0,
+      accept_msg: accept_msg,
+      reject_msg: "na",
+      drivers,
+    },
+  }).catch((err) => {
+    console.log(`Request error at /api/v1/requests/: `, err.request.response);
+    return err;
+  });
+  let creditDecreasing = await decreaseCredits(
+    data.company,
+    data.spent_credit - data.prev_credits
+  );
+  return { response: result, creditDecreasingResponse: creditDecreasing };
 };
 
 // ==================================== CANCEL REQUEST ID AND REFIND CREDITS ==================================================================
@@ -341,7 +387,7 @@ const updateRequest = async (data, id) => {
 };
 
 /* =================================   DECREASE CREDITS IN COMPANY   ===================================== */
-const descreaseCredits = async (company, credits) => {
+const decreaseCredits = async (company, credits) => {
   const newCredit = company.credit - credits;
   const { id } = company;
   const result = await axios({
@@ -457,6 +503,7 @@ export {
   passwordReset,
   setNewPassword,
   createRequest,
+  editRequest,
   getMunicipalities,
   getUserRequests,
   getDepartments,
