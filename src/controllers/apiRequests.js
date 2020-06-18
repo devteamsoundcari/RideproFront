@@ -210,6 +210,7 @@ const createRequest = async (data) => {
     spent_credit,
     track,
     accept_msg,
+    fare_track
   } = data;
 
   const result = await axios({
@@ -231,6 +232,7 @@ const createRequest = async (data) => {
       accept_msg: accept_msg,
       reject_msg: "na",
       drivers,
+      fare_track
     },
   }).catch((err) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);
@@ -252,6 +254,7 @@ const editRequest = async (id, data) => {
     prev_credits,
     spent_credit,
     track,
+    fare_track,
     accept_msg,
   } = data;
 
@@ -274,6 +277,7 @@ const editRequest = async (id, data) => {
       accept_msg: accept_msg,
       reject_msg: "na",
       drivers,
+      fare_track
     },
   }).catch((err) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);

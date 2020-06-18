@@ -156,6 +156,7 @@ const ServiceEditConfirmationModal = (props) => {
         spent_credit: rides,
         drivers: driversIDs,
         accept_msg: request.accept_msg,
+        fare_track: 0.0,
       };
       // THEN CREATE THE SERVICE
       let res = await editRequest(request.id, data);
