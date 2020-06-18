@@ -17,6 +17,8 @@ import Tracks from "../../views/Tracks/Tracks";
 import { Spinner, Container } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import ClientRequestsHistory from "../../views/ClientRequestsHistory/ClientRequestsHistory";
+import Instructors from "../../views/Instructors/Instructors";
+import Providers from "../../views/Providers/Providers";
 
 const DashboardLayout: React.FC = () => {
   const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
@@ -57,6 +59,12 @@ const DashboardLayout: React.FC = () => {
                 </Route>
                 <Route path={`${path}/pistas`}>
                   <Tracks />
+                </Route>
+                <Route path={`${path}/instructores`}>
+                  <Instructors />
+                </Route>
+                <Route path={`${path}/proveedores`}>
+                  <Providers />
                 </Route>
                 <Redirect from="/administrador" to="/administrador/dashboard" />
                 <Redirect from="/cliente" to="/cliente/dashboard" />
