@@ -181,27 +181,21 @@ const SingleRequestModal = (props) => {
             <Col md={6}>
               <ul className="list-unstyled">
                 <li>
-                  <small>Producto: </small>
-                  {service.name}
-                </li>
-                <li>
                   <small>Codigo de servicio: </small>
                   {id}
-                </li>
-                <li>
-                  <small>Fecha de solicitud: </small>
-                  {dateFormatter(created_at)}
-                </li>
-                <li>
-                  <small>Ciudad: </small>
-                  {municipality.name.charAt(0).toUpperCase() +
-                    municipality.name.slice(1).toLowerCase()}{" "}
-                  - {municipality.department.name}
                 </li>
                 <lo>
                   <small>Cliente: </small>
                   {customer.company.name}
                 </lo>
+                <li>
+                  <small>Fecha de solicitud: </small>
+                  {dateFormatter(created_at)}
+                </li>
+                <li>
+                  <small>Rides gastados: </small>
+                  {spent_credit}
+                </li>
               </ul>
             </Col>
             <Col md={6}>
@@ -213,10 +207,6 @@ const SingleRequestModal = (props) => {
                 <li>
                   <small>Hora: </small>
                   {formatAMPM(start)}
-                </li>
-                <li>
-                  <small>Rides gastados: </small>
-                  {spent_credit}
                 </li>
               </ul>
               <div className="comments">
@@ -231,11 +221,11 @@ const SingleRequestModal = (props) => {
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        {status.step !== 0 && (
+        {/* {status.step !== 0 && userInfoContext.profile === 2?  (
           <Button variant="danger" onClick={handleCancelEvent}>
             Cancelar solicitud
           </Button>
-        )}
+        ):""} */}
         <Button onClick={props.onHide}>Cerrar</Button>
       </Modal.Footer>
       {showCancelModal && (

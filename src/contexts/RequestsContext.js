@@ -6,7 +6,7 @@ export const RequestsContext = createContext();
 
 const RequestsContextProvider = (props) => {
   const { userInfoContext } = useContext(AuthContext);
-
+  const [loadingContext, setLoadingContext] = useState(true);
   const [requestsInfoContext, setRequestsInfoContext] = useState([]);
   const [canceledRequestContext, setCanceledRequestContext] = useState([]);
 
@@ -32,9 +32,11 @@ const RequestsContextProvider = (props) => {
           setRequestsInfoContext((prev) => [...prev, item]);
         }
       });
+      setLoadingContext(false);
       return true;
     });
     if (response.next) {
+      setLoadingContext(true);
       return await fetchRequests(response.next);
     }
   }
@@ -58,6 +60,8 @@ const RequestsContextProvider = (props) => {
         canceledRequestContext,
         setCanceledRequestContext,
         updateRequestsContex: updateRequestsContex,
+        loadingContext,
+        setLoadingContext,
       }}
     >
       {props.children}
