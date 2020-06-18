@@ -1,0 +1,13 @@
+.requestPlace {
+  .place-header-actions {
+    display: flex;
+    align-items: flex-end;
+    padding: 10px 10%;
+    margin-bottom: 1rem;
+    justify-content: space-between;
+  }
+  small {
+    font-weight: 700;
+    margin-right: 5px;
+  }
+}

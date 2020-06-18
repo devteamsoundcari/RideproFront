@@ -3,7 +3,7 @@ import NavBar from "../../views/NavBar/NavBar";
 import "./DashboardLayout.scss";
 import SideBar from "../../views/SideBar/SideBar";
 import Usuarios from "../../views/Usuarios/Usuarios";
-import AdminRequestHistory from "../../views/AdminRequestHistory/AdminRequestHistory";
+import AdminRequestsHistory from "../../views/AdminRequestsHistory/AdminRequestsHistory";
 import Dashboard from "../../views/Dashboard/Dashboard";
 import {
   Route,
@@ -17,6 +17,8 @@ import Tracks from "../../views/Tracks/Tracks";
 import { Spinner, Container } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import ClientRequestsHistory from "../../views/ClientRequestsHistory/ClientRequestsHistory";
+import Instructors from "../../views/Instructors/Instructors";
+import Providers from "../../views/Providers/Providers";
 
 const DashboardLayout: React.FC = () => {
   const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
@@ -49,7 +51,7 @@ const DashboardLayout: React.FC = () => {
                   {userInfoContext.profile === 2 ? (
                     <ClientRequestsHistory />
                   ) : (
-                    <AdminRequestHistory />
+                    <AdminRequestsHistory />
                   )}
                 </Route>
                 <Route path={`${path}/solicitar`}>
@@ -58,9 +60,15 @@ const DashboardLayout: React.FC = () => {
                 <Route path={`${path}/pistas`}>
                   <Tracks />
                 </Route>
+                <Route path={`${path}/instructores`}>
+                  <Instructors />
+                </Route>
+                <Route path={`${path}/proveedores`}>
+                  <Providers />
+                </Route>
                 <Redirect from="/administrador" to="/administrador/dashboard" />
                 <Redirect from="/cliente" to="/cliente/dashboard" />
-                <Redirect from="/operario" to="/operario/dashboard" />
+                <Redirect from="/operario" to="/operario/historial" />
               </Switch>
             </Container>
           </main>

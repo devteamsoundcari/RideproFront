@@ -4,12 +4,16 @@ import { FaCheckCircle } from "react-icons/fa";
 import { Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { RequestsContext } from "../../../contexts/RequestsContext";
+
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import { createRequest, createDriver } from "../../../controllers/apiRequests";
 
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
+  const { updateRequestsContex } = useContext(RequestsContext);
+
   const {
     participantsToRegisterContext,
     setParticipantsToRegisterContext,
@@ -177,6 +181,7 @@ const ConfirmServiceModal = (props) => {
       ) {
         setShowSpinner(false);
         setShowSuccessPrompt(true);
+        updateRequestsContex();
         // Ubdate company context
         setUserInfoContext({
           ...userInfoContext,
@@ -185,13 +190,6 @@ const ConfirmServiceModal = (props) => {
             credit: res.creditDecreasingResponse.data.credit,
           },
         });
-
-        // EMAIL TYPE AND SUBJECT
-        //     res.emailType = "newRequest";
-        //     res.subject = "Solicitud Exitosa ✔️";
-        //     res.email = res.create.data.customer.email;
-        //     await sendEmail(res); // SEND WELCOME EMAIL TO USER
-        //   }
       }
     });
   };

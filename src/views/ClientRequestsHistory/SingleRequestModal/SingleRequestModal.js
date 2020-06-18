@@ -28,12 +28,12 @@ const SingleRequestModal = (props) => {
   const [showCancellationModal, setShowCancellationModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
   const {
     requestsInfoContext,
     setRequestsInfoContext,
     canceledRequestContext,
     setCanceledRequestContext,
+    updateRequestsContex
   } = useContext(RequestsContext);
 
   const {
@@ -54,6 +54,7 @@ const SingleRequestModal = (props) => {
     spent_credit,
     drivers,
     start_time,
+    accept_msg,
   } = props.selectedRow;
 
   const [allRegisteredDrivers, setAllRegisteredDrivers] = useState([]);
@@ -228,6 +229,7 @@ const SingleRequestModal = (props) => {
       if (res.canceled.status === 200 && res.refund.status === 200) {
         setLoading(false);
         setSuccess(true);
+        updateRequestsContex();
         setUserInfoContext({
           ...userInfoContext,
           company: {
@@ -299,6 +301,7 @@ const SingleRequestModal = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
       size="lg"
+      className="single-request-modal"
     >
       <Modal.Header className="align-items-center">
         <div>
@@ -331,7 +334,10 @@ const SingleRequestModal = (props) => {
               </ul>
             </Col>
             <Col md={6}>
-              <p>Observaciones:</p>
+              <div className="comments">
+                <p>Observaciones:</p>
+                <small>{accept_msg}</small>
+              </div>
             </Col>
           </Row>
           <hr />

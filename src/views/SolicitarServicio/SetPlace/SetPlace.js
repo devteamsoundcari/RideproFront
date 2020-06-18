@@ -7,7 +7,7 @@ import {
   getMunicipalities,
   getTracks,
 } from "../../../controllers/apiRequests";
-import { Container, Form, Col, Button, Card } from "react-bootstrap";
+import { Container, Form, Col, Button, Card, Spinner } from "react-bootstrap";
 import "./SetPlace.scss";
 import useDropdown from "../../../utils/useDropdown";
 
@@ -35,10 +35,11 @@ const SetPlace = (props) => {
     cities
   );
   const [selectedTrack, TracksDropdown, setTracksDropdown] = useDropdown(
-    "Seleccionar pista",
+    "Tus pistas",
     "Seleccione...",
     filteredTracks
   );
+  const [loading, setLoading] = useState(true);
 
   // ================================ FETCH TRACKS ON LOAD =====================================================
   const fetchTracks = async (url) => {
@@ -60,6 +61,7 @@ const SetPlace = (props) => {
 
   useEffect(() => {
     const items = [];
+    setLoading(true);
     async function fetchDepartments(url) {
       const response = await getDepartments(url);
       if (response.next) {
@@ -70,6 +72,7 @@ const SetPlace = (props) => {
         return await fetchDepartments(response.next);
       }
       response.results.map((item) => {
+        setLoading(false);
         items.push(item);
         return true;
       });
@@ -83,6 +86,7 @@ const SetPlace = (props) => {
   useEffect(() => {
     if (department.id && department.name) {
       const items = [];
+      setLoading(true);
       async function fetchCities(url) {
         const response = await getMunicipalities(url);
         if (response.next) {
@@ -93,6 +97,7 @@ const SetPlace = (props) => {
           return fetchCities(response.next);
         } else {
           response.results.map((item) => {
+            setLoading(false);
             items.push(item);
             return true;
           });
@@ -113,7 +118,6 @@ const SetPlace = (props) => {
       setFilteredTracks([]);
       tracks.forEach((item) => {
         if (item.municipality.id === parseInt(city.id)) {
-          console.log(item.municipality.id, parseInt(city.id));
           setFilteredTracks((oldArr) => [...oldArr, item]);
         }
       });
@@ -189,21 +193,16 @@ const SetPlace = (props) => {
         data.track = noTrack ? "na" : track;
         props.setPlace(data);
       } else {
-        setError("Especifique el tipo de pista");
+        setError("Por favor especifique el tipo de pista");
       }
     } else {
-      setError("Especifique departamento y ciudad");
+      setError("Por favor especifique departamento y ciudad");
     }
   };
 
   // ================================================================================================
   return (
     <Container className="setPlace">
-      <p className="lead">
-        Ridepro agendara el servicio usando alguna de las pistas que
-        <br />
-        selecciones a continuación.
-      </p>
       {error && <p className="text-danger">{error}</p>}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Row className="justify-content-md-center">
@@ -214,36 +213,57 @@ const SetPlace = (props) => {
             <CitiesDropdown />
           </Form.Group>
         </Form.Row>
+        {loading && <Spinner animation="border" size="sm" />}
+        <p className="lead">
+          Ridepro agendara el servicio usando alguna de las pistas que
+          <br />
+          selecciones a continuación.
+        </p>
         <Form.Row className="justify-content-md-center">
+          <Form.Group as={Col} md="4">
+            <Card className={noTrack ? "bg-disabled" : ""}>
+              <Card.Body>
+                <TracksDropdown />
+                {!filteredTracks.length && city.id ? (
+                  <div className="d-flex justify-content-center mt-2">
+                    <small className="font-italic text-danger">
+                      No tienes pistas en esta ciudad
+                    </small>
+                  </div>
+                ) : (
+                  ""
+                )}
+                <Button
+                  variant="info"
+                  size="sm"
+                  onClick={handleClick}
+                  className="mt-2"
+                >
+                  Administrar mis pistas
+                </Button>
+              </Card.Body>
+            </Card>
+          </Form.Group>
+
           <Form.Group as={Col} md="4">
             <Card>
               <Card.Body>
-                <TracksDropdown />
                 <div className="d-flex justify-content-center mt-3">
-                  <Button
-                    variant="info"
-                    size="sm"
-                    className="mr-3"
-                    onClick={handleClick}
-                    disabled={noTrack}
-                  >
-                    Ver pistas
-                  </Button>
-                  <Form.Check
-                    onChange={handleCheckChange}
-                    checked={noTrack}
-                    className="d-flex align-items-center"
-                    label="Pista Ridepro"
-                  />
+                  <h5>Dejar que Ridepro encuentre una pista</h5>
                 </div>
+                <Form.Check
+                  onChange={handleCheckChange}
+                  checked={noTrack}
+                  label="Pista Ridepro"
+                  type="switch"
+                  id="custom-switch"
+                />
               </Card.Body>
             </Card>
           </Form.Group>
         </Form.Row>
-        <Form.Row>
-          <Form.Group as={Col}>
-            <Button type="submit">Continuar</Button>
-          </Form.Group>
+        <Form.Row className="justify-content-center mt-2">
+          <Button type="submit">Continuar</Button>
         </Form.Row>
       </Form>
     </Container>

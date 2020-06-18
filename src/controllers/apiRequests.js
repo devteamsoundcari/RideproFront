@@ -492,6 +492,38 @@ const createNewTrack = async (data) => {
   }
 };
 
+/* =================================   GET ALL INSTRUCTORS  ===================================== */
+
+const getInstructors = async (url) => {
+  const getInfo = async () => {
+    const requestsData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return requestsData;
+  };
+  let requests = await getInfo();
+  return requests.data;
+};
+
+/* =================================   GET ALL PROVIDERS  ===================================== */
+
+const getProviders = async (url) => {
+  const getInfo = async () => {
+    const requestsData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return requestsData;
+  };
+  let requests = await getInfo();
+  return requests.data;
+};
+
 // ================================================================================
 
 export {
@@ -518,4 +550,6 @@ export {
   getServices,
   createNewTrack,
   getTracks,
+  getInstructors,
+  getProviders,
 };

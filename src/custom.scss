@@ -6,6 +6,7 @@ $theme-colors: (
   "operario": #14524f,
   "admin": #970c0f,
   "cliente": #1d1d1b,
+  "disabled": #e9ecef,
   "event-requested": yellow,
   "confirm-event": orange,
   "event-confirmed": dodgerblue,
@@ -48,6 +49,16 @@ html {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.637);
+}
+
+//Keyframe Mixin
+@mixin keyframes($name) {
+  @keyframes #{$name} {
+    @content;
+  }
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
 }
 // $border-radius: 2rem;
 

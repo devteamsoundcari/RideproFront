@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import { getTracks } from "../../controllers/apiRequests";
+import { AiFillDollarCircle } from "react-icons/ai";
 import {
   Table,
   Container,
@@ -192,16 +193,29 @@ const ClientRequestsHistory = () => {
     return `${month}/${day}/${year}`;
   };
 
+  const headerCreditFormatter = () => {
+    return (
+      <span className="credit-header">
+        <AiFillDollarCircle />
+      </span>
+    );
+  };
+
+  const creditFormatter = (cell) => {
+    return (
+      <p className="credit-spent">
+        <small>$</small>
+        {cell}
+      </p>
+    );
+  };
+
   const columns = [
     {
       dataField: "id",
       text: "Cód.",
       headerClasses: "small-column",
       sort: true,
-    },
-    {
-      dataField: "spent_credit",
-      text: "Rides gastados",
     },
     {
       dataField: "created_at",
@@ -231,6 +245,13 @@ const ClientRequestsHistory = () => {
       text: "Estado",
       formatter: statusFormatter,
       sort: true,
+    },
+    {
+      dataField: "spent_credit",
+      text: "Rides",
+      headerClasses: "small-column",
+      formatter: creditFormatter,
+      headerFormatter: headerCreditFormatter,
     },
   ];
 

@@ -18,9 +18,11 @@ const MyCalendar = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const history = useHistory();
-  const { requestsInfoContext, canceledRequestContext } = useContext(
-    RequestsContext
-  );
+  const {
+    requestsInfoContext,
+    canceledRequestContext,
+    loadingContext,
+  } = useContext(RequestsContext);
   const [seeCanceledEvents, setSeeCanceledEvents] = useState(false);
   const [withCanceledRequests, setWithCanceledRequests] = useState({});
 
@@ -180,7 +182,7 @@ const MyCalendar = () => {
       <Col md={10} className="eventsCalendar pl-0">
         <Card>
           <Card.Body>
-            {loading && (
+            {loadingContext && (
               <div>
                 Cargando Eventos...
                 <Spinner animation="border" size="sm" role="status">
