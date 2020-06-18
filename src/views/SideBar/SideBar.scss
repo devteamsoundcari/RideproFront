@@ -69,7 +69,7 @@
         }
       }
 
-      a {
+      .nav-link {
         width: 100%;
         color: #fff;
         transition: 0.3s;
@@ -78,6 +78,9 @@
           background-color: red;
           transform: translateY(-4px);
         }
+      }
+      .active {
+        background-color: blue !important;
       }
     }
   }

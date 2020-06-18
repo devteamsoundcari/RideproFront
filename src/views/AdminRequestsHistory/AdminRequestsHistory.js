@@ -183,7 +183,7 @@ const AdminRequestsHistory = () => {
 
   return (
     <Container fluid="md" id="client-requests-history">
-      {loading ? (
+      {requests.length === 0 ? (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
