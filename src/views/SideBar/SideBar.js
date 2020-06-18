@@ -11,6 +11,7 @@ import {
   GiTireTracks,
   GiThreeFriends,
 } from "react-icons/gi";
+import { FaPeopleCarry, FaUserGraduate, FaUserPlus } from "react-icons/fa";
 import { Badge } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
@@ -23,9 +24,11 @@ import "./SideBar.scss";
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
-  const { setRequestsInfoContext, setCanceledRequestContext } = useContext(
-    RequestsContext
-  );
+  const {
+    setRequestsInfoContext,
+    setCanceledRequestContext,
+    setLoadingContext,
+  } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
   const profilePicture = userInfoContext.company.logo
     ? userInfoContext.company.logo
@@ -66,16 +69,18 @@ const SideBar = (props) => {
         // =========== GETTING INFO OF EACH DRIVER =================
         getDrivers(item.drivers).then((data) => {
           item.drivers = data;
-
           if (item.status.step === 0) {
             setCanceledRequestContext((prev) => [...prev, item]);
           } else {
             setRequestsInfoContext((prev) => [...prev, item]);
           }
         });
+        setLoadingContext(false);
+
         return true;
       });
       if (response.next) {
+        setLoadingContext(true);
         return await fetchRequests(response.next);
       }
     }
@@ -158,7 +163,12 @@ const SideBar = (props) => {
           )}
           <li className="sidebar-nav-header">Menú</li>
 
-          <Link to={`${props.url}/dashboard`} className="nav-link">
+          <Link
+            to={`${props.url}/dashboard`}
+            className="nav-link"
+            activeClassName="active"
+            // exact={true}
+          >
             <AiFillCalendar className="mb-1 mr-2" />
             Calendario
           </Link>
@@ -168,7 +178,12 @@ const SideBar = (props) => {
               Usuarios
             </Link>
           )}
-          <Link to={`${props.url}/historial`} className="nav-link">
+          <Link
+            to={`${props.url}/historial`}
+            activeClassName="active"
+            // exact={true}
+            className="nav-link"
+          >
             <AiOutlineHistory className="mb-1 mr-2" />
             Historial
           </Link>
@@ -187,65 +202,40 @@ const SideBar = (props) => {
             Añadir pista{" "}
           </Link>
 
-          {/* <li className="nav-item">
-            <a className="nav-link" href="#123">
-              <span data-feather="shopping-cart"></span>
-              Products
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#123">
-              <span data-feather="users"></span>
-              Customers
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#123">
-              <span data-feather="bar-chart-2"></span>
-              Reports
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#123">
-              <span data-feather="layers"></span>
-              Integrations
-            </a>
-          </li> */}
-        </ul>
-        <hr />
+          <hr />
+          {userInfoContext.profile === 3 && (
+            <React.Fragment>
+              <li className="sidebar-nav-header">Instructores</li>
+              <Link to={`${props.url}/instructores`} className="nav-link">
+                <FaUserGraduate className="mb-1 mr-2" />
+                Ver instructores{" "}
+              </Link>
+              <Link
+                to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
+                className="nav-link"
+              >
+                <FaUserPlus className="mb-1 mr-2" />
+                Añadir instructor{" "}
+              </Link>
 
-        {/* <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Saved reports</span>
-          <a className="d-flex align-items-center text-muted" href="#123">
-            <span data-feather="plus-circle"></span>
-          </a>
-        </h6>
-        <ul className="nav flex-column mb-2">
-          <li className="nav-item">
-            <a className="nav-link" href="#123">
-              <span data-feather="file-text"></span>
-              Current month
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#123">
-              <span data-feather="file-text"></span>
-              Last quarter
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#123">
-              <span data-feather="file-text"></span>
-              Social engagement
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#123">
-              <span data-feather="file-text"></span>
-              Year-end sale
-            </a>
-          </li>
-        </ul> */}
+              <hr />
+              <li className="sidebar-nav-header">Proveedores</li>
+              <Link to={`${props.url}/proveedores`} className="nav-link">
+                <FaPeopleCarry className="mb-1 mr-2" />
+                Ver proveedores{" "}
+              </Link>
+              <Link
+                to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
+                className="nav-link"
+              >
+                <AiOutlinePlus className="mb-1 mr-2" />
+                Añadir proveedor{" "}
+              </Link>
+
+              <hr />
+            </React.Fragment>
+          )}
+        </ul>
       </div>
     </nav>
   );
