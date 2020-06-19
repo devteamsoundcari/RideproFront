@@ -12,7 +12,6 @@ import SearchByDocument from "../../../utils/SearchByDocument/SearchByDocument";
 import DataTable from "./DataTable/DataTable";
 import RegularExpressions from "../../../utils/RegularExpressions";
 
-
 const SetParticipants = (props) => {
   const { userInfoContext } = useContext(AuthContext);
   const { serviceInfoContext } = useContext(ServiceContext);
@@ -20,7 +19,7 @@ const SetParticipants = (props) => {
     allParticipantsInfoContext,
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
-    setParticipantsToRegisterContext
+    setParticipantsToRegisterContext,
   } = useContext(ParticipantsContext);
   const [participants, setParticipants] = useState([]);
   const [participantToAdd, setParticipantToAdd] = useState({});
@@ -49,7 +48,7 @@ const SetParticipants = (props) => {
       regex: RegularExpressions.name,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un nombre válido."
+        regex: "Por favor, ingresa un nombre válido.",
       },
     },
     last_name: {
@@ -57,7 +56,7 @@ const SetParticipants = (props) => {
       regex: RegularExpressions.name,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un apellido válido."
+        regex: "Por favor, ingresa un apellido válido.",
       },
     },
     email: {
@@ -65,7 +64,7 @@ const SetParticipants = (props) => {
       regex: RegularExpressions.email,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un email válido."
+        regex: "Por favor, ingresa un email válido.",
       },
     },
     cellphone: {
@@ -73,15 +72,15 @@ const SetParticipants = (props) => {
       regex: /^\d{7,10}$/,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un teléfono válido.."
+        regex: "Por favor, ingresa un teléfono válido..",
       },
     },
     isRegistered: {
       name: "",
       format: "boolean",
       hidden: true,
-      default: false
-    }
+      default: false,
+    },
   };
 
   // ================================== GETTING ALL DRIVERS FROM DB =================================================
@@ -114,6 +113,20 @@ const SetParticipants = (props) => {
     props.setParticipants(rides);
   };
 
+  const isDataValid = () => {
+    if (areParticipantsValid === false) {
+      return false;
+    }
+    if (participants.length <= 0) {
+      return false;
+    }
+    if (userInfoContext.company.credit < rides) {
+      return false;
+    }
+
+    return true;
+  };
+
   // ============================================  CHECK TYPE OF SERVICE  ================================================
 
   useEffect(() => {
@@ -133,7 +146,7 @@ const SetParticipants = (props) => {
       return i.official_id !== item.official_id;
     });
     setParticipantsDB(newParticipantsDB);
-    setParticipantToAdd({...item, isRegistered: true});
+    setParticipantToAdd({ ...item, isRegistered: true });
   };
 
   useEffect(() => {
@@ -171,15 +184,15 @@ const SetParticipants = (props) => {
 
   const handleXLSXLoadUp = (data) => {
     setParticipantsForReplacing([...data]);
-  }
+  };
 
   // =========================================================================================================
 
   const isParticipantAlreadyRegistered = (participant) => {
     if (participant.isRegistered === true) {
-      return true
-    }; 
-  }
+      return true;
+    }
+  };
 
   return (
     <Container className="setParticipants">
@@ -212,7 +225,7 @@ const SetParticipants = (props) => {
             size="bg"
             onClick={handleFinalizar}
             className="finalizarBtn"
-            disabled={areParticipantsValid && rides ? false : true}
+            disabled={!isDataValid()}
           >
             Finalizar
           </Button>

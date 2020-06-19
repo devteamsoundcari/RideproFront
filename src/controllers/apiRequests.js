@@ -209,8 +209,9 @@ const createRequest = async (data) => {
     drivers,
     spent_credit,
     track,
+    new_request,
     accept_msg,
-    fare_track
+    fare_track,
   } = data;
 
   const result = await axios({
@@ -228,11 +229,11 @@ const createRequest = async (data) => {
       start_time,
       finish_time,
       status: `${process.env.REACT_APP_STATUS_CONFIRMATION_PROCESS}`, //"d02eaa22-8a5c-4904-b3c4-567782a53f51", // This is first step
-      new_request: 0,
+      new_request: new_request,
       accept_msg: accept_msg,
       reject_msg: "na",
       drivers,
-      fare_track
+      fare_track,
     },
   }).catch((err) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);
@@ -254,8 +255,9 @@ const editRequest = async (id, data) => {
     prev_credits,
     spent_credit,
     track,
-    fare_track,
+    new_request,
     accept_msg,
+    fare_track,
   } = data;
 
   const result = await axios({
@@ -273,11 +275,11 @@ const editRequest = async (id, data) => {
       start_time,
       finish_time,
       status: `${process.env.REACT_APP_STATUS_CONFIRMATION_PROCESS}`,
-      new_request: 0,
+      new_request: new_request,
       accept_msg: accept_msg,
       reject_msg: "na",
       drivers,
-      fare_track
+      fare_track,
     },
   }).catch((err) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);

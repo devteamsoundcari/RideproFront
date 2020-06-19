@@ -171,7 +171,8 @@ const ConfirmServiceModal = (props) => {
         spent_credit: rides,
         drivers: driversIDs,
         accept_msg: comment !== "" ? comment : "na",
-        fare_track: 0.0
+        new_request: 1,
+        fare_track: 0.0,
       };
       // THEN CREATE THE SERVICE
       let res = await createRequest(data);
