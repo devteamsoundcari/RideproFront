@@ -392,6 +392,36 @@ const updateRequest = async (data, id) => {
   return result;
 };
 
+/* =================================   POST REQUEST INSTRUCTORS FARE  ===================================== */
+
+const updateRequestInstructors = async (data) => {
+  console.log("ENVIA", data);
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/request_instructors/`,
+    data,
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+
+/* =================================   GET REQUEST INSTRUCTORS  ===================================== */
+
+const getRequestInstructors = async (url) => {
+  const getInfo = async () => {
+    const requestsData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return requestsData;
+  };
+  let requests = await getInfo();
+  return requests.data;
+};
+
 /* =================================   DECREASE CREDITS IN COMPANY   ===================================== */
 const decreaseCredits = async (company, credits) => {
   const newCredit = company.credit - credits;
@@ -564,7 +594,9 @@ export {
   createDriver,
   getAllDrivers,
   updateRequest,
+  updateRequestInstructors,
   updateDriver,
+  getRequestInstructors,
   fetchDriver,
   cancelRequestId,
   getServices,
