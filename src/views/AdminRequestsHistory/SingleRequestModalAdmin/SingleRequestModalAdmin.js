@@ -11,6 +11,7 @@ import {
 import {
   cancelRequestId,
   getRequestInstructors,
+  getRequestProviders,
 } from "../../../controllers/apiRequests";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
@@ -22,6 +23,7 @@ const SingleRequestModal = (props) => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [instructors, setInstructors] = useState([]);
+  const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const { updateRequestsContex } = useContext(RequestsContext);
@@ -48,7 +50,7 @@ const SingleRequestModal = (props) => {
         tempArr.push(item);
       }
     });
-    console.log("iem", tempArr);
+    // console.log("iem", tempArr);
     setInstructors(tempArr);
     if (response.next) {
       return await fetchRequestInstructors(response.next);
@@ -57,6 +59,29 @@ const SingleRequestModal = (props) => {
   useEffect(() => {
     fetchRequestInstructors(
       `${process.env.REACT_APP_API_URL}/api/v1/request_ins/`
+    );
+    //eslint-disable-next-line
+  }, []);
+
+  // ================================ FETCH REQUEST PROVIDERS ON LOAD =====================================================
+  const fetchRequestProviders = async (url) => {
+    let tempArr = [];
+    const response = await getRequestProviders(url);
+    response.results.forEach(async (item) => {
+      // console.log("item", item);
+      if (item.request === id) {
+        tempArr.push(item);
+      }
+    });
+    // console.log("iem", tempArr);
+    setProviders(tempArr);
+    if (response.next) {
+      return await fetchRequestProviders(response.next);
+    }
+  };
+  useEffect(() => {
+    fetchRequestProviders(
+      `${process.env.REACT_APP_API_URL}/api/v1/request_prov/`
     );
     //eslint-disable-next-line
   }, []);
@@ -246,7 +271,11 @@ const SingleRequestModal = (props) => {
             </Col>
           </Row>
           <Row>
-            <InfoTabs request={props.selectedRow} instructors={instructors} />
+            <InfoTabs
+              request={props.selectedRow}
+              instructors={instructors}
+              providers={providers}
+            />
           </Row>
         </Container>
       </Modal.Body>

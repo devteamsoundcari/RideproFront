@@ -395,7 +395,7 @@ const updateRequest = async (data, id) => {
 /* =================================   POST REQUEST INSTRUCTORS FARE  ===================================== */
 
 const updateRequestInstructors = async (data) => {
-  console.log("ENVIA", data);
+  // console.log("ENVIA", data);
   const result = await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_instructors/`,
@@ -406,9 +406,39 @@ const updateRequestInstructors = async (data) => {
   return result;
 };
 
+/* =================================   POST REQUEST INSTRUCTORS FARE  ===================================== */
+
+const updateRequestProviders = async (data) => {
+  // console.log("ENVIA", data);
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/request_providers/`,
+    data,
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+
 /* =================================   GET REQUEST INSTRUCTORS  ===================================== */
 
 const getRequestInstructors = async (url) => {
+  const getInfo = async () => {
+    const requestsData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return requestsData;
+  };
+  let requests = await getInfo();
+  return requests.data;
+};
+
+/* =================================   GET REQUEST PROVIDERS  ===================================== */
+
+const getRequestProviders = async (url) => {
   const getInfo = async () => {
     const requestsData = await axios({
       method: "GET",
@@ -595,8 +625,10 @@ export {
   getAllDrivers,
   updateRequest,
   updateRequestInstructors,
+  updateRequestProviders,
   updateDriver,
   getRequestInstructors,
+  getRequestProviders,
   fetchDriver,
   cancelRequestId,
   getServices,
