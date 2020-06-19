@@ -8,7 +8,7 @@ const useDropdown = (label, defaultState, options) => {
     <React.Fragment>
       {/* <Form.Label htmlFor={id}> */}
       <Form.Label>
-        <h5>{label}</h5>
+        <h5>{label.length > 0 ? label : null}</h5>
       </Form.Label>
       <Form.Control
         as="select"
