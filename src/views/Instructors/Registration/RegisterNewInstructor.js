@@ -249,7 +249,7 @@ const RegisterNewInstructor = () => {
             <Form.Row>
               <Form.Group as={Col} controlId="formBasicEmail">
                 <Form.Label>
-                  Correro electrónico<span> *</span>
+                  Correo electrónico<span> *</span>
                 </Form.Label>
                 <Form.Control
                   type="email"
