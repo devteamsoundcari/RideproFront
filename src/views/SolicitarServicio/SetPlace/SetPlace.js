@@ -118,11 +118,15 @@ const SetPlace = (props) => {
       setFilteredTracks([]);
       tracks.forEach((item) => {
         console.log("TEM ", item);
-        if (item.municipality.id === parseInt(city.id)) {
+        if (
+          item.municipality.id === parseInt(city.id) &&
+          userInfoContext.company.id === item.company.id
+        ) {
           setFilteredTracks((oldArr) => [...oldArr, item]);
         }
       });
     }
+    //eslint-disable-next-line
   }, [city, tracks]);
 
   const handleCheckChange = () => {

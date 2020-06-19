@@ -18,7 +18,7 @@ const Place = (props) => {
   const [fare, setFare] = useState(0);
   const history = useHistory();
   const { userInfoContext } = useContext(AuthContext);
-  const { updateRequestsContex } = useContext(RequestsContext);
+  const { updateRequestsContext } = useContext(RequestsContext);
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
@@ -85,20 +85,30 @@ const Place = (props) => {
 
   const handleUpdatePlace = async () => {
     let res = await updateRequest(
-      { fare_track: fare, track: place.id },
+      {
+        fare_track: fare,
+        track: place.id,
+        new_request: 0,
+        operator: userInfoContext.id,
+      },
       props.requestId
     );
     if (res.status === 200) {
       setDisabled(true);
-      updateRequestsContex();
+      updateRequestsContext();
     }
   };
+
+  useEffect(() => {
+    if (props.track) {
+      setPlace(props.track);
+    }
+  }, [props.track]);
 
   const addTrack = () => {
     return (
       <Col md="12" className="text-center">
-        <h5>Agregar lugar</h5>
-
+        <h5>{props.newRequest ? "Agregar lugar" : "Actualizar Lugar"}</h5>
         <Row className="place-header-actions">
           <SearchByName
             items={filteredTracks}
@@ -126,7 +136,7 @@ const Place = (props) => {
             </ButtonGroup>
           </div>
         </Row>
-        {place.name && renderTrack(place)}
+        {place.id ? renderTrack(place) : ""}
       </Col>
     );
   };
@@ -242,7 +252,7 @@ const Place = (props) => {
 
   return (
     <Row className="requestPlace">
-      {props.track ? renderTrack(props.track) : addTrack()}
+      {props.track && props.newRequest ? renderTrack(props.track) : addTrack()}
     </Row>
   );
 };

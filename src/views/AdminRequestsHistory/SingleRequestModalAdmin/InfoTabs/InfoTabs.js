@@ -2,6 +2,7 @@ import React from "react";
 import { Tabs, Tab, Table, Button } from "react-bootstrap";
 import Place from "./Place/Place";
 import "./InfoTabs.scss";
+import Instructors from "./Instructors/Instructors";
 
 const InfoTabs = (props) => {
   const {
@@ -11,6 +12,7 @@ const InfoTabs = (props) => {
     municipality,
     fare_track,
     id,
+    new_request,
   } = props.request;
   return (
     <div className="infoTabs">
@@ -21,6 +23,7 @@ const InfoTabs = (props) => {
             municipality={municipality}
             fareTrack={fare_track}
             requestId={id}
+            newRequest={new_request}
           />
         </Tab>
         <Tab eventKey="participantes" title="Participantes">
@@ -42,11 +45,6 @@ const InfoTabs = (props) => {
                   <td>{driver.last_name}</td>
                   <td>{driver.email}</td>
                   <td>{driver.cellphone}</td>
-                  <td>
-                    <Button variant="danger" size="sm">
-                      Borrar
-                    </Button>
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -54,6 +52,7 @@ const InfoTabs = (props) => {
         </Tab>
         <Tab eventKey="intructors" title="Instructores">
           <p>{instructor}</p>
+          <Instructors />
         </Tab>
         <Tab eventKey="proveedores" title="Proveedores" disabled>
           nada

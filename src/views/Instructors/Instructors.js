@@ -57,7 +57,7 @@ const Instructors = () => {
       text: "Apellido",
     },
     {
-      dataField: "municipality",
+      dataField: "municipality.name",
       text: "Ciudad",
     },
   ];
