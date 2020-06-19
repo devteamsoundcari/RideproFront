@@ -12,7 +12,7 @@ import { createRequest, createDriver } from "../../../controllers/apiRequests";
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
-  const { updateRequestsContex } = useContext(RequestsContext);
+  const { updateRequestsContext } = useContext(RequestsContext);
 
   const {
     participantsToRegisterContext,
@@ -182,8 +182,7 @@ const ConfirmServiceModal = (props) => {
       ) {
         setShowSpinner(false);
         setShowSuccessPrompt(true);
-        updateRequestsContex();
-        // Ubdate company context
+        updateRequestsContext();
         setUserInfoContext({
           ...userInfoContext,
           company: {
