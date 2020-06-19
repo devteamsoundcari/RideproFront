@@ -12,6 +12,7 @@ import {
   cancelRequestId,
   getRequestInstructors,
   getRequestProviders,
+  updateRequest,
 } from "../../../controllers/apiRequests";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
@@ -26,7 +27,8 @@ const SingleRequestModal = (props) => {
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { updateRequestsContex } = useContext(RequestsContext);
+  const { updateRequestsContext } = useContext(RequestsContext);
+  const [dataCompleted, setDataCompleted] = useState(false);
   const {
     service,
     municipality,
@@ -163,7 +165,7 @@ const SingleRequestModal = (props) => {
       if (res.canceled.status === 200 && res.refund.status === 200) {
         setLoading(false);
         setSuccess(true);
-        updateRequestsContex();
+        updateRequestsContext();
         setUserInfoContext({
           ...userInfoContext,
           company: {
@@ -190,6 +192,28 @@ const SingleRequestModal = (props) => {
     var difference = Math.abs(now.getTime() - created.getTime());
     var hourDifference = difference / 1000 / 3600;
     return Math.floor(hourDifference);
+  };
+
+  useEffect(() => {
+    if (instructors.length > 0 && providers.length > 0 && track) {
+      setDataCompleted(true);
+    }
+  }, [instructors, providers, track]);
+
+  const handleConfirmEvent = async () => {
+    let res = await updateRequest(
+      {
+        new_request: 0,
+        operator: userInfoContext.id,
+        status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`,
+      },
+      id
+    );
+    if (res.status === 200) {
+      updateRequestsContext();
+      alert("Servicio agendado!");
+      props.onHide();
+    }
   };
 
   return (
@@ -285,6 +309,14 @@ const SingleRequestModal = (props) => {
             Cancelar solicitud
           </Button>
         ):""} */}
+
+        {dataCompleted ? (
+          <Button variant="success" onClick={handleConfirmEvent}>
+            Agendar servicio
+          </Button>
+        ) : (
+          ""
+        )}
         <Button onClick={props.onHide}>Cerrar</Button>
       </Modal.Footer>
       {showCancelModal && (

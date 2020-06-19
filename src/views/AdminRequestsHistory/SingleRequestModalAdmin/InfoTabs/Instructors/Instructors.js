@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import {
   getInstructors,
   updateRequestInstructors,
@@ -16,6 +17,8 @@ const Instructors = (props) => {
   const [selectedInstructors, setSelectedInstructors] = useState([]);
   const [requestInstructors, setRequestInstructors] = useState([]);
   const { SearchBar } = Search;
+  const history = useHistory();
+
   // const { userInfoContext } = useContext(AuthContext);
   const { updateRequestsContext } = useContext(RequestsContext);
 
@@ -159,6 +162,14 @@ const Instructors = (props) => {
     }
   };
 
+  // =============================== CLICK ON ADD INSTRUCTOR ====================================
+  const handleClickAddInstructor = () => {
+    history.push({
+      pathname: "/administrador/instructores",
+      state: { detail: "some_value" },
+    });
+  };
+
   return (
     <div>
       <ToolkitProvider
@@ -179,7 +190,7 @@ const Instructors = (props) => {
                   <Button
                     variant="outline-secondary"
                     size="sm"
-                    // onClick={handleClickAddinstructor}
+                    onClick={handleClickAddInstructor}
                   >
                     Administrar Instructores
                   </Button>
@@ -199,7 +210,8 @@ const Instructors = (props) => {
                     <small>Instructores: </small>
                     {requestInstructors.map((ins, idx) => (
                       <li key={idx}>
-                        {ins.instructors} = <strong>$ {ins.fare}</strong>
+                        {ins.instructors.first_name} {ins.instructors.last_name}
+                        = <strong>$ {ins.fare}</strong>
                       </li>
                     ))}
                   </ul>

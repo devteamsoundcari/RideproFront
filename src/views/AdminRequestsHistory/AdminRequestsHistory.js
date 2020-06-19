@@ -78,11 +78,11 @@ const AdminRequestsHistory = () => {
       case 2:
         return (
           <div className="text-center">
-            <small>Confirmar programación</small>
+            <small>Esperando al cliente</small>
             <ProgressBar
               variant="confirm-event"
-              now={40}
-              label={`${60}%`}
+              now={30}
+              label={`${40}%`}
               srOnly
             />
           </div>

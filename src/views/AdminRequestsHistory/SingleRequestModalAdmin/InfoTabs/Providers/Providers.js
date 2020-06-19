@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import {
   getProviders,
   updateRequestProviders,
@@ -16,6 +17,7 @@ const Providers = (props) => {
   const [selectedProviders, setSelectedProviders] = useState([]);
   const [requestProviders, setRequestProviders] = useState([]);
   const { SearchBar } = Search;
+  const history = useHistory();
   // const { userInfoContext } = useContext(AuthContext);
   const { updateRequestsContext } = useContext(RequestsContext);
 
@@ -39,7 +41,6 @@ const Providers = (props) => {
     const response = await getProviders(url);
     response.results.forEach(async (item) => {
       item.fare = 0;
-      console.log(item);
       tempArr.push(item);
     });
     setProviders(tempArr);
@@ -145,7 +146,6 @@ const Providers = (props) => {
     selectedProviders.forEach((prov) => {
       return (providersIds[prov.id] = prov.fare);
     });
-    console.log("IDS", providersIds);
     let res = await updateRequestProviders({
       request: props.requestId,
       providers: providersIds,
@@ -154,6 +154,14 @@ const Providers = (props) => {
       setDisabled(true);
       updateRequestsContext();
     }
+  };
+
+  // =============================== CLICK ON ADD PROVIDER ====================================
+  const handleClickAddProvider = () => {
+    history.push({
+      pathname: "/administrador/proveedores",
+      state: { detail: "some_value" },
+    });
   };
 
   return (
@@ -176,7 +184,7 @@ const Providers = (props) => {
                   <Button
                     variant="outline-secondary"
                     size="sm"
-                    // onClick={handleClickAddinstructor}
+                    onClick={handleClickAddProvider}
                   >
                     Administrar proveedores
                   </Button>
@@ -196,7 +204,7 @@ const Providers = (props) => {
                     <small>Proveedores: </small>
                     {requestProviders.map((ins, idx) => (
                       <li key={idx}>
-                        {ins.providers} = <strong>$ {ins.fare}</strong>
+                        {ins.providers.name} = <strong>$ {ins.fare}</strong>
                       </li>
                     ))}
                   </ul>
