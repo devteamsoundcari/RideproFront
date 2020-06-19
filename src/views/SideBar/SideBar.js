@@ -11,7 +11,7 @@ import {
   GiTireTracks,
   GiThreeFriends,
 } from "react-icons/gi";
-import { FaPeopleCarry, FaUserGraduate, FaUserPlus } from "react-icons/fa";
+import { FaPeopleCarry, FaUserGraduate } from "react-icons/fa";
 import { Badge } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";

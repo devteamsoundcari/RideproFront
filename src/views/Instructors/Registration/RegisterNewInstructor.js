@@ -9,18 +9,15 @@ import {
 import SuccessModal from "../SuccessModal";
 import useDropdown from "../../../utils/useDropdown";
 
-
 const RegisterNewInstructor = () => {
   const { register, handleSubmit, errors } = useForm();
   const [instructorSuccessMessage, setInstructorSuccessMessage] = useState({
     name: "",
     email: "",
   });
-  const [instructorErrorMessage, setInstructorErrorMessage] = useState(
-    ""
-  );
+  const [instructorErrorMessage, setInstructorErrorMessage] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const [isLoadingMunicipalities, setIsLoadingMunicipalities] = useState(true);
+  // const [isLoadingMunicipalities, setIsLoadingMunicipalities] = useState(true);
   const [smShow, setSmShow] = useState(false);
 
   const [departments, setDepartments] = useState([]);
@@ -120,7 +117,7 @@ const RegisterNewInstructor = () => {
     fetchDepartments(`${process.env.REACT_APP_API_URL}/api/v1/departments/`);
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     if (currentDepartment.id && currentDepartment.name) {
       const items = [];
       setLoading(true);
@@ -147,7 +144,7 @@ const RegisterNewInstructor = () => {
       );
     }
   }, [currentDepartment]);
- 
+
   useEffect(() => {
     if (!isNaN(selectedDepartment)) {
       setCurrentDepartment({
@@ -161,21 +158,23 @@ const RegisterNewInstructor = () => {
 
   useEffect(() => {
     if (!isNaN(selectedMunicipality)) {
-      let city = municipalities.find((city) => city.id === parseInt(selectedMunicipality));
+      let city = municipalities.find(
+        (city) => city.id === parseInt(selectedMunicipality)
+      );
       setData({
         ...data,
         municipality: {
           id: selectedMunicipality,
-          name: document.getElementById(`use-dropdown-option-${selectedMunicipality}`)
-            .innerHTML,
+          name: document.getElementById(
+            `use-dropdown-option-${selectedMunicipality}`
+          ).innerHTML,
           service_priority: city.service_priority,
-        }
+        },
       });
     }
     // eslint-disable-next-line
   }, [selectedMunicipality]);
- 
- 
+
   // ================================= UPDATE STATE AS THE USER TYPES ==========================================
 
   const updateData = (e) => {
@@ -280,20 +279,22 @@ const RegisterNewInstructor = () => {
                   autoComplete="off"
                   ref={register({
                     required: true,
-                    pattern: /^E?\d+$/ 
+                    pattern: /^E?\d+$/,
                   })}
                 />
                 <Form.Text className="text-muted">
-                  {errors.officialId && <span>Ingrese un número de documento válido.</span>}
-                </Form.Text> 
-              </Form.Group> 
+                  {errors.officialId && (
+                    <span>Ingrese un número de documento válido.</span>
+                  )}
+                </Form.Text>
+              </Form.Group>
             </Form.Row>
             <Form.Row>
               <Form.Group as={Col}>
                 <Form.Label>Departamento</Form.Label>
-                  <DepartmentsDropdown />
+                <DepartmentsDropdown />
                 <Form.Label>Ciudad</Form.Label>
-                  <MunicipalitiesDropdown/>
+                <MunicipalitiesDropdown />
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
@@ -308,12 +309,14 @@ const RegisterNewInstructor = () => {
                   autoComplete="off"
                   ref={register({
                     required: true,
-                    pattern: /^\d{7,10}$/
+                    pattern: /^\d{7,10}$/,
                   })}
                 />
                 <Form.Text className="text-muted">
-                  {errors.cellphone && <span>Ingrese un número de teléfono válido.</span>}
-                </Form.Text> 
+                  {errors.cellphone && (
+                    <span>Ingrese un número de teléfono válido.</span>
+                  )}
+                </Form.Text>
               </Form.Group>
             </Form.Row>
 

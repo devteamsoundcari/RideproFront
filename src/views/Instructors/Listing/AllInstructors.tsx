@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Card } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import "./AllInstructors.scss";
 
 const AllInstructors = (props) => {
-
   const columns = [
     {
       dataField: "official_id",
@@ -36,8 +35,8 @@ const AllInstructors = (props) => {
     },
     {
       dataField: "cellphone",
-      text: "Teléfono"
-    }
+      text: "Teléfono",
+    },
   ];
 
   return (
