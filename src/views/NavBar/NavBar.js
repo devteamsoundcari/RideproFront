@@ -25,6 +25,7 @@ const NavBar = () => {
   const { setRequestsInfoContext, setCanceledRequestContext } = useContext(
     RequestsContext
   );
+  //eslint-disable-next-line
   const [profile, setProfile] = useState("");
 
   const logout = () => {

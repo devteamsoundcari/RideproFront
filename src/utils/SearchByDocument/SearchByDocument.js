@@ -42,6 +42,7 @@ const SeachParticipant = (props) => {
           placeholder={props.placeholder}
           onChange={(e) => handleChange(e)}
           autoComplete="off"
+          disabled={props.disabled}
         />
       </Form.Group>
       <div className="searchResults">

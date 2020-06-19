@@ -1,30 +1,29 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { FaCheckCircle } from "react-icons/fa";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
 import { editRequest, createDriver } from "../../../controllers/apiRequests";
 import "./SingleRequestModal.scss";
 
-
 const ServiceEditConfirmationModal = (props) => {
-  const history = useHistory();
+  // const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const { updateRequestsContext } = useContext(RequestsContext);
 
   const {
     participantsToRegisterContext,
-    setParticipantsToRegisterContext,
+    // setParticipantsToRegisterContext,
     registeredParticipantsContext,
     setRegisteredParticipantsContext,
     unregisteredParticipantsContext,
     setUnregisteredParticipantsContext,
     allParticipantsInfoContext,
-    setAllParticipantsInfoContext,
-    newParticipantsContext,
-    setNewParticipantsContext
+    // setAllParticipantsInfoContext,
+    // newParticipantsContext,
+    setNewParticipantsContext,
   } = useContext(ParticipantsContext);
 
   const [showSpinner, setShowSpinner] = useState(false);
@@ -40,22 +39,22 @@ const ServiceEditConfirmationModal = (props) => {
     any[]
   >([]);
   const [displayData, setDisplayData] = useState(false);
-  const [newRegistered, setNewRegistered] = useState(
-    registeredParticipantsContext
-  );
+  // const [newRegistered, setNewRegistered] = useState(
+  //   registeredParticipantsContext
+  // );
   const [finalParticipants, setFinalParticipants] = useState<any[]>([]);
   const [newToRegister, setNewToRegister] = useState(
     participantsToRegisterContext
   );
   const [rides, setRides] = useState(props.rides);
-  const [comment, setComment] = useState("");
+  // const [comment, setComment] = useState("");
 
-  const options = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
+  // const options = {
+  //   weekday: "long",
+  //   year: "numeric",
+  //   month: "long",
+  //   day: "numeric",
+  // };
 
   const isParticipantRegistered = (participant) => {
     const registeredIDs = allParticipantsInfoContext.map((p) => {
@@ -109,6 +108,7 @@ const ServiceEditConfirmationModal = (props) => {
     } else {
       setDisplayData(false);
     }
+    //eslint-disable-next-line
   }, [alreadyRegisteredParticipants]);
   // =============================== REGISTER UNRESTIGERED DRIVERS ===================================
 
@@ -136,6 +136,7 @@ const ServiceEditConfirmationModal = (props) => {
   useEffect(() => {
     setUnregisteredParticipantsContext(unregisteredParticipants);
     setRegisteredParticipantsContext(registeredParticipants);
+    //eslint-disable-next-line
   }, [unregisteredParticipants, registeredParticipants]);
 
   // ======================================= HANDLE SUBMIT =================================

@@ -28,15 +28,15 @@ const SingleRequestModal = (props) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const {
-    requestsInfoContext,
-    setRequestsInfoContext,
-    canceledRequestContext,
-    setCanceledRequestContext,
+    // requestsInfoContext,
+    // setRequestsInfoContext,
+    // canceledRequestContext,
+    // setCanceledRequestContext,
     updateRequestsContext,
   } = useContext(RequestsContext);
 
   const {
-    allParticipantsInfoContext,
+    // allParticipantsInfoContext,
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
     setParticipantsToRegisterContext,
@@ -70,6 +70,7 @@ const SingleRequestModal = (props) => {
   ]);
   const [registeredDrivers, setRegisteredDrivers] = useState([...drivers]);
   const [newDrivers, setNewDrivers] = useState([]);
+  //eslint-disable-next-line
   const [areDriversValid, setAreDriversValid] = useState(true);
   const [canSaveDrivers, setCanSaveDrivers] = useState(false);
   const fields = {
@@ -138,6 +139,7 @@ const SingleRequestModal = (props) => {
       setCanSaveDrivers(false);
     }
     fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers_company/`);
+    //eslint-disable-next-line
   }, [newParticipantsContext]);
 
   useEffect(() => {
@@ -151,29 +153,29 @@ const SingleRequestModal = (props) => {
     if (response) {
       if (response.next) {
         response.results.map((item) => {
-        items.push(item);
-        return true;
+          items.push(item);
+          return true;
         });
         return await fetchDrivers(response.next);
       }
       response.results.map((item) => {
         items.push(item);
-      return true;
+        return true;
       });
     }
     setAllParticipantsInfoContext(items);
-  }
+  };
 
   const handleHide = () => {
     setAllParticipantsInfoContext([]);
     setNewParticipantsContext([]);
-  }
+  };
 
   const handleClose = () => {
     setAllParticipantsInfoContext([]);
     setNewParticipantsContext([]);
-    props.onHide();    
-  }
+    props.onHide();
+  };
 
   const handleAllDrivers = (x) => {
     setAllDrivers(x);
@@ -189,9 +191,9 @@ const SingleRequestModal = (props) => {
 
   const isParticipantAlreadyRegistered = (participant) => {
     if (participant.isRegistered === true) {
-      return true
-    };
-  } 
+      return true;
+    }
+  };
 
   useEffect(() => {
     let registeredIDs = registeredDrivers.map((driver) => {
@@ -213,6 +215,7 @@ const SingleRequestModal = (props) => {
     setRegisteredParticipantsContext(registered);
     setNewDrivers(unregistered);
     setParticipantsToRegisterContext(allDrivers);
+    //eslint-disable-next-line
   }, [allDrivers]);
 
   useEffect(() => {
@@ -228,6 +231,7 @@ const SingleRequestModal = (props) => {
     } else {
       setCanSaveDrivers(false);
     }
+    //eslint-disable-next-line
   }, [newDrivers, registeredDrivers]);
 
   const formatAMPM = (date) => {
@@ -289,14 +293,6 @@ const SingleRequestModal = (props) => {
 
   const handleCancelEvent = async () => {
     setShowCancellationModal(true);
-  };
-
-  const loadingSpinner = () => {
-    return (
-      <Modal.Body>
-        <Spinner animation="border" variant="danger" />
-      </Modal.Body>
-    );
   };
 
   const renderStatus = () => {

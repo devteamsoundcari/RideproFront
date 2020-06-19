@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./MyCalendar.scss";
-import { AuthContext } from "../../contexts/AuthContext";
+// import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 
 require("moment/locale/es.js");
@@ -16,6 +16,7 @@ const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
   const [requests, setRequests] = useState([]);
+  //eslint-disable-next-line
   const [loading, setLoading] = useState(true);
   const history = useHistory();
   const {

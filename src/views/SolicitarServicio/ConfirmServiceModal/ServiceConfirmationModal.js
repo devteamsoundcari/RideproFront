@@ -16,7 +16,7 @@ const ConfirmServiceModal = (props) => {
 
   const {
     participantsToRegisterContext,
-    setParticipantsToRegisterContext,
+    // setParticipantsToRegisterContext,
     registeredParticipantsContext,
     setRegisteredParticipantsContext,
     unregisteredParticipantsContext,
@@ -32,10 +32,10 @@ const ConfirmServiceModal = (props) => {
   ] = useState([]);
   const [unregisteredParticipants, setUnregisteredParticipants] = useState([]);
   const [displayData, setDisplayData] = useState(false);
-  const [newRegistered, setNewRegistered] = useState(
-    registeredParticipantsContext
-  );
-  const [finalParticipants, setFinalParticipants] = useState([]);
+  // const [newRegistered, setNewRegistered] = useState(
+  //   registeredParticipantsContext
+  // );
+  // const [finalParticipants, setFinalParticipants] = useState([]);
   const [newToRegister, setNewToRegister] = useState(
     participantsToRegisterContext
   );
@@ -62,29 +62,29 @@ const ConfirmServiceModal = (props) => {
     return false;
   };
 
-  const canBeRegistered = (arrToRegister) => {
-    let badItems = [];
-    for (let item of allParticipantsInfoContext) {
-      for (let item2 of arrToRegister) {
-        if (item.official_id === item2.official_id) {
-          badItems.push(item2);
-          // TODO: here a bug... we nedd to figure it out
-          if (
-            newRegistered.findIndex(
-              (i) => i.official_id === item.official_id
-            ) === -1
-          ) {
-            setNewRegistered((oldArr) => [...oldArr, item]);
-            let nTR = newToRegister.filter(
-              (x) => x.official_id !== item.official_id
-            );
-            setNewToRegister(nTR);
-          }
-        }
-      }
-    }
-    return badItems;
-  };
+  // const canBeRegistered = (arrToRegister) => {
+  //   let badItems = [];
+  //   for (let item of allParticipantsInfoContext) {
+  //     for (let item2 of arrToRegister) {
+  //       if (item.official_id === item2.official_id) {
+  //         badItems.push(item2);
+  //         // TODO: here a bug... we nedd to figure it out
+  //         if (
+  //           newRegistered.findIndex(
+  //             (i) => i.official_id === item.official_id
+  //           ) === -1
+  //         ) {
+  //           setNewRegistered((oldArr) => [...oldArr, item]);
+  //           let nTR = newToRegister.filter(
+  //             (x) => x.official_id !== item.official_id
+  //           );
+  //           setNewToRegister(nTR);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return badItems;
+  // };
 
   // =============================== CHECK IF ALREADY REGISTERED PARTICIPANTS ========================================
 
@@ -145,6 +145,7 @@ const ConfirmServiceModal = (props) => {
   useEffect(() => {
     setUnregisteredParticipantsContext(unregisteredParticipants);
     setRegisteredParticipantsContext(registeredParticipants);
+    //eslint-disable-next-line
   }, [unregisteredParticipants, registeredParticipants]);
 
   // ======================================= HANDLE SUBMIT =================================

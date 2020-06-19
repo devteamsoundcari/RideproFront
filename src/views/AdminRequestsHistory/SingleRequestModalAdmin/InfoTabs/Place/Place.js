@@ -168,7 +168,7 @@ const Place = (props) => {
                   />
                 </Form.Group>
                 {track.fare !== 0 && (
-                  <Form.Group as={Col} controlId="formGridAddress">
+                  <Form.Group as={Col} controlId="formGridFare">
                     <Form.Label>Agregar tarifa:</Form.Label>
                     <Form.Control
                       size="sm"
@@ -203,7 +203,7 @@ const Place = (props) => {
                   />
                 </Form.Group>
 
-                <Form.Group as={Col} controlId="formPhone">
+                <Form.Group as={Col} controlId="formFarePlace">
                   <Form.Label>Tarifa promedio</Form.Label>
                   <Form.Control size="sm" disabled value={`$ ${track.fare}`} />
                 </Form.Group>

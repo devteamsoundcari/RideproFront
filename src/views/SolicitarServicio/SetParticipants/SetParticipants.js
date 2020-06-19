@@ -27,6 +27,7 @@ const SetParticipants = (props) => {
   const [areParticipantsValid, setAreParticipantsValid] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
+  //eslint-disable-next-line
   const [dataTable, setDataTable] = useState([]);
   const [registeredParticipants, setRegisteredParticipants] = useState([]);
 
@@ -170,6 +171,7 @@ const SetParticipants = (props) => {
     }
 
     setParticipantsDB(newParticipantsDB);
+    //eslint-disable-next-line
   }, [participants]);
 
   const handleUpdateTable = (data) => {

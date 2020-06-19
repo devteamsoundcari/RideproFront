@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Tab, Table, Button } from "react-bootstrap";
+import { Tabs, Tab, Table } from "react-bootstrap";
 import Place from "./Place/Place";
 import "./InfoTabs.scss";
 import Instructors from "./Instructors/Instructors";
@@ -16,7 +16,7 @@ const InfoTabs = (props) => {
   } = props.request;
   return (
     <div className="infoTabs">
-      <Tabs defaultActiveKey="place" id="uncontrolled-tab-example">
+      <Tabs defaultActiveKey="instructors" id="uncontrolled-tab-example">
         <Tab eventKey="place" title="Lugar">
           <Place
             track={track ? track : ""}
@@ -50,9 +50,12 @@ const InfoTabs = (props) => {
             </tbody>
           </Table>
         </Tab>
-        <Tab eventKey="intructors" title="Instructores">
-          <p>{instructor}</p>
-          <Instructors />
+        <Tab eventKey="instructors" title="Instructores">
+          <Instructors
+            municipality={municipality}
+            instructor={instructor}
+            requestId={id}
+          />
         </Tab>
         <Tab eventKey="proveedores" title="Proveedores" disabled>
           nada
