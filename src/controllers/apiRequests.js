@@ -558,6 +558,32 @@ const getInstructors = async (url) => {
   return requests.data;
 };
 
+const createInstructor = async (data) => {
+  console.log(data);
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
+    data: {
+      official_id: data.official_id,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      cellphone: data.cellphone,
+      municipality: data.municipality.id,
+      documents: "na",
+      picture: "na"
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 201) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 /* =================================   GET ALL PROVIDERS  ===================================== */
 
 const getProviders = async (url) => {
@@ -603,5 +629,6 @@ export {
   createNewTrack,
   getTracks,
   getInstructors,
+  createInstructor,
   getProviders,
 };
