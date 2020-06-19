@@ -51,7 +51,7 @@ const Providers = () => {
       text: "Servicio",
     },
     {
-      dataField: "municipality",
+      dataField: "municipality.name",
       text: "Ciudad",
     },
   ];

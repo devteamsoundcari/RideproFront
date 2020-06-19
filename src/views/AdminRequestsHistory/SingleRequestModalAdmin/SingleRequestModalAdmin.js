@@ -184,10 +184,14 @@ const SingleRequestModal = (props) => {
                   <small>Codigo de servicio: </small>
                   {id}
                 </li>
-                <lo>
+                <li>
                   <small>Cliente: </small>
+                  {customer.first_name} {customer.last_name}
+                </li>
+                <li>
+                  <small>Compañia: </small>
                   {customer.company.name}
-                </lo>
+                </li>
                 <li>
                   <small>Fecha de solicitud: </small>
                   {dateFormatter(created_at)}

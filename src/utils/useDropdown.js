@@ -12,7 +12,6 @@ const useDropdown = (label, defaultState, options) => {
       </Form.Label>
       <Form.Control
         as="select"
-        // id={id}
         value={state}
         onChange={(e) => setState(e.target.value)}
         onBlur={(e) => setState(e.target.value)}

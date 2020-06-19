@@ -24,13 +24,13 @@ const SetService = (props) => {
   };
 
   return (
-    <Container className="mt-5 text-center">
+    <Container className="mt-5 text-center setService">
       {services.length === 0 && (
         <Spinner animation="border" role="status" className="mt-5">
           <span className="sr-only">Loading...</span>
         </Spinner>
       )}
-      <div className="card-deck mb-3 text-center">
+      <div className="card-columns mb-3 text-center">
         {services.map((service, idx) => {
           return (
             <Service

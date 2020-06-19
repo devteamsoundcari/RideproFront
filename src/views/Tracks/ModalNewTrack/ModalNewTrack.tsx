@@ -59,6 +59,12 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
       setLoading(true);
       data.trackMunicipality = city.id;
       data.companyId = userInfoContext.company.id;
+      if (userInfoContext.profile === 2) {
+        data.fare = 0;
+      }
+      data.latitude = "na";
+      data.longitude = "na";
+      data.pictures = "na";
       const response = await createNewTrack(data);
       if (response) {
         setLoading(false);
@@ -191,7 +197,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
             <Form.Row>
               <Form.Group as={Col} controlId="formGridEmail">
                 <Form.Label>
-                  <h5>Nombre</h5>
+                  <h5>Nombre del lugar</h5>
                 </Form.Label>
                 <input
                   className="form-control"
@@ -213,6 +219,20 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                   ref={register({ required: true, maxLength: 80 })}
                 />
               </Form.Group>
+              {userInfoContext.profile !== 2 && (
+                <Form.Group as={Col} controlId="formGridFare">
+                  <Form.Label>
+                    <h5>Tarifa</h5>
+                  </Form.Label>
+                  <input
+                    className="form-control"
+                    type="number"
+                    placeholder="$"
+                    name="fare"
+                    ref={register({ required: true, maxLength: 80 })}
+                  />
+                </Form.Group>
+              )}
             </Form.Row>
             <Form.Group controlId="formGridAddress1">
               <Form.Label>
@@ -225,6 +245,43 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 ref={register({ required: true, maxLength: 180 })}
               />
             </Form.Group>
+
+            <hr />
+            <Form.Row>
+              <Form.Group as={Col} controlId="formGridContactName">
+                <Form.Label>
+                  <h5>Persona de contacto</h5>
+                </Form.Label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="contact_name"
+                  ref={register({ required: true, maxLength: 80 })}
+                />
+              </Form.Group>
+              <Form.Group as={Col} controlId="formGridContactPhone">
+                <Form.Label>
+                  <h5>Teléfono de contacto</h5>
+                </Form.Label>
+                <input
+                  className="form-control"
+                  type="number"
+                  name="cellphone"
+                  ref={register({ required: true, maxLength: 80 })}
+                />
+              </Form.Group>
+              <Form.Group as={Col} controlId="formGridContactEmail">
+                <Form.Label>
+                  <h5>Email de contacto</h5>
+                </Form.Label>
+                <input
+                  className="form-control"
+                  type="email"
+                  name="contact_email"
+                  ref={register({ required: true, maxLength: 80 })}
+                />
+              </Form.Group>
+            </Form.Row>
             {error && (
               <div className="text-center">
                 <small className="text-danger">
@@ -232,7 +289,6 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 </small>
               </div>
             )}
-
             <Form.Group id="formGridCheckbox">
               <Form.Check type="checkbox" label="Añadir a pistas favoritas" />
             </Form.Group>

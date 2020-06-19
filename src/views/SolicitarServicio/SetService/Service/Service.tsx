@@ -13,7 +13,7 @@ const Service: React.FC<Props> = ({
   handleClick,
   userInfoContext,
 }) => {
-  const { id, name, ride_value, service_type, description } = service;
+  const { id, name, ride_value, service_type, description, location } = service;
   const [showAll, setShowAll] = useState(false);
 
   const handleClickService = (e: any, service: any) => {
@@ -36,6 +36,7 @@ const Service: React.FC<Props> = ({
         <h5 className="my-0 font-weight-normal">{name}</h5>
       </div>
       <div className="card-body d-flex justify-content-center flex-column">
+        <p>{location}</p>
         <h3 className="card-title pricing-card-title">
           ${ride_value} <small className="text-muted">/ {service_type}</small>
         </h3>

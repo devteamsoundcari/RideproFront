@@ -476,6 +476,13 @@ const createNewTrack = async (data) => {
     trackDescription,
     trackMunicipality,
     trackName,
+    fare,
+    cellphone,
+    latitude,
+    longitude,
+    contact_email,
+    contact_name,
+    pictures,
   } = data;
   const result = await axios({
     method: "POST",
@@ -486,6 +493,13 @@ const createNewTrack = async (data) => {
       municipality: trackMunicipality,
       name: trackName,
       description: trackDescription,
+      fare,
+      cellphone,
+      latitude,
+      longitude,
+      contact_email,
+      contact_name,
+      pictures,
     },
   }).catch((err) => {
     console.error(err);
