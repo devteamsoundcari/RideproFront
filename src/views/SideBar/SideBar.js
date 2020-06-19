@@ -19,6 +19,7 @@ import Greeting from "../Usuarios/Greeting/Greeting";
 import defaultCompanyLogo from "../../assets/img/companydefault.png";
 import defaultCompanyImg from "../../assets/img/defaultCompanyImg.png";
 import { getUserRequests, fetchDriver } from "../../controllers/apiRequests";
+import logo from "../../assets/img/logo.png";
 
 import "./SideBar.scss";
 
@@ -103,10 +104,7 @@ const SideBar = (props) => {
           className="sidebar-brand"
           // onClick={() => history.push("/login")}
         >
-          <img
-            alt="RideproLogo"
-            src="https://www.ridepro.co/wp-content/uploads/2020/03/logo-ride-pro.png"
-          />
+          <img alt="RideproLogo" src={logo} />
           <small style={{ fontSize: "12px" }}>{profile}</small>
         </div>
         <ul className="nav flex-column">
