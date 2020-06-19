@@ -7,7 +7,6 @@ import Instructors from "./Instructors/Instructors";
 const InfoTabs = (props) => {
   const {
     drivers,
-    instructor,
     track,
     municipality,
     fare_track,
@@ -17,7 +16,7 @@ const InfoTabs = (props) => {
   return (
     <div className="infoTabs">
       <Tabs defaultActiveKey="instructors" id="uncontrolled-tab-example">
-        <Tab eventKey="place" title="Lugar">
+        <Tab eventKey="place" title={`Lugar ${track ? "OK" : "!"}`}>
           <Place
             track={track ? track : ""}
             municipality={municipality}
@@ -26,7 +25,10 @@ const InfoTabs = (props) => {
             newRequest={new_request}
           />
         </Tab>
-        <Tab eventKey="participantes" title="Participantes">
+        <Tab
+          eventKey="participantes"
+          title={`Participants ${drivers.length > 0 ? "OK" : "!"}`}
+        >
           <Table responsive hover size="sm">
             <thead>
               <tr>
@@ -50,10 +52,13 @@ const InfoTabs = (props) => {
             </tbody>
           </Table>
         </Tab>
-        <Tab eventKey="instructors" title="Instructores">
+        <Tab
+          eventKey="instructors"
+          title={`Instructores ${props.instructors.length > 0 ? "OK" : "!"}`}
+        >
           <Instructors
             municipality={municipality}
-            instructor={instructor}
+            instructors={props.instructors}
             requestId={id}
           />
         </Tab>

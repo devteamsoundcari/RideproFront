@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Modal,
   Button,
@@ -8,7 +8,10 @@ import {
   Container,
   Spinner,
 } from "react-bootstrap";
-import { cancelRequestId } from "../../../controllers/apiRequests";
+import {
+  cancelRequestId,
+  getRequestInstructors,
+} from "../../../controllers/apiRequests";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
 import "./SingleRequestModalAdmin.scss";
@@ -18,6 +21,7 @@ import InfoTabs from "./InfoTabs/InfoTabs";
 const SingleRequestModal = (props) => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const { updateRequestsContex } = useContext(RequestsContext);
@@ -34,6 +38,28 @@ const SingleRequestModal = (props) => {
     start_time,
     accept_msg,
   } = props.selectedRow;
+
+  // ================================ FETCH REQUEST INSTRUCTORS ON LOAD =====================================================
+  const fetchRequestInstructors = async (url) => {
+    let tempArr = [];
+    const response = await getRequestInstructors(url);
+    response.results.forEach(async (item) => {
+      if (item.request === id) {
+        tempArr.push(item);
+      }
+    });
+    console.log("iem", tempArr);
+    setInstructors(tempArr);
+    if (response.next) {
+      return await fetchRequestInstructors(response.next);
+    }
+  };
+  useEffect(() => {
+    fetchRequestInstructors(
+      `${process.env.REACT_APP_API_URL}/api/v1/request_ins/`
+    );
+    //eslint-disable-next-line
+  }, []);
 
   const renderStatus = () => {
     switch (status.step) {
@@ -220,7 +246,7 @@ const SingleRequestModal = (props) => {
             </Col>
           </Row>
           <Row>
-            <InfoTabs request={props.selectedRow} />
+            <InfoTabs request={props.selectedRow} instructors={instructors} />
           </Row>
         </Container>
       </Modal.Body>
