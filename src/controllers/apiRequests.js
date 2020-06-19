@@ -559,7 +559,6 @@ const getInstructors = async (url) => {
 };
 
 const createInstructor = async (data) => {
-  console.log(data);
   const result = await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
@@ -600,6 +599,29 @@ const getProviders = async (url) => {
   return requests.data;
 };
 
+const createProvider = async (data) => {
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/providers/`,
+    data: {
+      official_id: data.official_id,
+      name: data.name,
+      email: data.email,
+      cellphone: data.cellphone,
+      municipality: data.municipality.id,
+      services: data.services, 
+      documents: "na",
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 201) {
+    return true;
+  } else {
+    return false;
+  }
+}
 // ================================================================================
 
 export {
@@ -631,4 +653,5 @@ export {
   getInstructors,
   createInstructor,
   getProviders,
+  createProvider
 };
