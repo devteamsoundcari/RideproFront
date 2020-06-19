@@ -117,6 +117,7 @@ const SetPlace = (props) => {
     if (city.id) {
       setFilteredTracks([]);
       tracks.forEach((item) => {
+        console.log("TEM ", item);
         if (item.municipality.id === parseInt(city.id)) {
           setFilteredTracks((oldArr) => [...oldArr, item]);
         }

@@ -1,6 +1,9 @@
 .setService {
   //   pointer-events: painted;
   margin: 3rem auto 2rem auto;
+  .card-columns {
+    column-count: 4;
+  }
   tbody {
     cursor: pointer;
     tr {
@@ -32,6 +35,7 @@
         }
       }
     }
+
     .active {
       background: red !important;
       &:hover {
