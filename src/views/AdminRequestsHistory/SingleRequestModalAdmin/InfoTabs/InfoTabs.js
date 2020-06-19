@@ -3,6 +3,7 @@ import { Tabs, Tab, Table } from "react-bootstrap";
 import Place from "./Place/Place";
 import "./InfoTabs.scss";
 import Instructors from "./Instructors/Instructors";
+import Providers from "./Providers/Providers";
 
 const InfoTabs = (props) => {
   const {
@@ -62,8 +63,16 @@ const InfoTabs = (props) => {
             requestId={id}
           />
         </Tab>
-        <Tab eventKey="proveedores" title="Proveedores" disabled>
-          nada
+        <Tab
+          eventKey="proveedores"
+          title={`Proveedores ${props.providers.length > 0 ? "OK" : "!"}`}
+        >
+          <Providers
+            municipality={municipality}
+            // instructors={props.instructors}
+            providers={props.providers}
+            requestId={id}
+          />
         </Tab>
       </Tabs>
     </div>

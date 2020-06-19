@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import {
-  getInstructors,
-  updateRequestInstructors,
+  getProviders,
+  updateRequestProviders,
 } from "../../../../../controllers/apiRequests";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
@@ -10,47 +10,46 @@ import cellEditFactory from "react-bootstrap-table2-editor";
 import { Button, ButtonGroup, Row, Col } from "react-bootstrap";
 import { RequestsContext } from "../../../../../contexts/RequestsContext";
 // import { AuthContext } from "../../../../../contexts/AuthContext";
-import "./Instructors.scss";
+import "./Providers.scss";
 
-const Instructors = (props) => {
-  const [instructors, setInstructors] = useState([]);
-  const [selectedInstructors, setSelectedInstructors] = useState([]);
-  const [requestInstructors, setRequestInstructors] = useState([]);
+const Providers = (props) => {
+  const [providers, setProviders] = useState([]);
+  const [selectedProviders, setSelectedProviders] = useState([]);
+  const [requestProviders, setRequestProviders] = useState([]);
   const { SearchBar } = Search;
   const history = useHistory();
-
   // const { userInfoContext } = useContext(AuthContext);
   const { updateRequestsContext } = useContext(RequestsContext);
 
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    if (selectedInstructors.length > 0) {
+    if (selectedProviders.length > 0) {
       setDisabled(false);
     }
-  }, [selectedInstructors]);
+  }, [selectedProviders]);
 
   useEffect(() => {
-    if (props.instructors.length > 0) {
-      setRequestInstructors(props.instructors);
+    if (props.providers.length > 0) {
+      setRequestProviders(props.providers);
     }
-  }, [props.instructors]);
+  }, [props.providers]);
 
-  // ================================ FETCH INSTRUCTORS ON LOAD =====================================================
-  const fetchInstructors = async (url) => {
+  // ================================ FETCH PROVIDERS ON LOAD =====================================================
+  const fetchProviders = async (url) => {
     let tempArr = [];
-    const response = await getInstructors(url);
+    const response = await getProviders(url);
     response.results.forEach(async (item) => {
       item.fare = 0;
       tempArr.push(item);
     });
-    setInstructors(tempArr);
+    setProviders(tempArr);
     if (response.next) {
-      return await fetchInstructors(response.next);
+      return await fetchProviders(response.next);
     }
   };
   useEffect(() => {
-    fetchInstructors(`${process.env.REACT_APP_API_URL}/api/v1/instructors/`);
+    fetchProviders(`${process.env.REACT_APP_API_URL}/api/v1/providers/`);
     //eslint-disable-next-line
   }, []);
 
@@ -61,13 +60,13 @@ const Instructors = (props) => {
       editable: false,
     },
     {
-      dataField: "first_name",
+      dataField: "name",
       text: "Nombre",
       editable: false,
     },
     {
-      dataField: "last_name",
-      text: "Apellido",
+      dataField: "services",
+      text: "Servicios",
       editable: false,
     },
     {
@@ -102,10 +101,6 @@ const Instructors = (props) => {
             <small>Documentos: </small>
             {row.documents}
           </li>
-          <li>
-            <small>Foto: </small>
-            {row.picture}
-          </li>
         </ul>
       </div>
     ),
@@ -133,28 +128,27 @@ const Instructors = (props) => {
         return false;
       }
       if (isSelect) {
-        if (!containsObject(row, selectedInstructors)) {
-          setSelectedInstructors((oldArr) => [...oldArr, row]);
+        if (!containsObject(row, selectedProviders)) {
+          setSelectedProviders((oldArr) => [...oldArr, row]);
         }
       } else {
-        if (containsObject(row, selectedInstructors)) {
-          setSelectedInstructors(
-            selectedInstructors.filter((item) => item.id !== row.id)
+        if (containsObject(row, selectedProviders)) {
+          setSelectedProviders(
+            selectedProviders.filter((item) => item.id !== row.id)
           );
         }
       }
     },
   };
 
-  const handleUpdateInstructor = async () => {
-    let instructorsIds = {};
-    selectedInstructors.forEach((inst) => {
-      return (instructorsIds[inst.id] = inst.fare);
+  const handleUpdateProvider = async () => {
+    let providersIds = {};
+    selectedProviders.forEach((prov) => {
+      return (providersIds[prov.id] = prov.fare);
     });
-    console.log("IDS", instructorsIds);
-    let res = await updateRequestInstructors({
+    let res = await updateRequestProviders({
       request: props.requestId,
-      instructors: instructorsIds,
+      providers: providersIds,
     });
     if (res.status === 201) {
       setDisabled(true);
@@ -162,10 +156,10 @@ const Instructors = (props) => {
     }
   };
 
-  // =============================== CLICK ON ADD INSTRUCTOR ====================================
-  const handleClickAddInstructor = () => {
+  // =============================== CLICK ON ADD PROVIDER ====================================
+  const handleClickAddProvider = () => {
     history.push({
-      pathname: "/administrador/instructores",
+      pathname: "/administrador/proveedores",
       state: { detail: "some_value" },
     });
   };
@@ -174,44 +168,43 @@ const Instructors = (props) => {
     <div>
       <ToolkitProvider
         keyField="official_id"
-        data={instructors}
+        data={providers}
         columns={columns}
         search
       >
         {(props) => (
           <React.Fragment>
             <Row>
-              <Col className="actions-instructors">
+              <Col className="actions-providers">
                 <div>
-                  <h5>Buscar instructor:</h5>
+                  <h5>Buscar proveedor:</h5>
                   <SearchBar {...props.searchProps} />
                 </div>
                 <ButtonGroup aria-label="Basic example">
                   <Button
                     variant="outline-secondary"
                     size="sm"
-                    onClick={handleClickAddInstructor}
+                    onClick={handleClickAddProvider}
                   >
-                    Administrar Instructores
+                    Administrar proveedores
                   </Button>
                   <Button
                     size="sm"
                     variant={disabled ? "outline-secondary" : "info"}
                     disabled={disabled ? true : false}
-                    onClick={handleUpdateInstructor}
+                    onClick={handleUpdateProvider}
                   >
-                    Guardar Instructor
+                    Guardar proveedor
                   </Button>
                 </ButtonGroup>
               </Col>
-              {requestInstructors.length > 0 && (
+              {requestProviders.length > 0 && (
                 <Col>
                   <ul className="list-unstyled">
-                    <small>Instructores: </small>
-                    {requestInstructors.map((ins, idx) => (
+                    <small>Proveedores: </small>
+                    {requestProviders.map((ins, idx) => (
                       <li key={idx}>
-                        {ins.instructors.first_name} {ins.instructors.last_name}
-                        = <strong>$ {ins.fare}</strong>
+                        {ins.providers.name} = <strong>$ {ins.fare}</strong>
                       </li>
                     ))}
                   </ul>
@@ -226,11 +219,11 @@ const Instructors = (props) => {
               cellEdit={cellEditFactory({
                 mode: "click",
                 afterSaveCell: (oldValue, newValue, row, column) => {
-                  if (containsObject(row, selectedInstructors)) {
-                    setSelectedInstructors(
-                      selectedInstructors.filter((item) => item.id !== row.id)
+                  if (containsObject(row, selectedProviders)) {
+                    setSelectedProviders(
+                      selectedProviders.filter((item) => item.id !== row.id)
                     );
-                    setSelectedInstructors((oldArr) => [...oldArr, row]);
+                    setSelectedProviders((oldArr) => [...oldArr, row]);
                   }
                 },
               })}
@@ -242,4 +235,4 @@ const Instructors = (props) => {
   );
 };
 
-export default Instructors;
+export default Providers;

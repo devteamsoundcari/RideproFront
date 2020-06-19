@@ -11,7 +11,7 @@ import {
   GiTireTracks,
   GiThreeFriends,
 } from "react-icons/gi";
-import { FaPeopleCarry, FaUserGraduate, FaUserPlus } from "react-icons/fa";
+import { FaPeopleCarry, FaUserGraduate } from "react-icons/fa";
 import { Badge } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
@@ -210,13 +210,13 @@ const SideBar = (props) => {
                 <FaUserGraduate className="mb-1 mr-2" />
                 Ver instructores{" "}
               </Link>
-              <Link
+              {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
                 className="nav-link"
               >
                 <FaUserPlus className="mb-1 mr-2" />
                 Añadir instructor{" "}
-              </Link>
+              </Link> */}
 
               <hr />
               <li className="sidebar-nav-header">Proveedores</li>
@@ -224,13 +224,13 @@ const SideBar = (props) => {
                 <FaPeopleCarry className="mb-1 mr-2" />
                 Ver proveedores{" "}
               </Link>
-              <Link
+              {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
                 className="nav-link"
               >
                 <AiOutlinePlus className="mb-1 mr-2" />
                 Añadir proveedor{" "}
-              </Link>
+              </Link> */}
 
               <hr />
             </React.Fragment>
