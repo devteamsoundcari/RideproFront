@@ -560,7 +560,7 @@ export class EditableTable extends React.Component<
               }
             }
           }
-          return { id: index, readOnly: false, data: filtered };
+          return { id: index, readOnly: this.props.readOnlyIf(filtered), data: filtered };
         }
       );
 
