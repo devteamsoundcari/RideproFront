@@ -21,7 +21,6 @@ import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import ServiceEditConfirmationModal from "./ServiceEditConfirmationModal";
 import "./SingleRequestModal.scss";
 
-
 const SingleRequestModal = (props) => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -33,14 +32,16 @@ const SingleRequestModal = (props) => {
     setRequestsInfoContext,
     canceledRequestContext,
     setCanceledRequestContext,
-    updateRequestsContex
+    updateRequestsContext,
   } = useContext(RequestsContext);
 
   const {
     allParticipantsInfoContext,
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
-    setParticipantsToRegisterContext
+    setParticipantsToRegisterContext,
+    newParticipantsContext,
+    setNewParticipantsContext,
   } = useContext(ParticipantsContext);
 
   const {
@@ -57,12 +58,16 @@ const SingleRequestModal = (props) => {
     accept_msg,
   } = props.selectedRow;
 
-  const [allRegisteredDrivers, setAllRegisteredDrivers] = useState([]);
-  const [allDrivers, setAllDrivers] = useState(drivers.map((driver) => {
+  const [driversForReplacing, setDriversForReplacing] = useState([]);
+  const [allDrivers, setAllDrivers] = useState(
+    drivers.map((driver) => {
       driver.isRegistered = true;
       return driver;
-    }));
-  const initialRegisteredDrivers = [...drivers];
+    })
+  );
+  const [initialRegisteredDrivers, setInitialRegisteredDrivers] = useState([
+    ...drivers,
+  ]);
   const [registeredDrivers, setRegisteredDrivers] = useState([...drivers]);
   const [newDrivers, setNewDrivers] = useState([]);
   const [areDriversValid, setAreDriversValid] = useState(true);
@@ -119,26 +124,56 @@ const SingleRequestModal = (props) => {
   };
 
   useEffect(() => {
+    if (newParticipantsContext.length > 0) {
+      setDriversForReplacing(
+        newParticipantsContext.map((driver) => {
+          driver.isRegistered = true;
+          return driver;
+        })
+      );
+      setInitialRegisteredDrivers(newParticipantsContext);
+      setRegisteredDrivers(newParticipantsContext);
+      setNewDrivers([]);
+      setAreDriversValid(true);
+      setCanSaveDrivers(false);
+    }
+    fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers_company/`);
+  }, [newParticipantsContext]);
+
+  useEffect(() => {
+    fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers_company/`);
+    // eslint-disable-next-line
+  }, []);
+
+  const fetchDrivers = async (url) => {
     const items = [];
-    async function fetchDrivers(url) {
-      const response = await getAllDrivers(url);
+    const response = await getAllDrivers(url);
+    if (response) {
       if (response.next) {
         response.results.map((item) => {
-          items.push(item);
-          return true;
+        items.push(item);
+        return true;
         });
         return await fetchDrivers(response.next);
       }
       response.results.map((item) => {
         items.push(item);
-        return true;
+      return true;
       });
-      setAllRegisteredDrivers(items);
-      setAllParticipantsInfoContext(items);
     }
-    fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers_company/`);
-    // eslint-disable-next-line
-  }, []);
+    setAllParticipantsInfoContext(items);
+  }
+
+  const handleHide = () => {
+    setAllParticipantsInfoContext([]);
+    setNewParticipantsContext([]);
+  }
+
+  const handleClose = () => {
+    setAllParticipantsInfoContext([]);
+    setNewParticipantsContext([]);
+    props.onHide();    
+  }
 
   const handleAllDrivers = (x) => {
     setAllDrivers(x);
@@ -150,7 +185,13 @@ const SingleRequestModal = (props) => {
 
   const saveDrivers = () => {
     setShowConfirmationModal(true);
-  }
+  };
+
+  const isParticipantAlreadyRegistered = (participant) => {
+    if (participant.isRegistered === true) {
+      return true
+    };
+  } 
 
   useEffect(() => {
     let registeredIDs = registeredDrivers.map((driver) => {
@@ -229,7 +270,7 @@ const SingleRequestModal = (props) => {
       if (res.canceled.status === 200 && res.refund.status === 200) {
         setLoading(false);
         setSuccess(true);
-        updateRequestsContex();
+        updateRequestsContext();
         setUserInfoContext({
           ...userInfoContext,
           company: {
@@ -302,6 +343,7 @@ const SingleRequestModal = (props) => {
       centered
       size="lg"
       className="single-request-modal"
+      onHide={handleHide}
     >
       <Modal.Header className="align-items-center">
         <div>
@@ -377,6 +419,8 @@ const SingleRequestModal = (props) => {
               onValidate={handleNewDriversValidation}
               onUpdate={handleAllDrivers}
               readOnly={true}
+              readOnlyIf={isParticipantAlreadyRegistered}
+              recordsForReplacing={driversForReplacing}
             />
           </Row>
         </Container>
@@ -396,14 +440,14 @@ const SingleRequestModal = (props) => {
             Cancelar solicitud
           </Button>
         )}
-        <Button onClick={props.onHide}>Cerrar</Button>
+        <Button onClick={handleClose}>Cerrar</Button>
       </Modal.Footer>
       {showCancellationModal && (
         <Modal
           show={true}
           centered
           size="sm"
-          className="childModal"
+          className="child-modal"
           onHide={loading ? "" : () => setShowCancellationModal(false)}
         >
           {loading ? (
@@ -451,15 +495,14 @@ const SingleRequestModal = (props) => {
             </React.Fragment>
           )}
         </Modal>
-
       )}
       {showConfirmationModal && (
-       <ServiceEditConfirmationModal
-         show={true}
-         setShow={(e) => setShowConfirmationModal(e)}
-         request={props.selectedRow}
-      /> 
-      )} 
+        <ServiceEditConfirmationModal
+          show={true}
+          setShow={(e) => setShowConfirmationModal(e)}
+          request={props.selectedRow}
+        />
+      )}
     </Modal>
   );
 };

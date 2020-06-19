@@ -176,14 +176,9 @@ const SetParticipants = (props) => {
   // =========================================================================================================
 
   const isParticipantAlreadyRegistered = (participant) => {
-    const alreadyRegisteredIDs = participantsDB.map((p) => {
-      return p.official_id;
-    });
-
-    if (alreadyRegisteredIDs.find((p) => p.official_id === participant.official_id)) {
-      return true;
-    }
-    return false;
+    if (participant.isRegistered === true) {
+      return true
+    }; 
   }
 
   return (

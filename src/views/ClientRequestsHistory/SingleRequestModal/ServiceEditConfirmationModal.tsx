@@ -4,12 +4,16 @@ import { FaCheckCircle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
+import { RequestsContext } from "../../../contexts/RequestsContext";
 import { editRequest, createDriver } from "../../../controllers/apiRequests";
 import "./SingleRequestModal.scss";
+
 
 const ServiceEditConfirmationModal = (props) => {
   const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
+  const { updateRequestsContext } = useContext(RequestsContext);
+
   const {
     participantsToRegisterContext,
     setParticipantsToRegisterContext,
@@ -18,7 +22,11 @@ const ServiceEditConfirmationModal = (props) => {
     unregisteredParticipantsContext,
     setUnregisteredParticipantsContext,
     allParticipantsInfoContext,
+    setAllParticipantsInfoContext,
+    newParticipantsContext,
+    setNewParticipantsContext
   } = useContext(ParticipantsContext);
+
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSuccessPrompt, setShowSuccessPrompt] = useState(false);
   const [registeredParticipants, setRegisteredParticipants] = useState<any[]>(
@@ -96,7 +104,7 @@ const ServiceEditConfirmationModal = (props) => {
   }, [participantsToRegisterContext]);
 
   useEffect(() => {
-    if (alreadyRegisteredParticipants.length <= 0) {
+    if (alreadyRegisteredParticipants.length <= 0 && !showSuccessPrompt) {
       setDisplayData(true);
     } else {
       setDisplayData(false);
@@ -131,7 +139,7 @@ const ServiceEditConfirmationModal = (props) => {
   }, [unregisteredParticipants, registeredParticipants]);
 
   // ======================================= HANDLE SUBMIT =================================
-  const handleCreateService = async () => {
+  const handleEditService = async () => {
     setShowSpinner(true);
     setDisplayData(false);
     // SETUP ALL CONTEXTS...
@@ -167,7 +175,7 @@ const ServiceEditConfirmationModal = (props) => {
       ) {
         setShowSpinner(false);
         setShowSuccessPrompt(true);
-        // Ubdate company context
+        updateRequestsContext();
         setUserInfoContext({
           ...userInfoContext,
           company: {
@@ -175,15 +183,13 @@ const ServiceEditConfirmationModal = (props) => {
             credit: res.creditDecreasingResponse.data.credit,
           },
         });
+        setNewParticipantsContext(finalParticipants);
       }
     });
   };
 
   const handleOK = () => {
     props.setShow(false);
-    history.push({
-      pathname: "/cliente/historial",
-    });
   };
 
   const successPrompt = () => {
@@ -265,7 +271,7 @@ const ServiceEditConfirmationModal = (props) => {
           <Button variant="secondary" onClick={handleCancel}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleCreateService}>
+          <Button variant="primary" onClick={handleEditService}>
             Modificar servicio
           </Button>
         </Modal.Footer>
@@ -314,7 +320,7 @@ const ServiceEditConfirmationModal = (props) => {
       centered
       show={props.show}
       onHide={showSuccessPrompt ? handleOK : () => props.setShow(false)}
-      className="childModal"
+      className="child-modal"
     >
       {showSpinner && loader()}
       {alreadyRegisteredParticipants.length > 0 && displayErrorParticipants()}

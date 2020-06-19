@@ -45,7 +45,7 @@ const RequestsContextProvider = (props) => {
     return Promise.all(driversIds.map((id) => fetchDriver(id)));
   };
 
-  const updateRequestsContex = () => {
+  const updateRequestsContext = () => {
     let urlType = userInfoContext.profile === 2 ? "user_requests" : "requests";
     setRequestsInfoContext([]);
     setCanceledRequestContext([]);
@@ -59,7 +59,7 @@ const RequestsContextProvider = (props) => {
         setRequestsInfoContext,
         canceledRequestContext,
         setCanceledRequestContext,
-        updateRequestsContex: updateRequestsContex,
+        updateRequestsContext: updateRequestsContext,
         loadingContext,
         setLoadingContext,
       }}
