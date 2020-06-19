@@ -252,7 +252,7 @@ const editRequest = async (id, data) => {
     start_time,
     finish_time,
     drivers,
-    prev_credits,
+    // prev_credits,
     spent_credit,
     track,
     new_request,

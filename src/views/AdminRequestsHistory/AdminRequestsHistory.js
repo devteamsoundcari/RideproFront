@@ -12,6 +12,7 @@ const AdminRequestsHistory = () => {
   const location = useLocation();
   const [modalShow, setModalShow] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
+  //eslint-disable-next-line
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   const [sortedRequests, setSortedRequests] = useState([]);

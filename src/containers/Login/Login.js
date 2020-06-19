@@ -7,7 +7,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
 import "./Login.scss";
 import bgImage from "../../assets/img/loginImage.jpg";
-import bgPage from "../../assets/img/bgLogin.jpg";
+// import bgPage from "../../assets/img/bgLogin.jpg";
 import logo from "../../assets/img/logo.png";
 import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
 import PasswordRecover from "../../views/PasswordRecover/PasswordRecover";

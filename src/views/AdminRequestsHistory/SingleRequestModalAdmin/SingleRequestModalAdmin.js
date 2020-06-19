@@ -129,9 +129,9 @@ const SingleRequestModal = (props) => {
     }
   };
 
-  const handleCancelEvent = async () => {
-    setShowCancelModal(true);
-  };
+  // const handleCancelEvent = async () => {
+  //   setShowCancelModal(true);
+  // };
 
   const waitingTimeFormatter = () => {
     let created = new Date(created_at);
