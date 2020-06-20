@@ -21,6 +21,9 @@ phases:
       - npm run build
       # Listing files
       - ls build
+      # Copy appscpec into the build folder
+      - mv appspec.yml build/
+      - ls build/
 artifacts:
   files:
     - "**/*"
