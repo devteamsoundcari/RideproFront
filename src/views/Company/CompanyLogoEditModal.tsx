@@ -47,6 +47,7 @@ const CompanyLogoEditModal = (props: any) => {
     };
   };
 
+
   return (
     <Modal show={props.show} onHide={props.onHide} size="sm">
       <Modal.Header closeButton>
@@ -61,7 +62,7 @@ const CompanyLogoEditModal = (props: any) => {
               </Col>
             </Row>
             <Row>
-              <Form.Group as={Col} style={{ height: "1.50rem", marginTop: "1.50rem" }}>
+              <Form.Group as={Col} className="upload-file">
               <Form.File
                name="logo"
                onChange={onFileUpload}
