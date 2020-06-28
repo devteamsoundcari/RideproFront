@@ -3,6 +3,7 @@ import axios from "axios";
 /* =================================     SEND EMAIL    ===================================== */
 
 const sendEmail = async (data) => {
+  console.log("Send body", data);
   await axios({
     method: "POST",
     url: `${process.env.REACT_APP_MAILER_URL}/api/sendEmail`,
