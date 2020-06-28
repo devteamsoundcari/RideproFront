@@ -12,12 +12,12 @@ import {
   GiThreeFriends,
 } from "react-icons/gi";
 import { FaPeopleCarry, FaUserGraduate } from "react-icons/fa";
-import { Badge } from "react-bootstrap";
+import { Badge, Button } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import Greeting from "../Usuarios/Greeting/Greeting";
 import defaultCompanyLogo from "../../assets/img/companydefault.png";
-import defaultCompanyImg from "../../assets/img/defaultCompanyImg.png";
+import CompanyEditModal from "../Company/CompanyEditModal.tsx";
 import { getUserRequests, fetchDriver } from "../../controllers/apiRequests";
 import logo from "../../assets/img/logo.png";
 
@@ -31,11 +31,16 @@ const SideBar = (props) => {
     setLoadingContext,
   } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
-  const profilePicture = userInfoContext.company.logo
-    ? userInfoContext.company.logo
-    : defaultCompanyLogo;
+  const [profilePicture, setProfilePicture] = useState("");
+  const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
 
   useEffect(() => {
+    if (userInfoContext.company.logo !== "") {
+      setProfilePicture(userInfoContext.company.logo);
+    } else {
+      setProfilePicture(defaultCompanyLogo);
+    }
+
     switch (userInfoContext.profile) {
       case 1:
         setProfile("Admin");
@@ -93,6 +98,23 @@ const SideBar = (props) => {
     return Promise.all(driversIds.map((id) => fetchDriver(id)));
   };
 
+  const companyEditModal = () => {
+    return (
+      <CompanyEditModal
+        show={showCompanyEditModal}
+        onHide={closeCompanyEditModal}
+      />
+    );
+  };
+
+  const handleCompanyEditModal = () => {
+    setShowCompanyEditModal(true);
+  };
+
+  const closeCompanyEditModal = () => {
+    setShowCompanyEditModal(false);
+  };
+
   //========================================================================================================
 
   return (
@@ -109,15 +131,7 @@ const SideBar = (props) => {
         </div>
         <ul className="nav flex-column">
           <li>
-            <img
-              alt="profileImg"
-              className="shadow"
-              src={
-                userInfoContext.profile === 2
-                  ? profilePicture
-                  : defaultCompanyImg
-              }
-            />
+            <img alt="profileImg" className="shadow" src={profilePicture} />
           </li>
           <li>
             <div className="greeting">
@@ -128,7 +142,9 @@ const SideBar = (props) => {
               <br />
               <small>{userInfoContext.charge}</small>
               <br />
-              <small>{userInfoContext.company.name}</small>
+              <Button variant="link" size="sm" onClick={handleCompanyEditModal}>
+                <small>{userInfoContext.company.name}</small>
+              </Button>
             </div>
           </li>
           {profile === "Cliente" ? (
@@ -235,6 +251,7 @@ const SideBar = (props) => {
           )}
         </ul>
       </div>
+      {companyEditModal()}
     </nav>
   );
 };

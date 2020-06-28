@@ -81,6 +81,33 @@ const saveNewUser = async (data) => {
   }
 };
 
+const editUser = async (id, data) => {
+  const result = await axios({
+    method: "PUT",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/users/${id}`,
+    data: {
+      email: data.email,
+      password1: data.password,
+      password2: data.passwordRepeat,
+      first_name: data.name,
+      last_name: data.lastName,
+      gender: data.gender,
+      profile: data.profileType,
+      company: data.company,
+      charge: data.charge,
+      picture: data.picture,
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 201) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 /* =================================   Getting the token at login     ===================================== */
 
 const getLoginToken = async (data) => {
@@ -151,6 +178,49 @@ const getCompanies = async () => {
     `${process.env.REACT_APP_API_URL}/api/v1/companies/`
   );
   return company.data;
+};
+
+const editCompany = async (id, data) => {
+  const result = await axios({
+    method: "PUT",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/companies/${id}/`,
+    data: {
+      name: data.name,
+      nit: data.nit,
+      address: data.address,
+      arl: data.arl,
+      phone: data.phone,
+      credit: data.credit,
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 201) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const setCompanyLogo = async (id, logo) => {
+  const formData = new FormData();
+  formData.append("logo", logo);
+  const result = await axios
+    .put(
+      `${process.env.REACT_APP_API_URL}/api/v1/companies/${id}/logo/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    )
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
 };
 
 /* =================================   GET DEPERTMENTS   ===================================== */
@@ -659,6 +729,7 @@ export {
   sendEmail,
   saveNewUser,
   getUsers,
+  editUser,
   getLoginToken,
   getUserInfo,
   passwordReset,
@@ -669,6 +740,8 @@ export {
   getUserRequests,
   getDepartments,
   getCompanies,
+  editCompany,
+  setCompanyLogo,
   getGender,
   createDriver,
   getAllDrivers,
