@@ -14,7 +14,11 @@ import "./CompanyLogoEditModal.scss";
 
 
 const CompanyLogoEditModal = (props: any) => {
-  const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
+  const {
+    userInfoContext,
+    setUserInfoContext,
+    updateUserInfo
+  } = useContext(AuthContext);
   const { company } = userInfoContext;
   const [imageName, setImageName] = useState("Importar imagen");
   const [imgSrc, setImgSrc] = useState<string | ArrayBuffer | null>();
@@ -24,8 +28,7 @@ const CompanyLogoEditModal = (props: any) => {
     e.preventDefault();
     setCompanyLogo(company.id, selectedImage).then(async (result) => {
       if (result.status === 200) {
-        let newUserInfo = await getUserInfo();
-        setUserInfoContext(newUserInfo);
+        updateUserInfo();
       }
     });
   };
