@@ -124,7 +124,13 @@ const CompanyLogoEditModal = (props: any) => {
   };
 
   return (
-    <Modal show={props.show} onHide={props.onHide} onExited={reset} size="sm" centered>
+    <Modal
+      className={props.className}
+      show={props.show}
+      onHide={props.onHide}
+      onExited={reset}
+      size="sm"
+      centered>
       {stage === "loading" && loadingMessage()}
       {stage === "success" && successMessage()}
       {stage === "waiting" && uploadFileForm()}
