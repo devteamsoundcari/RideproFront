@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  // BrowserRouter as Router,
+  Route,
+  Switch,
+  HashRouter,
+} from "react-router-dom";
 import Login from "./containers/Login/Login";
 import Home from "./containers/Home/Home";
 import DashboardLayout from "./containers/DashboardLayout/DashboardLayout.tsx";
@@ -16,7 +21,7 @@ function App() {
       <ServiceContextProvider>
         <RequestsContextProvider>
           <ParticipantsContextProvider>
-            <Router>
+            <HashRouter>
               <Switch>
                 <Route exact path="/">
                   <Home />
@@ -36,7 +41,7 @@ function App() {
                 {/* <Route path="/login/:id/:token" render={<DashboardLayout />} /> */}
               </Switch>
               {/* <Redirect from="/" to="/" /> */}
-            </Router>
+            </HashRouter>
           </ParticipantsContextProvider>
         </RequestsContextProvider>
       </ServiceContextProvider>

@@ -5,9 +5,12 @@ import { Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
-
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
-import { createRequest, createDriver } from "../../../controllers/apiRequests";
+import {
+  createRequest,
+  createDriver,
+  sendEmail,
+} from "../../../controllers/apiRequests";
 
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
@@ -192,6 +195,22 @@ const ConfirmServiceModal = (props) => {
             credit: res.creditDecreasingResponse.data.credit,
           },
         });
+
+        const payload = {
+          emailType: "newRequest",
+          subject: "Solicitud exitosa ⌛",
+          email: userInfoContext.email,
+          name: userInfoContext.name,
+          date: data.start_time,
+          spent_credits: data.spent_credit,
+          participantes: registeredParticipantsContext,
+          service: props.service.name,
+          municipality: {
+            city: props.place.city.name,
+            department: props.place.department.name,
+          },
+        };
+        await sendEmail(payload); // SEND SERVICE REQUESTED EMAIL TO USER
       }
     });
   };

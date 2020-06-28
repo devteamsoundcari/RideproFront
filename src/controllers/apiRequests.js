@@ -3,6 +3,7 @@ import axios from "axios";
 /* =================================     SEND EMAIL    ===================================== */
 
 const sendEmail = async (data) => {
+  console.log("Send body", data);
   await axios({
     method: "POST",
     url: `${process.env.REACT_APP_MAILER_URL}/api/sendEmail`,
@@ -600,7 +601,7 @@ const createInstructor = async (data) => {
       cellphone: data.cellphone,
       municipality: data.municipality.id,
       documents: "na",
-      picture: "na"
+      picture: "na",
     },
   }).catch((err) => {
     console.error(err);
@@ -611,7 +612,7 @@ const createInstructor = async (data) => {
   } else {
     return false;
   }
-}
+};
 
 /* =================================   GET ALL PROVIDERS  ===================================== */
 
@@ -639,7 +640,7 @@ const createProvider = async (data) => {
       email: data.email,
       cellphone: data.cellphone,
       municipality: data.municipality.id,
-      services: data.services, 
+      services: data.services,
       documents: "na",
     },
   }).catch((err) => {
@@ -651,7 +652,7 @@ const createProvider = async (data) => {
   } else {
     return false;
   }
-}
+};
 // ================================================================================
 
 export {
@@ -685,5 +686,5 @@ export {
   getInstructors,
   createInstructor,
   getProviders,
-  createProvider
+  createProvider,
 };
