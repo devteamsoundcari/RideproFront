@@ -14,6 +14,7 @@ import RegularExpressions from "../../../utils/RegularExpressions";
 import {
   cancelRequestId,
   getAllDrivers,
+  sendEmail,
 } from "../../../controllers/apiRequests";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
@@ -282,6 +283,22 @@ const SingleRequestModal = (props) => {
             credit: res.refund.data.credit,
           },
         });
+
+        const payload = {
+          id: res.canceled.data.id,
+          emailType: "canceledRequest",
+          subject: "Solicitud cancelada ❌",
+          email: userInfoContext.email,
+          name: userInfoContext.name,
+          date: res.canceled.data.start_time,
+          refund_credits: res.canceled.data.spent_credit,
+          service: res.canceled.data.service.name,
+          municipality: {
+            city: res.canceled.data.municipality.name,
+            department: res.canceled.data.municipality.department.name,
+          },
+        };
+        await sendEmail(payload); // SEND SERVICE CANCELED EMAIL TO USER
       } else {
         alert("No se pudo cancelar");
       }

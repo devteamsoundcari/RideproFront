@@ -197,6 +197,7 @@ const ConfirmServiceModal = (props) => {
         });
 
         const payload = {
+          id: res.response.data.id,
           emailType: "newRequest",
           subject: "Solicitud exitosa ⌛",
           email: userInfoContext.email,
