@@ -142,7 +142,12 @@ const SideBar = (props) => {
               <br />
               <small>{userInfoContext.charge}</small>
               <br />
-              <Button variant="link" size="sm" onClick={handleCompanyEditModal}>
+              <Button
+                className="nav-company"
+                variant="link"
+                size="sm"
+                onClick={handleCompanyEditModal}
+              >
                 <small>{userInfoContext.company.name}</small>
               </Button>
             </div>

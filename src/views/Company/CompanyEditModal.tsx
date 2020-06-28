@@ -54,6 +54,7 @@ const CompanyEditModal = (props: any) => {
   const companyLogoEditModal = () => {
     return (
       <CompanyLogoEditModal
+        className="child-modal"
         show={showCompanyLogoEditModal}
         onHide={closeCompanyLogoEditModal}
       />
