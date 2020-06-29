@@ -156,7 +156,7 @@ const SideBar = (props) => {
             <li>
               <Badge>
                 <AiFillDollarCircle />
-                <small>{userInfoContext.company.credit}</small>
+                <small>{userInfoContext.credit}</small>
               </Badge>
             </li>
           ) : (

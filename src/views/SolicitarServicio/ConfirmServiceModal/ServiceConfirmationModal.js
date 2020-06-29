@@ -190,10 +190,7 @@ const ConfirmServiceModal = (props) => {
         updateRequestsContext();
         setUserInfoContext({
           ...userInfoContext,
-          company: {
-            ...userInfoContext.company,
-            credit: res.creditDecreasingResponse.data.credit,
-          },
+          credit: res.creditDecreasingResponse.data.credit,
         });
 
         const payload = {

@@ -165,6 +165,7 @@ const ServiceEditConfirmationModal = (props) => {
         spent_credit: rides,
         drivers: driversIDs,
         accept_msg: request.accept_msg,
+        new_request: request.new_request,
         fare_track: 0.0,
       };
       // THEN CREATE THE SERVICE
@@ -179,10 +180,7 @@ const ServiceEditConfirmationModal = (props) => {
         updateRequestsContext();
         setUserInfoContext({
           ...userInfoContext,
-          company: {
-            ...userInfoContext.company,
-            credit: res.creditDecreasingResponse.data.credit,
-          },
+          credit: res.creditDecreasingResponse.data.credit,
         });
         setNewParticipantsContext(finalParticipants);
       }

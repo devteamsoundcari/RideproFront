@@ -27,6 +27,7 @@ const SetParticipants = (props) => {
   const [areParticipantsValid, setAreParticipantsValid] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
+  const [availableCredits, setAvailableCredits] = useState(0);
   //eslint-disable-next-line
   const [dataTable, setDataTable] = useState([]);
   const [registeredParticipants, setRegisteredParticipants] = useState([]);
@@ -106,6 +107,10 @@ const SetParticipants = (props) => {
     }
     fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers_company/`);
     // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    setAvailableCredits(userInfoContext.credit);
   }, []);
 
   // ============================================  HANDLE SUMBIT  ================================================
@@ -241,7 +246,7 @@ const SetParticipants = (props) => {
           <p>
             Creditos a utilizar:
             <small>
-              {rides} / {userInfoContext.company.credit}
+              {rides} / {availableCredits}
             </small>
           </p>
           <p>
