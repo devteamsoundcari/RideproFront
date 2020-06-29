@@ -9,25 +9,20 @@ import { editRequest, createDriver } from "../../../controllers/apiRequests";
 import "./SingleRequestModal.scss";
 
 const ServiceEditConfirmationModal = (props) => {
-  // const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const { updateRequestsContext } = useContext(RequestsContext);
-
   const {
     participantsToRegisterContext,
-    // setParticipantsToRegisterContext,
     registeredParticipantsContext,
     setRegisteredParticipantsContext,
     unregisteredParticipantsContext,
     setUnregisteredParticipantsContext,
     allParticipantsInfoContext,
-    // setAllParticipantsInfoContext,
-    // newParticipantsContext,
     setNewParticipantsContext,
   } = useContext(ParticipantsContext);
-
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSuccessPrompt, setShowSuccessPrompt] = useState(false);
+  const [displayData, setDisplayData] = useState(false);
   const [registeredParticipants, setRegisteredParticipants] = useState<any[]>(
     []
   );
@@ -38,23 +33,11 @@ const ServiceEditConfirmationModal = (props) => {
   const [unregisteredParticipants, setUnregisteredParticipants] = useState<
     any[]
   >([]);
-  const [displayData, setDisplayData] = useState(false);
-  // const [newRegistered, setNewRegistered] = useState(
-  //   registeredParticipantsContext
-  // );
   const [finalParticipants, setFinalParticipants] = useState<any[]>([]);
   const [newToRegister, setNewToRegister] = useState(
     participantsToRegisterContext
   );
   const [rides, setRides] = useState(props.rides);
-  // const [comment, setComment] = useState("");
-
-  // const options = {
-  //   weekday: "long",
-  //   year: "numeric",
-  //   month: "long",
-  //   day: "numeric",
-  // };
 
   const isParticipantRegistered = (participant) => {
     const registeredIDs = allParticipantsInfoContext.map((p) => {
@@ -187,6 +170,25 @@ const ServiceEditConfirmationModal = (props) => {
     });
   };
 
+  const handleContinue = () => {
+    setAlreadyRegisteredParticipants([]);
+    setNewToRegister(participantsToRegisterContext);
+    setDisplayData(true);
+  };
+
+  useEffect(() => {
+    if (props.request.service.service_type === "Persona") {
+      setRides(props.request.service.ride_value * newToRegister.length);
+    } else {
+      setRides(props.request.service.ride_value);
+    }
+    //eslint-disable-next-line
+  }, [newToRegister]);
+
+  const handleCancel = () => {
+    props.setShow(false);
+  };
+
   const handleOK = () => {
     props.setShow(false);
   };
@@ -214,25 +216,6 @@ const ServiceEditConfirmationModal = (props) => {
         <Spinner animation="border" variant="danger" />
       </Modal.Body>
     );
-  };
-
-  const handleContinue = () => {
-    setAlreadyRegisteredParticipants([]);
-    setNewToRegister(participantsToRegisterContext);
-    setDisplayData(true);
-  };
-
-  useEffect(() => {
-    if (props.request.service.service_type === "Persona") {
-      setRides(props.request.service.ride_value * newToRegister.length);
-    } else {
-      setRides(props.request.service.ride_value);
-    }
-    //eslint-disable-next-line
-  }, [newToRegister]);
-
-  const handleCancel = () => {
-    props.setShow(false);
   };
 
   const requestResume = () => {
