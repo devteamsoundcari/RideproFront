@@ -5,7 +5,6 @@ import { Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
-
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import { createRequest, createDriver } from "../../../controllers/apiRequests";
 
@@ -187,10 +186,7 @@ const ConfirmServiceModal = (props) => {
         updateRequestsContext();
         setUserInfoContext({
           ...userInfoContext,
-          company: {
-            ...userInfoContext.company,
-            credit: res.creditDecreasingResponse.data.credit,
-          },
+          credit: res.creditDecreasingResponse.data.credit,
         });
       }
     });

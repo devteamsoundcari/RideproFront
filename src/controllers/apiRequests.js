@@ -68,6 +68,7 @@ const saveNewUser = async (data) => {
       company: data.company,
       charge: data.charge,
       picture: data.picture ? data.picture : "../assets/img/userdefault.png",
+      credit: data.credit
     },
   }).catch((err) => {
     console.error(err);
@@ -309,7 +310,7 @@ const createRequest = async (data) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
-  let creditDecreasing = await decreaseCredits(data.company, data.spent_credit); // Calling decrease
+  let creditDecreasing = await decreaseUserCredits(result.data.customer, data.spent_credit); // Calling decrease
   return { response: result, creditDecreasingResponse: creditDecreasing };
 };
 
@@ -322,7 +323,6 @@ const editRequest = async (id, data) => {
     start_time,
     finish_time,
     drivers,
-    // prev_credits,
     spent_credit,
     track,
     new_request,
@@ -355,8 +355,9 @@ const editRequest = async (id, data) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
-  let creditDecreasing = await decreaseCredits(
-    data.company,
+  console.log(result);
+  let creditDecreasing = await decreaseUserCredits(
+    result.data.customer,
     data.spent_credit - data.prev_credits
   );
   return { response: result, creditDecreasingResponse: creditDecreasing };
@@ -538,11 +539,41 @@ const decreaseCredits = async (company, credits) => {
   return result;
 };
 
+const decreaseUserCredits = async (user, credits) => {
+  const newCredit = user.credit - credits;
+  const { company } = user
+  const result = await axios({
+    auth: false,
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
+    data: {
+      credit: newCredit,
+      company_id: company.id
+    },
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+
 /* =================================   INCREASE CREDITS IN COMPANY   ===================================== */
 const increaseCredits = async (companyId, credits) => {
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/companies/${companyId}/`,
+    data: {
+      credit: credits,
+    },
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+
+const setUserCredits = async (id, credits) => {
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/users/${id}/`,
     data: {
       credit: credits,
     },
@@ -731,6 +762,8 @@ export {
   editUser,
   getLoginToken,
   getUserInfo,
+  setUserCredits,
+  decreaseUserCredits,
   passwordReset,
   setNewPassword,
   createRequest,
