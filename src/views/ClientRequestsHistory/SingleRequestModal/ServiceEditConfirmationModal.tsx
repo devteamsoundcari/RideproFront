@@ -180,7 +180,7 @@ const ServiceEditConfirmationModal = (props) => {
         updateRequestsContext();
         setUserInfoContext({
           ...userInfoContext,
-          credit: res.creditDecreasingResponse.data.credit
+          credit: res.creditDecreasingResponse.data.credit,
         });
         setNewParticipantsContext(finalParticipants);
       }

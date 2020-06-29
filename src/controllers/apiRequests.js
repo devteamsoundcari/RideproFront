@@ -68,7 +68,7 @@ const saveNewUser = async (data) => {
       company: data.company,
       charge: data.charge,
       picture: data.picture ? data.picture : "../assets/img/userdefault.png",
-      credit: data.credit
+      credit: data.credit,
     },
   }).catch((err) => {
     console.error(err);
@@ -310,7 +310,10 @@ const createRequest = async (data) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
-  let creditDecreasing = await decreaseUserCredits(result.data.customer, data.spent_credit); // Calling decrease
+  let creditDecreasing = await decreaseUserCredits(
+    result.data.customer,
+    data.spent_credit
+  ); // Calling decrease
   return { response: result, creditDecreasingResponse: creditDecreasing };
 };
 
@@ -541,14 +544,14 @@ const decreaseCredits = async (company, credits) => {
 
 const decreaseUserCredits = async (user, credits) => {
   const newCredit = user.credit - credits;
-  const { company } = user
+  const { company } = user;
   const result = await axios({
     auth: false,
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       credit: newCredit,
-      company_id: company.id
+      company_id: company.id,
     },
   }).catch((err) => {
     return err;
