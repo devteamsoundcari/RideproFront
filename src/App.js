@@ -12,6 +12,7 @@ import AuthContextProvider from "./contexts/AuthContext";
 import ServiceContextProvider from "./contexts/ServiceContext";
 import ParticipantsContextProvider from "./contexts/ParticipantsContext";
 import RequestsContextProvider from "./contexts/RequestsContext";
+import NewPassword from "./views/NewPassword/NewPassword";
 
 function App() {
   // ========================================================================
@@ -37,6 +38,9 @@ function App() {
                 </Route>
                 <Route path="/login">
                   <Login />
+                </Route>
+                <Route path="/password-reset">
+                  <NewPassword />
                 </Route>
                 {/* <Route path="/login/:id/:token" render={<DashboardLayout />} /> */}
               </Switch>
