@@ -53,11 +53,11 @@ const CompanyLogoEditModal = (props: any) => {
 
   const handleExit = () => {
     props.onHide();
-  }
+  };
 
   const reset = () => {
     setStage("waiting");
-  }
+  };
 
   const loadingMessage = () => {
     return (
@@ -130,11 +130,13 @@ const CompanyLogoEditModal = (props: any) => {
       onHide={props.onHide}
       onExited={reset}
       size="sm"
-      centered>
+      centered
+    >
       {stage === "loading" && loadingMessage()}
       {stage === "success" && successMessage()}
       {stage === "waiting" && uploadFileForm()}
-    </Modal>);
+    </Modal>
+  );
 };
 
 export default CompanyLogoEditModal;

@@ -45,6 +45,7 @@ const setNewPassword = async (data) => {
   }).catch((err) => {
     return err.response.data;
   });
+  console.log("RESUL", result);
   if (result.status === 200) {
     return true;
   } else {
@@ -160,6 +161,24 @@ const getServices = async () => {
   };
   let services = await getInfo(
     `${process.env.REACT_APP_API_URL}/api/v1/services/`
+  );
+  return services.data.results;
+};
+
+/* =================================   GET LINE SERVICES   ===================================== */
+
+const getLineServices = async () => {
+  const getInfo = async (url) => {
+    const serviceData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return serviceData;
+  };
+  let services = await getInfo(
+    `${process.env.REACT_APP_API_URL}/api/v1/service_lines/`
   );
   return services.data.results;
 };
@@ -790,6 +809,7 @@ export {
   fetchDriver,
   cancelRequestId,
   getServices,
+  getLineServices,
   createNewTrack,
   getTracks,
   getInstructors,

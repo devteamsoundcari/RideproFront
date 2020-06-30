@@ -3,7 +3,8 @@ import { Col, Card, Row, Tabs, Tab } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import "./SolicitarServicio.scss";
 import SetDate from "./SetDate/SetDate";
-import SetService from "./SetService/SetService";
+// import SetService from "./SetService/SetService";
+import SetServiceLines from "./SetServiceLines/SetServiceLines";
 import SetPlace from "./SetPlace/SetPlace";
 import SetParticipants from "./SetParticipants/SetParticipants";
 import { ServiceContext } from "../../contexts/ServiceContext";
@@ -58,7 +59,7 @@ const SolicitarServicio = (props) => {
 
   const goToParticipantSelection = () => {
     setKey("paso4");
-  }
+  };
 
   // =========================== HANDLING PARTICIPANTS AND SUBMITING THE SERVICE ============================
 
@@ -94,7 +95,8 @@ const SolicitarServicio = (props) => {
                   </p>
                 }
               >
-                <SetService setService={handleService} />
+                <SetServiceLines setService={handleService} />
+                {/* <SetService setService={handleService} /> */}
               </Tab>
               <Tab
                 eventKey="paso2"
@@ -116,7 +118,13 @@ const SolicitarServicio = (props) => {
                 }
                 disabled={date ? false : true}
               >
-                {place && <SetDate setDate={handleDate} afterSubmit={goToParticipantSelection} place={place}/>}
+                {place && (
+                  <SetDate
+                    setDate={handleDate}
+                    afterSubmit={goToParticipantSelection}
+                    place={place}
+                  />
+                )}
               </Tab>
               <Tab
                 eventKey="paso4"

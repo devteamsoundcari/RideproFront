@@ -6,10 +6,10 @@ import { AuthContext } from "../../contexts/AuthContext";
 import CompanyLogoEditModal from "./CompanyLogoEditModal";
 
 const CompanyEditModal = (props: any) => {
-  const { register, handleSubmit, errors, control } = useForm();
+  const { handleSubmit, control } = useForm();
   const [loading, setLoading] = useState(false);
   const [showCompanyLogoEditModal, setShowCompanyEditModal] = useState(false);
-  const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
+  const { userInfoContext } = useContext(AuthContext);
   const { company } = userInfoContext;
   const [data, setData] = useState({
     name: company.name,
@@ -139,8 +139,7 @@ const CompanyEditModal = (props: any) => {
           </Form.Row>
           <Form.Row>
             <Col>
-              <Form.Label>Logo</Form.Label>
-              {" "}
+              <Form.Label>Logo</Form.Label>{" "}
               <Button
                 variant="link"
                 size="sm"

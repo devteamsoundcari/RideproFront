@@ -11,13 +11,12 @@ import bgImage from "../../assets/img/loginImage.jpg";
 import logo from "../../assets/img/logo.png";
 import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
 import PasswordRecover from "../../views/PasswordRecover/PasswordRecover";
-import NewPassword from "../../views/NewPassword/NewPassword";
+// import NewPassword from "../../views/NewPassword/NewPassword";
 
 const Login = () => {
   const history = useHistory();
   const [error, setError] = useState("");
   const [showPasswordReset, setShowPasswordReset] = useState(false);
-  const [resetPwd, setResetPwd] = useState(null);
   const [userInfo, setUserInfo] = useState({
     isSignedIn: false,
   });
@@ -58,24 +57,10 @@ const Login = () => {
         url: res.url,
         company: res.company,
         gender: res.gender,
+        credit: res.credit,
       });
     }
   };
-
-  // ====================== GETTING THE ACTUAL PATH ======================
-
-  useEffect(() => {
-    const url = window.location.href;
-    let arr = url.split("/");
-    let [uid, token] = arr.slice(Math.max(arr.length - 2, 1));
-    if (uid.length === 3) {
-      console.log(uid.length === 3 && token);
-      setResetPwd({
-        uid,
-        token,
-      });
-    }
-  }, []);
 
   // ====================== IF TOKEN IN STORAGE SET INFO ======================
   useEffect(() => {
@@ -105,6 +90,7 @@ const Login = () => {
         url: userInfo.url,
         company: userInfo.company,
         gender: userInfo.gender,
+        credit: userInfo.credit,
       });
     }
     // eslint-disable-next-line
@@ -142,8 +128,6 @@ const Login = () => {
   // ====================== RETURN ======================
   if (showPasswordReset) {
     return <PasswordRecover comeBack={renderPasswordReset} />;
-  } else if (resetPwd) {
-    return <NewPassword data={resetPwd} />;
   } else {
     return (
       <Container className="justify-content-md-center d-flex mt-5 mb-5 loginForm">

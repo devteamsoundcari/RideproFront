@@ -142,7 +142,7 @@ const MyCalendar = () => {
   };
 
   return (
-    <Row className="calendarSection ml-1 mr-1">
+    <Row className="calendarSection ml-1 mr-1 overflow-auto">
       <Col md={2} className="conventions">
         {/* <Button
           variant="primary"
@@ -155,26 +155,26 @@ const MyCalendar = () => {
         <ListGroup>
           <ListGroup.Item>
             <FaDotCircle className="text-event-requested" />{" "}
-            <small>SIN CONFIRMAR</small>
+            <small>SERVICIOS SOLICITADOS</small>
           </ListGroup.Item>
           <ListGroup.Item>
             <FaDotCircle className="text-confirm-event" />{" "}
-            <small>CONFIRMAR PROGRAMACIÓN</small>
+            <small>CONFIRMAR SERVICIO</small>
           </ListGroup.Item>
           <ListGroup.Item>
             <FaDotCircle className="text-event-confirmed" />{" "}
-            <small>CONFIRMADO</small>
+            <small>SERVICIO PROGRAMADO</small>
           </ListGroup.Item>
           <ListGroup.Item>
             <FaDotCircle className="text-event-finished" />{" "}
-            <small>TERMINADO</small>
+            <small>SERVICIO TERMINADO</small>
           </ListGroup.Item>
           <ListGroup.Item>
             <Form.Check
               custom
               type="checkbox"
               id="custom-checkbox"
-              label="VER CANCELADOS"
+              label="VER SERVICIOS CANCELADOS"
               onClick={() => setSeeCanceledEvents(!seeCanceledEvents)}
             />
           </ListGroup.Item>

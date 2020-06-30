@@ -111,6 +111,7 @@ const SetParticipants = (props) => {
 
   useEffect(() => {
     setAvailableCredits(userInfoContext.credit);
+    //eslint-disable-next-line
   }, []);
 
   // ============================================  HANDLE SUMBIT  ================================================
