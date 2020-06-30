@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useForm, Controller, ErrorMessage } from "react-hook-form";
-import { Modal, Col, Form, Spinner, Button, Image } from "react-bootstrap";
+import { useForm, Controller } from "react-hook-form";
+import { Modal, Col, Form, Spinner, Button } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { editUser } from "../../controllers/apiRequests";
 import RegularExpressions from "../../utils/RegularExpressions";
@@ -29,7 +29,9 @@ const CompanyEditModal = (props: any) => {
     setSubmittedData(data);
   };
 
-  const exit = () => {};
+  const exit = () => {
+    props.onHide();
+  };
 
   const save = async () => {
     setStage("loading");
@@ -232,7 +234,7 @@ const CompanyEditModal = (props: any) => {
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" type="submit" disabled={!canSave}>
+          <Button variant="sucess" type="submit" disabled={!canSave}>
             Guardar
           </Button>
           <Button variant="secondary" onClick={exit}>

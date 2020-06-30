@@ -4,7 +4,7 @@ import { FaBell, FaPowerOff, FaUser } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
-import { Modal, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import ProfileEditModal from "../Profile/ProfileEditModal";
 import "./NavBar.scss";
 

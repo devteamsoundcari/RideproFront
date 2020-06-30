@@ -1,6 +1,5 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState } from "react";
 import { getUserInfo } from "../controllers/apiRequests";
-
 
 export const AuthContext = createContext();
 
@@ -12,11 +11,11 @@ const AuthContextProvider = (props) => {
     let newUserInfo = await getUserInfo();
     newUserInfo.name = newUserInfo.first_name;
     newUserInfo.lastName = newUserInfo.last_name;
-    newUserInfo.first_name = null;  
-    newUserInfo.last_name = null;  
+    newUserInfo.first_name = null;
+    newUserInfo.last_name = null;
 
     setUserInfoContext(newUserInfo);
-  }
+  };
 
   return (
     <AuthContext.Provider
@@ -25,7 +24,7 @@ const AuthContextProvider = (props) => {
         setUserInfoContext,
         isLoggedInContext,
         setIsLoggedInContext,
-        updateUserInfo
+        updateUserInfo,
       }}
     >
       {props.children}
