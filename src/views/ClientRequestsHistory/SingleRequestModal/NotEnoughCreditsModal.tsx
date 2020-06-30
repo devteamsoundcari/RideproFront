@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { AuthContext } from "../../../contexts/AuthContext";
 
