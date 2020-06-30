@@ -61,19 +61,19 @@ const NavBar = () => {
       }
     });
   });
-  
+
   const hideProfileEditModal = () => {
     setShowProfileEditModal(false);
-  }
+  };
 
   const profileEditModal = () => {
     return (
       <ProfileEditModal
-       show={showProfileEditModal}
-       onHide={hideProfileEditModal} 
-      /> 
-    ) 
-  }
+        show={showProfileEditModal}
+        onHide={hideProfileEditModal}
+      />
+    );
+  };
 
   return (
     <>
@@ -86,14 +86,15 @@ const NavBar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
-            <Nav.Link href="#link">
+            <Nav.Link>
               <FaBell />
             </Nav.Link>
             <div className="userOptions">
               <NavDropdown
                 alignRight
                 title={`${userInfoContext.name} ${userInfoContext.lastName}`}
-                id="basic-nav-dropdown" >
+                id="basic-nav-dropdown"
+              >
                 <NavDropdown.Item onClick={() => setShowProfileEditModal(true)}>
                   <FaUser /> Perfil
                 </NavDropdown.Item>
