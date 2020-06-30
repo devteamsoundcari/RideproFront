@@ -1,0 +1,75 @@
+.card-line-service {
+  box-shadow: -8px 12px 18px 0 rgba(25, 42, 70, 0.13);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    transform: translateY(-8px);
+  }
+  .list-group {
+    .list-group-item {
+      //   color: #596f88;
+      cursor: pointer;
+      transition: 0.3s;
+      &:hover {
+        background-color: #1d1d1b;
+        color: #fff;
+      }
+      .list-icon {
+        margin-right: 1rem;
+        .badge-circle {
+          background-color: #e6eaee;
+          font-size: 1.4rem;
+          justify-content: center;
+          border-radius: 50%;
+          padding: 10px;
+        }
+      }
+      .list-content {
+        text-align: start;
+        h5 {
+          font-weight: 400;
+          letter-spacing: 0.05rem;
+          font-size: 1.2rem;
+          //   margin-bottom: 1.2rem;
+          text-transform: capitalize;
+        }
+        .conventions {
+          display: flex;
+          justify-content: space-between;
+          p {
+            font-size: 14px;
+            line-height: 20px;
+            margin-bottom: 0px;
+            margin-top: 2px;
+            span {
+              font-weight: bold;
+              margin-right: 5px;
+              svg {
+                margin-bottom: 3px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  animation: fadein 2s ease;
+  -webkit-animation: fadein 2s ease;
+  @mixin keyframes($name) {
+    @keyframes #{$name} {
+      @content;
+    }
+    @-webkit-keyframes #{$name} {
+      @content;
+    }
+  }
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}

@@ -58,6 +58,7 @@ const Login = () => {
         url: res.url,
         company: res.company,
         gender: res.gender,
+        credit: res.credit,
       });
     }
   };
@@ -105,6 +106,7 @@ const Login = () => {
         url: userInfo.url,
         company: userInfo.company,
         gender: userInfo.gender,
+        credit: userInfo.credit,
       });
     }
     // eslint-disable-next-line
