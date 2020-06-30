@@ -234,7 +234,7 @@ const CompanyEditModal = (props: any) => {
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="sucess" type="submit" disabled={!canSave}>
+          <Button variant="success" type="submit" disabled={!canSave}>
             Guardar
           </Button>
           <Button variant="secondary" onClick={exit}>
