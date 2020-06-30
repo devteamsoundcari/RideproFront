@@ -3,7 +3,7 @@ import { Col, Card, Row, Tabs, Tab } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import "./SolicitarServicio.scss";
 import SetDate from "./SetDate/SetDate";
-import SetService from "./SetService/SetService";
+// import SetService from "./SetService/SetService";
 import SetServiceLines from "./SetServiceLines/SetServiceLines";
 import SetPlace from "./SetPlace/SetPlace";
 import SetParticipants from "./SetParticipants/SetParticipants";
