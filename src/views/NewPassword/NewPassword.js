@@ -4,24 +4,23 @@ import ModalSuccess from "./ModalSuccess/ModalSuccess";
 import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
 import logo from "../../assets/img/logo.png";
 import { setNewPassword } from "../../controllers/apiRequests";
+import "./NewPassword.scss";
 
-const NewPassword = props => {
-  //   const [email, setEmail] = useState(null);
+const NewPassword = (props) => {
   const [smShow, setSmShow] = useState(false);
   const [showError, setShowError] = useState(false);
   const [passError, setPassError] = useState("");
   const [data, setData] = useState({
     password: "",
     passwordRepeat: "",
-    token: props.data.token,
-    uid: props.data.uid
+    token: "",
+    uid: "",
   });
   const onSubmit = async () => {
     if (!passError) {
       let response = await setNewPassword(data);
       if (!response) {
         setShowError(true);
-
         setTimeout(function () {
           window.open(`${process.env.REACT_APP_FRONT_URL}/login/`, "_self");
         }, 2000);
@@ -35,6 +34,26 @@ const NewPassword = props => {
     // await sendEmail(data); // SEND WELCOME EMAIL TO USER
   };
   const { register, handleSubmit, errors } = useForm();
+
+  // ====================== GETTING THE ACTUAL PATH ======================
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
+  useEffect(() => {
+    const url = window.location.href;
+    console.log("ulr", typeof url, url);
+    console.log(url.includes("password-reset/confirm/"));
+    if (url.includes("password-reset/confirm/")) {
+      let arr = url.split("/");
+      console.log(arr);
+      let [uid, token] = arr.slice(6, 8);
+      console.log("uid:", uid, "token", token);
+      setData({ ...data, uid, token });
+    }
+    console.log("ASASSAA", url);
+    // eslint-disable-next-line
+  }, []);
 
   const handleClose = () => {
     setSmShow(false);
@@ -67,23 +86,23 @@ const NewPassword = props => {
 
   // ================================= UPDATE STATE AS THE USER TYPES ==========================================
 
-  const updateData = e => {
+  const updateData = (e) => {
     let inputName = e.target.name;
     let inputValue = e.target.value; // Cache the value of e.target.value
-    setData(prevState => ({
+    setData((prevState) => ({
       ...prevState,
-      [inputName]: inputValue
+      [inputName]: inputValue,
     }));
   };
 
   return (
-    <Container>
+    <Container className="new-password">
       <Row className="justify-content-md-center">
         <Col md={6} sm={12}>
           <Card>
             <Card.Body>
               <Card.Title className="text-center">
-                <img className="mb-4" src={logo} alt="" />
+                <img className="mb-4 company-logo" src={logo} alt="" />
                 <h1 className="h3 mb-3 font-weight-normal">
                   Generar nueva contraseña
                 </h1>
@@ -106,7 +125,7 @@ const NewPassword = props => {
                         ref={register({
                           required: true,
                           // Min 8 digits, 1 uppercase, 1 number, 1 spec char
-                          pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/i
+                          pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/i,
                         })}
                       />
                       <Form.Text
@@ -118,8 +137,9 @@ const NewPassword = props => {
                             Ingrese una contraseña válida.
                           </span>
                         )}
-                        La contraseña debe tener ocho caracteres como mínimo y debe incluír
-                        una mayúscula, un número y un caracter especial (@$!%*?&).
+                        La contraseña debe tener ocho caracteres como mínimo y
+                        debe incluír una mayúscula, un número y un caracter
+                        especial (@$!%*?&).
                       </Form.Text>
                     </Form.Group>
                   </Form.Row>
