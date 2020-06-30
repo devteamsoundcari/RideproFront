@@ -164,6 +164,24 @@ const getServices = async () => {
   return services.data.results;
 };
 
+/* =================================   GET LINE SERVICES   ===================================== */
+
+const getLineServices = async () => {
+  const getInfo = async (url) => {
+    const serviceData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return serviceData;
+  };
+  let services = await getInfo(
+    `${process.env.REACT_APP_API_URL}/api/v1/service_lines/`
+  );
+  return services.data.results;
+};
+
 /* =================================   GET COMPANIES   ===================================== */
 const getCompanies = async () => {
   const getInfo = async (url) => {
@@ -790,6 +808,7 @@ export {
   fetchDriver,
   cancelRequestId,
   getServices,
+  getLineServices,
   createNewTrack,
   getTracks,
   getInstructors,
