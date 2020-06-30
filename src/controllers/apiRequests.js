@@ -82,10 +82,10 @@ const saveNewUser = async (data) => {
   }
 };
 
-const editUser = async (id, data) => {
+const editUser = async (data) => {
   const result = await axios({
-    method: "PUT",
-    url: `${process.env.REACT_APP_API_URL}/api/v1/users/${id}`,
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       email: data.email,
       password1: data.password,
@@ -94,7 +94,7 @@ const editUser = async (id, data) => {
       last_name: data.lastName,
       gender: data.gender,
       profile: data.profileType,
-      company: data.company,
+      company_id: data.company_id,
       charge: data.charge,
       picture: data.picture,
     },
@@ -102,7 +102,7 @@ const editUser = async (id, data) => {
     console.error(err);
     return err.response.data;
   });
-  if (result.status === 201) {
+  if (result.status === 200) {
     return true;
   } else {
     return false;

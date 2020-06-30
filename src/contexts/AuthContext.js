@@ -18,10 +18,6 @@ const AuthContextProvider = (props) => {
     setUserInfoContext(newUserInfo);
   }
 
-  useEffect(() => {
-    console.log(userInfoContext);
-  }, [userInfoContext]);
-
   return (
     <AuthContext.Provider
       value={{

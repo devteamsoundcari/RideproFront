@@ -10,7 +10,7 @@ const CompanyEditModal = (props: any) => {
   const [stage, setStage] = useState("waiting");
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [submittedData, setSubmittedData] = useState();
-  const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
+  const { userInfoContext, updateUserInfo } = useContext(AuthContext);
   const defaultValues = {
     name: userInfoContext.name,
     lastName: userInfoContext.lastName,
@@ -38,9 +38,9 @@ const CompanyEditModal = (props: any) => {
     data.company_id = userInfoContext.company.id;
     data.first_name = data.name;
     data.last_name = data.lastName;
-    console.log(data);
     let result = await editUser(data);
     if (result) {
+      await updateUserInfo();
       setStage("success");
     }
   };
