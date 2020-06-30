@@ -45,6 +45,7 @@ const setNewPassword = async (data) => {
   }).catch((err) => {
     return err.response.data;
   });
+  console.log("RESUL", result);
   if (result.status === 200) {
     return true;
   } else {
