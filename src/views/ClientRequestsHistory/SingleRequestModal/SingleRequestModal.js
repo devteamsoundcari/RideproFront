@@ -20,21 +20,24 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import ServiceEditConfirmationModal from "./ServiceEditConfirmationModal";
-import NotEnoughCreditsModal from "./NotEnoughCreditsModal";
 import "./SingleRequestModal.scss";
 
 const SingleRequestModal = (props) => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showCancellationModal, setShowCancellationModal] = useState(false);
-  const [showNotEnoughCreditsModal, setShowNotEnoughCreditsModal] = useState(
-    false
-  );
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { updateRequestsContext } = useContext(RequestsContext);
+  const {
+    // requestsInfoContext,
+    // setRequestsInfoContext,
+    // canceledRequestContext,
+    // setCanceledRequestContext,
+    updateRequestsContext,
+  } = useContext(RequestsContext);
 
   const {
+    // allParticipantsInfoContext,
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
     setParticipantsToRegisterContext,
@@ -56,7 +59,6 @@ const SingleRequestModal = (props) => {
     accept_msg,
   } = props.selectedRow;
 
-  const [additionalCredits, setAdditionalCredits] = useState(0);
   const [driversForReplacing, setDriversForReplacing] = useState([]);
   const [allDrivers, setAllDrivers] = useState(
     drivers.map((driver) => {
@@ -176,10 +178,6 @@ const SingleRequestModal = (props) => {
     props.onHide();
   };
 
-  const hideNotEnoughCreditsModal = () => {
-    setShowNotEnoughCreditsModal(false);
-  };
-
   const handleAllDrivers = (x) => {
     setAllDrivers(x);
   };
@@ -189,11 +187,7 @@ const SingleRequestModal = (props) => {
   };
 
   const saveDrivers = () => {
-    if (userInfoContext.credit >= additionalCredits) {
-      setShowConfirmationModal(true);
-    } else {
-      setShowNotEnoughCreditsModal(true);
-    }
+    setShowConfirmationModal(true);
   };
 
   const isParticipantAlreadyRegistered = (participant) => {
@@ -222,7 +216,6 @@ const SingleRequestModal = (props) => {
     setRegisteredParticipantsContext(registered);
     setNewDrivers(unregistered);
     setParticipantsToRegisterContext(allDrivers);
-    setAdditionalCredits(unregistered.length * service.ride_value);
     //eslint-disable-next-line
   }, [allDrivers]);
 
@@ -354,17 +347,6 @@ const SingleRequestModal = (props) => {
       default:
         return <p>Undefined</p>;
     }
-  };
-
-  const notEnoughCreditsModal = () => {
-    return (
-      <NotEnoughCreditsModal
-        show={showNotEnoughCreditsModal}
-        onHide={hideNotEnoughCreditsModal}
-        creditCost={additionalCredits}
-        className="child-modal"
-      />
-    );
   };
 
   return (
@@ -534,7 +516,6 @@ const SingleRequestModal = (props) => {
           request={props.selectedRow}
         />
       )}
-      {showNotEnoughCreditsModal && notEnoughCreditsModal()}
     </Modal>
   );
 };
