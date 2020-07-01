@@ -176,10 +176,10 @@ const ProfileEditModal = (props: any) => {
                 }}
               />
               {errors.lastName?.type === "required" && (
-                <p>El apellido no debe estar vacío.</p>
+                <small>El apellido no debe estar vacío.</small>
               )}
               {errors.lastName?.type === "pattern" && (
-                <p>Este apellido es inválido.</p>
+                <small>Este apellido es inválido.</small>
               )}
             </Form.Group>
           </Form.Row>
@@ -213,7 +213,7 @@ const ProfileEditModal = (props: any) => {
                 }}
               />
               {errors.charge?.type === "required" && (
-                <p>El cargo no debe estar vacío.</p>
+                <small>El cargo no debe estar vacío.</small>
               )}
             </Form.Group>
           </Form.Row>
