@@ -4,6 +4,7 @@ import { editCompany } from "../../controllers/apiRequests";
 import { Modal, Col, Form, Spinner, Button, Image } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import CompanyLogoEditModal from "./CompanyLogoEditModal";
+import "./CompanyEditModal.scss";
 
 const CompanyEditModal = (props: any) => {
   const { handleSubmit, control } = useForm();
@@ -71,10 +72,10 @@ const CompanyEditModal = (props: any) => {
 
   return (
     <Modal show={props.show} onHide={props.onHide} size="lg">
-      <Modal.Header closeButton>
-        <Modal.Title>Compañía</Modal.Title>
+      <Modal.Header closeButton className={`bg-${userInfoContext.perfil}`}>
+        <Modal.Title className="text-white">Compañía</Modal.Title>
       </Modal.Header>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)} className="company-edit-modal">
         <Modal.Body>
           <Form.Row>
             <Form.Group as={Col}>
@@ -147,15 +148,19 @@ const CompanyEditModal = (props: any) => {
               >
                 <small>Editar</small>
               </Button>
-            </Col>
-            <Col></Col>
-            <Form.Group as={Col}>
               <Image src={company.logo} fluid />
-            </Form.Group>
+            </Col>
+            {/* <Col></Col> */}
+            {/* <Form.Group as={Col}></Form.Group> */}
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button type="submit">Guardar</Button>
+          <Button type="submit" className={`btn-${userInfoContext.perfil}`}>
+            Guardar
+          </Button>
+          <Button variant="secondary" onClick={props.onHide}>
+            Cerrar
+          </Button>
         </Modal.Footer>
       </Form>
       {companyLogoEditModal()}

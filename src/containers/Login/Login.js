@@ -53,6 +53,15 @@ const Login = () => {
         email: res.email,
         charge: res.charge,
         profile: res.profile,
+        perfil: `${
+          res.profile === 1
+            ? "admin"
+            : res.profile === 2
+            ? "cliente"
+            : res.profile === 3
+            ? "operario"
+            : ""
+        }`,
         picture: res.picture,
         url: res.url,
         company: res.company,
@@ -86,6 +95,7 @@ const Login = () => {
         email: userInfo.email,
         charge: userInfo.charge,
         profile: userInfo.profile,
+        perfil: userInfo.perfil,
         picture: userInfo.picture,
         url: userInfo.url,
         company: userInfo.company,

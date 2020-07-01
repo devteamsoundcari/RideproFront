@@ -4,7 +4,7 @@ import { Modal, Col, Form, Spinner, Button } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { editUser } from "../../controllers/apiRequests";
 import RegularExpressions from "../../utils/RegularExpressions";
-import "./ProfileEditModal.scss"
+import "./ProfileEditModal.scss";
 
 const CompanyEditModal = (props: any) => {
   const [stage, setStage] = useState("waiting");
@@ -98,10 +98,10 @@ const CompanyEditModal = (props: any) => {
           <h4>¿Estás seguro de cambiar tus datos?</h4>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={save}>
+          <Button className={`btn-${userInfoContext.perfil}`} onClick={save}>
             Si
           </Button>
-          <Button variant="danger" onClick={hideConfirmationModal}>
+          <Button variant="secondary" onClick={hideConfirmationModal}>
             No, regresar
           </Button>
         </Modal.Footer>
@@ -128,7 +128,10 @@ const CompanyEditModal = (props: any) => {
           <h4>Tus datos han sido modificados exitosamente</h4>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={handleAccept}>
+          <Button
+            className={`btn-${userInfoContext.perfil}`}
+            onClick={handleAccept}
+          >
             Aceptar
           </Button>
         </Modal.Footer>
@@ -138,8 +141,8 @@ const CompanyEditModal = (props: any) => {
 
   return (
     <Modal centered show={props.show} onHide={props.onHide} size="lg">
-      <Modal.Header closeButton>
-        <Modal.Title>Perfil</Modal.Title>
+      <Modal.Header closeButton className={`bg-${userInfoContext.perfil}`}>
+        <Modal.Title className="text-white">Perfil</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
@@ -185,9 +188,10 @@ const CompanyEditModal = (props: any) => {
             <Form.Group as={Col}>
               <Form.Label>Correo electrónico</Form.Label>
               <Controller
-                as={<Form.Control type="email" />}
+                as={<Form.Control type="email" disabled />}
                 name="email"
                 control={control}
+                disabled={true}
                 rules={{
                   required: "El correo electrónico no debe estar en blanco.",
                   pattern: RegularExpressions.email,
@@ -234,11 +238,15 @@ const CompanyEditModal = (props: any) => {
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" type="submit" disabled={!canSave}>
+          <Button
+            className={`btn-${userInfoContext.perfil}`}
+            type="submit"
+            disabled={!canSave}
+          >
             Guardar
           </Button>
           <Button variant="secondary" onClick={exit}>
-            Salir
+            Cerrar
           </Button>
         </Modal.Footer>
       </Form>
