@@ -4,6 +4,7 @@ import Place from "./Place/Place";
 import "./InfoTabs.scss";
 import Instructors from "./Instructors/Instructors";
 import Providers from "./Providers/Providers";
+import { FaCheck, FaTimes } from "react-icons/fa";
 
 const InfoTabs = (props) => {
   const {
@@ -16,8 +17,20 @@ const InfoTabs = (props) => {
   } = props.request;
   return (
     <div className="infoTabs">
-      <Tabs defaultActiveKey="instructors" id="uncontrolled-tab-example">
-        <Tab eventKey="place" title={`Lugar ${track ? "OK" : "!"}`}>
+      <Tabs defaultActiveKey="place" id="uncontrolled-tab-example">
+        <Tab
+          eventKey="place"
+          title={
+            <span>
+              Lugar{" "}
+              {track ? (
+                <FaCheck className="text-success" />
+              ) : (
+                <FaTimes className="text-danger" />
+              )}
+            </span>
+          }
+        >
           <Place
             track={track ? track : ""}
             municipality={municipality}
@@ -28,7 +41,17 @@ const InfoTabs = (props) => {
         </Tab>
         <Tab
           eventKey="participantes"
-          title={`Participants ${drivers.length > 0 ? "OK" : "!"}`}
+          // title={`Participants ${drivers.length > 0 ? "OK" : "!"}`}
+          title={
+            <span>
+              Participantes{" "}
+              {drivers.length > 0 ? (
+                <FaCheck className="text-success" />
+              ) : (
+                <FaTimes className="text-danger" />
+              )}
+            </span>
+          }
         >
           <Table responsive hover size="sm">
             <thead>
@@ -55,7 +78,17 @@ const InfoTabs = (props) => {
         </Tab>
         <Tab
           eventKey="instructors"
-          title={`Instructores ${props.instructors.length > 0 ? "OK" : "!"}`}
+          // title={`Instructores ${props.instructors.length > 0 ? "OK" : "!"}`}
+          title={
+            <span>
+              Instructores{" "}
+              {props.instructors.length > 0 ? (
+                <FaCheck className="text-success" />
+              ) : (
+                <FaTimes className="text-danger" />
+              )}
+            </span>
+          }
         >
           <Instructors
             municipality={municipality}
@@ -65,7 +98,17 @@ const InfoTabs = (props) => {
         </Tab>
         <Tab
           eventKey="proveedores"
-          title={`Proveedores ${props.providers.length > 0 ? "OK" : "!"}`}
+          // title={`Proveedores ${props.providers.length > 0 ? "OK" : "!"}`}
+          title={
+            <span>
+              Proveedores{" "}
+              {props.providers.length > 0 ? (
+                <FaCheck className="text-success" />
+              ) : (
+                <FaTimes className="text-danger" />
+              )}
+            </span>
+          }
         >
           <Providers
             municipality={municipality}
