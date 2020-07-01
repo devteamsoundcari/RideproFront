@@ -3,10 +3,11 @@ import { useForm, Controller } from "react-hook-form";
 import { Modal, Col, Form, Spinner, Button } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { editUser } from "../../controllers/apiRequests";
+import PasswordChangeModal from "./Password/PasswordChangeModal";
 import RegularExpressions from "../../utils/RegularExpressions";
 import "./ProfileEditModal.scss"
 
-const CompanyEditModal = (props: any) => {
+const ProfileEditModal = (props: any) => {
   const [stage, setStage] = useState("waiting");
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [submittedData, setSubmittedData] = useState();
@@ -125,7 +126,7 @@ const CompanyEditModal = (props: any) => {
     return (
       <>
         <Modal.Body>
-          <h4>Tus datos han sido modificados exitosamente</h4>
+          <h4>Tus datos han sido modificados exitosamente.</h4>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="success" onClick={handleAccept}>
@@ -137,6 +138,7 @@ const CompanyEditModal = (props: any) => {
   };
 
   return (
+    <>
     <Modal centered show={props.show} onHide={props.onHide} size="lg">
       <Modal.Header closeButton>
         <Modal.Title>Perfil</Modal.Title>
@@ -156,10 +158,10 @@ const CompanyEditModal = (props: any) => {
                 }}
               />
               {errors.name?.type === "required" && (
-                <p>El nombre no debe estar vacío.</p>
+                <small>El nombre no debe estar vacío.</small>
               )}
               {errors.name?.type === "pattern" && (
-                <p>Este nombre es inválido.</p>
+                <small>Este nombre es inválido.</small>
               )}
             </Form.Group>
             <Form.Group as={Col}>
@@ -231,6 +233,13 @@ const CompanyEditModal = (props: any) => {
                 defaultValue={userInfoContext.gender}
               />
             </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Label>Contraseña</Form.Label>
+              <br />
+              <Button variant="link" onClick={props.onClickOnChangePassword}>
+                <small>Cambiar contraseña</small>
+              </Button>
+            </Form.Group>
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>
@@ -244,7 +253,8 @@ const CompanyEditModal = (props: any) => {
       </Form>
       {showConfirmationModal && confirmationModal()}
     </Modal>
+    </>
   );
 };
 
-export default CompanyEditModal;
+export default ProfileEditModal;
