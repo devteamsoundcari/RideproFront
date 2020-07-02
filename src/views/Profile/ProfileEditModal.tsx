@@ -3,7 +3,6 @@ import { useForm, Controller } from "react-hook-form";
 import { Modal, Col, Form, Spinner, Button } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { editUser } from "../../controllers/apiRequests";
-import PasswordChangeModal from "./Password/PasswordChangeModal";
 import RegularExpressions from "../../utils/RegularExpressions";
 import "./ProfileEditModal.scss";
 
@@ -41,6 +40,7 @@ const ProfileEditModal = (props: any) => {
     data.company_id = userInfoContext.company.id;
     data.first_name = data.name;
     data.last_name = data.lastName;
+    data.email = userInfoContext.email;
     let result = await editUser(data);
     if (result) {
       await updateUserInfo();
