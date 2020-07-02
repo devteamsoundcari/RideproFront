@@ -13,6 +13,14 @@ const AuthContextProvider = (props) => {
     newUserInfo.lastName = newUserInfo.last_name;
     newUserInfo.first_name = null;
     newUserInfo.last_name = null;
+    newUserInfo.perfil =
+      newUserInfo.profile === 1
+        ? "admin"
+        : newUserInfo.profile === 2
+        ? "cliente"
+        : newUserInfo.profile === 3
+        ? "operario"
+        : "";
 
     setUserInfoContext(newUserInfo);
   };

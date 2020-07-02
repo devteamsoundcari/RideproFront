@@ -114,7 +114,11 @@ const CompanyLogoEditModal = (props: any) => {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" size="sm" type="submit">
+            <Button
+              className={`btn-${userInfoContext.perfil}`}
+              size="sm"
+              type="submit"
+            >
               Guardar
             </Button>
           </Modal.Footer>

@@ -17,6 +17,7 @@ $theme-colors: (
 html {
   background-color: gainsboro;
   height: 100%;
+  letter-spacing: 0.01rem;
   body {
     background-color: gainsboro;
     height: 100%;
@@ -24,6 +25,21 @@ html {
       height: 100%;
       .row {
         height: 100%;
+      }
+    }
+    label {
+      color: #475f7b;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+      line-height: 1.4;
+    }
+    .close {
+      color: #fff;
+      text-shadow: none;
+      &:hover {
+        color: #fff;
       }
     }
   }

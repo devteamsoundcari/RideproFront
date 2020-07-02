@@ -22,7 +22,7 @@ const NewPassword = (props) => {
       if (!response) {
         setShowError(true);
         setTimeout(function () {
-          window.open(`${process.env.REACT_APP_FRONT_URL}/login/`, "_self");
+          window.open(`${process.env.REACT_APP_FRONT_URL}/`, "_self");
         }, 2000);
       } else {
         setShowError(false);
@@ -42,22 +42,17 @@ const NewPassword = (props) => {
 
   useEffect(() => {
     const url = window.location.href;
-    console.log("ulr", typeof url, url);
-    console.log(url.includes("password-reset/confirm/"));
     if (url.includes("password-reset/confirm/")) {
       let arr = url.split("/");
-      console.log(arr);
       let [uid, token] = arr.slice(6, 8);
-      console.log("uid:", uid, "token", token);
       setData({ ...data, uid, token });
     }
-    console.log("ASASSAA", url);
     // eslint-disable-next-line
   }, []);
 
   const handleClose = () => {
     setSmShow(false);
-    window.open(`${process.env.REACT_APP_FRONT_URL}/login/`, "_self");
+    window.open(`${process.env.REACT_APP_FRONT_URL}/`, "_self");
   };
 
   // ================================= SET PASS ERROR ==========================================

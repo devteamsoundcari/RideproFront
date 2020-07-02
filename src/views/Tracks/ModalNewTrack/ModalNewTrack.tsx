@@ -164,8 +164,8 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
       show={true}
       onHide={handleClose}
     >
-      <Modal.Header closeButton>
-        <Modal.Title>
+      <Modal.Header closeButton className={`bg-${userInfoContext.perfil}`}>
+        <Modal.Title className="text-white">
           {loading
             ? "Creando pista..."
             : success
@@ -196,9 +196,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
             </Form.Row>
             <Form.Row>
               <Form.Group as={Col} controlId="formGridEmail">
-                <Form.Label>
-                  <h5>Nombre del lugar</h5>
-                </Form.Label>
+                <Form.Label>Nombre del lugar</Form.Label>
                 <input
                   className="form-control"
                   type="text"
@@ -208,9 +206,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridPassword">
-                <Form.Label>
-                  <h5>Dirección</h5>
-                </Form.Label>
+                <Form.Label>Dirección</Form.Label>
                 <input
                   className="form-control"
                   type="text"
@@ -221,9 +217,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
               </Form.Group>
               {userInfoContext.profile !== 2 && (
                 <Form.Group as={Col} controlId="formGridFare">
-                  <Form.Label>
-                    <h5>Tarifa</h5>
-                  </Form.Label>
+                  <Form.Label>Tarifa</Form.Label>
                   <input
                     className="form-control"
                     type="number"
@@ -235,9 +229,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
               )}
             </Form.Row>
             <Form.Group controlId="formGridAddress1">
-              <Form.Label>
-                <h5>Descripción</h5>
-              </Form.Label>
+              <Form.Label>Descripción</Form.Label>
               <textarea
                 className="form-control"
                 placeholder="Por favor escriba una descripcion del lugar ..."
@@ -249,9 +241,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
             <hr />
             <Form.Row>
               <Form.Group as={Col} controlId="formGridContactName">
-                <Form.Label>
-                  <h5>Persona de contacto</h5>
-                </Form.Label>
+                <Form.Label>Persona de contacto</Form.Label>
                 <input
                   className="form-control"
                   type="text"
@@ -260,9 +250,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridContactPhone">
-                <Form.Label>
-                  <h5>Teléfono de contacto</h5>
-                </Form.Label>
+                <Form.Label>Teléfono de contacto</Form.Label>
                 <input
                   className="form-control"
                   type="number"
@@ -271,9 +259,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridContactEmail">
-                <Form.Label>
-                  <h5>Email de contacto</h5>
-                </Form.Label>
+                <Form.Label>Email de contacto</Form.Label>
                 <input
                   className="form-control"
                   type="email"
@@ -293,7 +279,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
               <Form.Check type="checkbox" label="Añadir a pistas favoritas" />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
+            <Button className={`btn-${userInfoContext.perfil}`} type="submit">
               Agregar
             </Button>
           </Form>
