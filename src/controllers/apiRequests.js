@@ -32,7 +32,6 @@ const passwordReset = async (data) => {
 /* =================================  PASSWORD RESET  ===================================== */
 
 const setNewPassword = async (data) => {
-  // console.log(data);
   const result = await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/rest-auth/password/reset/confirm/`,
@@ -45,7 +44,6 @@ const setNewPassword = async (data) => {
   }).catch((err) => {
     return err.response.data;
   });
-  console.log("RESUL", result);
   if (result.status === 200) {
     return true;
   } else {
@@ -53,6 +51,24 @@ const setNewPassword = async (data) => {
   }
 };
 
+const changePassword = async (data) => {
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/rest-auth/password/change/`,
+    data: {
+      new_password1: data.newPassword,
+      new_password2: data.newPasswordConfirmation,
+      old_password: data.oldPassword,
+    },
+  }).catch((err) => {
+    return err.response.data;
+  });
+  if (result.status === 200) {
+    return true;
+  } else {
+    return false;
+  }
+};
 /* =================================     Add a user if not exist in db     ===================================== */
 
 const saveNewUser = async (data) => {
@@ -789,6 +805,7 @@ export {
   decreaseUserCredits,
   passwordReset,
   setNewPassword,
+  changePassword,
   createRequest,
   editRequest,
   getMunicipalities,
