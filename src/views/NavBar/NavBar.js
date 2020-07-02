@@ -6,6 +6,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import ProfileEditModal from "../Profile/ProfileEditModal";
+import PasswordChangeModal from "../Profile/Password/PasswordChangeModal";
 import "./NavBar.scss";
 
 const NavBar = () => {
@@ -22,6 +23,7 @@ const NavBar = () => {
   //eslint-disable-next-line
   const [profile, setProfile] = useState("");
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
+  const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
 
   const logout = () => {
     console.log("Bye bye");
@@ -71,8 +73,34 @@ const NavBar = () => {
       <ProfileEditModal
        show={showProfileEditModal}
        onHide={hideProfileEditModal} 
+       onClickOnChangePassword={displayPasswordChangeModal}
       /> 
     ) 
+  }
+
+  const hideAll = () => {
+    setShowProfileEditModal(false);
+    setShowPasswordChangeModal(false);
+  }
+
+  const displayPasswordChangeModal = () => {
+    setShowProfileEditModal(false);
+    setShowPasswordChangeModal(true);
+  }
+
+  const hidePasswordChangeModal = () => {
+    setShowPasswordChangeModal(false);
+    setShowProfileEditModal(true);
+  }
+
+  const passwordChangeModal = () => {
+    return (
+      <PasswordChangeModal
+       show={showPasswordChangeModal}
+       onHide={hideAll}
+       onExit={hidePasswordChangeModal}
+      />
+    )
   }
 
   return (
@@ -106,6 +134,7 @@ const NavBar = () => {
         </Navbar.Collapse>
       </Navbar>
       {showProfileEditModal && profileEditModal()}
+      {showPasswordChangeModal && passwordChangeModal()}
     </>
   );
 };
