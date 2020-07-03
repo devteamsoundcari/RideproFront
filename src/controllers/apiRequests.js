@@ -99,6 +99,27 @@ const saveNewUser = async (data) => {
   }
 };
 
+const setUserProfilePicture = async (user, picture) => {
+  const formData = new FormData();
+  formData.append("picture", picture);
+  formData.append("company_id", user.company.id);
+  const result = await axios
+    .patch(
+      `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    )
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
+};
+
 const editUser = async (data) => {
   const result = await axios({
     method: "PATCH",
@@ -802,6 +823,7 @@ export {
   getLoginToken,
   getUserInfo,
   setUserCredits,
+  setUserProfilePicture,
   decreaseUserCredits,
   passwordReset,
   setNewPassword,

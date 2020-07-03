@@ -150,8 +150,6 @@ const CompanyEditModal = (props: any) => {
               </Button>
               <Image src={company.logo} fluid />
             </Col>
-            {/* <Col></Col> */}
-            {/* <Form.Group as={Col}></Form.Group> */}
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>
