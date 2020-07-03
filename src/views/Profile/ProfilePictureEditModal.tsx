@@ -11,12 +11,11 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { FaCheckCircle } from "react-icons/fa";
-import { setCompanyLogo } from "../../controllers/apiRequests";
-import "./CompanyLogoEditModal.scss";
+import { setUserProfilePicture } from "../../controllers/apiRequests";
+import "./ProfilePictureEditModal.scss";
 
-const CompanyLogoEditModal = (props: any) => {
+const ProfilePictureEditModal = (props: any) => {
   const { userInfoContext, updateUserInfo } = useContext(AuthContext);
-  const { company } = userInfoContext;
   const [stage, setStage] = useState("waiting");
   const [imageName, setImageName] = useState("Importar imagen");
   const [imgSrc, setImgSrc] = useState<string | ArrayBuffer | null>();
@@ -25,13 +24,15 @@ const CompanyLogoEditModal = (props: any) => {
   const save = async (e: any) => {
     setStage("loading");
     e.preventDefault();
-    setCompanyLogo(company.id, selectedImage).then(async (result) => {
-      if (result.status === 200) {
-        updateUserInfo().then(() => {
-          setStage("success");
-        });
+    setUserProfilePicture(userInfoContext, selectedImage).then(
+      async (result) => {
+        if (result.status === 200) {
+          updateUserInfo().then(() => {
+            setStage("success");
+          });
+        }
       }
-    });
+    );
   };
 
   const onFileUpload = (e: any) => {
@@ -97,7 +98,7 @@ const CompanyLogoEditModal = (props: any) => {
             <Container fluid>
               <Row>
                 <Col>
-                  <Image src={imgSrc ? imgSrc : company.logo} fluid />
+                  <Image src={imgSrc ? imgSrc : userInfoContext.picture} fluid />
                 </Col>
               </Row>
               <Row>
@@ -142,4 +143,4 @@ const CompanyLogoEditModal = (props: any) => {
   );
 };
 
-export default CompanyLogoEditModal;
+export default ProfilePictureEditModal;
