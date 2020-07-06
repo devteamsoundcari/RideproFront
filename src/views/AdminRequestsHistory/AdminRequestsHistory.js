@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import {
+  useLocation,
+  Route,
+  Switch,
+  useRouteMatch,
+  useHistory,
+} from "react-router-dom";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import { Container, Card, ProgressBar, Spinner } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -7,31 +13,28 @@ import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import "./AdminRequestsHistory.scss";
 import SingleRequestModalAdmin from "./SingleRequestModalAdmin/SingleRequestModalAdmin";
-
+import SingleRequestAdmin from "./SingleRequestAdmin/SingleRequestAdmin";
 const AdminRequestsHistory = () => {
   const location = useLocation();
   const [modalShow, setModalShow] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
+  const history = useHistory();
   //eslint-disable-next-line
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   const [sortedRequests, setSortedRequests] = useState([]);
   const { requestsInfoContext } = useContext(RequestsContext);
-
+  let { path, url } = useRouteMatch();
   useEffect(() => {
     if (location.state) {
       handleOnSelect(location.state.event);
     }
   }, [location]);
-
   // ================================ FETCH REQUESTS ON LOAD =====================================================
-
   useEffect(() => {
     setRequests(requestsInfoContext);
   }, [requestsInfoContext]);
-
   // ========================================= LOADING SPINNER =====================================
-
   useEffect(() => {
     // Sorting requests so that the most recent goes on top
     if (requests.length > 1) {
@@ -52,9 +55,7 @@ const AdminRequestsHistory = () => {
     }
     //eslint-disable-next-line
   }, [requests]);
-
   //  ========================================================================================
-
   const statusFormatter = (cell, row) => {
     switch (row.status.step) {
       case 0:
@@ -91,10 +92,8 @@ const AdminRequestsHistory = () => {
         return <p>Undefined</p>;
     }
   };
-
   const cityFormatter = (cell) =>
     cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
-
   const dateFormatter = (cell) => {
     let d = new Date(cell);
     const dateTimeFormat = new Intl.DateTimeFormat("es-CO", {
@@ -111,7 +110,6 @@ const AdminRequestsHistory = () => {
     ] = dateTimeFormat.formatToParts(d);
     return `${month}/${day}/${year}`;
   };
-
   const waitingTimeFormatter = (cell, row) => {
     let created = new Date(row.created_at);
     let now = new Date();
@@ -119,7 +117,6 @@ const AdminRequestsHistory = () => {
     var hourDifference = difference / 1000 / 3600;
     return `${Math.floor(hourDifference)} h`;
   };
-
   const columns = [
     {
       dataField: "id",
@@ -168,20 +165,18 @@ const AdminRequestsHistory = () => {
       sort: true,
     },
   ];
-
   const handleOnSelect = (row) => {
     console.log("row", row);
-    setSelectedRow(row);
-    setModalShow(true);
+    history.push(`${url}/${row.id}`);
+    // setSelectedRow(row);
+    // setModalShow(true);
   };
-
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
     hideSelectColumn: true,
     onSelect: handleOnSelect,
   };
-
   return (
     <Container fluid="md" id="client-requests-history">
       {requests.length === 0 ? (
@@ -189,18 +184,23 @@ const AdminRequestsHistory = () => {
           <span className="sr-only">Loading...</span>
         </Spinner>
       ) : (
-        <Card>
-          <BootstrapTable
-            bootstrap4
-            keyField="id"
-            data={requests}
-            columns={columns}
-            // expandRow={expandRow}
-            selectRow={selectRow}
-            filter={filterFactory()}
-            pagination={paginationFactory()}
-          />
-        </Card>
+        <Switch>
+          <Route exact path={path}>
+            <Card>
+              <BootstrapTable
+                bootstrap4
+                keyField="id"
+                data={requests}
+                columns={columns}
+                // expandRow={expandRow}
+                selectRow={selectRow}
+                filter={filterFactory()}
+                pagination={paginationFactory()}
+              />
+            </Card>
+          </Route>
+          <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />
+        </Switch>
       )}
       {modalShow && (
         <SingleRequestModalAdmin

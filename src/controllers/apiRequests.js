@@ -104,15 +104,11 @@ const setUserProfilePicture = async (user, picture) => {
   formData.append("picture", picture);
   formData.append("company_id", user.company.id);
   const result = await axios
-    .patch(
-      `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    )
+    .patch(`${process.env.REACT_APP_API_URL}/rest-auth/user/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
     .catch((err) => {
       console.error(err);
       return err.response.data;
@@ -493,6 +489,22 @@ const fetchDriver = async (id) => {
   return driver.data;
 };
 
+/* =================================   GET A INSTRUCTOR ===================================== */
+
+const fetchInstructor = async (id) => {
+  const getInfo = async () => {
+    const instructorData = await axios({
+      method: "GET",
+      url: `${process.env.REACT_APP_API_URL}/api/v1/instructors/${id}`,
+    }).catch((err) => {
+      return err;
+    });
+    return instructorData;
+  };
+  let instructor = await getInfo();
+  return instructor.data;
+};
+
 /* =================================   UPDATE A DRIVER ===================================== */
 
 const updateDriver = async (data, id) => {
@@ -521,6 +533,21 @@ const updateRequest = async (data, id) => {
     return err;
   });
   return result;
+};
+
+/* =================================   GET A REQUEST ===================================== */
+const getRequest = async (id) => {
+  const getInfo = async () => {
+    const requestData = await axios({
+      method: "GET",
+      url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}`,
+    }).catch((err) => {
+      return err;
+    });
+    return requestData;
+  };
+  let request = await getInfo();
+  return request.data;
 };
 
 /* =================================   POST REQUEST INSTRUCTORS FARE  ===================================== */
@@ -840,12 +867,14 @@ export {
   createDriver,
   getAllDrivers,
   updateRequest,
+  getRequest,
   updateRequestInstructors,
   updateRequestProviders,
   updateDriver,
   getRequestInstructors,
   getRequestProviders,
   fetchDriver,
+  fetchInstructor,
   cancelRequestId,
   getServices,
   getLineServices,
