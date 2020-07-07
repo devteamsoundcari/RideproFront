@@ -9,6 +9,7 @@ import Instructors from "./Instructors/Instructors";
 import Providers from "./Providers/Providers";
 import ModalInstructors from "./ModalInstructors/ModalInstructors";
 import ModalProviders from "./ModalProviders/ModalProviders";
+import Place from "./Place/Place";
 
 interface Service {
   name: string;
@@ -148,42 +149,6 @@ const SingleRequestAdmin = () => {
     }
   };
 
-  const renderPlace = () => (
-    <React.Fragment>
-      <div className="col-4 mt-1">
-        <h6 className="invoice-to">Lugar</h6>
-        <div className="mb-1">
-          <span>{data?.track?.name}</span>
-        </div>
-        <div className="mb-1">
-          <span>{data?.track?.address}</span>
-        </div>
-        <div className="mb-1">
-          <span>{data?.track?.description}</span>
-        </div>
-      </div>
-      <div className="col-4 mt-1">
-        <h6 className="invoice-to">Contacto</h6>
-        <div className="mb-1">
-          <span>{data?.track?.contact_name}</span>
-        </div>
-        <div className="mb-1">
-          <span>{data?.track?.contact_email}</span>
-        </div>
-        <div className="mb-1">
-          <span>{data?.track?.cellphone}</span>
-        </div>
-        <div className="mb-1">
-          <span>
-            {data?.track?.fare === 0
-              ? "Pista creada por el cliente"
-              : data?.track?.fare}
-          </span>
-        </div>
-      </div>
-    </React.Fragment>
-  );
-
   if (loading) {
     return <Spinner animation="border" />;
   } else {
@@ -276,27 +241,10 @@ const SingleRequestAdmin = () => {
                     </div>
                   </div>
                   <hr />
-                  <div className="row invoice-info">
-                    <div className="col-4 mt-1">
-                      <h6 className="invoice-from">Ciudad</h6>
-                      <div className="mb-1">
-                        <span>{data?.municipality?.name}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>{data?.municipality?.department?.name}</span>
-                      </div>
-                    </div>
-                    {data?.track ? (
-                      renderPlace()
-                    ) : (
-                      <div className="col-4 mt-1">
-                        <h6 className="invoice-from">Lugar</h6>
-                        <div className="mb-1">
-                          <span>Pendiente</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <Place
+                    municipality={data?.municipality}
+                    track={data?.track}
+                  />
                 </div>
                 <hr />
                 <div className="mx-md-25 text-center">
