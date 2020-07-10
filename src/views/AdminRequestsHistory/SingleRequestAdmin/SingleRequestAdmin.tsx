@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Row, ProgressBar, Button, Spinner } from "react-bootstrap";
 import { FaCheckCircle, FaTimes, FaCog } from "react-icons/fa";
-import { getRequest } from "../../../controllers/apiRequests";
+import swal from "sweetalert";
+import { getRequest, updateRequest } from "../../../controllers/apiRequests";
 import "./SingleRequestAdmin.scss";
 import Drivers from "./Drivers/Drivers";
 import Instructors from "./Instructors/Instructors";
 import Providers from "./Providers/Providers";
 import ModalInstructors from "./ModalInstructors/ModalInstructors";
 import ModalProviders from "./ModalProviders/ModalProviders";
-import Place from "./Place/Place";
+import ModalPlaceDate from "./ModalPlaceDate/ModalPlaceDate";
+import PlaceDate from "./PlaceDate/PlaceDate";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { RequestsContext } from "../../../contexts/RequestsContext";
 
 interface Service {
   name: string;
@@ -58,6 +62,11 @@ interface RequestData {
   drivers: any;
   instructors: any;
   providers: any;
+  optional_date1: any;
+  optional_place1: any;
+  optional_date2: any;
+  optional_place2: any;
+  operator: any;
 }
 
 type Instructors = any[];
@@ -69,8 +78,11 @@ const SingleRequestAdmin = () => {
   const [loading, setLoading] = useState<Boolean>(false);
   const [showModalInstructors, setShowModalInstructors] = useState(false);
   const [showModalProviders, setShowModalProviders] = useState(false);
+  const [showModalPlace, setShowModalPlace] = useState(false);
   const [instructors, setInstructors] = useState<Instructors>([]);
   const [providers, setProviders] = useState<Providers>([]);
+  const { userInfoContext } = useContext(AuthContext);
+  const { updateRequestsContext } = useContext(RequestsContext);
 
   useEffect(() => {
     async function fetchRequest(id: string) {
@@ -81,6 +93,7 @@ const SingleRequestAdmin = () => {
       console.log(responseRequest);
     }
     fetchRequest(requestId);
+    // eslint-disable-next-line
   }, []);
 
   const formatAMPM = (startDate) => {
@@ -135,7 +148,7 @@ const SingleRequestAdmin = () => {
       case 2:
         return (
           <div className="text-center">
-            <small>Confirmar programación</small>
+            <small>Esperando confirmación cliente</small>
             <ProgressBar
               variant={"confirm-event" as any}
               now={40}
@@ -147,6 +160,18 @@ const SingleRequestAdmin = () => {
       default:
         return <p>Undefined</p>;
     }
+  };
+
+  const checkDisabled = () => {
+    if (
+      data?.instructors.length > 0 &&
+      data?.providers.length > 0 &&
+      data?.optional_date1
+    ) {
+      if (data?.status?.step === 1) {
+        return false;
+      } else return true;
+    } else return true;
   };
 
   if (loading) {
@@ -190,6 +215,11 @@ const SingleRequestAdmin = () => {
                       <br />
                       <span>
                         {data?.start_time ? formatAMPM(data.start_time) : ""}
+                      </span>
+                      <br />
+                      <span>
+                        {data?.municipality?.name}{" "}
+                        {data?.municipality?.department?.name}
                       </span>
                     </div>
                     <div className="col-6 d-flex justify-content-end">
@@ -241,10 +271,38 @@ const SingleRequestAdmin = () => {
                     </div>
                   </div>
                   <hr />
-                  <Place
+                  <PlaceDate
                     municipality={data?.municipality}
                     track={data?.track}
+                    date={data?.start_time}
+                    title=""
                   />
+                  {/* {data?.optional_date1 && data?.optional_place1 ? (
+                    <React.Fragment>
+                      <hr />
+                      <PlaceDate
+                        municipality={data?.municipality}
+                        track={data?.optional_place1}
+                        date={data?.optional_date1}
+                        title="Opción 1"
+                      />
+                    </React.Fragment>
+                  ) : (
+                    ""
+                  )}
+                  {data?.optional_date2 && data?.optional_place2 ? (
+                    <React.Fragment>
+                      <hr />
+                      <PlaceDate
+                        municipality={data?.municipality}
+                        track={data?.optional_place2}
+                        date={data?.optional_date2}
+                        title="Opción 2"
+                      />
+                    </React.Fragment>
+                  ) : (
+                    ""
+                  )} */}
                 </div>
                 <hr />
                 <div className="mx-md-25 text-center">
@@ -327,14 +385,33 @@ const SingleRequestAdmin = () => {
             <div className="card invoice-action-wrapper shadow-none border">
               <div className="card-body">
                 <div className="invoice-action-btn">
-                  <Button variant="light" className="btn-block">
-                    <span>Lugar </span>
-                    {data?.track ? (
+                  <Button
+                    variant="light"
+                    className="btn-block"
+                    onClick={() => setShowModalPlace(true)}
+                  >
+                    <span>Lugar / Fecha / Hora </span>
+                    {data?.optional_place1 ? (
                       <FaCheckCircle className="text-success" />
                     ) : (
                       <FaTimes className="text-danger" />
                     )}
                   </Button>
+
+                  {showModalPlace && (
+                    <ModalPlaceDate
+                      requestId={requestId}
+                      handleClose={() => setShowModalPlace(false)}
+                      propsTrack={data?.track}
+                      propsDate={data?.start_time}
+                      propsCity={data?.municipality}
+                      propsOptDate1={data?.optional_date1}
+                      propsOptPlace1={data?.optional_place1}
+                      propsOptDate2={data?.optional_date2}
+                      propsOptPlace2={data?.optional_place2}
+                      operator={data?.operator}
+                    />
+                  )}
                 </div>
                 <div className="invoice-action-btn">
                   <Button
@@ -381,9 +458,53 @@ const SingleRequestAdmin = () => {
                   )}
                 </div>
                 <div className="invoice-action-btn">
-                  <button className="btn btn-secondary btn-block disabled">
-                    <span>Confirmar solicitud</span>
-                  </button>
+                  <Button
+                    className="btn-block btn-success"
+                    disabled={checkDisabled()}
+                    onClick={() => {
+                      swal({
+                        title: "¿Estas seguro?",
+                        text:
+                          "Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!",
+                        icon: "warning",
+                        buttons: ["No, volver", "Si, confirmar servicio"],
+                        dangerMode: true,
+                      }).then(async (willUpdate) => {
+                        if (willUpdate) {
+                          let payload = {
+                            new_request: 0, // It wont be a new request anymore
+                            operator: userInfoContext.id,
+                            status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`,
+                          };
+                          // console.log("payload", payload);
+                          //   console.log(payload);
+                          let res = await updateRequest(payload, requestId);
+                          console.log(res);
+                          if (res.status === 200) {
+                            // setDisabled(true);
+                            updateRequestsContext();
+                            swal("Solicitud actualizada!", {
+                              icon: "success",
+                            });
+                          } else {
+                            swal("Oops, no se pudo actualizar el servicio.", {
+                              icon: "error",
+                            });
+                          }
+                        }
+                      });
+                    }}
+                  >
+                    <span>
+                      {data?.status?.step === 1
+                        ? "Confirmar solicitud"
+                        : data?.status?.step === 2
+                        ? "Esperando cliente"
+                        : data?.status?.step === 3
+                        ? "Servicio confirmado"
+                        : "Cancelado"}
+                    </span>
+                  </Button>
                 </div>
               </div>
             </div>

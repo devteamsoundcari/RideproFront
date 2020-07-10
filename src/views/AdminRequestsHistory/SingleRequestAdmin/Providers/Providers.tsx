@@ -61,7 +61,6 @@ const Providers: React.FC<ProvidersProps> = ({ requestId, providers }) => {
     const response = await getRequestProviders(url);
     response.results.forEach(async (item) => {
       if (item.request === requestId) {
-        console.log(item);
         setRequestProviders((oldArr: any) => [...oldArr, item]);
       }
     });

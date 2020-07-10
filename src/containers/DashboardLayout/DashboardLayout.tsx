@@ -68,7 +68,7 @@ const DashboardLayout: React.FC = () => {
                 </Route>
                 <Redirect from="/administrador" to="/administrador/dashboard" />
                 <Redirect from="/cliente" to="/cliente/dashboard" />
-                <Redirect from="/operario" to="/operario/historial/59" />
+                <Redirect from="/operario" to="/operario/historial/63" />
               </Switch>
             </Container>
           </main>

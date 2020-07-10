@@ -64,7 +64,6 @@ const Instructors: React.FC<InstructorsProps> = ({
     const response = await getRequestInstructors(url);
     response.results.forEach(async (item) => {
       if (item.request === requestId) {
-        console.log(item);
         setRequestInstructors((oldArr: any) => [...oldArr, item]);
       }
     });
