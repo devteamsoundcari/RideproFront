@@ -106,6 +106,10 @@ const MyCalendar = () => {
       case 2:
         newStyle.backgroundColor = "orange";
         break;
+      case 3:
+        newStyle.backgroundColor = "dodgerblue";
+        newStyle.color = "#fff";
+        break;
       default:
         break;
     }

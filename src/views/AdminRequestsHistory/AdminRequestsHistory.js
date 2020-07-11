@@ -90,6 +90,18 @@ const AdminRequestsHistory = () => {
             />
           </div>
         );
+      case 3:
+        return (
+          <div className="text-center">
+            <small>Programación aceptada</small>
+            <ProgressBar
+              variant="event-confirmed"
+              now={30}
+              label={`${40}%`}
+              srOnly
+            />
+          </div>
+        );
       default:
         return <p>Undefined</p>;
     }

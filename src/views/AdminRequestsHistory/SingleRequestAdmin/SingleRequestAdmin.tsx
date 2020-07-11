@@ -157,6 +157,18 @@ const SingleRequestAdmin = () => {
             />
           </div>
         );
+      case 3:
+        return (
+          <div className="text-center">
+            <small>Programación aceptada</small>
+            <ProgressBar
+              variant={"event-confirmed" as any}
+              now={40}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
       default:
         return <p>Undefined</p>;
     }
