@@ -30,6 +30,7 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
   const [selectedProviders, setSelectedProviders] = useState<SelectedProviders>(
     []
   );
+  // eslint-disable-next-line
   const [requestProviders, setRequestProviders] = useState<any[]>([]);
   const { updateRequestsContext } = useContext(RequestsContext);
   const [disabled, setDisabled] = useState(true);

@@ -467,7 +467,11 @@ const SingleRequestModal = (props) => {
           </Button>
         }
         {status.step !== 0 && (
-          <Button variant="danger" onClick={handleCancelEvent}>
+          <Button
+            variant="danger"
+            disabled={status.step !== 1 ? true : false}
+            onClick={handleCancelEvent}
+          >
             Cancelar solicitud
           </Button>
         )}

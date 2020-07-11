@@ -611,6 +611,7 @@ const getRequestProviders = async (url) => {
 };
 
 /* =================================   DECREASE CREDITS IN COMPANY   ===================================== */
+// eslint-disable-next-line
 const decreaseCredits = async (company, credits) => {
   const newCredit = company.credit - credits;
   const { id } = company;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Row, ProgressBar, Button, Spinner } from "react-bootstrap";
-import { FaCheckCircle, FaTimes, FaCog } from "react-icons/fa";
+import { FaCheckCircle, FaTimes } from "react-icons/fa";
 import swal from "sweetalert";
 import { getRequest, updateRequest } from "../../../controllers/apiRequests";
 import "./SingleRequestAdmin.scss";

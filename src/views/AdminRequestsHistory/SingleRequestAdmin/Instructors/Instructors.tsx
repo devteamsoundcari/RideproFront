@@ -80,6 +80,7 @@ const Instructors: React.FC<InstructorsProps> = ({
 
   useEffect(() => {
     instructors(requestInstructors);
+    // eslint-disable-next-line
   }, [requestInstructors]);
 
   return (

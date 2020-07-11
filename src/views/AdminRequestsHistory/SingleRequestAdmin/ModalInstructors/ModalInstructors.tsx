@@ -30,6 +30,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   const [selectedInstructors, setSelectedInstructors] = useState<
     SelectedInstructors
   >([]);
+  // eslint-disable-next-line
   const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
   const { updateRequestsContext } = useContext(RequestsContext);
   const [disabled, setDisabled] = useState(true);

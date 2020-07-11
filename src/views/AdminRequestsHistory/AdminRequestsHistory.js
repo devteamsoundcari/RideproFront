@@ -17,6 +17,7 @@ import SingleRequestAdmin from "./SingleRequestAdmin/SingleRequestAdmin";
 const AdminRequestsHistory = () => {
   const location = useLocation();
   const [modalShow, setModalShow] = useState(false);
+  // eslint-disable-next-line
   const [selectedRow, setSelectedRow] = useState({});
   const history = useHistory();
   //eslint-disable-next-line
@@ -29,6 +30,7 @@ const AdminRequestsHistory = () => {
     if (location.state) {
       handleOnSelect(location.state.event);
     }
+    // eslint-disable-next-line
   }, [location]);
   // ================================ FETCH REQUESTS ON LOAD =====================================================
   useEffect(() => {

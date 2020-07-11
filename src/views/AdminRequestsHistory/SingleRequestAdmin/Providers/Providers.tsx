@@ -77,6 +77,7 @@ const Providers: React.FC<ProvidersProps> = ({ requestId, providers }) => {
 
   useEffect(() => {
     providers(requestProviders);
+    // eslint-disable-next-line
   }, [requestProviders]);
 
   return (

@@ -12,6 +12,7 @@ const CompanyEditModal = (props: any) => {
   const [showCompanyLogoEditModal, setShowCompanyEditModal] = useState(false);
   const { userInfoContext } = useContext(AuthContext);
   const { company } = userInfoContext;
+  // eslint-disable-next-line
   const [data, setData] = useState({
     name: company.name,
     nit: company.nit,
@@ -40,6 +41,7 @@ const CompanyEditModal = (props: any) => {
     }));
   };
 
+  // eslint-disable-next-line
   const loadingSpinner = () => {
     if (loading) {
       return (
