@@ -49,7 +49,7 @@ const SideBar = (props) => {
         setProfile("Cliente");
         break;
       case 3:
-        setProfile("Operario");
+        setProfile("Operaciones");
         break;
       default:
         break;

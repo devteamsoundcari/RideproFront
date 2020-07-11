@@ -9,13 +9,22 @@ import "./Login.scss";
 import bgImage from "../../assets/img/loginImage.jpg";
 // import bgPage from "../../assets/img/bgLogin.jpg";
 import logo from "../../assets/img/logo.png";
-import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
+import {
+  Container,
+  Col,
+  Card,
+  Row,
+  Button,
+  Form,
+  Spinner,
+} from "react-bootstrap";
 import PasswordRecover from "../../views/PasswordRecover/PasswordRecover";
 // import NewPassword from "../../views/NewPassword/NewPassword";
 
 const Login = () => {
   const history = useHistory();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showPasswordReset, setShowPasswordReset] = useState(false);
   const [userInfo, setUserInfo] = useState({
     isSignedIn: false,
@@ -26,17 +35,20 @@ const Login = () => {
   // ====================== ON SUBMIT THE FORM ======================
   const onSubmit = async (data) => {
     // ======================= GETTING TOKEN ==========================
+    setLoading(true);
     let res = await getLoginToken(data);
     if (res.error) {
       // This means the user is not registered
       await setAuthorizationToken(res.token);
       setError(res.error);
+      setLoading(false);
     } else {
       // Save token in LocalStorage
       await setAuthorizationToken(res.token);
       setError("");
       // Get the user info
       await SetUser();
+      setLoading(false);
     }
   };
 
@@ -201,6 +213,7 @@ const Login = () => {
                         className="m-auto"
                       >
                         Ingresar
+                        {loading && <Spinner animation="border" size="sm" />}
                       </Button>
                       <Button variant="link" onClick={renderPasswordReset}>
                         <small>Olvidé mi contraseña</small>
