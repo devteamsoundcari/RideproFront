@@ -488,10 +488,8 @@ const SingleRequestAdmin = () => {
                             operator: userInfoContext.id,
                             status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`,
                           };
-                          // console.log("payload", payload);
-                          //   console.log(payload);
+
                           let res = await updateRequest(payload, requestId);
-                          console.log(res);
                           if (res.status === 200) {
                             // setDisabled(true);
                             updateRequestsContext();

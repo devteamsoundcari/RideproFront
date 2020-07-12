@@ -35,6 +35,32 @@ const SideBar = (props) => {
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
 
   useEffect(() => {
+    // user connected to server
+    let options = {
+      headers: {
+        Authorization: "Token 5bbe2e1a6cd38a15823c3757ee485b063b9cb7ef",
+      },
+    };
+    let x = new WebSocket(`${process.env.REACT_APP_SOCKECT_URL}`, [], options);
+    x.onopen = () => {
+      // on connecting, do nothing but log it to the console
+      console.log("connected");
+      let payload = {
+        action: "subscribe_to_requests_from_user",
+        user: userInfoContext.id,
+        request_id: "hahaha",
+      };
+      x.send(JSON.stringify(payload));
+    };
+
+    x.onmessage = (evt) => {
+      // listen to data sent from the websocket server
+      const message = JSON.parse(evt.data);
+      console.log(message);
+    };
+  }, []);
+
+  useEffect(() => {
     if (userInfoContext.company.logo !== "") {
       setProfilePicture(userInfoContext.company.logo);
     } else {
@@ -185,7 +211,7 @@ const SideBar = (props) => {
           <Link
             to={`${props.url}/dashboard`}
             className="nav-link"
-            activeClassName="active"
+            // activeClassName="active"
             // exact={true}
           >
             <AiFillCalendar className="mb-1 mr-2" />
@@ -199,7 +225,7 @@ const SideBar = (props) => {
           )}
           <Link
             to={`${props.url}/historial`}
-            activeClassName="active"
+            // activeClassName="active"
             // exact={true}
             className="nav-link"
           >
