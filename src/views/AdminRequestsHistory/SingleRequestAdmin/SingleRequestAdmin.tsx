@@ -403,7 +403,7 @@ const SingleRequestAdmin = () => {
                     onClick={() => setShowModalPlace(true)}
                   >
                     <span>Lugar / Fecha / Hora </span>
-                    {data?.optional_place1 ? (
+                    {data?.optional_date1 ? (
                       <FaCheckCircle className="text-success" />
                     ) : (
                       <FaTimes className="text-danger" />

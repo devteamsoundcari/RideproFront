@@ -12,11 +12,9 @@ import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import "./AdminRequestsHistory.scss";
-import SingleRequestModalAdmin from "./SingleRequestModalAdmin/SingleRequestModalAdmin";
 import SingleRequestAdmin from "./SingleRequestAdmin/SingleRequestAdmin";
 const AdminRequestsHistory = () => {
   const location = useLocation();
-  const [modalShow, setModalShow] = useState(false);
   // eslint-disable-next-line
   const [selectedRow, setSelectedRow] = useState({});
   const history = useHistory();
@@ -215,13 +213,6 @@ const AdminRequestsHistory = () => {
           </Route>
           <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />
         </Switch>
-      )}
-      {modalShow && (
-        <SingleRequestModalAdmin
-          show={true}
-          onHide={() => setModalShow(false)}
-          selectedRow={selectedRow}
-        />
       )}
     </Container>
   );

@@ -529,7 +529,7 @@ const SingleRequestModal = (props) => {
                 <Col>
                   <Row>
                     <Col>
-                      {optional_place1 && optional_date1 && status.step < 3 ? (
+                      {optional_date1 && status.step < 3 ? (
                         <div className="d-flex align-items-center justify-content-between">
                           <Table bordered hover size="sm" className="ml-4 mr-4">
                             <thead className="bg-primary text-white">
@@ -542,8 +542,14 @@ const SingleRequestModal = (props) => {
                             </thead>
                             <tbody>
                               <tr>
-                                <td>{optional_place1.municipality.name}</td>
-                                <td>{optional_place1.name}</td>
+                                <td>
+                                  {track
+                                    ? track.municipality.name
+                                    : optional_place1.municipality.name}
+                                </td>
+                                <td>
+                                  {track ? track.name : optional_place1.name}
+                                </td>
                                 <td>
                                   {dateFormatter(new Date(optional_date1))}
                                 </td>
@@ -564,7 +570,7 @@ const SingleRequestModal = (props) => {
                         ""
                       )}
 
-                      {optional_place2 && optional_date2 && status.step < 3 ? (
+                      {optional_date2 && status.step < 3 ? (
                         <div className="d-flex align-items-center justify-content-between">
                           <Table bordered hover size="sm" className="ml-4 mr-4">
                             <thead className="bg-primary text-white">
@@ -577,8 +583,14 @@ const SingleRequestModal = (props) => {
                             </thead>
                             <tbody>
                               <tr>
-                                <td>{optional_place2.municipality.name}</td>
-                                <td>{optional_place2.name}</td>
+                                <td>
+                                  {track
+                                    ? track.municipality.name
+                                    : optional_place2.municipality.name}
+                                </td>
+                                <td>
+                                  {track ? track.name : optional_place2.name}
+                                </td>
                                 <td>
                                   {dateFormatter(new Date(optional_date2))}
                                 </td>
@@ -640,19 +652,25 @@ const SingleRequestModal = (props) => {
                                   ? dateFormatter(optional_date2)
                                   : ""
                               } en ${
-                                selectedOption === 1
+                                track
+                                  ? track.name
+                                  : selectedOption === 1
                                   ? optional_place1.name
                                   : selectedOption === 2
                                   ? optional_place2.name
                                   : ""
                               } - ${
-                                selectedOption === 1
+                                track
+                                  ? track.municipality.name
+                                  : selectedOption === 1
                                   ? optional_place1.municipality.name
                                   : selectedOption === 2
                                   ? optional_place2.municipality.name
                                   : ""
                               } - ${
-                                selectedOption === 1
+                                track
+                                  ? track.municipality.department.name
+                                  : selectedOption === 1
                                   ? optional_place1.municipality.department.name
                                   : selectedOption === 2
                                   ? optional_place2.municipality.department.name
@@ -670,12 +688,22 @@ const SingleRequestModal = (props) => {
                             }).then(async (willUpdate) => {
                               if (willUpdate) {
                                 let payload1 = {
-                                  track: optional_place1.id,
+                                  track:
+                                    track !== null
+                                      ? track.id
+                                      : optional_place1
+                                      ? optional_place1.id
+                                      : "",
                                   start_date: optional_date1,
                                   status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
                                 };
                                 let payload2 = {
-                                  track: optional_place2.id,
+                                  track:
+                                    track !== null
+                                      ? track.id
+                                      : optional_place2
+                                      ? optional_place2.id
+                                      : "",
                                   start_date: optional_date2,
                                   status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
                                 };
