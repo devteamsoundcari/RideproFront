@@ -1,0 +1,17 @@
+.single-file {
+  .card-body {
+    padding-bottom: 5px;
+  }
+  label {
+    text-transform: none;
+  }
+  .fileSection {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    a {
+      font-size: 2rem;
+      color: re;
+    }
+  }
+}

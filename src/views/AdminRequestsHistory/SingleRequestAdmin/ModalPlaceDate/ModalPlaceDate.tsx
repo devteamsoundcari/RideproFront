@@ -428,7 +428,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                   size="sm"
                   onClick={handleClickAddTrack}
                 >
-                  Administrar Pistasa
+                  Agregar Pistas
                 </Button>
               ) : (
                 ""
@@ -480,8 +480,6 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                     operator: userInfoContext.id,
                   };
 
-                  // console.log("payload", payload);
-                  //   console.log(payload);
                   let res = await updateRequest(
                     showAlternative ? payload2 : payload,
                     requestId

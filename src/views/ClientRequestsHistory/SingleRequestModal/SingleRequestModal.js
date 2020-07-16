@@ -385,6 +385,30 @@ const SingleRequestModal = (props) => {
             />
           </div>
         );
+      case 4:
+        return (
+          <div className="text-center">
+            <small>Servicio programado</small>
+            <ProgressBar
+              variant="event-confirmed"
+              now={50}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
+      case 5:
+        return (
+          <div className="text-center">
+            <small>Servicio programado</small>
+            <ProgressBar
+              variant="event-confirmed"
+              now={50}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
       default:
         return <p>Undefined</p>;
     }
@@ -466,56 +490,10 @@ const SingleRequestModal = (props) => {
           </Row>
           <hr />
           <Tabs
-            defaultActiveKey="participants"
+            defaultActiveKey="place"
             id="uncontrolled-tab-request"
             className="uncontrolled-tab-request"
           >
-            <Tab
-              eventKey="participants"
-              title={
-                <span>
-                  <MdPeople /> Participantes
-                </span>
-              }
-            >
-              {status.step === 1 ? (
-                <EditableTable
-                  size="sm"
-                  dataSet={allDrivers}
-                  fields={fields}
-                  onValidate={handleNewDriversValidation}
-                  onUpdate={handleAllDrivers}
-                  readOnly={true}
-                  readOnlyIf={isParticipantAlreadyRegistered}
-                  recordsForReplacing={driversForReplacing}
-                />
-              ) : (
-                <Table striped bordered hover size="sm">
-                  <thead>
-                    <tr>
-                      <th>Documento</th>
-                      <th>Nombre</th>
-                      <th>Apellido</th>
-                      <th>Email</th>
-                      <th>Teléfono</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {drivers.map((driver, idx) => {
-                      return (
-                        <tr key={idx}>
-                          <td>{driver.official_id}</td>
-                          <td>{driver.first_name}</td>
-                          <td>{driver.last_name}</td>
-                          <td>{driver.email}</td>
-                          <td>{driver.cellphone}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              )}
-            </Tab>
             <Tab
               eventKey="place"
               title={
@@ -740,6 +718,54 @@ const SingleRequestModal = (props) => {
                 </Col>
               </Row>
             </Tab>
+
+            <Tab
+              eventKey="participants"
+              title={
+                <span>
+                  <MdPeople /> Participantes
+                </span>
+              }
+            >
+              {status.step === 1 ? (
+                <EditableTable
+                  size="sm"
+                  dataSet={allDrivers}
+                  fields={fields}
+                  onValidate={handleNewDriversValidation}
+                  onUpdate={handleAllDrivers}
+                  readOnly={true}
+                  readOnlyIf={isParticipantAlreadyRegistered}
+                  recordsForReplacing={driversForReplacing}
+                />
+              ) : (
+                <Table striped bordered hover size="sm">
+                  <thead>
+                    <tr>
+                      <th>Documento</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Email</th>
+                      <th>Teléfono</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {drivers.map((driver, idx) => {
+                      return (
+                        <tr key={idx}>
+                          <td>{driver.official_id}</td>
+                          <td>{driver.first_name}</td>
+                          <td>{driver.last_name}</td>
+                          <td>{driver.email}</td>
+                          <td>{driver.cellphone}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              )}
+            </Tab>
+
             <Tab eventKey="options" title={<TiCogOutline />}>
               <Tab.Container id="left-tabs-example" defaultActiveKey="first">
                 <Row className="mt-2">

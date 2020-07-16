@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./MyCalendar.scss";
-// import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 
 require("moment/locale/es.js");
@@ -24,6 +24,7 @@ const MyCalendar = () => {
     canceledRequestContext,
     loadingContext,
   } = useContext(RequestsContext);
+  const { userInfoContext } = useContext(AuthContext);
   const [seeCanceledEvents, setSeeCanceledEvents] = useState(false);
   const [withCanceledRequests, setWithCanceledRequests] = useState({});
 
@@ -60,19 +61,6 @@ const MyCalendar = () => {
     });
   };
 
-  //============================================ HANDLING CLICKING ON SLOT ===========================================================
-
-  // const handleSelectSlot = (data) => {
-  //   // ================= GETTING REQUESTING DATE ====================
-  //   let requestDate = new Date();
-  //   requestDate.setDate(requestDate.getDate() + 1);
-  //   if (data.start <= requestDate) {
-  //     alert("No puedes pedir servicios para esta fecha");
-  //   } else {
-  //     props.selectSlot(data);
-  //   }
-  // };
-
   // ==============================================================================================================================
 
   const ColoredDateCellWrapper = ({ children, value }) => {
@@ -95,27 +83,61 @@ const MyCalendar = () => {
       borderRadius: "0px",
       border: "none",
     };
-    switch (event.status.step) {
-      case 0:
-        newStyle.backgroundColor = "red";
-        newStyle.color = "#f5f5f5";
-        break;
-      case 1:
-        newStyle.backgroundColor = "yellow";
-        break;
-      case 2:
-        newStyle.backgroundColor = "orange";
-        break;
-      case 3:
-        newStyle.backgroundColor = "dodgerblue";
-        newStyle.color = "#fff";
-        break;
-      default:
-        break;
+
+    if (userInfoContext.profile === 2) {
+      switch (event.status.step) {
+        case 0:
+          newStyle.backgroundColor = "red";
+          newStyle.color = "#f5f5f5";
+          break;
+        case 1:
+          newStyle.backgroundColor = "yellow";
+          break;
+        case 2:
+          newStyle.backgroundColor = "orange";
+          break;
+        case 3:
+          newStyle.backgroundColor = "dodgerblue";
+          newStyle.color = "#fff";
+          break;
+        case 4:
+          newStyle.backgroundColor = "dodgerblue";
+          newStyle.color = "#fff";
+          break;
+        case 5:
+          newStyle.backgroundColor = "dodgerblue";
+          newStyle.color = "#fff";
+          break;
+        default:
+          break;
+      }
+    } else {
+      switch (event.status.step) {
+        case 0:
+          newStyle.backgroundColor = "red";
+          newStyle.color = "#f5f5f5";
+          break;
+        case 1:
+          newStyle.backgroundColor = "yellow";
+          break;
+        case 2:
+          newStyle.backgroundColor = "orange";
+          break;
+        case 3:
+          newStyle.backgroundColor = "dodgerblue";
+          newStyle.color = "#fff";
+          break;
+        case 4:
+          newStyle.backgroundColor = "mediumslateblue";
+          newStyle.color = "#fff";
+          break;
+        case 5:
+          newStyle.backgroundColor = "lightgreen";
+          break;
+        default:
+          break;
+      }
     }
-    // if (start < now && event.status.step !== 0) {
-    //   newStyle.backgroundColor = "dodgerblue";
-    // }
     return {
       className: "",
       style: newStyle,
@@ -148,37 +170,56 @@ const MyCalendar = () => {
   return (
     <Row className="calendarSection ml-1 mr-1 overflow-auto">
       <Col md={2} className="conventions">
-        {/* <Button
-          variant="primary"
-          block
-          className="mb-3 mt-3"
-          disabled={userInfoContext.profile !== 2 ? true : false}
-        >
-          SOLICITAR
-        </Button> */}
         <ListGroup>
-          <ListGroup.Item>
-            <FaDotCircle className="text-event-requested" />{" "}
-            <small>SERVICIOS SOLICITADOS</small>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <FaDotCircle className="text-confirm-event" />{" "}
-            <small>CONFIRMAR SERVICIO</small>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <FaDotCircle className="text-event-confirmed" />{" "}
-            <small>SERVICIO PROGRAMADO</small>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <FaDotCircle className="text-event-finished" />{" "}
-            <small>SERVICIO TERMINADO</small>
-          </ListGroup.Item>
+          {userInfoContext.profile === 2 ? (
+            <React.Fragment>
+              <ListGroup.Item>
+                <FaDotCircle className="text-event-requested" />{" "}
+                <small>SERVICIOS SOLICITADOS</small>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <FaDotCircle className="text-confirm-event" />{" "}
+                <small>CONFIRMAR SERVICIO</small>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <FaDotCircle className="text-event-confirmed" />{" "}
+                <small>SERVICIO PROGRAMADO</small>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <FaDotCircle className="text-event-finished" />{" "}
+                <small>SERVICIO TERMINADO</small>
+              </ListGroup.Item>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <ListGroup.Item>
+                <FaDotCircle className="text-event-requested" />{" "}
+                <small>ESPERANDO CONFIRMACIÓN</small>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <FaDotCircle className="text-confirm-event" />{" "}
+                <small>ESPERANDO AL CLIENTE</small>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <FaDotCircle className="text-event-confirmed" />{" "}
+                <small>PROGRAMACIÓN ACEPATADA</small>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <FaDotCircle className="text-confirm-docs" />{" "}
+                <small>CONFIRMAR DOCUMENTOS</small>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <FaDotCircle className="text-event-finished" />{" "}
+                <small>FINALIZADO</small>
+              </ListGroup.Item>
+            </React.Fragment>
+          )}
           <ListGroup.Item>
             <Form.Check
               custom
               type="checkbox"
               id="custom-checkbox"
-              label="VER SERVICIOS CANCELADOS"
+              label="VER SOLICITUDES CANCELADAS"
               onClick={() => setSeeCanceledEvents(!seeCanceledEvents)}
             />
           </ListGroup.Item>
@@ -202,12 +243,8 @@ const MyCalendar = () => {
               defaultView="month"
               views={{ month: true }}
               events={seeCanceledEvents ? withCanceledRequests : requests}
-              // min={new Date(2020, 10, 0, 10, 0, 0)}
-              // max={new Date(2020, 10, 0, 22, 0, 0)}
-              // timeslots={8}
               style={{ height: "100vh" }}
               onSelectEvent={(event) => handleClick(event)}
-              // onSelectSlot={handleSelectSlot}
               components={{
                 dateCellWrapper: ColoredDateCellWrapper,
                 event: eventFormatter,

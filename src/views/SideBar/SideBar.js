@@ -20,7 +20,6 @@ import defaultCompanyLogo from "../../assets/img/companydefault.png";
 import CompanyEditModal from "../Company/CompanyEditModal.tsx";
 import { getUserRequests, fetchDriver } from "../../controllers/apiRequests";
 import logo from "../../assets/img/logo.png";
-
 import "./SideBar.scss";
 
 const SideBar = (props) => {
@@ -29,35 +28,35 @@ const SideBar = (props) => {
     setRequestsInfoContext,
     setCanceledRequestContext,
     setLoadingContext,
+    updateRequestsContext,
   } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
 
   useEffect(() => {
-    // user connected to server
-    let options = {
-      headers: {
-        Authorization: "Token 5bbe2e1a6cd38a15823c3757ee485b063b9cb7ef",
-      },
-    };
-    let x = new WebSocket(`${process.env.REACT_APP_SOCKECT_URL}`, [], options);
+    let token = localStorage.getItem("token");
+    let x = new WebSocket(`${process.env.REACT_APP_SOCKET_URL}?token=${token}`);
     x.onopen = () => {
-      // on connecting, do nothing but log it to the console
-      console.log("connected");
-      let payload = {
-        action: "subscribe_to_requests_from_user",
-        user: userInfoContext.id,
-        request_id: "hahaha",
+      console.log("connected to socket ✅");
+      let payload1 = {
+        action: "subscribe_to_requests_from_customer",
+        customer: userInfoContext.id,
+        request_id: userInfoContext.id,
       };
-      x.send(JSON.stringify(payload));
+      let payload2 = {
+        action: "subscribe_to_requests",
+        request_id: userInfoContext.id,
+      };
+      x.send(
+        JSON.stringify(userInfoContext.profile !== 2 ? payload2 : payload1)
+      );
     };
-
     x.onmessage = (evt) => {
-      // listen to data sent from the websocket server
-      const message = JSON.parse(evt.data);
-      console.log(message);
+      // const message = JSON.parse(evt.data);
+      updateRequestsContext();
     };
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {

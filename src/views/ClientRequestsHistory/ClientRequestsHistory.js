@@ -174,6 +174,30 @@ const ClientRequestsHistory = () => {
             />
           </div>
         );
+      case 4:
+        return (
+          <div className="text-center">
+            <small>Servicio programado</small>
+            <ProgressBar
+              variant="event-confirmed"
+              now={50}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
+      case 5:
+        return (
+          <div className="text-center">
+            <small>Servicio programado</small>
+            <ProgressBar
+              variant="event-confirmed"
+              now={50}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
       default:
         return <p>Undefined</p>;
     }

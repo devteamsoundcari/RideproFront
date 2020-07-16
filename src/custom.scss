@@ -10,6 +10,7 @@ $theme-colors: (
   "event-requested": yellow,
   "confirm-event": orange,
   "event-confirmed": dodgerblue,
+  "confirm-docs": mediumslateblue,
   "event-finished": lightgreen,
   "event-canceled": red,
 );
@@ -76,6 +77,17 @@ html {
     @content;
   }
 }
+
+.swal-text {
+  // background-color: #fefae3;
+  // padding: 17px;
+  // border: 1px solid #f0e1a1;
+  display: block;
+  margin: 22px;
+  text-align: center;
+  color: #61534e;
+}
+
 // $border-radius: 2rem;
 
 // .btn-lg {

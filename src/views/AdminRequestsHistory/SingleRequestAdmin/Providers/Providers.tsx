@@ -48,7 +48,6 @@ const Providers: React.FC<ProvidersProps> = ({ requestId, providers }) => {
   // useEffect(() => {
   //   if (ids && ids.length > 0) {
   //     getInstructor(ids).then((data) => {
-  //       console.log(data);
   //       data.forEach((item) =>
   //         setProviders((oldArr: any) => [...oldArr, item])
   //       );
@@ -81,21 +80,17 @@ const Providers: React.FC<ProvidersProps> = ({ requestId, providers }) => {
   }, [requestProviders]);
 
   return (
-    <Table
-      responsive
-      hover
-      size="sm"
-      className="table-borderless mb-0 providers-table-admin"
-    >
+    <Table bordered hover size="sm" className="mb-0 providers-table-admin">
       <thead>
-        <tr className="border-0">
-          <th>Identificación</th>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Teléfono</th>
-          <th>Ciudad</th>
+        <tr className="border-0 bg-primary">
+          <th className="text-white">ID</th>
+          <th className="text-white">Nombre</th>
+          <th className="text-white">Email</th>
+          <th className="text-white">Teléfono</th>
+          <th className="text-white">Ciudad</th>
           {/* <th>Dpto.</th> */}
-          <th>Tarifa</th>
+          <th className="text-white">Tarifa</th>
+          <th className="text-white">Primer pago</th>
         </tr>
       </thead>
       <tbody>
@@ -110,6 +105,7 @@ const Providers: React.FC<ProvidersProps> = ({ requestId, providers }) => {
             <td>{item?.providers?.municipality?.name}</td>
             {/* <td>{item?.providers?.municipality?.department?.name}</td> */}
             <td>{item?.fare}</td>
+            <td>{item?.first_payment}</td>
           </tr>
         ))}
       </tbody>

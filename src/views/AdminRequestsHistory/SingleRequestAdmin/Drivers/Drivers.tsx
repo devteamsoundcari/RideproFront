@@ -37,19 +37,14 @@ const Drivers: React.FC<DriversProps> = ({ drivers }) => {
   }, [drivers]);
 
   return (
-    <Table
-      responsive
-      hover
-      size="sm"
-      className="table-borderless mb-0 participants-table-admin"
-    >
+    <Table bordered hover size="sm" className="mb-3 participants-table-admin">
       <thead>
-        <tr className="border-0">
-          <th>Identificación</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
-          <th>Email</th>
-          <th>Teléfono</th>
+        <tr className="border-0 bg-primary">
+          <th className="text-white">ID</th>
+          <th className="text-white">Nombre</th>
+          <th className="text-white">Apellido</th>
+          <th className="text-white">Email</th>
+          <th className="text-white">Teléfono</th>
         </tr>
       </thead>
       <tbody>

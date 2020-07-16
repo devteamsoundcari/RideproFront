@@ -100,6 +100,30 @@ const AdminRequestsHistory = () => {
             />
           </div>
         );
+      case 4:
+        return (
+          <div className="text-center">
+            <small>Confirmar recepción de documentos</small>
+            <ProgressBar
+              variant={"confirm-docs"}
+              now={70}
+              label={`${80}%`}
+              srOnly
+            />
+          </div>
+        );
+      case 5:
+        return (
+          <div className="text-center">
+            <small>Evento Finalizado</small>
+            <ProgressBar
+              variant={"event-finished"}
+              now={100}
+              label={`${100}%`}
+              srOnly
+            />
+          </div>
+        );
       default:
         return <p>Undefined</p>;
     }

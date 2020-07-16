@@ -51,7 +51,6 @@ const Instructors: React.FC<InstructorsProps> = ({
   // useEffect(() => {
   //   if (ids && ids.length > 0) {
   //     getInstructor(ids).then((data) => {
-  //       console.log(data);
   //       data.forEach((item) =>
   //         setInstructors((oldArr: any) => [...oldArr, item])
   //       );
@@ -63,9 +62,7 @@ const Instructors: React.FC<InstructorsProps> = ({
   const fetchRequestInstructors = async (url) => {
     const response = await getRequestInstructors(url);
     response.results.forEach(async (item) => {
-      if (item.request === requestId) {
-        setRequestInstructors((oldArr: any) => [...oldArr, item]);
-      }
+      setRequestInstructors((oldArr: any) => [...oldArr, item]);
     });
     if (response.next) {
       return await fetchRequestInstructors(response.next);
@@ -73,7 +70,7 @@ const Instructors: React.FC<InstructorsProps> = ({
   };
   useEffect(() => {
     fetchRequestInstructors(
-      `${process.env.REACT_APP_API_URL}/api/v1/request_ins/`
+      `${process.env.REACT_APP_API_URL}/api/v1/request_ins/?request=${requestId}`
     );
     //eslint-disable-next-line
   }, [requestId]);
@@ -84,23 +81,18 @@ const Instructors: React.FC<InstructorsProps> = ({
   }, [requestInstructors]);
 
   return (
-    <Table
-      responsive
-      hover
-      size="sm"
-      className="table-borderless mb-0 instructors-table-admin"
-    >
+    <Table bordered hover size="sm" className="mb-0 instructors-table-admin">
       <thead>
-        <tr className="border-0">
-          <th>Identificación</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
-          <th>Email</th>
-          <th>Teléfono</th>
-          <th>Ciudad</th>
+        <tr className="border-0 bg-primary">
+          <th className="text-white">ID</th>
+          <th className="text-white">Nombre</th>
+          <th className="text-white">Apellido</th>
+          <th className="text-white">Email</th>
+          <th className="text-white">Teléfono</th>
+          <th className="text-white">Ciudad</th>
           {/* <th>Dpto.</th> */}
-          <th>Tarifa</th>
-          <th>Viaticos</th>
+          <th className="text-white">Tarifa</th>
+          <th className="text-white">Primer pago</th>
         </tr>
       </thead>
       <tbody>

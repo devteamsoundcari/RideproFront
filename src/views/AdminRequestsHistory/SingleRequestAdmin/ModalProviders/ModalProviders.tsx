@@ -58,7 +58,6 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
     response.results.forEach(async (item: any) => {
       item.fare = 0;
       //   item.f_p = 0;
-      console.log(item);
       tempArr.push(item);
     });
     setProviders(tempArr);
@@ -213,9 +212,8 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
   const handleUpdateProvider = async () => {
     let providersIds = {};
     selectedProviders.forEach((prov) => {
-      return (providersIds[prov.id] = prov.fare);
+      return (providersIds[prov.id] = { fare: prov.fare, f_p: 0 });
     });
-    console.log("IDS", providersIds);
     let res = await updateRequestProviders({
       request: requestId,
       providers: providersIds,

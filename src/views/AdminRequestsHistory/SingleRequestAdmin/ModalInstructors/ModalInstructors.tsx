@@ -57,7 +57,6 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     const response = await getInstructors(url);
     response.results.forEach(async (item: any) => {
       item.fare = 0;
-      item.f_p = 0;
       tempArr.push(item);
     });
     setInstructors(tempArr);
@@ -112,15 +111,6 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
       text: "Tarifa $",
       headerClasses: "new-style",
       editCellClasses: "editing-cell",
-    },
-    {
-      dataField: "f_p",
-      text: "Viaticos $",
-      headerClasses: "new-style",
-      editCellClasses: "editing-cell",
-      headerStyle: {
-        width: "95px",
-      },
     },
   ];
 
@@ -191,10 +181,6 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
         alert("Por favor añade una tarifa");
         return false;
       }
-      if (isSelect && row.f_p === 0) {
-        alert("Por favor añade el pago de viaticos");
-        return false;
-      }
       if (isSelect) {
         if (!containsObject(row, selectedInstructors)) {
           setSelectedInstructors((oldArr: any) => [...oldArr, row]);
@@ -212,9 +198,8 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   const handleUpdateInstructor = async () => {
     let instructorsIds = {};
     selectedInstructors.forEach((inst) => {
-      return (instructorsIds[inst.id] = { fare: inst.fare, f_p: inst.f_p });
+      return (instructorsIds[inst.id] = { fare: inst.fare, f_p: 0 });
     });
-    console.log("IDS", instructorsIds);
     let res = await updateRequestInstructors({
       request: requestId,
       instructors: instructorsIds,
