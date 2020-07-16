@@ -111,7 +111,6 @@ const PlaceDate: React.FC<PlaceProps> = ({
             </div>
           </div>
         </Row>
-        <Row>haha</Row>
       </Col>
     </Row>
   );

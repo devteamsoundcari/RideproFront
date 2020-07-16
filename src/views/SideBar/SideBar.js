@@ -20,7 +20,6 @@ import defaultCompanyLogo from "../../assets/img/companydefault.png";
 import CompanyEditModal from "../Company/CompanyEditModal.tsx";
 import { getUserRequests, fetchDriver } from "../../controllers/apiRequests";
 import logo from "../../assets/img/logo.png";
-
 import "./SideBar.scss";
 
 const SideBar = (props) => {
@@ -29,10 +28,36 @@ const SideBar = (props) => {
     setRequestsInfoContext,
     setCanceledRequestContext,
     setLoadingContext,
+    updateRequestsContext,
   } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
+
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    let x = new WebSocket(`${process.env.REACT_APP_SOCKET_URL}?token=${token}`);
+    x.onopen = () => {
+      console.log("connected to socket ✅");
+      let payload1 = {
+        action: "subscribe_to_requests_from_customer",
+        customer: userInfoContext.id,
+        request_id: userInfoContext.id,
+      };
+      let payload2 = {
+        action: "subscribe_to_requests",
+        request_id: userInfoContext.id,
+      };
+      x.send(
+        JSON.stringify(userInfoContext.profile !== 2 ? payload2 : payload1)
+      );
+    };
+    x.onmessage = (evt) => {
+      // const message = JSON.parse(evt.data);
+      updateRequestsContext();
+    };
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (userInfoContext.company.logo !== "") {
@@ -185,7 +210,7 @@ const SideBar = (props) => {
           <Link
             to={`${props.url}/dashboard`}
             className="nav-link"
-            activeClassName="active"
+            // activeClassName="active"
             // exact={true}
           >
             <AiFillCalendar className="mb-1 mr-2" />
@@ -199,7 +224,7 @@ const SideBar = (props) => {
           )}
           <Link
             to={`${props.url}/historial`}
-            activeClassName="active"
+            // activeClassName="active"
             // exact={true}
             className="nav-link"
           >

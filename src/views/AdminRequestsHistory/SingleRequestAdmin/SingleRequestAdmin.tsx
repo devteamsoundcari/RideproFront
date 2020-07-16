@@ -14,6 +14,9 @@ import ModalPlaceDate from "./ModalPlaceDate/ModalPlaceDate";
 import PlaceDate from "./PlaceDate/PlaceDate";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
+import ConfirmSection from "./ConfirmSection/ConfirmSection";
+import Documents from "./Documents/Documents";
+import ModalOC from "./ModalOC/ModalOC";
 
 interface Service {
   name: string;
@@ -67,6 +70,8 @@ interface RequestData {
   optional_date2: any;
   optional_place2: any;
   operator: any;
+  fare_track: any;
+  f_p_track: any;
 }
 
 type Instructors = any[];
@@ -83,18 +88,53 @@ const SingleRequestAdmin = () => {
   const [providers, setProviders] = useState<Providers>([]);
   const { userInfoContext } = useContext(AuthContext);
   const { updateRequestsContext } = useContext(RequestsContext);
+  const [documentsOk, setDocumentsOk] = useState(false);
+  const [showModalOC, setShowModalOC] = useState(false);
+
+  async function fetchRequest(id: string) {
+    setLoading(true);
+    const responseRequest = await getRequest(id);
+    setLoading(false);
+    setData(responseRequest);
+  }
 
   useEffect(() => {
-    async function fetchRequest(id: string) {
-      setLoading(true);
-      const responseRequest = await getRequest(id);
-      setLoading(false);
-      setData(responseRequest);
-      console.log(responseRequest);
-    }
     fetchRequest(requestId);
     // eslint-disable-next-line
   }, []);
+
+  // useEffect(() => {
+  //   // user connected to server
+  //   let x = new WebSocket(
+  //     `${process.env.REACT_APP_SOCKET_URL}?token=781ab45f1a96068eae8fbb2d6602bbc0ba0de3aa`
+  //   );
+  //   x.onopen = () => {
+  //     // on connecting, do nothing but log it to the console
+  //     console.log("connected to socket ✅");
+  //     let payload = {
+  //       action: "subscribe_to_requests",
+  //       request_id: userInfoContext.id,
+  //     };
+  //     x.send(JSON.stringify(payload));
+  //   };
+  //   x.onmessage = (evt) => {
+  //     // listen to data sent from the websocket server
+  //     const message = JSON.parse(evt.data);
+  //     console.log(message.data.status, datadata);
+  //     if (message.data.status !== data?.status) {
+  //       swal({
+  //         title: "Login Success",
+  //         text: "Redirecting...",
+  //         icon: "success",
+  //         timer: 2000,
+  //       }).then(() => {
+  //         fetchRequest(requestId);
+  //       });
+  //     }
+  //     console.log(message);
+  //   };
+  //   //eslint-disable-next-line
+  // }, []);
 
   const formatAMPM = (startDate) => {
     let date = new Date(startDate);
@@ -157,6 +197,44 @@ const SingleRequestAdmin = () => {
             />
           </div>
         );
+      case 3:
+        return (
+          <div className="text-center">
+            <small>Programación aceptada</small>
+            <ProgressBar
+              variant={"event-confirmed" as any}
+              now={40}
+              label={`${60}%`}
+              srOnly
+            />
+          </div>
+        );
+      case 4:
+        return (
+          <div className="text-center">
+            <small>Confirmar recepción de documentos</small>
+            <ProgressBar
+              variant={"confirm-docs" as any}
+              now={70}
+              label={`${80}%`}
+              srOnly
+            />
+          </div>
+        );
+      case 5:
+        return (
+          <div className="text-center">
+            <small>
+              Evento Finalizado <FaCheckCircle className="text-success" />
+            </small>
+            <ProgressBar
+              variant={"event-finished" as any}
+              now={100}
+              label={`${100}%`}
+              srOnly
+            />
+          </div>
+        );
       default:
         return <p>Undefined</p>;
     }
@@ -178,7 +256,7 @@ const SingleRequestAdmin = () => {
     return <Spinner animation="border" />;
   } else {
     return (
-      <section className="single-request-admin">
+      <section className="single-request-admin mb-3">
         <Row>
           <div className="col-xl-9 col-md-8 col-12">
             <div className="card invoice-print-area">
@@ -305,7 +383,7 @@ const SingleRequestAdmin = () => {
                   )} */}
                 </div>
                 <hr />
-                <div className="mx-md-25 text-center">
+                <div className="mx-md-25 text-center pl-3 pr-3">
                   <h6>Instructores ({data?.instructors.length})</h6>
                   {data?.instructors.length > 0 ? (
                     <Instructors
@@ -317,7 +395,7 @@ const SingleRequestAdmin = () => {
                   )}
                 </div>
                 <hr />
-                <div className="mx-md-25 text-center">
+                <div className="mx-md-25 text-center pl-3 pr-3">
                   <h6>Proveedores ({data?.providers.length})</h6>
                   {data?.providers.length > 0 ? (
                     <Providers
@@ -325,51 +403,29 @@ const SingleRequestAdmin = () => {
                       providers={(data: any) => setProviders(data)}
                     />
                   ) : (
-                    <span>Esta solicitud no tiene Proveedores</span>
+                    <span>Esta solicitud no tiene proveedores</span>
                   )}
                 </div>
                 <hr />
-                <div className="mx-md-25 text-center">
+                <div className="mx-md-25 text-center pl-3 pr-3">
                   <h6>Participantes ({data?.drivers.length})</h6>
                   <Drivers drivers={data?.drivers} />
                 </div>
-                <hr />
-                <div className="card-body pt-0 mx-25">
-                  <Row>
-                    <div className="col-4 col-sm-6 mt-75">
-                      <p>Thanks for your business.</p>
-                    </div>
-                    <div className="col-8 col-sm-6 d-flex justify-content-end mt-75">
-                      <div className="invoice-subtotal">
-                        <div className="invoice-calc d-flex justify-content-between">
-                          <span className="invoice-title">Subtotal</span>
-                          <span className="invoice-value">$ 76.00</span>
-                        </div>
-                        <div className="invoice-calc d-flex justify-content-between">
-                          <span className="invoice-title">Discount</span>
-                          <span className="invoice-value">- $ 09.60</span>
-                        </div>
-                        <div className="invoice-calc d-flex justify-content-between">
-                          <span className="invoice-title">Tax</span>
-                          <span className="invoice-value">21%</span>
-                        </div>
-                        <hr />
-                        <div className="invoice-calc d-flex justify-content-between">
-                          <span className="invoice-title">Invoice Total</span>
-                          <span className="invoice-value">$ 66.40</span>
-                        </div>
-                        <div className="invoice-calc d-flex justify-content-between">
-                          <span className="invoice-title">Paid to date</span>
-                          <span className="invoice-value">- $ 00.00</span>
-                        </div>
-                        <div className="invoice-calc d-flex justify-content-between">
-                          <span className="invoice-title">Balance (USD)</span>
-                          <span className="invoice-value">$ 10,953</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Row>
-                </div>
+                {data?.status?.step ? (
+                  data?.status?.step > 3 ? (
+                    <React.Fragment>
+                      <hr />
+                      <Documents
+                        requestId={requestId}
+                        documentsOk={(data) => setDocumentsOk(data)}
+                      />
+                    </React.Fragment>
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>
@@ -389,9 +445,16 @@ const SingleRequestAdmin = () => {
                     variant="light"
                     className="btn-block"
                     onClick={() => setShowModalPlace(true)}
+                    disabled={
+                      data?.status?.step
+                        ? data?.status?.step >= 3
+                          ? true
+                          : false
+                        : false
+                    }
                   >
                     <span>Lugar / Fecha / Hora </span>
-                    {data?.optional_place1 ? (
+                    {data?.optional_date1 ? (
                       <FaCheckCircle className="text-success" />
                     ) : (
                       <FaTimes className="text-danger" />
@@ -418,6 +481,13 @@ const SingleRequestAdmin = () => {
                     variant="light"
                     className="btn-block"
                     onClick={() => setShowModalInstructors(true)}
+                    disabled={
+                      data?.status?.step
+                        ? data?.status?.step >= 3
+                          ? true
+                          : false
+                        : false
+                    }
                   >
                     <span>Instructores </span>
                     {data?.instructors.length > 0 ? (
@@ -440,6 +510,13 @@ const SingleRequestAdmin = () => {
                     variant="light"
                     className="btn-block"
                     onClick={() => setShowModalProviders(true)}
+                    disabled={
+                      data?.status?.step
+                        ? data?.status?.step >= 3
+                          ? true
+                          : false
+                        : false
+                    }
                   >
                     <span>Proveedores </span>
                     {data?.providers.length > 0 ? (
@@ -476,10 +553,8 @@ const SingleRequestAdmin = () => {
                             operator: userInfoContext.id,
                             status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`,
                           };
-                          // console.log("payload", payload);
-                          //   console.log(payload);
+
                           let res = await updateRequest(payload, requestId);
-                          console.log(res);
                           if (res.status === 200) {
                             // setDisabled(true);
                             updateRequestsContext();
@@ -508,6 +583,52 @@ const SingleRequestAdmin = () => {
                 </div>
               </div>
             </div>
+            {data?.status?.step
+              ? data?.status?.step > 2 && (
+                  <ConfirmSection
+                    instructors={instructors}
+                    providers={providers}
+                    track={data?.track}
+                    fare_track={data?.fare_track}
+                    fisrt_payment={data?.f_p_track}
+                    requestId={requestId}
+                    status={data?.status}
+                  />
+                )
+              : ""}
+
+            {data?.status?.step
+              ? data?.status?.step > 3 && (
+                  <div className="card invoice-action-wrapper mt-2 shadow-none border">
+                    <div className="card-body">
+                      <div className="invoice-action-btn">
+                        <Button
+                          className="btn-block btn-success"
+                          disabled={
+                            documentsOk && data?.status?.step < 5 ? false : true
+                          }
+                          onClick={() => setShowModalOC(true)}
+                        >
+                          <span>Enviar OC</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              : ""}
+
+            {showModalOC && (
+              <ModalOC
+                handleClose={() => setShowModalOC(false)}
+                instructors={instructors}
+                providers={providers}
+                track={data?.track}
+                fare_track={data?.fare_track}
+                fisrt_payment={data?.f_p_track}
+                requestId={requestId}
+                status={data?.status}
+              />
+            )}
           </div>
         </Row>
       </section>

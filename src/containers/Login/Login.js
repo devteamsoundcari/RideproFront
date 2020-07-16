@@ -121,7 +121,11 @@ const Login = () => {
   // ====================== REDIRECT DEPENDING ON PROFILE ======================
   useEffect(() => {
     if (userInfo.isSignedIn) {
-      console.log("user", userInfo);
+      console.log(
+        "%c ✅ User info:",
+        "color: orange; font-weight: bold;",
+        userInfo
+      );
       let path = "/";
       switch (userInfo.profile) {
         case 1:

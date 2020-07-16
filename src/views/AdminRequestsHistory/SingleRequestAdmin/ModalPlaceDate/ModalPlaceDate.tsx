@@ -99,7 +99,9 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
         setDisabled(true);
       }
     } else {
-      if (opt1.place && opt1.place !== "Seleccione...") {
+      if (propsTrack && opt1.date !== "") {
+        setDisabled(false);
+      } else if (opt1.place && opt1.place !== "Seleccione...") {
         if (opt1.date) {
           setDisabled(false);
         }
@@ -120,7 +122,6 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
 
   useEffect(() => {
     if (selectedPlace) {
-      console.log("rest");
       setOpt1({
         ...opt1,
         place: selectedPlace,
@@ -160,13 +161,10 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
 
   useEffect(() => {
     if (propsOptDate2 !== undefined) {
-      console.log("setting", propsOptDate2);
-
       setOpt2({
         ...opt2,
         date: propsOptDate2,
       });
-      console.log("setting", opt2);
     }
     if (propsOptPlace2 !== undefined) {
       setOpt2({
@@ -424,13 +422,13 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
         <Row>
           <Col md={12} className="text-center mt-3">
             <ButtonGroup toggle>
-              {!propsOptPlace2 && !propsOptPlace1 ? (
+              {!propsOptDate2 && !propsOptDate1 ? (
                 <Button
                   variant="outline-dark"
                   size="sm"
                   onClick={handleClickAddTrack}
                 >
-                  Administrar Pistas
+                  Agregar Pistas
                 </Button>
               ) : (
                 ""
@@ -455,55 +453,55 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
         <Button variant="secondary" onClick={handleClose}>
           Cerrar
         </Button>
-        <Button
-          variant="primary"
-          disabled={disabled}
-          onClick={() => {
-            swal({
-              title: "¿Estas seguro?",
-              text:
-                "Une vez confirmes, las opciones de Lugar, Fecha y Hora no podran ser modificadas.",
-              icon: "warning",
-              buttons: ["No, volver", "Si, confirmar"],
-              dangerMode: true,
-            }).then(async (willUpdate) => {
-              if (willUpdate) {
-                let payload = {
-                  optional_place1: opt1.place,
-                  optional_date1: opt1.date,
-                  operator: userInfoContext.id,
-                };
-                let payload2 = {
-                  optional_place1: opt1.place,
-                  optional_date1: opt1.date,
-                  optional_place2: opt2.place,
-                  optional_date2: opt2.date,
-                  operator: userInfoContext.id,
-                };
+        {!propsOptDate1 && (
+          <Button
+            variant="primary"
+            disabled={disabled}
+            onClick={() => {
+              swal({
+                title: "¿Estas seguro?",
+                text:
+                  "Une vez confirmes, las opciones de Lugar, Fecha y Hora no podran ser modificadas.",
+                icon: "warning",
+                buttons: ["No, volver", "Si, confirmar"],
+                dangerMode: true,
+              }).then(async (willUpdate) => {
+                if (willUpdate) {
+                  let payload = {
+                    optional_place1: opt1.place,
+                    optional_date1: opt1.date,
+                    operator: userInfoContext.id,
+                  };
+                  let payload2 = {
+                    optional_place1: opt1.place,
+                    optional_date1: opt1.date,
+                    optional_place2: opt2.place,
+                    optional_date2: opt2.date,
+                    operator: userInfoContext.id,
+                  };
 
-                // console.log("payload", payload);
-                //   console.log(payload);
-                let res = await updateRequest(
-                  showAlternative ? payload2 : payload,
-                  requestId
-                );
-                if (res.status === 200) {
-                  // setDisabled(true);
-                  updateRequestsContext();
-                  swal("Solicitud actualizada!", {
-                    icon: "success",
-                  });
-                } else {
-                  swal("Oops, no se pudo actualizar el servicio.", {
-                    icon: "error",
-                  });
+                  let res = await updateRequest(
+                    showAlternative ? payload2 : payload,
+                    requestId
+                  );
+                  if (res.status === 200) {
+                    // setDisabled(true);
+                    updateRequestsContext();
+                    swal("Solicitud actualizada!", {
+                      icon: "success",
+                    });
+                  } else {
+                    swal("Oops, no se pudo actualizar el servicio.", {
+                      icon: "error",
+                    });
+                  }
                 }
-              }
-            });
-          }}
-        >
-          Confirmar
-        </Button>
+              });
+            }}
+          >
+            Confirmar
+          </Button>
+        )}
       </Modal.Footer>
     </Modal>
   );

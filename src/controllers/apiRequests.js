@@ -116,6 +116,28 @@ const setUserProfilePicture = async (user, picture) => {
   return result;
 };
 
+const setRequestFile = async (requestId, id, docId, file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("request", requestId);
+  formData.append("document_id", docId);
+  const result = await axios
+    .patch(
+      `${process.env.REACT_APP_API_URL}/api/v1/request_doc/${id}/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    )
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
+};
+
 const editUser = async (data) => {
   const result = await axios({
     method: "PATCH",
@@ -550,6 +572,20 @@ const getRequest = async (id) => {
   return request.data;
 };
 
+/* =================================  ADD DOCUMENTS TO A REQUEST  ===================================== */
+
+const updateRequestDocuments = async (data) => {
+  // console.log("ENVIA", data);
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/request_documents/`,
+    data,
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+
 /* =================================   POST REQUEST INSTRUCTORS FARE  ===================================== */
 
 const updateRequestInstructors = async (data) => {
@@ -564,7 +600,18 @@ const updateRequestInstructors = async (data) => {
   return result;
 };
 
-/* =================================   POST REQUEST INSTRUCTORS FARE  ===================================== */
+const updateInstructorFares = async (data, id) => {
+  // console.log("ENVIA", data);
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/request_ins/${id}/`,
+    data,
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+/* =================================   POST REQUEST PROVIDERS FARE  ===================================== */
 
 const updateRequestProviders = async (data) => {
   // console.log("ENVIA", data);
@@ -576,6 +623,34 @@ const updateRequestProviders = async (data) => {
     return err;
   });
   return result;
+};
+
+const updateProviderFares = async (data, id) => {
+  // console.log("ENVIA", data);
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/request_prov/${id}/`,
+    data,
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+
+/* =================================   GET REQUEST DOCUMENTS  ===================================== */
+
+const getRequestDocuments = async (url) => {
+  const getInfo = async () => {
+    const requestsData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return requestsData;
+  };
+  let requests = await getInfo();
+  return requests.data;
 };
 
 /* =================================   GET REQUEST INSTRUCTORS  ===================================== */
@@ -852,6 +927,7 @@ export {
   getUserInfo,
   setUserCredits,
   setUserProfilePicture,
+  setRequestFile,
   decreaseUserCredits,
   passwordReset,
   setNewPassword,
@@ -869,8 +945,12 @@ export {
   getAllDrivers,
   updateRequest,
   getRequest,
+  updateRequestDocuments,
+  getRequestDocuments,
   updateRequestInstructors,
+  updateInstructorFares,
   updateRequestProviders,
+  updateProviderFares,
   updateDriver,
   getRequestInstructors,
   getRequestProviders,

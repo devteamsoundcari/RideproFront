@@ -12,11 +12,9 @@ import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import "./AdminRequestsHistory.scss";
-import SingleRequestModalAdmin from "./SingleRequestModalAdmin/SingleRequestModalAdmin";
 import SingleRequestAdmin from "./SingleRequestAdmin/SingleRequestAdmin";
 const AdminRequestsHistory = () => {
   const location = useLocation();
-  const [modalShow, setModalShow] = useState(false);
   // eslint-disable-next-line
   const [selectedRow, setSelectedRow] = useState({});
   const history = useHistory();
@@ -86,6 +84,42 @@ const AdminRequestsHistory = () => {
               variant="confirm-event"
               now={30}
               label={`${40}%`}
+              srOnly
+            />
+          </div>
+        );
+      case 3:
+        return (
+          <div className="text-center">
+            <small>Programación aceptada</small>
+            <ProgressBar
+              variant="event-confirmed"
+              now={30}
+              label={`${40}%`}
+              srOnly
+            />
+          </div>
+        );
+      case 4:
+        return (
+          <div className="text-center">
+            <small>Confirmar recepción de documentos</small>
+            <ProgressBar
+              variant={"confirm-docs"}
+              now={70}
+              label={`${80}%`}
+              srOnly
+            />
+          </div>
+        );
+      case 5:
+        return (
+          <div className="text-center">
+            <small>Evento Finalizado</small>
+            <ProgressBar
+              variant={"event-finished"}
+              now={100}
+              label={`${100}%`}
               srOnly
             />
           </div>
@@ -203,13 +237,6 @@ const AdminRequestsHistory = () => {
           </Route>
           <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />
         </Switch>
-      )}
-      {modalShow && (
-        <SingleRequestModalAdmin
-          show={true}
-          onHide={() => setModalShow(false)}
-          selectedRow={selectedRow}
-        />
       )}
     </Container>
   );

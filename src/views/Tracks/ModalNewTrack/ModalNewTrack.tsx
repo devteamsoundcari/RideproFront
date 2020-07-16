@@ -217,7 +217,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
               </Form.Group>
               {userInfoContext.profile !== 2 && (
                 <Form.Group as={Col} controlId="formGridFare">
-                  <Form.Label>Tarifa</Form.Label>
+                  <Form.Label>Tarifa promedio</Form.Label>
                   <input
                     className="form-control"
                     type="number"
