@@ -715,7 +715,6 @@ const SingleRequestModal = (props) => {
                                         : optional_place2,
                                     service: service.name,
                                   };
-                                  console.log("PAYLOAD", payload);
                                   await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
                                 } else {
                                   swal(
