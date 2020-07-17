@@ -3,7 +3,11 @@ import { useParams } from "react-router-dom";
 import { Row, ProgressBar, Button, Spinner } from "react-bootstrap";
 import { FaCheckCircle, FaTimes } from "react-icons/fa";
 import swal from "sweetalert";
-import { getRequest, updateRequest } from "../../../controllers/apiRequests";
+import {
+  getRequest,
+  updateRequest,
+  sendEmail,
+} from "../../../controllers/apiRequests";
 import "./SingleRequestAdmin.scss";
 import Drivers from "./Drivers/Drivers";
 import Instructors from "./Instructors/Instructors";
@@ -557,10 +561,23 @@ const SingleRequestAdmin = () => {
                           let res = await updateRequest(payload, requestId);
                           if (res.status === 200) {
                             // setDisabled(true);
-                            updateRequestsContext();
                             swal("Solicitud actualizada!", {
                               icon: "success",
                             });
+                            // SEND EMAIL
+                            const payload = {
+                              id: requestId,
+                              emailType: "requestOptions",
+                              subject: "Confirmar solicitud ⚠️",
+                              email: data?.customer?.email,
+                              name: data?.customer?.first_name,
+                              optional_place1: data?.optional_place1,
+                              optional_place2: data?.optional_place2,
+                              optional_date1: data?.optional_date1,
+                              optional_date2: data?.optional_date2,
+                              service: data?.service,
+                            };
+                            await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
                           } else {
                             swal("Oops, no se pudo actualizar el servicio.", {
                               icon: "error",
@@ -622,11 +639,13 @@ const SingleRequestAdmin = () => {
                 handleClose={() => setShowModalOC(false)}
                 instructors={instructors}
                 providers={providers}
+                date={data?.start_time}
                 track={data?.track}
                 fare_track={data?.fare_track}
                 fisrt_payment={data?.f_p_track}
                 requestId={requestId}
                 status={data?.status}
+                service={data?.service}
               />
             )}
           </div>

@@ -7,6 +7,7 @@ import {
   updateInstructorFares,
   updateProviderFares,
   updateRequest,
+  sendEmail,
 } from "../../../../controllers/apiRequests";
 import swal from "sweetalert";
 
@@ -20,6 +21,8 @@ const ModalOC: React.FC<ModalOCProps> = ({
   fare_track,
   fisrt_payment,
   status,
+  date,
+  service,
   handleClose,
 }) => {
   const [allInstructors, setAllInstructors] = useState([]);
@@ -359,6 +362,26 @@ const ModalOC: React.FC<ModalOCProps> = ({
                     `Haz culminado tus labores con la solicitud #${requestId} 👍`,
                     "success"
                   );
+                  //TODO: Sent emails to every provider
+                  // SEND EMAIL
+                  const payload = {
+                    id: requestId,
+                    emailType: "ocAdmin",
+                    subject: `OC Servicio#${requestId} 📑`,
+                    uniqId: `${requestId}-${
+                      providers.length + instructors.length + 1
+                    }`,
+                    email: "sdelrio@ridepro.co",
+                    name: "Sergio",
+                    date: date,
+                    track: track,
+                    track_balance: fare_track - fisrt_payment,
+                    instructors: instructors,
+                    providers: providers,
+                    service: service,
+                  };
+                  await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
+
                   handleClose();
                 } else {
                   swal(
