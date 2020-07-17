@@ -6,13 +6,17 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom";
-import { RequestsContext } from "../../contexts/RequestsContext";
-import { Container, Card, ProgressBar, Spinner } from "react-bootstrap";
+import { Container, Card, ProgressBar, Spinner, Alert } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import "./AdminRequestsHistory.scss";
+import { RequestsContext } from "../../contexts/RequestsContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import SingleRequestAdmin from "./SingleRequestAdmin/SingleRequestAdmin";
+import "./AdminRequestsHistory.scss";
+
+const useMountEffect = (func) => useEffect(func, []);
+
 const AdminRequestsHistory = () => {
   const location = useLocation();
   // eslint-disable-next-line
@@ -22,19 +26,27 @@ const AdminRequestsHistory = () => {
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   const [sortedRequests, setSortedRequests] = useState([]);
-  const { requestsInfoContext } = useContext(RequestsContext);
+  const { requestsInfoContext, updateRequestInfo, loadingContext } = useContext(
+    RequestsContext
+  );
+  const { userInfoContext } = useContext(AuthContext);
   let { path, url } = useRouteMatch();
+
   useEffect(() => {
     if (location.state) {
       handleOnSelect(location.state.event);
     }
     // eslint-disable-next-line
   }, [location]);
+
   // ================================ FETCH REQUESTS ON LOAD =====================================================
+
   useEffect(() => {
     setRequests(requestsInfoContext);
   }, [requestsInfoContext]);
+
   // ========================================= LOADING SPINNER =====================================
+
   useEffect(() => {
     // Sorting requests so that the most recent goes on top
     if (requests.length > 1) {
@@ -55,6 +67,27 @@ const AdminRequestsHistory = () => {
     }
     //eslint-disable-next-line
   }, [requests]);
+
+  useMountEffect(() => {
+    let token = localStorage.getItem("token");
+    let requestsSocket = new WebSocket(
+      `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
+    );
+
+    requestsSocket.addEventListener("open", () => {
+      let payload = {
+        action: "subscribe_to_requests",
+        request_id: userInfoContext.id,
+      };
+      requestsSocket.send(JSON.stringify(payload));
+    });
+
+    requestsSocket.addEventListener("message", (event) => {
+      let data = JSON.parse(event.data);
+      updateRequestInfo(data.data.id);
+    });
+  });
+
   //  ========================================================================================
   const statusFormatter = (cell, row) => {
     switch (row.status.step) {
@@ -201,21 +234,21 @@ const AdminRequestsHistory = () => {
       sort: true,
     },
   ];
+
   const handleOnSelect = (row) => {
-    console.log("row", row);
     history.push(`${url}/${row.id}`);
-    // setSelectedRow(row);
-    // setModalShow(true);
   };
+
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
     hideSelectColumn: true,
     onSelect: handleOnSelect,
   };
+
   return (
     <Container fluid="md" id="client-requests-history">
-      {requests.length === 0 ? (
+      {loadingContext ? (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
@@ -223,16 +256,24 @@ const AdminRequestsHistory = () => {
         <Switch>
           <Route exact path={path}>
             <Card>
-              <BootstrapTable
+              {requests.length === 0 ? (
+                <Alert variant="light">
+                  <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
+                  <p>
+                    Para crear una solicitud, ingresa a "Solicitar".
+                  </p>
+                </Alert>
+              ) : 
+              (<BootstrapTable
                 bootstrap4
                 keyField="id"
                 data={requests}
                 columns={columns}
-                // expandRow={expandRow}
                 selectRow={selectRow}
                 filter={filterFactory()}
                 pagination={paginationFactory()}
-              />
+              />)
+              }
             </Card>
           </Route>
           <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />

@@ -41,7 +41,6 @@ const SetServiceLines = (props) => {
                 services={services}
                 handleClick={handleClick}
               />
-              ;
             </div>
           );
         })}

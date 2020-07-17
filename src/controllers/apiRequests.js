@@ -433,7 +433,6 @@ const editRequest = async (id, data) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
-  console.log(result);
   let creditDecreasing = await decreaseUserCredits(
     result.data.customer,
     data.spent_credit - data.prev_credits
