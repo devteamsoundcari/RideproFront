@@ -694,10 +694,28 @@ const SingleRequestModal = (props) => {
                                 console.log(res);
                                 if (res.status === 200) {
                                   handleClose();
-                                  updateRequestsContext();
+                                  // updateRequestsContext();
                                   swal("Solicitud actualizada!", {
                                     icon: "success",
                                   });
+                                  // SEND EMAIL
+                                  const payload = {
+                                    id: id,
+                                    emailType: "requestConfirmed",
+                                    subject: "Servicio programado ✅",
+                                    email: userInfoContext.email,
+                                    name: userInfoContext.name,
+                                    date:
+                                      selectedOption === 1
+                                        ? payload1.start_date
+                                        : payload2.start_date,
+                                    track:
+                                      selectedOption === 1
+                                        ? optional_place1
+                                        : optional_place2,
+                                    service: service.name,
+                                  };
+                                  await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
                                 } else {
                                   swal(
                                     "Oops, no se pudo actualizar el servicio.",
