@@ -1,29 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
-// import { AuthContext } from "../../contexts/AuthContext";
-import { RequestsContext } from "../../contexts/RequestsContext";
-import { getTracks } from "../../controllers/apiRequests";
 import { AiFillDollarCircle } from "react-icons/ai";
-import {
-  // Table,
-  Container,
-  Card,
-  // Row,
-  // Col,
-  ProgressBar,
-  // Alert,
-  // Badge,
-  Spinner,
-  // Tab,
-  // Nav,
-} from "react-bootstrap";
+import { Container, Card, ProgressBar, Spinner, Alert } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
-// import { FaEye, FaEyeSlash } from "react-icons/fa";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import "./ClientRequestsHistory.scss";
-// import { cancelRequestId } from "../../controllers/apiRequests";
+import { RequestsContext } from "../../contexts/RequestsContext";
+import { getTracks } from "../../controllers/apiRequests";
+import { AuthContext } from "../../contexts/AuthContext";
 import SingleRequestModal from "./SingleRequestModal/SingleRequestModal";
+import "./ClientRequestsHistory.scss";
+
+const useMountEffect = (func) => useEffect(func, []);
 
 const ClientRequestsHistory = () => {
   const location = useLocation();
@@ -34,14 +22,11 @@ const ClientRequestsHistory = () => {
   //eslint-disable-next-line
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
-  // const [updateList, setUpdateList] = useState(false);
   const [sortedRequests, setSortedRequests] = useState([]);
-  // const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
-  const { requestsInfoContext } = useContext(RequestsContext);
-  // const [renderCancelRequesModal, setRenderCancelRequestModal] = useState({
-  //   show: false,
-  //   item: null,
-  // });
+  const { requestsInfoContext, updateRequestInfo, loadingContext } = useContext(
+    RequestsContext
+  );
+  const { userInfoContext } = useContext(AuthContext);
 
   useEffect(() => {
     if (location.state) {
@@ -61,43 +46,31 @@ const ClientRequestsHistory = () => {
       return await getTracks(response.next);
     }
   };
+
   useEffect(() => {
     fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
   }, []);
 
-  // ==================================================================================
-  // const handleCancelRequest = (item) => {
-  //   setRenderCancelRequestModal({ show: true, item: item });
-  // };
+  useMountEffect(() => {
+    let token = localStorage.getItem("token");
+    let requestsSocket = new WebSocket(
+      `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
+    );
 
-  // =============== CANCELING THE REQUEST AND REFIND CREDITS ========================================================
+    requestsSocket.addEventListener("open", () => {
+      let payload = {
+        action: "subscribe_to_requests_from_customer",
+        customer: userInfoContext.id,
+        request_id: userInfoContext.id,
+      };
+      requestsSocket.send(JSON.stringify(payload));
+    });
 
-  // const cancelRequest = async () => {
-  //   let data = {
-  //     id: renderCancelRequesModal.item.id,
-  //     company: renderCancelRequesModal.item.customer.company.id,
-  //     refund_credits:
-  //       renderCancelRequesModal.item.drivers.length *
-  //         renderCancelRequesModal.item.service.ride_value +
-  //       renderCancelRequesModal.item.customer.company.credit,
-  //   };
-  //   let res = await cancelRequestId(data);
-  //   if (res.canceled.status === 200 && res.refund.status === 200) {
-  //     setRequests([]);
-  //     setRenderCancelRequestModal({ show: false });
-  //     setUpdateList(!updateList);
-  //     // SET COMPANY CONTEXT
-  //     setUserInfoContext({
-  //       ...userInfoContext,
-  //       company: {
-  //         ...userInfoContext.company,
-  //         credit: res.refund.data.credit,
-  //       },
-  //     });
-  //   } else {
-  //     alert("No se pudo cancelar");
-  //   }
-  // };
+    requestsSocket.addEventListener("message", (event) => {
+      let data = JSON.parse(event.data);
+      updateRequestInfo(data.data.id);
+    });
+  });
 
   // ================================ FETCH REQUESTS ON LOAD =====================================================
 
@@ -293,102 +266,6 @@ const ClientRequestsHistory = () => {
     },
   ];
 
-  // const expandRow = {
-  //   parentClassName: "selected-row",
-  //   className: "selected-expanding-row",
-  //   showExpandColumn: true,
-  //   onlyOneExpanding: true,
-  //   renderer: (row) => (
-  //     <Tab.Container id="left-tabs-example" defaultActiveKey="first">
-  //       <Row>
-  //         <Col sm={2}>
-  //           <Nav variant="pills" className="flex-column">
-  //             <Nav.Link eventKey="first">General</Nav.Link>
-  //             <Nav.Link eventKey="second">
-  //               Lugar{" "}
-  //               {row.track === null ? <Badge variant="danger">!</Badge> : ""}
-  //             </Nav.Link>
-  //             <Nav.Link eventKey="third">
-  //               Participantes ({row.drivers.length})
-  //             </Nav.Link>
-  //           </Nav>
-  //         </Col>
-  //         <Col sm={10}>
-  //           <Tab.Content>
-  //             <Tab.Pane eventKey="first">
-  //               <Table responsive size="sm">
-  //                 <thead>
-  //                   <tr>
-  //                     <th>Servicio</th>
-  //                     <th>Tipo de Servicio</th>
-  //                     <th>Creditos pagados</th>
-  //                   </tr>
-  //                 </thead>
-  //                 <tbody>
-  //                   <tr>
-  //                     <td>{row.service.name}</td>
-  //                     <td>{row.service.service_type}</td>
-  //                     <td>{row.spent_credit}</td>
-  //                   </tr>
-  //                 </tbody>
-  //               </Table>
-  //             </Tab.Pane>
-  //             <Tab.Pane eventKey="second">
-  //               <p>{`This Expand row is belong to rowKey ${row.id}`}</p>
-  //               <p>
-  //                 You can render anything here, also you can add additional data
-  //                 on every row object
-  //               </p>
-  //               <p>
-  //                 expandRow.renderer callback will pass the origin row object to
-  //                 you
-  //               </p>
-  //             </Tab.Pane>
-  //             <Tab.Pane eventKey="third">
-  //               <Table striped responsive hover size="sm">
-  //                 <thead>
-  //                   <tr>
-  //                     <th>Documento</th>
-  //                     <th>Nombre</th>
-  //                     <th>Email</th>
-  //                     <th>Teléfono</th>
-  //                   </tr>
-  //                 </thead>
-  //                 <tbody>
-  //                   {row.drivers.map((driver, idx) => {
-  //                     return (
-  //                       <tr key={idx}>
-  //                         <td>{driver.official_id}</td>
-  //                         <td>
-  //                           {driver.first_name} {driver.last_name}
-  //                         </td>
-  //                         <td>{driver.email}</td>
-  //                         <td>{driver.cellphone}</td>
-  //                       </tr>
-  //                     );
-  //                   })}
-  //                 </tbody>
-  //               </Table>
-  //             </Tab.Pane>
-  //           </Tab.Content>
-  //         </Col>
-  //       </Row>
-  //     </Tab.Container>
-  //   ),
-  //   expandHeaderColumnRenderer: ({ isAnyExpands }) => {
-  //     if (isAnyExpands) {
-  //       return <b>-</b>;
-  //     }
-  //     return <b>+</b>;
-  //   },
-  //   expandColumnRenderer: ({ expanded }) => {
-  //     if (expanded) {
-  //       return <FaEyeSlash />;
-  //     }
-  //     return <FaEye />;
-  //   },
-  // };
-
   const handleOnSelect = (row) => {
     console.log("row", row);
     setSelectedRow(row);
@@ -404,22 +281,28 @@ const ClientRequestsHistory = () => {
 
   return (
     <Container fluid="md" id="client-requests-history">
-      {requests.length === 0 ? (
+      {loadingContext ? (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
       ) : (
         <Card>
-          <BootstrapTable
-            bootstrap4
-            keyField="id"
-            data={requests}
-            columns={columns}
-            // expandRow={expandRow}
-            selectRow={selectRow}
-            filter={filterFactory()}
-            pagination={paginationFactory()}
-          />
+          {requests.length === 0 ? (
+            <Alert variant="light">
+              <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
+              <p>Para crear una solicitud, ingresa a "Solicitar".</p>
+            </Alert>
+          ) : (
+            <BootstrapTable
+              bootstrap4
+              keyField="id"
+              data={requests}
+              columns={columns}
+              selectRow={selectRow}
+              filter={filterFactory()}
+              pagination={paginationFactory()}
+            />
+          )}
         </Card>
       )}
       {modalShow && (

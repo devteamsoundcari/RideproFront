@@ -25,39 +25,11 @@ import "./SideBar.scss";
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
   const {
-    setRequestsInfoContext,
-    setCanceledRequestContext,
-    setLoadingContext,
     updateRequestsContext,
   } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
-
-  useEffect(() => {
-    let token = localStorage.getItem("token");
-    let x = new WebSocket(`${process.env.REACT_APP_SOCKET_URL}?token=${token}`);
-    x.onopen = () => {
-      console.log("connected to socket ✅");
-      let payload1 = {
-        action: "subscribe_to_requests_from_customer",
-        customer: userInfoContext.id,
-        request_id: userInfoContext.id,
-      };
-      let payload2 = {
-        action: "subscribe_to_requests",
-        request_id: userInfoContext.id,
-      };
-      x.send(
-        JSON.stringify(userInfoContext.profile !== 2 ? payload2 : payload1)
-      );
-    };
-    x.onmessage = (evt) => {
-      // const message = JSON.parse(evt.data);
-      updateRequestsContext();
-    };
-    //eslint-disable-next-line
-  }, []);
 
   useEffect(() => {
     if (userInfoContext.company.logo !== "") {
@@ -84,44 +56,9 @@ const SideBar = (props) => {
   // ========================= SETTING REQUESTS CONTEXT ON LOAD =======================================
 
   useEffect(() => {
-    let urlType = userInfoContext.profile === 2 ? "user_requests" : "requests";
-    async function fetchRequests(url) {
-      const response = await getUserRequests(url);
-      response.results.map(async (item) => {
-        // ================= GETTING CANCELING DATE ====================
-        let cancelDate = new Date(item.start_time);
-        cancelDate.setDate(cancelDate.getDate() - 1);
-        item.cancelDate = cancelDate;
-
-        item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
-        item.start = new Date(item.start_time);
-        item.end = new Date(item.finish_time);
-
-        // =========== GETTING INFO OF EACH DRIVER =================
-        getDrivers(item.drivers).then((data) => {
-          item.drivers = data;
-          if (item.status.step === 0) {
-            setCanceledRequestContext((prev) => [...prev, item]);
-          } else {
-            setRequestsInfoContext((prev) => [...prev, item]);
-          }
-        });
-        setLoadingContext(false);
-
-        return true;
-      });
-      if (response.next) {
-        setLoadingContext(true);
-        return await fetchRequests(response.next);
-      }
-    }
-    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
+    updateRequestsContext();
     // eslint-disable-next-line
   }, []);
-
-  const getDrivers = async (driversIds) => {
-    return Promise.all(driversIds.map((id) => fetchDriver(id)));
-  };
 
   const companyEditModal = () => {
     return (

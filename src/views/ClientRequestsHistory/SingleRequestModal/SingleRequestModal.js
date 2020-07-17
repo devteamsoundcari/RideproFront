@@ -21,6 +21,7 @@ import {
   getAllDrivers,
   sendEmail,
   updateRequest,
+  fetchDriver,
 } from "../../../controllers/apiRequests";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
@@ -80,16 +81,9 @@ const SingleRequestModal = (props) => {
 
   const [additionalCredits, setAdditionalCredits] = useState(0);
   const [driversForReplacing, setDriversForReplacing] = useState([]);
-  const [allDrivers, setAllDrivers] = useState(
-    drivers.map((driver) => {
-      driver.isRegistered = true;
-      return driver;
-    })
-  );
-  const [initialRegisteredDrivers, setInitialRegisteredDrivers] = useState([
-    ...drivers,
-  ]);
-  const [registeredDrivers, setRegisteredDrivers] = useState([...drivers]);
+  const [allDrivers, setAllDrivers] = useState(null);
+  const [initialRegisteredDrivers, setInitialRegisteredDrivers] = useState(null);
+  const [registeredDrivers, setRegisteredDrivers] = useState(null);
   const [newDrivers, setNewDrivers] = useState([]);
   //eslint-disable-next-line
   const [areDriversValid, setAreDriversValid] = useState(true);
@@ -146,7 +140,7 @@ const SingleRequestModal = (props) => {
   };
 
   useEffect(() => {
-    if (newParticipantsContext.length > 0) {
+    if (newParticipantsContext.length > 0 && allDrivers.length > 0) {
       setDriversForReplacing(
         newParticipantsContext.map((driver) => {
           driver.isRegistered = true;
@@ -167,6 +161,23 @@ const SingleRequestModal = (props) => {
     fetchDrivers(`${process.env.REACT_APP_API_URL}/api/v1/drivers_company/`);
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    let getDrivers = async (ids) => { 
+      return Promise.all(ids.map((id) => fetchDriver(id)));
+    };
+
+    getDrivers(drivers).then((data) => {
+      let obtainedDrivers = data.map((driver) => {
+        driver.isRegistered = true;
+        return driver;
+      })
+      setAllDrivers(obtainedDrivers);
+      setRegisteredDrivers(obtainedDrivers);
+      setInitialRegisteredDrivers(obtainedDrivers);
+    });
+
+  }, [drivers])
 
   const fetchDrivers = async (url) => {
     const items = [];
@@ -225,41 +236,50 @@ const SingleRequestModal = (props) => {
   };
 
   useEffect(() => {
-    let registeredIDs = registeredDrivers.map((driver) => {
-      return driver.official_id;
-    });
-    let unregistered = allDrivers.filter((driver) => {
-      let index = registeredIDs.findIndex((id) => {
-        return id === driver.official_id;
+    if (allDrivers && registeredDrivers) {
+      let registeredIDs = registeredDrivers.map((driver) => {
+        return driver.official_id;
       });
-      return index < 0 ? true : false;
-    });
-    let registered = allDrivers.filter((driver) => {
-      let index = registeredIDs.findIndex((id) => {
-        return id === driver.official_id;
+      let unregistered = allDrivers.filter((driver) => {
+        let index = registeredIDs.findIndex((id) => {
+          return id === driver.official_id;
+        });
+        return index < 0 ? true : false;
       });
-      return index >= 0 ? true : false;
-    });
-    setRegisteredDrivers(registered);
-    setRegisteredParticipantsContext(registered);
-    setNewDrivers(unregistered);
-    setParticipantsToRegisterContext(allDrivers);
-    setAdditionalCredits(unregistered.length * service.ride_value);
+      let registered = allDrivers.filter((driver) => {
+        let index = registeredIDs.findIndex((id) => {
+          return id === driver.official_id;
+        });
+        return index >= 0 ? true : false;
+      });
+      setRegisteredDrivers(registered);
+      setRegisteredParticipantsContext(registered);
+      setNewDrivers(unregistered);
+      setParticipantsToRegisterContext(allDrivers);
+      setAdditionalCredits(unregistered.length * service.ride_value);
+    }
     //eslint-disable-next-line
   }, [allDrivers]);
 
   useEffect(() => {
-    if (
-      registeredDrivers.length !== initialRegisteredDrivers.length ||
-      newDrivers.length > 0
-    ) {
-      if (registeredDrivers.length === 0) {
-        setCanSaveDrivers(false);
+    console.log(allDrivers);
+    console.log(registeredDrivers);
+  }, [allDrivers]);
+
+  useEffect(() => {
+    if (registeredDrivers && initialRegisteredDrivers) {
+      if (
+        registeredDrivers.length !== initialRegisteredDrivers.length ||
+        newDrivers.length > 0
+      ) {
+        if (registeredDrivers.length === 0) {
+          setCanSaveDrivers(false);
+        } else {
+          setCanSaveDrivers(true);
+        }
       } else {
-        setCanSaveDrivers(true);
+        setCanSaveDrivers(false);
       }
-    } else {
-      setCanSaveDrivers(false);
     }
     //eslint-disable-next-line
   }, [newDrivers, registeredDrivers]);
@@ -304,7 +324,6 @@ const SingleRequestModal = (props) => {
       if (res.canceled.status === 200 && res.refund.status === 200) {
         setLoading(false);
         setSuccess(true);
-        updateRequestsContext();
         setUserInfoContext({
           ...userInfoContext,
           company: {
@@ -727,7 +746,7 @@ const SingleRequestModal = (props) => {
                 </span>
               }
             >
-              {status.step === 1 ? (
+              {status.step === 1 && allDrivers ? (
                 <EditableTable
                   size="sm"
                   dataSet={allDrivers}

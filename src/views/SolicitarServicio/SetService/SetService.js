@@ -11,11 +11,11 @@ const SetService = (props) => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
-    async function fetcServices() {
+    async function fetchServices() {
       const response = await getServices();
       setServices(response);
     }
-    fetcServices();
+    fetchServices();
   }, []);
 
   // =============================== SET SERVICE ==================================================
