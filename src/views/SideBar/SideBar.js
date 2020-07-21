@@ -18,14 +18,13 @@ import { RequestsContext } from "../../contexts/RequestsContext";
 import Greeting from "../Usuarios/Greeting/Greeting";
 import defaultCompanyLogo from "../../assets/img/companydefault.png";
 import CompanyEditModal from "../Company/CompanyEditModal.tsx";
-import { getUserRequests, fetchDriver } from "../../controllers/apiRequests";
 import logo from "../../assets/img/logo.png";
 import "./SideBar.scss";
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
   const {
-    updateRequestsContext,
+    updateRequests,
   } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
@@ -56,7 +55,7 @@ const SideBar = (props) => {
   // ========================= SETTING REQUESTS CONTEXT ON LOAD =======================================
 
   useEffect(() => {
-    updateRequestsContext();
+    updateRequests();
     // eslint-disable-next-line
   }, []);
 

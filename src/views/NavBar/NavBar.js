@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { FaBell, FaPowerOff, FaUser } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
@@ -17,11 +17,7 @@ const NavBar = () => {
     setUserInfoContext,
     setIsLoggedInContext,
   } = useContext(AuthContext);
-  const { setRequestsInfoContext, setCanceledRequestContext } = useContext(
-    RequestsContext
-  );
-  //eslint-disable-next-line
-  const [profile, setProfile] = useState("");
+  const { setRequests, setCancelledRequests } = useContext(RequestsContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
 
@@ -30,29 +26,12 @@ const NavBar = () => {
     setAuthorizationToken();
     setIsLoggedInContext(false);
     setUserInfoContext({});
-    setRequestsInfoContext([]);
-    setCanceledRequestContext([]);
+    setRequests([]);
+    setCancelledRequests([]);
     history.push({
       pathname: "/login",
     });
   };
-
-  useEffect(() => {
-    switch (userInfoContext.profile) {
-      case 1:
-        setProfile("Admin");
-        break;
-      case 2:
-        setProfile("Cliente");
-        break;
-      case 3:
-        setProfile("Operario");
-        break;
-      default:
-        break;
-    }
-    // eslint-disable-next-line
-  }, [userInfoContext]);
 
   useState(() => {
     window.addEventListener("scroll", () => {
@@ -71,10 +50,10 @@ const NavBar = () => {
   const profileEditModal = () => {
     return (
       <ProfileEditModal
-       show={showProfileEditModal}
-       onHide={hideProfileEditModal} 
-       onClickOnChangePassword={displayPasswordChangeModal}
-      /> 
+        show={showProfileEditModal}
+        onHide={hideProfileEditModal}
+        onClickOnChangePassword={displayPasswordChangeModal}
+      />
     );
   };
 
@@ -96,11 +75,11 @@ const NavBar = () => {
   const passwordChangeModal = () => {
     return (
       <PasswordChangeModal
-       show={showPasswordChangeModal}
-       onHide={hideAll}
-       onExit={hidePasswordChangeModal}
+        show={showPasswordChangeModal}
+        onHide={hideAll}
+        onExit={hidePasswordChangeModal}
       />
-    )
+    );
   };
 
   return (

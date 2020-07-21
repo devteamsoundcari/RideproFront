@@ -15,42 +15,26 @@ require("moment/locale/es.js");
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
-  const [requests, setRequests] = useState([]);
-  //eslint-disable-next-line
-  const [loading, setLoading] = useState(true);
+  const [displayedRequests, setDisplayedRequests] = useState([]);
   const history = useHistory();
   const {
-    requestsInfoContext,
-    canceledRequestContext,
-    loadingContext,
+    requests,
+    cancelledRequests,
+    isLoadingRequests,
   } = useContext(RequestsContext);
   const { userInfoContext } = useContext(AuthContext);
-  const [seeCanceledEvents, setSeeCanceledEvents] = useState(false);
+  const [seeCancelledEvents, setSeeCancelledEvents] = useState(false);
   const [withCanceledRequests, setWithCanceledRequests] = useState({});
 
   // =============================== GETTING ALL THE EVENTS AND DISPLAYING THEM TO CALENDAR =============================================
 
   useEffect(() => {
-    setRequests(requestsInfoContext);
-    setWithCanceledRequests(requestsInfoContext);
-    canceledRequestContext.forEach((item) => {
+    setDisplayedRequests(requests);
+    setWithCanceledRequests(requests);
+    cancelledRequests.forEach((item) => {
       setWithCanceledRequests((prev) => [...prev, item]);
     });
-  }, [requestsInfoContext, canceledRequestContext]);
-
-  useEffect(() => {
-    if (requests.length > 1) {
-      // Show and hide spinner
-      if (requests.length > 0) {
-        setLoading(false);
-      }
-    } else {
-      if (requests.length > 0) {
-        setLoading(false);
-      }
-    }
-    //eslint-disable-next-line
-  }, [requests]);
+  }, [requests, cancelledRequests]);
 
   //============================================ HANDLING CLICKING ON EVENT ===========================================================
 
@@ -220,7 +204,7 @@ const MyCalendar = () => {
               type="checkbox"
               id="custom-checkbox"
               label="VER SOLICITUDES CANCELADAS"
-              onClick={() => setSeeCanceledEvents(!seeCanceledEvents)}
+              onClick={() => setSeeCancelledEvents(!seeCancelledEvents)}
             />
           </ListGroup.Item>
         </ListGroup>
@@ -228,7 +212,7 @@ const MyCalendar = () => {
       <Col md={10} className="eventsCalendar pl-0">
         <Card>
           <Card.Body>
-            {loadingContext && (
+            {isLoadingRequests && (
               <div>
                 Cargando Eventos...
                 <Spinner animation="border" size="sm" role="status">
@@ -242,7 +226,7 @@ const MyCalendar = () => {
               defaultDate={new Date()}
               defaultView="month"
               views={{ month: true }}
-              events={seeCanceledEvents ? withCanceledRequests : requests}
+              events={seeCancelledEvents ? withCanceledRequests : displayedRequests}
               style={{ height: "100vh" }}
               onSelectEvent={(event) => handleClick(event)}
               components={{
