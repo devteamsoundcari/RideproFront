@@ -545,7 +545,6 @@ const updateRequest = async (data, id) => {
   if (data.start_time) {
     data.finish_time = data.start_time;
   }
-  console.log("ENVIA", data, id);
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}/`,
@@ -561,7 +560,7 @@ const getRequest = async (id) => {
   const getInfo = async () => {
     const requestData = await axios({
       method: "GET",
-      url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}`,
+      url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}/`,
     }).catch((err) => {
       return err;
     });

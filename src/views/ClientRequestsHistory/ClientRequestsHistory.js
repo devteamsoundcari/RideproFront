@@ -6,27 +6,18 @@ import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { RequestsContext } from "../../contexts/RequestsContext";
-import { getTracks } from "../../controllers/apiRequests";
-import { AuthContext } from "../../contexts/AuthContext";
 import SingleRequestModal from "./SingleRequestModal/SingleRequestModal";
 import "./ClientRequestsHistory.scss";
 
-const useMountEffect = (func) => useEffect(func, []);
 
 const ClientRequestsHistory = () => {
   const location = useLocation();
-  //eslint-disable-next-line
-  const [tracks, setTracks] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
-  //eslint-disable-next-line
-  const [loading, setLoading] = useState(true);
-  const [requests, setRequests] = useState([]);
-  const [sortedRequests, setSortedRequests] = useState([]);
-  const { requestsInfoContext, updateRequestInfo, loadingContext } = useContext(
+  const [displayedRequests, setDisplayedRequests] = useState([]);
+  const { requests, isLoadingRequests } = useContext(
     RequestsContext
   );
-  const { userInfoContext } = useContext(AuthContext);
 
   useEffect(() => {
     if (location.state) {
@@ -34,74 +25,19 @@ const ClientRequestsHistory = () => {
     }
   }, [location]);
 
-  // ================================ FETCH TRACKS ON LOAD =====================================================
-  const fetchTracks = async (url) => {
-    let tempTracks = [];
-    const response = await getTracks(url);
-    response.results.forEach(async (item) => {
-      tempTracks.push(item);
-    });
-    setTracks(tempTracks);
-    if (response.next) {
-      return await getTracks(response.next);
-    }
-  };
-
-  useEffect(() => {
-    fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
-  }, []);
-
-  useMountEffect(() => {
-    let token = localStorage.getItem("token");
-    let requestsSocket = new WebSocket(
-      `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
-    );
-
-    requestsSocket.addEventListener("open", () => {
-      let payload = {
-        action: "subscribe_to_requests_from_customer",
-        customer: userInfoContext.id,
-        request_id: userInfoContext.id,
-      };
-      requestsSocket.send(JSON.stringify(payload));
-    });
-
-    requestsSocket.addEventListener("message", (event) => {
-      let data = JSON.parse(event.data);
-      updateRequestInfo(data.data.id);
-    });
-  });
-
   // ================================ FETCH REQUESTS ON LOAD =====================================================
 
   useEffect(() => {
-    setRequests(requestsInfoContext);
-  }, [requestsInfoContext]);
-
-  // ========================================= LOADING SPINNER =====================================
-
-  useEffect(() => {
-    // Sorting requests so that the most recent goes on top
     if (requests.length > 1) {
-      requests.sort((a, b) => {
-        return a.id - b.id;
+      let requestsToSort = [...requests];
+      requestsToSort.sort((a, b) => {
+        return b.id - a.id;
       });
-      // setRequestInfoContext(requests.reverse());
-      setSortedRequests(requests.reverse());
-      // Show and hide spinner
-      if (sortedRequests.length) {
-        setLoading(false);
-      }
-    } else {
-      setSortedRequests(requests);
-      if (requests.length > 0) {
-        setLoading(false);
-      }
+      setDisplayedRequests(requestsToSort);
     }
-    //eslint-disable-next-line
   }, [requests]);
 
-  //  ========================================================================================
+  // ========================================= LOADING SPINNER =====================================
 
   const statusFormatter = (cell, row) => {
     switch (row.status.step) {
@@ -175,14 +111,6 @@ const ClientRequestsHistory = () => {
         return <p>Undefined</p>;
     }
   };
-
-  // const trackFormatter = (cell) => {
-  //   if (cell !== null) {
-  //     return cell.name;
-  //   } else {
-  //     return <Alert variant="danger">Sin pista</Alert>;
-  //   }
-  // };
 
   const cityFormatter = (cell) =>
     cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
@@ -281,7 +209,7 @@ const ClientRequestsHistory = () => {
 
   return (
     <Container fluid="md" id="client-requests-history">
-      {loadingContext ? (
+      {isLoadingRequests ? (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
@@ -296,7 +224,7 @@ const ClientRequestsHistory = () => {
             <BootstrapTable
               bootstrap4
               keyField="id"
-              data={requests}
+              data={displayedRequests}
               columns={columns}
               selectRow={selectRow}
               filter={filterFactory()}

@@ -47,7 +47,6 @@ const RequestsHistory = (props) => {
       setRequests([]);
       setRenderCancelRequestModal({ show: false });
       setUpdateList(!updateList);
-      // SET COMPANY CONTEXT
       setUserInfoContext({
         ...userInfoContext,
         company: {
@@ -166,7 +165,6 @@ const RequestsHistory = (props) => {
             </Button>
             <Button
               variant="danger"
-              // onClick={() => removeUserFromList(showRemoveUserModal.idx)}
               onClick={cancelRequest}
             >
               Si, estoy{" "}

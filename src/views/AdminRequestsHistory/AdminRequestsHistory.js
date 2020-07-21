@@ -11,25 +11,16 @@ import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { RequestsContext } from "../../contexts/RequestsContext";
-import { AuthContext } from "../../contexts/AuthContext";
 import SingleRequestAdmin from "./SingleRequestAdmin/SingleRequestAdmin";
 import "./AdminRequestsHistory.scss";
 
-const useMountEffect = (func) => useEffect(func, []);
-
 const AdminRequestsHistory = () => {
   const location = useLocation();
-  // eslint-disable-next-line
-  const [selectedRow, setSelectedRow] = useState({});
   const history = useHistory();
-  //eslint-disable-next-line
-  const [loading, setLoading] = useState(true);
-  const [requests, setRequests] = useState([]);
-  const [sortedRequests, setSortedRequests] = useState([]);
-  const { requestsInfoContext, updateRequestInfo, loadingContext } = useContext(
+  const [displayedRequests, setDisplayedRequests] = useState([]);
+  const { requests, isLoadingRequests } = useContext(
     RequestsContext
   );
-  const { userInfoContext } = useContext(AuthContext);
   let { path, url } = useRouteMatch();
 
   useEffect(() => {
@@ -39,56 +30,16 @@ const AdminRequestsHistory = () => {
     // eslint-disable-next-line
   }, [location]);
 
-  // ================================ FETCH REQUESTS ON LOAD =====================================================
-
   useEffect(() => {
-    setRequests(requestsInfoContext);
-  }, [requestsInfoContext]);
-
-  // ========================================= LOADING SPINNER =====================================
-
-  useEffect(() => {
-    // Sorting requests so that the most recent goes on top
     if (requests.length > 1) {
-      requests.sort((a, b) => {
-        return a.id - b.id;
+      let requestsToSort = [...requests];
+      requestsToSort.sort((a, b) => {
+        return b.id - a.id;
       });
-      // setRequestInfoContext(requests.reverse());
-      setSortedRequests(requests.reverse());
-      // Show and hide spinner
-      if (sortedRequests.length) {
-        setLoading(false);
-      }
-    } else {
-      setSortedRequests(requests);
-      if (requests.length > 0) {
-        setLoading(false);
-      }
+      setDisplayedRequests(requestsToSort);
     }
-    //eslint-disable-next-line
   }, [requests]);
 
-  useMountEffect(() => {
-    let token = localStorage.getItem("token");
-    let requestsSocket = new WebSocket(
-      `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
-    );
-
-    requestsSocket.addEventListener("open", () => {
-      let payload = {
-        action: "subscribe_to_requests",
-        request_id: userInfoContext.id,
-      };
-      requestsSocket.send(JSON.stringify(payload));
-    });
-
-    requestsSocket.addEventListener("message", (event) => {
-      let data = JSON.parse(event.data);
-      updateRequestInfo(data.data.id);
-    });
-  });
-
-  //  ========================================================================================
   const statusFormatter = (cell, row) => {
     switch (row.status.step) {
       case 0:
@@ -248,7 +199,7 @@ const AdminRequestsHistory = () => {
 
   return (
     <Container fluid="md" id="client-requests-history">
-      {loadingContext ? (
+      {isLoadingRequests ? (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
@@ -256,7 +207,7 @@ const AdminRequestsHistory = () => {
         <Switch>
           <Route exact path={path}>
             <Card>
-              {requests.length === 0 ? (
+              {displayedRequests.length === 0 ? (
                 <Alert variant="light">
                   <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
                   <p>
@@ -267,7 +218,7 @@ const AdminRequestsHistory = () => {
               (<BootstrapTable
                 bootstrap4
                 keyField="id"
-                data={requests}
+                data={displayedRequests}
                 columns={columns}
                 selectRow={selectRow}
                 filter={filterFactory()}
