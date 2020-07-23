@@ -7,12 +7,11 @@ import {
   useHistory,
 } from "react-router-dom";
 import { AiFillDollarCircle } from "react-icons/ai";
-import { Container, Card, ProgressBar, Spinner, Alert } from "react-bootstrap";
+import { Container, Card, Spinner, Alert } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { RequestsContext } from "../../contexts/RequestsContext";
-import SingleRequestModal from "./SingleRequestModal/SingleRequestModal";
 import SingleRequestClient from "./SingleRequestClient/SingleRequestClient";
 import "./ClientRequestsHistory.scss";
 import ClientStatus from "../../utils/ClientStatus";
@@ -20,8 +19,6 @@ import ClientStatus from "../../utils/ClientStatus";
 const ClientRequestsHistory = () => {
   const location = useLocation();
   const history = useHistory();
-  const [modalShow, setModalShow] = useState(false);
-  const [selectedRow, setSelectedRow] = useState({});
   const [displayedRequests, setDisplayedRequests] = useState([]);
   const { requests, isLoadingRequests } = useContext(RequestsContext);
   let { path, url } = useRouteMatch();
@@ -30,6 +27,7 @@ const ClientRequestsHistory = () => {
     if (location.state) {
       handleOnSelect(location.state.event);
     }
+    // eslint-disable-next-line
   }, [location]);
 
   // ================================ FETCH REQUESTS ON LOAD =====================================================
