@@ -11,7 +11,7 @@ type SingleFileProps = any;
 const SingleFile: React.FC<SingleFileProps> = ({ document, requestId }) => {
   const [doc, setDoc] = useState<any>("");
   const [fileName, setFileName] = useState("Vacio");
-  const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
 
   useEffect(() => {
     setDoc(document);
@@ -25,7 +25,7 @@ const SingleFile: React.FC<SingleFileProps> = ({ document, requestId }) => {
         async (result) => {
           if (result.status === 200) {
             swal("Buen trabajo!", "Carga exitosa!", "success");
-            updateRequestsContext();
+            updateRequests();
           }
         }
       );

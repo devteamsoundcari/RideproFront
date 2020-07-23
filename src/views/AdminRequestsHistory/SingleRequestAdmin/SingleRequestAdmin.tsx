@@ -17,7 +17,6 @@ import ModalProviders from "./ModalProviders/ModalProviders";
 import ModalPlaceDate from "./ModalPlaceDate/ModalPlaceDate";
 import PlaceDate from "./PlaceDate/PlaceDate";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { RequestsContext } from "../../../contexts/RequestsContext";
 import ConfirmSection from "./ConfirmSection/ConfirmSection";
 import Documents from "./Documents/Documents";
 import ModalOC from "./ModalOC/ModalOC";
@@ -91,7 +90,6 @@ const SingleRequestAdmin = () => {
   const [instructors, setInstructors] = useState<Instructors>([]);
   const [providers, setProviders] = useState<Providers>([]);
   const { userInfoContext } = useContext(AuthContext);
-  const { updateRequestsContext } = useContext(RequestsContext);
   const [documentsOk, setDocumentsOk] = useState(false);
   const [showModalOC, setShowModalOC] = useState(false);
 

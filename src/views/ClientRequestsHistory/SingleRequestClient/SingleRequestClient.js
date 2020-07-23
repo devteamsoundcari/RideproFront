@@ -36,17 +36,18 @@ import ClientStatus from "../../../utils/ClientStatus";
 import RegularExpressions from "../../../utils/RegularExpressions";
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { RequestsContext } from "../../../contexts/RequestsContext";
 import NotEnoughCreditsModal from "../SingleRequestModal/NotEnoughCreditsModal";
 import "./SingleRequestClient.scss";
 
 const SingleRequestClient = () => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [showCancellationModal, setShowCancellationModal] = useState(false);
+  // const [showCancellationModal, setShowCancellationModal] = useState(false);
   let { requestId } = useParams();
   const [loading, setLoading] = useState(false);
 
-  // const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
   const [selectedOption, setSelectedOption] = useState(0);
 
   const [data, setData] = useState();
@@ -55,7 +56,7 @@ const SingleRequestClient = () => {
     setRegisteredParticipantsContext,
     setParticipantsToRegisterContext,
     newParticipantsContext,
-    setNewParticipantsContext,
+    // setNewParticipantsContext,
   } = useContext(ParticipantsContext);
   const [showNotEnoughCreditsModal, setShowNotEnoughCreditsModal] = useState(
     false
@@ -545,7 +546,7 @@ const SingleRequestClient = () => {
                         track !== null
                           ? track.id
                           : data.optional_place1
-                          ? data.optional_place1.id
+                         ? data.optional_place1.id
                           : "",
                       start_time: data.optional_date1,
                       status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
@@ -567,7 +568,7 @@ const SingleRequestClient = () => {
                       requestId
                     );
                     if (res.status === 200) {
-                      // updateRequestsContext();
+                      updateRequests();
                       swal("Solicitud actualizada!", {
                         icon: "success",
                       });
