@@ -3,7 +3,6 @@ import axios from "axios";
 /* =================================     SEND EMAIL    ===================================== */
 
 const sendEmail = async (data) => {
-  console.log("Send body", data);
   await axios({
     method: "POST",
     url: `${process.env.REACT_APP_MAILER_URL}/api/sendEmail`,
@@ -448,12 +447,13 @@ const cancelRequestId = async (data) => {
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${data.id}/`,
     data: {
       status: `${process.env.REACT_APP_STATUS_CANCELED}`, //"f973cb97-ac8a-4ec9-b288-c003bedd5d93", // Status setp canceled 0
+      reject_msg: data.reject_msg,
     },
   }).catch((err) => {
     console.error(err);
     return err;
   });
-  let result2 = await increaseCredits(data.company, data.refund_credits); // Calling decrease
+  let result2 = await increaseCredits(data.userId, data.refund_credits); // Calling decrease
   return { canceled: result, refund: result2 };
 };
 
@@ -718,10 +718,10 @@ const decreaseUserCredits = async (user, credits) => {
 };
 
 /* =================================   INCREASE CREDITS IN COMPANY   ===================================== */
-const increaseCredits = async (companyId, credits) => {
+const increaseCredits = async (userId, credits) => {
   const result = await axios({
     method: "PATCH",
-    url: `${process.env.REACT_APP_API_URL}/api/v1/companies/${companyId}/`,
+    url: `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/`,
     data: {
       credit: credits,
     },
