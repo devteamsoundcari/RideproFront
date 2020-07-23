@@ -46,7 +46,7 @@ const SingleRequestClient = () => {
   let { requestId } = useParams();
   const [loading, setLoading] = useState(false);
 
-  // const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequest } = useContext(RequestsContext);
   const [selectedOption, setSelectedOption] = useState(0);
 
   const [data, setData] = useState();
@@ -545,7 +545,7 @@ const SingleRequestClient = () => {
                         track !== null
                           ? track.id
                           : data.optional_place1
-                          ? data.optional_place1.id
+                         ? data.optional_place1.id
                           : "",
                       start_time: data.optional_date1,
                       status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
@@ -567,7 +567,7 @@ const SingleRequestClient = () => {
                       requestId
                     );
                     if (res.status === 200) {
-                      // updateRequestsContext();
+                      updateRequests();
                       swal("Solicitud actualizada!", {
                         icon: "success",
                       });

@@ -72,7 +72,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   });
   const [showAlternative, setShowAlternative] = useState(false);
   const { userInfoContext } = useContext(AuthContext);
-  const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
   const [selectedPlace, PlacesDropdown] = useDropdown(
     "",
     "Seleccione...",
@@ -486,7 +486,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                   );
                   if (res.status === 200) {
                     // setDisabled(true);
-                    updateRequestsContext();
+                    updateRequests();
                     swal("Solicitud actualizada!", {
                       icon: "success",
                     });

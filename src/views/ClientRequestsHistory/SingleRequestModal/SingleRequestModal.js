@@ -47,7 +47,7 @@ const SingleRequestModal = (props) => {
   );
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
   const [selectedOption, setSelectedOption] = useState(0);
 
   const {
@@ -704,8 +704,6 @@ const SingleRequestModal = (props) => {
                                   start_date: optional_date2,
                                   status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
                                 };
-                                // console.log("payload", payload);
-                                console.log(payload1, payload2);
                                 let res = await updateRequest(
                                   selectedOption === 1 ? payload1 : payload2,
                                   id
@@ -713,7 +711,7 @@ const SingleRequestModal = (props) => {
                                 console.log(res);
                                 if (res.status === 200) {
                                   handleClose();
-                                  // updateRequestsContext();
+                                  updateRequests();
                                   swal("Solicitud actualizada!", {
                                     icon: "success",
                                   });

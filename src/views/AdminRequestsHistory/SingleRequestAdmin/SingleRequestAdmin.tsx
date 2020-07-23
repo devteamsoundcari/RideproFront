@@ -91,7 +91,7 @@ const SingleRequestAdmin = () => {
   const [instructors, setInstructors] = useState<Instructors>([]);
   const [providers, setProviders] = useState<Providers>([]);
   const { userInfoContext } = useContext(AuthContext);
-  const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
   const [documentsOk, setDocumentsOk] = useState(false);
   const [showModalOC, setShowModalOC] = useState(false);
 

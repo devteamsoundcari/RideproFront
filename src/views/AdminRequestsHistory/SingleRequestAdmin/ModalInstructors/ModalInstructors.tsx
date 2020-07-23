@@ -32,7 +32,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   >([]);
   // eslint-disable-next-line
   const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
-  const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
   const { SearchBar } = Search;
@@ -206,7 +206,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     });
     if (res.status === 201) {
       setDisabled(true);
-      updateRequestsContext();
+      updateRequests();
     }
   };
 

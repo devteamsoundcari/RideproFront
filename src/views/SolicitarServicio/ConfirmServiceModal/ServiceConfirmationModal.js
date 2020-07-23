@@ -15,7 +15,7 @@ import {
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
-  const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
 
   const {
     participantsToRegisterContext,
@@ -163,7 +163,7 @@ const ConfirmServiceModal = (props) => {
       ) {
         setShowSpinner(false);
         setShowSuccessPrompt(true);
-        updateRequestsContext();
+        updateRequests();
         setUserInfoContext({
           ...userInfoContext,
           credit: res.creditDecreasingResponse.data.credit,
