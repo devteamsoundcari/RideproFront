@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { Toast } from "react-bootstrap";
 import { RequestsContext } from "../../contexts/RequestsContext";
+import "./RequestToast.scss";
 
 interface RequestToastProps {
   index: number;
@@ -33,12 +34,10 @@ const RequestToast: React.FC<RequestToastProps> = (
         <strong
           style={{
             backgroundColor: `black`,
-            color: props.status.color
+            color: props.status.color,
           }}
         >
-          <i>
-            {props.status.name}
-          </i>
+          <i>{props.status.name}</i>
         </strong>
         .
       </Toast.Body>
@@ -71,7 +70,7 @@ export const RequestToastContainer: React.FC = () => {
           status={request.status}
           show={request.show}
           onClose={() => closeToast(request.index)}
-          delay={20000}
+          delay={10000}
         ></RequestToast>
       );
     });
@@ -79,16 +78,19 @@ export const RequestToastContainer: React.FC = () => {
 
   const closeToast = (index: number) => {
     let newRequests = [...requestsRef.current];
+    console.log("newRequests before filter: ", newRequests);
     let i = newRequests.findIndex((request) => {
       return request.index === index;
     });
     if (i >= 0) {
       newRequests[i].show = false;
       setTimeout(() => {
-        newRequests = newRequests.filter((request) => request.index !== index);
+        newRequests = newRequests.filter((r) => {
+          return r.index !== index;
+        });
+        setRequests(newRequests);
       }, 500);
     }
-    setRequests(newRequests);
   };
 
   useEffect(() => {
@@ -115,22 +117,11 @@ export const RequestToastContainer: React.FC = () => {
   return (
     <>
       <div
+        className="request-toast-overlay"
         aria-live="polite"
         aria-atomic="true"
-        style={{
-          position: "relative"
-        }}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: 5,
-            right: 10,
-            zIndex: 999999
-          }}
-        >
-          {requestToasts()}
-        </div>
+        <div className="request-toast-container">{requestToasts()}</div>
       </div>
     </>
   );
