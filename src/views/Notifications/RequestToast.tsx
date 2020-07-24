@@ -78,7 +78,6 @@ export const RequestToastContainer: React.FC = () => {
 
   const closeToast = (index: number) => {
     let newRequests = [...requestsRef.current];
-    console.log("newRequests before filter: ", newRequests);
     let i = newRequests.findIndex((request) => {
       return request.index === index;
     });
