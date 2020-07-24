@@ -85,7 +85,7 @@ const SingleRequestAdmin = () => {
   const [data, setData] = useState<RequestData>();
   const [loading, setLoading] = useState<Boolean>(false);
   const [showModalInstructors, setShowModalInstructors] = useState(false);
-  const [showModalProviders, setShowModalProviders] = useState(true);
+  const [showModalProviders, setShowModalProviders] = useState(false);
   const [showModalPlace, setShowModalPlace] = useState(false);
   const [instructors, setInstructors] = useState<Instructors>([]);
   const [providers, setProviders] = useState<Providers>([]);
