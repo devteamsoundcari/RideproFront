@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, createContext, useState, useContext } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  createContext,
+  useState,
+  useContext,
+} from "react";
 import { AuthContext } from "./AuthContext";
 import { getUserRequests, getRequest } from "../controllers/apiRequests";
 
@@ -9,6 +15,7 @@ const RequestsContextProvider = (props) => {
   const [isLoadingRequests, setIsLoadingRequests] = useState(true);
   const [requests, setRequests] = useState([]);
   const [cancelledRequests, setCancelledRequests] = useState([]);
+  const [statusNotifications, setStatusNotifications] = useState([]);
   const requestsRef = React.useRef(requests);
 
   async function fetchRequests(url) {
@@ -56,7 +63,9 @@ const RequestsContextProvider = (props) => {
     let request = await getRequest(id);
     let requestsToEdit = [...requestsRef.current];
     if (request) {
-      let instanceIndex = requestsToEdit.findIndex((request) => request.id === id);
+      let instanceIndex = requestsToEdit.findIndex(
+        (request) => request.id === id
+      );
       if (instanceIndex >= 0) {
         let cancelDate = new Date(request.start_time);
         cancelDate.setDate(cancelDate.getDate() - 1);
@@ -69,8 +78,33 @@ const RequestsContextProvider = (props) => {
         requestsToEdit[instanceIndex] = request;
       }
     }
+    checkRequestsStatus(requestsToEdit, requestsRef.current);
     setRequests(requestsToEdit);
   }, []);
+
+  const checkRequestsStatus = (current, prev) => {
+    let notifications = [];
+
+    for (const request of current) {
+      const oldRequest = prev.find((r) => r.id === request.id);
+      if (oldRequest) {
+        if (oldRequest.status.id !== request.status.id) {
+          notifications.push({
+            id: request.id,
+            previousStatus: {
+              name: oldRequest.status.name,
+              color: oldRequest.status.color_indicator
+            },
+            newStatus: {
+              name: request.status.name,
+              color: request.status.color_indicator
+            }
+          });
+        }
+      }
+    }
+    setStatusNotifications((prev) => [...prev, ...notifications]);
+  };
 
   useEffect(() => {
     if (!isLoadingRequests) {
@@ -80,11 +114,24 @@ const RequestsContextProvider = (props) => {
       );
 
       requestsSocket.addEventListener("open", () => {
-        let payload = {
-          action: "subscribe_to_requests",
-          request_id: userInfoContext.id,
-        };
-        requestsSocket.send(JSON.stringify(payload));
+        let payload;
+        switch (userInfoContext.profile) {
+          case 1:
+          case 3:
+            payload = {
+              action: "subscribe_to_requests",
+              request_id: userInfoContext.id,
+            };
+            requestsSocket.send(JSON.stringify(payload));
+            break;
+          default:
+            payload = {
+              action: "subscribe_to_requests_from_customer",
+              customer: userInfoContext.id,
+              request_id: userInfoContext.id,
+            };
+            requestsSocket.send(JSON.stringify(payload));
+        }
       });
 
       requestsSocket.onmessage = async function (event) {
@@ -92,7 +139,12 @@ const RequestsContextProvider = (props) => {
         await updateRequestInfo(data.data.id);
       };
     }
-  }, [isLoadingRequests, userInfoContext.id, updateRequestInfo]);
+  }, [
+    isLoadingRequests,
+    userInfoContext.id,
+    userInfoContext.profile,
+    updateRequestInfo,
+  ]);
 
   return (
     <RequestsContext.Provider
@@ -103,7 +155,8 @@ const RequestsContextProvider = (props) => {
         setCancelledRequests,
         updateRequests,
         updateRequestInfo,
-        isLoadingRequests
+        isLoadingRequests,
+        statusNotifications,
       }}
     >
       {props.children}
