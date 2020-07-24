@@ -5,6 +5,8 @@ import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import cellEditFactory from "react-bootstrap-table2-editor";
 import { Row, Col, ButtonGroup, Button, Modal, Image } from "react-bootstrap";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { MdRefresh } from "react-icons/md";
+
 import {
   getInstructors,
   updateRequestInstructors,
@@ -12,6 +14,7 @@ import {
 import { RequestsContext } from "../../../../contexts/RequestsContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import "./ModalInstructors.scss";
+import RegisterNewInstructor from "../../../Instructors/Registration/RegisterNewInstructor";
 
 interface ModalInstructorsProps {
   requestId: number;
@@ -38,6 +41,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   const { SearchBar } = Search;
   const history = useHistory();
   let { url } = useRouteMatch();
+  const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
 
   useEffect(() => {
     if (selectedInstructors.length > 0) {
@@ -212,33 +216,35 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
 
   // =============================== CLICK ON ADD INSTRUCTOR ====================================
   const handleClickAddInstructor = () => {
-    let newUrl = url.split("/")[1];
-    history.push({
-      pathname: `/${newUrl}/instructores`,
-      state: { detail: "some_value" },
-    });
+    // let newUrl = url.split("/")[1];
+    // history.push({
+    //   pathname: `/${newUrl}/instructores`,
+    //   state: { detail: "some_value" },
+    // });
+    setShowAddInstructorsModal(true);
   };
 
   return (
-    <Modal
-      size="lg"
-      show={true}
-      onHide={handleClose}
-      className="modal-admin-instructors"
-    >
-      <Modal.Header className={`bg-${userInfoContext.perfil}`} closeButton>
-        <Modal.Title className="text-white">Instructores</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <ToolkitProvider
-          keyField="official_id"
-          data={instructors}
-          columns={columns}
-          search
-        >
-          {(props) => (
-            <React.Fragment>
-              {/* {requestInstructors.length > 0 && (
+    <React.Fragment>
+      <Modal
+        size="lg"
+        show={true}
+        onHide={handleClose}
+        className="modal-admin-instructors"
+      >
+        <Modal.Header className={`bg-${userInfoContext.perfil}`} closeButton>
+          <Modal.Title className="text-white">Instructores</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ToolkitProvider
+            keyField="official_id"
+            data={instructors}
+            columns={columns}
+            search
+          >
+            {(props) => (
+              <React.Fragment>
+                {/* {requestInstructors.length > 0 && (
                 <Col>
                   <ul className="list-unstyled">
                     <small>Instructores: </small>
@@ -252,57 +258,88 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                 </Col>
               )} */}
 
-              <div className="top d-flex flex-wrap">
-                <div className="action-filters flex-grow-1">
-                  <SearchBar
-                    {...props.searchProps}
-                    className="custome-search-field"
-                    placeholder="Buscar Instructor"
-                  />
+                <div className="top d-flex flex-wrap">
+                  <div className="action-filters flex-grow-1">
+                    <SearchBar
+                      {...props.searchProps}
+                      className="custome-search-field"
+                      placeholder="Buscar Instructor"
+                    />
+                  </div>
+                  <div className="action-btns d-flex align-items-center">
+                    <ButtonGroup aria-label="Basic example">
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() =>
+                          fetchInstructors(
+                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`
+                          )
+                        }
+                      >
+                        <MdRefresh />
+                      </Button>
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={handleClickAddInstructor}
+                      >
+                        Administrar Instructores
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={disabled ? "outline-secondary" : "info"}
+                        disabled={disabled ? true : false}
+                        onClick={handleUpdateInstructor}
+                      >
+                        Guardar
+                      </Button>
+                    </ButtonGroup>
+                  </div>
                 </div>
-                <div className="action-btns d-flex align-items-center">
-                  <ButtonGroup aria-label="Basic example">
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
-                      onClick={handleClickAddInstructor}
-                    >
-                      Administrar Instructores
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={disabled ? "outline-secondary" : "info"}
-                      disabled={disabled ? true : false}
-                      onClick={handleUpdateInstructor}
-                    >
-                      Guardar Instructor
-                    </Button>
-                  </ButtonGroup>
-                </div>
-              </div>
 
-              <BootstrapTable
-                {...props.baseProps}
-                expandRow={expandRow}
-                selectRow={selectRow}
-                rowClasses="row-new-style"
-                cellEdit={cellEditFactory({
-                  mode: "click",
-                  afterSaveCell: (oldValue, newValue, row, column) => {
-                    if (containsObject(row, selectedInstructors)) {
-                      setSelectedInstructors(
-                        selectedInstructors.filter((item) => item.id !== row.id)
-                      );
-                      setSelectedInstructors((oldArr) => [...oldArr, row]);
-                    }
-                  },
-                })}
-              />
-            </React.Fragment>
-          )}
-        </ToolkitProvider>
-      </Modal.Body>
-    </Modal>
+                <BootstrapTable
+                  {...props.baseProps}
+                  expandRow={expandRow}
+                  selectRow={selectRow}
+                  rowClasses="row-new-style"
+                  cellEdit={cellEditFactory({
+                    mode: "click",
+                    afterSaveCell: (oldValue, newValue, row, column) => {
+                      if (containsObject(row, selectedInstructors)) {
+                        setSelectedInstructors(
+                          selectedInstructors.filter(
+                            (item) => item.id !== row.id
+                          )
+                        );
+                        setSelectedInstructors((oldArr) => [...oldArr, row]);
+                      }
+                    },
+                  })}
+                />
+              </React.Fragment>
+            )}
+          </ToolkitProvider>
+        </Modal.Body>
+      </Modal>
+      {showAddInstructorsModal && (
+        <Modal
+          size="lg"
+          show={true}
+          onHide={() => setShowAddInstructorsModal(false)}
+          className="modal-add-instructors"
+        >
+          <Modal.Header className={`bg-${userInfoContext.perfil}`} closeButton>
+            <Modal.Title className="text-white">
+              Registrar instructor
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <RegisterNewInstructor />
+          </Modal.Body>
+        </Modal>
+      )}
+    </React.Fragment>
   );
 };
 export default ModalInstructors;

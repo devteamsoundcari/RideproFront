@@ -6,7 +6,7 @@ import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
 import "./Login.scss";
-import bgImage from "../../assets/img/loginImage.jpg";
+import bgImage from "../../assets/img/loginImage.png";
 // import bgPage from "../../assets/img/bgLogin.jpg";
 import logo from "../../assets/img/logo.png";
 import {
@@ -169,11 +169,11 @@ const Login = () => {
                     </h1>
                   </Card.Title>
                   <Card.Text className="text-center">
-                    Tu cuenta será validada por el administrador, quien te
-                    asignará un tipo de perfil.{" "}
-                    <a href="#test">
+                    Gracias por registrarte en RIDE PRO. Tu cuenta y perfil de
+                    usuario será validada por nuestro equipo.{" "}
+                    {/* <a href="#test">
                       <strong>¿Problemas para iniciar sesión?</strong>
-                    </a>
+                    </a> */}
                   </Card.Text>
                   <Card.Body>
                     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -231,7 +231,7 @@ const Login = () => {
                 md={6}
                 className="bgImageLogin"
                 style={{
-                  background: `url(${bgImage}) no-repeat center`,
+                  background: `url(${bgImage}) no-repeat center center`,
                 }}
               ></Col>
             </Row>

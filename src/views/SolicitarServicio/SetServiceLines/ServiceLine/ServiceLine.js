@@ -10,6 +10,7 @@ import {
   FaDollarSign,
   FaClock,
 } from "react-icons/fa";
+import vehiclesImg from "../../../../assets/img/vehicles.png";
 
 const ServiceLine = (props) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -44,13 +45,16 @@ const ServiceLine = (props) => {
     return (
       <React.Fragment>
         <Fade>
-          <img
-            src={image}
-            className="card-img-top img-fluid"
-            alt={String(image)}
-          />
+          <div className="card-header">
+            <h4>{name}</h4>
+          </div>
+          <div
+            className="card-img-top"
+            style={{
+              background: `url(${image}) no-repeat center center`,
+            }}
+          ></div>
           <div className="card-body">
-            <h5 className="card-title">{name}</h5>
             <p className="card-text">
               {showFullDescription ? description : short_description}
               <span>
@@ -62,6 +66,12 @@ const ServiceLine = (props) => {
                 </Button>
               </span>
             </p>
+            <div
+              className="card-img-bottom"
+              style={{
+                background: `url(${vehiclesImg})`,
+              }}
+            ></div>
             <button
               className="btn btn-primary"
               disabled={filteredServices.length > 0 ? false : true}
