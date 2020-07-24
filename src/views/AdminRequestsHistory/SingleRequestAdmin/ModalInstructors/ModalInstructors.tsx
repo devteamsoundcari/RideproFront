@@ -6,6 +6,7 @@ import cellEditFactory from "react-bootstrap-table2-editor";
 import { Row, Col, ButtonGroup, Button, Modal, Image } from "react-bootstrap";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { MdRefresh } from "react-icons/md";
+import swal from "sweetalert";
 
 import {
   getInstructors,
@@ -211,6 +212,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     if (res.status === 201) {
       setDisabled(true);
       updateRequests();
+      swal("Perfecto!", `Instructores actualizados exitosamente!`, "success");
     }
   };
 
