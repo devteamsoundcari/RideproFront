@@ -453,7 +453,7 @@ const cancelRequestId = async (data) => {
     console.error(err);
     return err;
   });
-  let result2 = await increaseCredits(data.userId, data.refund_credits); // Calling decrease
+  let result2 = await increaseCredits(data.company, data.refund_credits); // Calling decrease
   return { canceled: result, refund: result2 };
 };
 
@@ -718,16 +718,20 @@ const decreaseUserCredits = async (user, credits) => {
 };
 
 /* =================================   INCREASE CREDITS IN COMPANY   ===================================== */
-const increaseCredits = async (userId, credits) => {
+const increaseCredits = async (company, credits) => {
+  console.log("va", credits, "as", company);
   const result = await axios({
     method: "PATCH",
-    url: `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/`,
+    url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       credit: credits,
+      company_id: company.id,
     },
   }).catch((err) => {
+    console.error(err);
     return err;
   });
+  console.log(result);
   return result;
 };
 

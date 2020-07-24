@@ -8,6 +8,7 @@ import {
 } from "../../../controllers/apiRequests";
 import SuccessModal from "../SuccessModal";
 import useDropdown from "../../../utils/useDropdown";
+import swal from "sweetalert";
 
 const RegisterNewInstructor = () => {
   const { register, handleSubmit, errors } = useForm();
@@ -62,7 +63,9 @@ const RegisterNewInstructor = () => {
         name: d.name,
         email: d.email,
       });
-      setSmShow(true); // SHOW MODAL
+
+      swal("Perfecto!", `${d.name} fue registrado existosamente`, "success");
+      // setSmShow(true); // SHOW MODAL
       setData({
         name: "",
         lastName: "",
@@ -293,6 +296,8 @@ const RegisterNewInstructor = () => {
               <Form.Group as={Col}>
                 <Form.Label>Departamento</Form.Label>
                 <DepartmentsDropdown />
+              </Form.Group>
+              <Form.Group as={Col}>
                 <Form.Label>Ciudad</Form.Label>
                 <MunicipalitiesDropdown />
               </Form.Group>
@@ -321,7 +326,7 @@ const RegisterNewInstructor = () => {
             </Form.Row>
 
             <Button variant="primary" type="submit" disabled={isLoading}>
-              Registrar usuario
+              Registrar instructor
             </Button>
             {showSpinner()}
             {showErrorMessage()}

@@ -37,6 +37,7 @@ import RegularExpressions from "../../../utils/RegularExpressions";
 import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
+import ServiceEditConfirmationModal from "./ServiceEditConfirmationModal";
 import NotEnoughCreditsModal from "../SingleRequestModal/NotEnoughCreditsModal";
 import "./SingleRequestClient.scss";
 
@@ -69,6 +70,7 @@ const SingleRequestClient = () => {
   );
   const [registeredDrivers, setRegisteredDrivers] = useState(null);
   const [newDrivers, setNewDrivers] = useState([]);
+  //eslint-disable-next-line
   const [areDriversValid, setAreDriversValid] = useState(true);
   const [canSaveDrivers, setCanSaveDrivers] = useState(false);
 
@@ -302,17 +304,16 @@ const SingleRequestClient = () => {
         if (data.status.step === 1) {
           let payload = {
             id: requestId,
-            refund_credits: data.customer.company.credit + data.spent_credit,
+            company: userInfoContext.company,
+            reject_msg: "Cancelado por el usuario",
+            refund_credits: userInfoContext.credit + data.spent_credit,
           };
 
           const res = await cancelRequestId(payload);
           if (res.canceled.status === 200 && res.refund.status === 200) {
             setUserInfoContext({
               ...userInfoContext,
-              company: {
-                ...userInfoContext.company,
-                credit: res.refund.data.credit,
-              },
+              credit: res.refund.data.credit,
             });
             swal("Poof! Esta solicitud ha sido cancelada", {
               icon: "success",
@@ -546,7 +547,7 @@ const SingleRequestClient = () => {
                         track !== null
                           ? track.id
                           : data.optional_place1
-                         ? data.optional_place1.id
+                          ? data.optional_place1.id
                           : "",
                       start_time: data.optional_date1,
                       status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
@@ -634,7 +635,7 @@ const SingleRequestClient = () => {
 
                         let payload = {
                           id: requestId,
-                          userId: userInfoContext.id,
+                          company: userInfoContext.company,
                           reject_msg: msg ? msg : "na",
                           refund_credits:
                             userInfoContext.credit + data.spent_credit,
@@ -645,6 +646,10 @@ const SingleRequestClient = () => {
                           res.canceled.status === 200 &&
                           res.refund.status === 200
                         ) {
+                          setUserInfoContext({
+                            ...userInfoContext,
+                            credit: res.refund.data.credit,
+                          });
                           swal("Poof! Esta solicitud ha sido cancelada", {
                             icon: "success",
                           });
@@ -898,16 +903,28 @@ const SingleRequestClient = () => {
                       }
                     >
                       {data?.status?.step === 1 && allDrivers ? (
-                        <EditableTable
-                          size="sm"
-                          dataSet={allDrivers}
-                          fields={fields}
-                          onValidate={handleNewDriversValidation}
-                          onUpdate={handleAllDrivers}
-                          readOnly={true}
-                          readOnlyIf={isParticipantAlreadyRegistered}
-                          recordsForReplacing={driversForReplacing}
-                        />
+                        <React.Fragment>
+                          <EditableTable
+                            size="sm"
+                            dataSet={allDrivers}
+                            fields={fields}
+                            onValidate={handleNewDriversValidation}
+                            onUpdate={handleAllDrivers}
+                            readOnly={true}
+                            readOnlyIf={isParticipantAlreadyRegistered}
+                            recordsForReplacing={driversForReplacing}
+                          />
+                          {data?.status.step === 1 && (
+                            <Button
+                              variant="dark"
+                              onClick={saveDrivers}
+                              style={{ margin: "auto" }}
+                              {...(!canSaveDrivers ? { disabled: "true" } : {})}
+                            >
+                              Guardar
+                            </Button>
+                          )}
+                        </React.Fragment>
                       ) : allDrivers && allDrivers.length > 0 ? (
                         <Table striped bordered hover size="sm">
                           <thead>
@@ -1052,6 +1069,14 @@ const SingleRequestClient = () => {
             </div>
           </div>
         </div>
+        {showConfirmationModal && (
+          <ServiceEditConfirmationModal
+            show={true}
+            setShow={(e) => setShowConfirmationModal(e)}
+            request={data}
+          />
+        )}
+        {showNotEnoughCreditsModal && notEnoughCreditsModal()}
       </Row>
     );
   }
