@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+// import { useHistory, useRouteMatch } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import cellEditFactory from "react-bootstrap-table2-editor";
@@ -39,8 +39,8 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
   const { SearchBar } = Search;
-  const history = useHistory();
-  let { url } = useRouteMatch();
+  // const history = useHistory();
+  // let { url } = useRouteMatch();
   const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
 
   useEffect(() => {
