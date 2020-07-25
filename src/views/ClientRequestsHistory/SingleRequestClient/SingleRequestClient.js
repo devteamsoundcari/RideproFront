@@ -897,6 +897,7 @@ const SingleRequestClient = () => {
                 {data && (
                   <Tabs
                     activeKey={defaultTab}
+                    onSelect={(k) => setDefaultTab(k)}
                     id="uncontrolled-tab-request"
                     className="uncontrolled-tab-request"
                   >
