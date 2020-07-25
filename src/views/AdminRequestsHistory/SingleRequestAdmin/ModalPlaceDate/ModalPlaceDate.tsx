@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+// import { useHistory, useRouteMatch } from "react-router-dom";
 import DatePicker, { registerLocale } from "react-datepicker";
 import swal from "sweetalert";
 import { RequestsContext } from "../../../../contexts/RequestsContext";
@@ -17,6 +17,7 @@ import {
 import useDropdown from "../../../../utils/useDropdown";
 import es from "date-fns/locale/es";
 import "./ModalPlaceDate.scss";
+import ModalNewTrack from "../../../Tracks/ModalNewTrack/ModalNewTrack";
 
 registerLocale("es", es);
 
@@ -57,8 +58,8 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
 }) => {
   const [tracks, setTracks] = useState<any>([]);
   const [disabled, setDisabled] = useState(true);
-  const history = useHistory();
-  let { url } = useRouteMatch();
+  // const history = useHistory();
+  // let { url } = useRouteMatch();
   const [filteredTracks, setFilteredTracks] = useState<Tracks>([]);
   const [date, setDate] = useState(new Date());
   const [hour, setHour] = useState(new Date());
@@ -73,6 +74,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   const [showAlternative, setShowAlternative] = useState(false);
   const { userInfoContext } = useContext(AuthContext);
   const { updateRequests } = useContext(RequestsContext);
+  const [showModalTracks, setShowModalTracks] = useState(false);
   const [selectedPlace, PlacesDropdown] = useDropdown(
     "",
     "Seleccione...",
@@ -177,6 +179,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
 
   // ================================ FETCH TRACKS ON LOAD =====================================================
   const fetchTracks = async (url: string) => {
+    setFilteredTracks([]);
     let tempTracks: any = [];
     const response = await getTracks(url);
     response.results.forEach(async (item: any) => {
@@ -205,11 +208,12 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
 
   // =============================== CLICK ON ADD TRACK ====================================
   const handleClickAddTrack = () => {
-    let newUrl = url.split("/")[1];
-    history.push({
-      pathname: `/${newUrl}/pistas`,
-      state: { detail: "some_value" },
-    });
+    // let newUrl = url.split("/")[1];
+    // history.push({
+    //   pathname: `/${newUrl}/pistas`,
+    //   state: { detail: "some_value" },
+    // });
+    setShowModalTracks(true);
   };
 
   return (
@@ -503,6 +507,14 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
           </Button>
         )}
       </Modal.Footer>
+      {showModalTracks && (
+        <ModalNewTrack
+          handleClose={() => setShowModalTracks(false)}
+          fetchTracks={() =>
+            fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`)
+          }
+        />
+      )}
     </Modal>
   );
 };
