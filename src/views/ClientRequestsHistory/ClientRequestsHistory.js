@@ -1,28 +1,33 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import {
+  useLocation,
+  Route,
+  Switch,
+  useRouteMatch,
+  useHistory,
+} from "react-router-dom";
 import { AiFillDollarCircle } from "react-icons/ai";
-import { Container, Card, ProgressBar, Spinner, Alert } from "react-bootstrap";
+import { Container, Card, Spinner, Alert } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { RequestsContext } from "../../contexts/RequestsContext";
-import SingleRequestModal from "./SingleRequestModal/SingleRequestModal";
+import SingleRequestClient from "./SingleRequestClient/SingleRequestClient";
 import "./ClientRequestsHistory.scss";
-
+import ClientStatus from "../../utils/ClientStatus";
 
 const ClientRequestsHistory = () => {
   const location = useLocation();
-  const [modalShow, setModalShow] = useState(false);
-  const [selectedRow, setSelectedRow] = useState({});
+  const history = useHistory();
   const [displayedRequests, setDisplayedRequests] = useState([]);
-  const { requests, isLoadingRequests } = useContext(
-    RequestsContext
-  );
+  const { requests, isLoadingRequests } = useContext(RequestsContext);
+  let { path, url } = useRouteMatch();
 
   useEffect(() => {
     if (location.state) {
       handleOnSelect(location.state.event);
     }
+    // eslint-disable-next-line
   }, [location]);
 
   // ================================ FETCH REQUESTS ON LOAD =====================================================
@@ -40,76 +45,7 @@ const ClientRequestsHistory = () => {
   // ========================================= LOADING SPINNER =====================================
 
   const statusFormatter = (cell, row) => {
-    switch (row.status.step) {
-      case 0:
-        return (
-          <div className="text-center">
-            <small>Evento cancelado</small>
-          </div>
-        );
-      case 1:
-        return (
-          <div className="text-center">
-            <small>Esperando confirmación</small>
-            <ProgressBar
-              variant="event-requested"
-              now={20}
-              label={`${60}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 2:
-        return (
-          <div className="text-center">
-            <small>Confirmar programación</small>
-            <ProgressBar
-              variant="confirm-event"
-              now={40}
-              label={`${60}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 3:
-        return (
-          <div className="text-center">
-            <small>Servicio programado</small>
-            <ProgressBar
-              variant="event-confirmed"
-              now={50}
-              label={`${60}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 4:
-        return (
-          <div className="text-center">
-            <small>Servicio programado</small>
-            <ProgressBar
-              variant="event-confirmed"
-              now={50}
-              label={`${60}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 5:
-        return (
-          <div className="text-center">
-            <small>Servicio programado</small>
-            <ProgressBar
-              variant="event-confirmed"
-              now={50}
-              label={`${60}%`}
-              srOnly
-            />
-          </div>
-        );
-      default:
-        return <p>Undefined</p>;
-    }
+    return <ClientStatus step={row.status.step} />;
   };
 
   const cityFormatter = (cell) =>
@@ -194,10 +130,13 @@ const ClientRequestsHistory = () => {
     },
   ];
 
+  // const handleOnSelect = (row) => {
+  //   console.log("row", row);
+  //   setSelectedRow(row);
+  //   setModalShow(true);
+  // };
   const handleOnSelect = (row) => {
-    console.log("row", row);
-    setSelectedRow(row);
-    setModalShow(true);
+    history.push(`${url}/${row.id}`);
   };
 
   const selectRow = {
@@ -214,32 +153,37 @@ const ClientRequestsHistory = () => {
           <span className="sr-only">Loading...</span>
         </Spinner>
       ) : (
-        <Card>
-          {requests.length === 0 ? (
-            <Alert variant="light">
-              <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
-              <p>Para crear una solicitud, ingresa a "Solicitar".</p>
-            </Alert>
-          ) : (
-            <BootstrapTable
-              bootstrap4
-              keyField="id"
-              data={displayedRequests}
-              columns={columns}
-              selectRow={selectRow}
-              filter={filterFactory()}
-              pagination={paginationFactory()}
-            />
-          )}
-        </Card>
+        <Switch>
+          <Route exact path={path}>
+            <Card>
+              {requests.length === 0 ? (
+                <Alert variant="light">
+                  <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
+                  <p>Para crear una solicitud, ingresa a "Solicitar".</p>
+                </Alert>
+              ) : (
+                <BootstrapTable
+                  bootstrap4
+                  keyField="id"
+                  data={displayedRequests}
+                  columns={columns}
+                  selectRow={selectRow}
+                  filter={filterFactory()}
+                  pagination={paginationFactory()}
+                />
+              )}
+            </Card>
+          </Route>
+          <Route path={`${path}/:requestId`} component={SingleRequestClient} />
+        </Switch>
       )}
-      {modalShow && (
+      {/* {modalShow && (
         <SingleRequestModal
           show={true}
           onHide={() => setModalShow(false)}
           selectedRow={selectedRow}
         />
-      )}
+      )} */}
     </Container>
   );
 };

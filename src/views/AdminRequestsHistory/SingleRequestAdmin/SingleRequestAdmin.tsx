@@ -17,7 +17,6 @@ import ModalProviders from "./ModalProviders/ModalProviders";
 import ModalPlaceDate from "./ModalPlaceDate/ModalPlaceDate";
 import PlaceDate from "./PlaceDate/PlaceDate";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { RequestsContext } from "../../../contexts/RequestsContext";
 import ConfirmSection from "./ConfirmSection/ConfirmSection";
 import Documents from "./Documents/Documents";
 import ModalOC from "./ModalOC/ModalOC";
@@ -91,7 +90,6 @@ const SingleRequestAdmin = () => {
   const [instructors, setInstructors] = useState<Instructors>([]);
   const [providers, setProviders] = useState<Providers>([]);
   const { userInfoContext } = useContext(AuthContext);
-  const { updateRequestsContext } = useContext(RequestsContext);
   const [documentsOk, setDocumentsOk] = useState(false);
   const [showModalOC, setShowModalOC] = useState(false);
 
@@ -106,39 +104,27 @@ const SingleRequestAdmin = () => {
     fetchRequest(requestId);
     // eslint-disable-next-line
   }, []);
-
-  // useEffect(() => {
-  //   // user connected to server
-  //   let x = new WebSocket(
-  //     `${process.env.REACT_APP_SOCKET_URL}?token=781ab45f1a96068eae8fbb2d6602bbc0ba0de3aa`
-  //   );
-  //   x.onopen = () => {
-  //     // on connecting, do nothing but log it to the console
-  //     console.log("connected to socket ✅");
-  //     let payload = {
-  //       action: "subscribe_to_requests",
-  //       request_id: userInfoContext.id,
-  //     };
-  //     x.send(JSON.stringify(payload));
-  //   };
-  //   x.onmessage = (evt) => {
-  //     // listen to data sent from the websocket server
-  //     const message = JSON.parse(evt.data);
-  //     console.log(message.data.status, datadata);
-  //     if (message.data.status !== data?.status) {
-  //       swal({
-  //         title: "Login Success",
-  //         text: "Redirecting...",
-  //         icon: "success",
-  //         timer: 2000,
-  //       }).then(() => {
-  //         fetchRequest(requestId);
-  //       });
-  //     }
-  //     console.log(message);
-  //   };
-  //   //eslint-disable-next-line
-  // }, []);
+  // ============ Listening Socket==================
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    let requestsSocket = new WebSocket(
+      `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
+    );
+    requestsSocket.addEventListener("open", () => {
+      let payload = {
+        action: "subscribe_to_requests",
+        request_id: userInfoContext.id,
+      };
+      requestsSocket.send(JSON.stringify(payload));
+    });
+    requestsSocket.onmessage = async function (event) {
+      let data = JSON.parse(event.data);
+      if (data.data.id === parseInt(requestId)) {
+        fetchRequest(data.data.id);
+      }
+    };
+    // eslint-disable-next-line
+  }, []);
 
   const formatAMPM = (startDate) => {
     let date = new Date(startDate);

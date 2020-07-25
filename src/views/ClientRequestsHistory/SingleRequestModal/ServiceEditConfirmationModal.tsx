@@ -10,7 +10,7 @@ import "./SingleRequestModal.scss";
 
 const ServiceEditConfirmationModal = (props) => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
-  const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
   const {
     participantsToRegisterContext,
     registeredParticipantsContext,
@@ -160,7 +160,7 @@ const ServiceEditConfirmationModal = (props) => {
       ) {
         setShowSpinner(false);
         setShowSuccessPrompt(true);
-        updateRequestsContext();
+        updateRequests();
         setUserInfoContext({
           ...userInfoContext,
           credit: res.creditDecreasingResponse.data.credit,

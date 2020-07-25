@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+// import { useHistory, useRouteMatch } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import cellEditFactory from "react-bootstrap-table2-editor";
 import { Row, Col, ButtonGroup, Button, Modal, Image } from "react-bootstrap";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { MdRefresh } from "react-icons/md";
+import swal from "sweetalert";
+
 import {
   getProviders,
   updateRequestProviders,
@@ -12,6 +15,7 @@ import {
 import { RequestsContext } from "../../../../contexts/RequestsContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import "./ModalProviders.scss";
+import RegisterNewProvider from "../../../Providers/Registration/RegisterNewProvider";
 
 interface ModalProvidersProps {
   requestId: number;
@@ -32,12 +36,13 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
   );
   // eslint-disable-next-line
   const [requestProviders, setRequestProviders] = useState<any[]>([]);
-  const { updateRequestsContext } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
   const { SearchBar } = Search;
-  const history = useHistory();
-  let { url } = useRouteMatch();
+  // const history = useHistory();
+  // let { url } = useRouteMatch();
+  const [showAddProvidersModal, setShowAddProvidersModal] = useState(false);
 
   useEffect(() => {
     if (selectedProviders.length > 0) {
@@ -220,39 +225,42 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
     });
     if (res.status === 201) {
       setDisabled(true);
-      updateRequestsContext();
+      updateRequests();
+      swal("Perfecto!", `Proveedores actualizados exitosamente!`, "success");
     }
   };
 
   // =============================== CLICK ON ADD INSTRUCTOR ====================================
   const handleClickAddProvider = () => {
-    let newUrl = url.split("/")[1];
-    history.push({
-      pathname: `/${newUrl}/proveedores`,
-      state: { detail: "some_value" },
-    });
+    // let newUrl = url.split("/")[1];
+    // history.push({
+    //   pathname: `/${newUrl}/proveedores`,
+    //   state: { detail: "some_value" },
+    // });
+    setShowAddProvidersModal(true);
   };
 
   return (
-    <Modal
-      size="lg"
-      show={true}
-      onHide={handleClose}
-      className="modal-admin-providers"
-    >
-      <Modal.Header className={`bg-${userInfoContext.perfil}`} closeButton>
-        <Modal.Title className="text-white">Proveedores</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <ToolkitProvider
-          keyField="official_id"
-          data={providers}
-          columns={columns}
-          search
-        >
-          {(props) => (
-            <React.Fragment>
-              {/* {requestProviders.length > 0 && (
+    <React.Fragment>
+      <Modal
+        size="lg"
+        show={true}
+        onHide={handleClose}
+        className="modal-admin-providers"
+      >
+        <Modal.Header className={`bg-${userInfoContext.perfil}`} closeButton>
+          <Modal.Title className="text-white">Proveedores</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ToolkitProvider
+            keyField="official_id"
+            data={providers}
+            columns={columns}
+            search
+          >
+            {(props) => (
+              <React.Fragment>
+                {/* {requestProviders.length > 0 && (
                 <Col>
                   <ul className="list-unstyled">
                     <small>Provideres: </small>
@@ -266,57 +274,86 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
                 </Col>
               )} */}
 
-              <div className="top d-flex flex-wrap">
-                <div className="action-filters flex-grow-1">
-                  <SearchBar
-                    {...props.searchProps}
-                    className="custome-search-field"
-                    placeholder="Buscar Proveedor"
-                  />
+                <div className="top d-flex flex-wrap">
+                  <div className="action-filters flex-grow-1">
+                    <SearchBar
+                      {...props.searchProps}
+                      className="custome-search-field"
+                      placeholder="Buscar Proveedor"
+                    />
+                  </div>
+                  <div className="action-btns d-flex align-items-center">
+                    <ButtonGroup aria-label="Basic example">
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() =>
+                          fetchProviders(
+                            `${process.env.REACT_APP_API_URL}/api/v1/providers/`
+                          )
+                        }
+                      >
+                        <MdRefresh />
+                      </Button>
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={handleClickAddProvider}
+                      >
+                        Administrar Proveedores
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={disabled ? "outline-secondary" : "info"}
+                        disabled={disabled ? true : false}
+                        onClick={handleUpdateProvider}
+                      >
+                        Guardar
+                      </Button>
+                    </ButtonGroup>
+                  </div>
                 </div>
-                <div className="action-btns d-flex align-items-center">
-                  <ButtonGroup aria-label="Basic example">
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
-                      onClick={handleClickAddProvider}
-                    >
-                      Administrar Proveedores
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={disabled ? "outline-secondary" : "info"}
-                      disabled={disabled ? true : false}
-                      onClick={handleUpdateProvider}
-                    >
-                      Guardar Proveedor
-                    </Button>
-                  </ButtonGroup>
-                </div>
-              </div>
 
-              <BootstrapTable
-                {...props.baseProps}
-                expandRow={expandRow}
-                selectRow={selectRow}
-                rowClasses="row-new-style"
-                cellEdit={cellEditFactory({
-                  mode: "click",
-                  afterSaveCell: (oldValue, newValue, row, column) => {
-                    if (containsObject(row, selectedProviders)) {
-                      setSelectedProviders(
-                        selectedProviders.filter((item) => item.id !== row.id)
-                      );
-                      setSelectedProviders((oldArr) => [...oldArr, row]);
-                    }
-                  },
-                })}
-              />
-            </React.Fragment>
-          )}
-        </ToolkitProvider>
-      </Modal.Body>
-    </Modal>
+                <BootstrapTable
+                  {...props.baseProps}
+                  expandRow={expandRow}
+                  selectRow={selectRow}
+                  rowClasses="row-new-style"
+                  cellEdit={cellEditFactory({
+                    mode: "click",
+                    afterSaveCell: (oldValue, newValue, row, column) => {
+                      if (containsObject(row, selectedProviders)) {
+                        setSelectedProviders(
+                          selectedProviders.filter((item) => item.id !== row.id)
+                        );
+                        setSelectedProviders((oldArr) => [...oldArr, row]);
+                      }
+                    },
+                  })}
+                />
+              </React.Fragment>
+            )}
+          </ToolkitProvider>
+        </Modal.Body>
+      </Modal>
+      {showAddProvidersModal && (
+        <Modal
+          size="lg"
+          show={true}
+          onHide={() => setShowAddProvidersModal(false)}
+          className="modal-add-instructors"
+        >
+          <Modal.Header className={`bg-${userInfoContext.perfil}`} closeButton>
+            <Modal.Title className="text-white">
+              Registrar proveedor
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <RegisterNewProvider />
+          </Modal.Body>
+        </Modal>
+      )}
+    </React.Fragment>
   );
 };
 export default ModalProviders;

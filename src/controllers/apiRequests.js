@@ -3,7 +3,6 @@ import axios from "axios";
 /* =================================     SEND EMAIL    ===================================== */
 
 const sendEmail = async (data) => {
-  console.log("Send body", data);
   await axios({
     method: "POST",
     url: `${process.env.REACT_APP_MAILER_URL}/api/sendEmail`,
@@ -448,6 +447,7 @@ const cancelRequestId = async (data) => {
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${data.id}/`,
     data: {
       status: `${process.env.REACT_APP_STATUS_CANCELED}`, //"f973cb97-ac8a-4ec9-b288-c003bedd5d93", // Status setp canceled 0
+      reject_msg: data.reject_msg,
     },
   }).catch((err) => {
     console.error(err);
@@ -718,16 +718,20 @@ const decreaseUserCredits = async (user, credits) => {
 };
 
 /* =================================   INCREASE CREDITS IN COMPANY   ===================================== */
-const increaseCredits = async (companyId, credits) => {
+const increaseCredits = async (company, credits) => {
+  console.log("va", credits, "as", company);
   const result = await axios({
     method: "PATCH",
-    url: `${process.env.REACT_APP_API_URL}/api/v1/companies/${companyId}/`,
+    url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       credit: credits,
+      company_id: company.id,
     },
   }).catch((err) => {
+    console.error(err);
     return err;
   });
+  console.log(result);
   return result;
 };
 
