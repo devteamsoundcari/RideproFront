@@ -9,7 +9,7 @@ import {
 } from "../../../controllers/apiRequests";
 import { useForm } from "react-hook-form";
 import { createNewTrack } from "../../../controllers/apiRequests";
-
+import swal from "sweetalert";
 interface Props {
   handleClose: () => void;
   fetchTracks: () => void;
@@ -35,6 +35,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
   const { userInfoContext } = useContext(AuthContext);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  //eslint-disable-next-line
   const [success, setSuccess] = useState(false);
   const [departments, setDepartments] = useState<Departments>([]);
   const [department, setDpto] = useState<Department>({ id: "", name: "" });
@@ -68,12 +69,15 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
       const response = await createNewTrack(data);
       if (response) {
         setLoading(false);
-        setSuccess(true);
+        // setSuccess(true);
         fetchTracks();
-        setTimeout(() => {
-          setSuccess(false);
-          handleClose();
-        }, 1000);
+        swal("Perfecto!", `Pista registrada existosamente`, "success");
+
+        handleClose();
+
+        // setTimeout(() => {
+        //   setSuccess(false);
+        // }, 1000);
       } else {
         console.log("Algo paso!, no fue posible crear la pista");
       }
