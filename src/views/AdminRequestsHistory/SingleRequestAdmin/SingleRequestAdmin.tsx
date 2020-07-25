@@ -40,6 +40,7 @@ interface Customer {
   last_name: string;
   charge: string;
   email: string;
+  picture: string;
 }
 
 interface Department {
@@ -75,6 +76,8 @@ interface RequestData {
   operator: any;
   fare_track: any;
   f_p_track: any;
+  accept_msg: string;
+  reject_msg: string;
 }
 
 type Instructors = any[];
@@ -301,7 +304,7 @@ const SingleRequestAdmin = () => {
                   </div>
                   <hr />
                   <div className="row invoice-info">
-                    <div className="col-6 mt-1">
+                    <div className="col-4 mt-1">
                       <h6 className="invoice-from">Solicitado por</h6>
                       <div className="mb-1">
                         <span>
@@ -319,7 +322,7 @@ const SingleRequestAdmin = () => {
                         <span>601-678-8022</span>
                       </div>
                     </div>
-                    <div className="col-6 mt-1">
+                    <div className="col-4 mt-1">
                       <h6 className="invoice-to">Empresa</h6>
                       <div className="mb-1">
                         <span>{data?.customer?.company?.name}</span>
@@ -335,6 +338,53 @@ const SingleRequestAdmin = () => {
                       </div>
                       <div className="mb-1">
                         <span>{data?.customer?.company?.phone}</span>
+                      </div>
+                    </div>
+                    <div className="col-4 mt-1">
+                      <h6 className="invoice-to">Observaciones</h6>
+                      <div className="comments">
+                        <div className="user-message">
+                          <div className="avatar">
+                            <img
+                              src={data?.customer?.picture}
+                              alt={data?.customer?.first_name}
+                              width="32"
+                              height="32"
+                            />
+                          </div>
+                          <div className="d-inline-block mt-25">
+                            <h6 className="mb-0 text-bold-500">
+                              {data?.customer?.first_name}{" "}
+                              {data?.customer?.last_name}
+                            </h6>
+                            <p className="text-muted mt-1">
+                              <small>{data?.accept_msg}</small>
+                            </p>
+                          </div>
+                        </div>
+                        {data?.status?.step === 0 ? (
+                          <div className="user-message">
+                            <div className="avatar">
+                              <img
+                                src={data?.customer?.picture}
+                                alt={data?.customer?.first_name}
+                                width="32"
+                                height="32"
+                              />
+                            </div>
+                            <div className="d-inline-block mt-25">
+                              <h6 className="mb-0 text-bold-500">
+                                {data?.customer?.first_name}{" "}
+                                {data?.customer?.last_name}
+                              </h6>
+                              <p className="text-muted mt-1">
+                                <small>{data?.reject_msg}</small>
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
                   </div>

@@ -21,6 +21,7 @@ import {
   cancelRequestId,
   sendEmail,
   updateRequest,
+  fetchInstructor,
 } from "../../../controllers/apiRequests";
 import { TiCogOutline } from "react-icons/ti";
 import { EditableTable } from "../../../utils/EditableTable";
@@ -74,6 +75,18 @@ const SingleRequestClient = () => {
   const [areDriversValid, setAreDriversValid] = useState(true);
   const [canSaveDrivers, setCanSaveDrivers] = useState(false);
   const [defaultTab, setDefaultTab] = useState("participants");
+  const [instructor, setInstructor] = useState(null);
+
+  // ===================== Get first instructor ========================
+  useEffect(() => {
+    async function getFirstInstructor(id) {
+      const res = await fetchInstructor(id);
+      setInstructor(res);
+    }
+    if (data && data.instructors.length > 0) {
+      getFirstInstructor(data.instructors[0]);
+    }
+  }, [data]);
 
   // ==================== Set defaulkey tab depending on status =====================
 
@@ -784,8 +797,23 @@ const SingleRequestClient = () => {
                       {data?.municipality?.department?.name}
                     </span>
                   </div>
-                  <div className="col-6 text-right pr-4">
-                    <span>Creditos usados: ${data?.spent_credit}</span>
+                  <div className="col-6 text-right pr-4 mt-4">
+                    <span>
+                      <strong>Creditos usados:</strong> ${data?.spent_credit}
+                    </span>
+                    <br />
+                    {data && data.status.step > 2 ? (
+                      <span>
+                        <strong>Encargado Ridepro:</strong>{" "}
+                        {instructor ? (
+                          <span>{`${instructor.first_name} ${instructor.last_name}`}</span>
+                        ) : (
+                          "Cargando..."
+                        )}
+                      </span>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
                 <hr />
@@ -838,8 +866,8 @@ const SingleRequestClient = () => {
                   <div className="col-6 mt-1">
                     <div className="comments">
                       <p>Observaciones:</p>
-                      <div class="user-message">
-                        <div class="avatar">
+                      <div className="user-message">
+                        <div className="avatar">
                           <img
                             src={data ? data.customer.picture : ""}
                             alt={
@@ -851,19 +879,19 @@ const SingleRequestClient = () => {
                             height="32"
                           />
                         </div>
-                        <div class="d-inline-block mt-25">
-                          <h6 class="mb-0 text-bold-500">
+                        <div className="d-inline-block mt-25">
+                          <h6 className="mb-0 text-bold-500">
                             {data ? data.customer.first_name : ""}{" "}
                             {data ? data.customer.last_name : ""}
                           </h6>
-                          <p class="text-muted mt-1">
+                          <p className="text-muted mt-1">
                             <small>{data ? data.accept_msg : ""}</small>
                           </p>
                         </div>
                       </div>
                       {data && data.status.step === 0 ? (
-                        <div class="user-message">
-                          <div class="avatar">
+                        <div className="user-message">
+                          <div className="avatar">
                             <img
                               src={data ? data.customer.picture : ""}
                               alt={
@@ -875,12 +903,12 @@ const SingleRequestClient = () => {
                               height="32"
                             />
                           </div>
-                          <div class="d-inline-block mt-25">
-                            <h6 class="mb-0 text-bold-500">
+                          <div className="d-inline-block mt-25">
+                            <h6 className="mb-0 text-bold-500">
                               {data ? data.customer.first_name : ""}{" "}
                               {data ? data.customer.last_name : ""}
                             </h6>
-                            <p class="text-muted mt-1">
+                            <p className="text-muted mt-1">
                               <small>{data ? data.reject_msg : ""}</small>
                             </p>
                           </div>
