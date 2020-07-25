@@ -200,7 +200,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 <input
                   className="form-control"
                   type="text"
-                  placeholder="Coliseo municipal"
+                  // placeholder="Coliseo municipal"
                   name="trackName"
                   ref={register({ required: true, maxLength: 80 })}
                 />
@@ -210,7 +210,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 <input
                   className="form-control"
                   type="text"
-                  placeholder="calle 26s # 48-23"
+                  // placeholder="calle 26s # 48-23"
                   name="trackAddress"
                   ref={register({ required: true, maxLength: 80 })}
                 />

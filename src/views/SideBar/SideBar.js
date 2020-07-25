@@ -4,31 +4,27 @@ import {
   AiFillDollarCircle,
   AiFillCalendar,
   AiOutlineHistory,
-  AiOutlinePlus,
+  // AiOutlinePlus,
 } from "react-icons/ai";
 import {
-  GiFullMotorcycleHelmet,
+  // GiFullMotorcycleHelmet,
   GiTireTracks,
   GiThreeFriends,
 } from "react-icons/gi";
 import { FaPeopleCarry, FaUserGraduate } from "react-icons/fa";
-import { Badge, Button } from "react-bootstrap";
+import { Badge } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import Greeting from "../Usuarios/Greeting/Greeting";
 import defaultCompanyLogo from "../../assets/img/companydefault.png";
-import CompanyEditModal from "../Company/CompanyEditModal.tsx";
 import logo from "../../assets/img/logo.png";
 import "./SideBar.scss";
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
-  const {
-    updateRequests,
-  } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
-  const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
 
   useEffect(() => {
     if (userInfoContext.company.logo !== "") {
@@ -59,23 +55,6 @@ const SideBar = (props) => {
     // eslint-disable-next-line
   }, []);
 
-  const companyEditModal = () => {
-    return (
-      <CompanyEditModal
-        show={showCompanyEditModal}
-        onHide={closeCompanyEditModal}
-      />
-    );
-  };
-
-  const handleCompanyEditModal = () => {
-    setShowCompanyEditModal(true);
-  };
-
-  const closeCompanyEditModal = () => {
-    setShowCompanyEditModal(false);
-  };
-
   //========================================================================================================
 
   return (
@@ -92,7 +71,13 @@ const SideBar = (props) => {
         </div>
         <ul className="nav flex-column">
           <li>
-            <img alt="profileImg" className="shadow" src={profilePicture} />
+            <div
+              className="company-logo"
+              style={{
+                background: `url(${profilePicture})`,
+              }}
+            ></div>
+            {/* <img alt="profileImg" className="shadow" src={profilePicture} /> */}
           </li>
           <li>
             <div className="greeting">
@@ -103,14 +88,9 @@ const SideBar = (props) => {
               <br />
               <small>{userInfoContext.charge}</small>
               <br />
-              <Button
-                className="nav-company"
-                variant="link"
-                size="sm"
-                onClick={handleCompanyEditModal}
-              >
-                <small>{userInfoContext.company.name}</small>
-              </Button>
+              <small>{userInfoContext.company.name}</small>
+              {/* <Button className="nav-company" variant="link" size="sm"> */}
+              {/* </Button> */}
             </div>
           </li>
           {profile === "Cliente" ? (
@@ -129,19 +109,18 @@ const SideBar = (props) => {
         <ul className="nav flex-column align-items-start">
           {userInfoContext.profile !== 3 && (
             <React.Fragment>
-              <li className="sidebar-nav-header">Destacado</li>
+              {/* <li className="sidebar-nav-header">Destacado</li> */}
 
               <Link to={`${props.url}/solicitar`} className="nav-link">
-                <GiFullMotorcycleHelmet className="mb-1 mr-2" />
-                Solicitar{" "}
+                {/* <GiFullMotorcycleHelmet className="mb-1 mr-2" /> */}
                 <Badge pill variant="success">
-                  Nuevo!
+                  Solicitar servicio
                 </Badge>
               </Link>
               <hr />
             </React.Fragment>
           )}
-          <li className="sidebar-nav-header">Menú</li>
+          {/* <li className="sidebar-nav-header">Menú</li> */}
 
           <Link
             to={`${props.url}/dashboard`}
@@ -174,13 +153,13 @@ const SideBar = (props) => {
             <GiTireTracks className="mb-1 mr-2" />
             Ver pistas{" "}
           </Link>
-          <Link
+          {/* <Link
             to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
             className="nav-link"
           >
             <AiOutlinePlus className="mb-1 mr-2" />
             Añadir pista{" "}
-          </Link>
+          </Link> */}
 
           <hr />
           {userInfoContext.profile === 3 && (
@@ -217,7 +196,6 @@ const SideBar = (props) => {
           )}
         </ul>
       </div>
-      {companyEditModal()}
     </nav>
   );
 };

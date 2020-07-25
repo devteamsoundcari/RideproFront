@@ -73,6 +73,19 @@ const SingleRequestClient = () => {
   //eslint-disable-next-line
   const [areDriversValid, setAreDriversValid] = useState(true);
   const [canSaveDrivers, setCanSaveDrivers] = useState(false);
+  const [defaultTab, setDefaultTab] = useState("participants");
+
+  // ==================== Set defaulkey tab depending on status =====================
+
+  useEffect(() => {
+    if (data) {
+      if (data.status.step === 2) {
+        setDefaultTab("place");
+      } else {
+        setDefaultTab("participants");
+      }
+    }
+  }, [data]);
 
   // ============ Listening Socket==================
   useEffect(() => {
@@ -379,9 +392,7 @@ const SingleRequestClient = () => {
   };
 
   const renderPlaceDateOptions = (track) => {
-    if (track) {
-      return "";
-    } else if (data.status.step === 2) {
+    if (data.status.step === 2) {
       return (
         <Tab
           eventKey="place"
@@ -733,18 +744,6 @@ const SingleRequestClient = () => {
     }
   };
 
-  const getDefaultKey = () => {
-    if (data.status.step === 2) {
-      if (data.track) {
-        return "place";
-      } else {
-        return "participants";
-      }
-    } else {
-      return "participants";
-    }
-  };
-
   if (loading) {
     return <Spinner animation="border" />;
   } else {
@@ -796,13 +795,23 @@ const SingleRequestClient = () => {
                     <div className="mb-1">
                       <span>
                         Fecha:{" "}
-                        {data?.start_time ? dateFormatter(data.start_time) : ""}
+                        {data?.start_time ? dateFormatter(data.start_time) : ""}{" "}
+                        {data?.status.step < 3 ? (
+                          <small>(Pendiente por confirmar)</small>
+                        ) : (
+                          ""
+                        )}
                       </span>
                     </div>
                     <div className="mb-1">
                       <span>
                         Hora:{" "}
-                        {data?.start_time ? formatAMPM(data.start_time) : ""}
+                        {data?.start_time ? formatAMPM(data.start_time) : ""}{" "}
+                        {data?.status.step < 3 ? (
+                          <small>(Pendiente por confirmar)</small>
+                        ) : (
+                          ""
+                        )}
                       </span>
                     </div>
                     <div className="mb-1">
@@ -887,7 +896,7 @@ const SingleRequestClient = () => {
               <div className="invoice-product-details table-responsive mx-md-25">
                 {data && (
                   <Tabs
-                    defaultActiveKey={getDefaultKey}
+                    activeKey={defaultTab}
                     id="uncontrolled-tab-request"
                     className="uncontrolled-tab-request"
                   >
@@ -985,11 +994,11 @@ const SingleRequestClient = () => {
                                       costo siempre y cuando la misma no haya
                                       sido confirmada.
                                       <br />
-                                      <br />
+                                      {/* <br />
                                       Si tu solicitud ha sido procesada por el
                                       equipo de RidePro, el costo de la
                                       cancelación estara basado en las horas
-                                      restantes para el dia del evento.
+                                      restantes para el dia del evento. */}
                                     </p>
                                     {data && data.status.step !== 0 ? (
                                       <Button

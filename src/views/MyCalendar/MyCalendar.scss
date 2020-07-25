@@ -2,6 +2,9 @@
   -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  .card {
+    overflow: auto;
+  }
   .conventions {
     border: 1px solid rgba(0, 0, 0, 0.125);
     border-right: none;
@@ -73,11 +76,12 @@
         }
         .rbc-event-content {
           white-space: normal !important;
+          height: 3.5rem;
           font-size: 12px;
           .event-formated {
             max-height: 3rem;
             padding: 5px 0px;
-            overflow: hidden;
+            // overflow: hidden;
 
             h5 {
               font-size: 13px;

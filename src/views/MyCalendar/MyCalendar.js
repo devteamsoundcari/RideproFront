@@ -17,11 +17,9 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = () => {
   const [displayedRequests, setDisplayedRequests] = useState([]);
   const history = useHistory();
-  const {
-    requests,
-    cancelledRequests,
-    isLoadingRequests,
-  } = useContext(RequestsContext);
+  const { requests, cancelledRequests, isLoadingRequests } = useContext(
+    RequestsContext
+  );
   const { userInfoContext } = useContext(AuthContext);
   const [seeCancelledEvents, setSeeCancelledEvents] = useState(false);
   const [withCanceledRequests, setWithCanceledRequests] = useState({});
@@ -152,7 +150,7 @@ const MyCalendar = () => {
   };
 
   return (
-    <Row className="calendarSection ml-1 mr-1 overflow-auto">
+    <Row className="calendarSection ml-1 mr-1 mb-4 overflow-auto">
       <Col md={2} className="conventions">
         <ListGroup>
           {userInfoContext.profile === 2 ? (
@@ -226,7 +224,9 @@ const MyCalendar = () => {
               defaultDate={new Date()}
               defaultView="month"
               views={{ month: true }}
-              events={seeCancelledEvents ? withCanceledRequests : displayedRequests}
+              events={
+                seeCancelledEvents ? withCanceledRequests : displayedRequests
+              }
               style={{ height: "100vh" }}
               onSelectEvent={(event) => handleClick(event)}
               components={{

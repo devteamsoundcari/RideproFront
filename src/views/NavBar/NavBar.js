@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { FaBell, FaPowerOff, FaUser } from "react-icons/fa";
+import { FaBell, FaPowerOff, FaUser, FaRegBuilding } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
-import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Nav, Navbar, NavDropdown, Image } from "react-bootstrap";
 import ProfileEditModal from "../Profile/ProfileEditModal";
 import PasswordChangeModal from "../Profile/Password/PasswordChangeModal";
+import CompanyEditModal from "../Company/CompanyEditModal";
 import "./NavBar.scss";
 
 const NavBar = () => {
@@ -20,6 +21,7 @@ const NavBar = () => {
   const { setRequests, setCancelledRequests } = useContext(RequestsContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
+  const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
 
   const logout = () => {
     console.log("Bye bye");
@@ -105,16 +107,30 @@ const NavBar = () => {
                 <NavDropdown.Item onClick={() => setShowProfileEditModal(true)}>
                   <FaUser /> Perfil
                 </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => setShowCompanyEditModal(true)}>
+                  <FaRegBuilding /> Compañia
+                </NavDropdown.Item>
                 <NavDropdown.Item onClick={logout}>
                   <FaPowerOff /> Cerrar sesión
                 </NavDropdown.Item>
               </NavDropdown>
+              <Image
+                src={userInfoContext.picture}
+                roundedCircle
+                className="shadow-sm"
+              />
             </div>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
       {showProfileEditModal && profileEditModal()}
       {showPasswordChangeModal && passwordChangeModal()}
+      {showCompanyEditModal && (
+        <CompanyEditModal
+          show={true}
+          onHide={() => setShowCompanyEditModal(false)}
+        />
+      )}
     </>
   );
 };
