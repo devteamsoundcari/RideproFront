@@ -82,7 +82,7 @@ export const RequestToastContainer: React.FC = () => {
           status={request.status}
           show={request.show}
           onClose={() => closeToast(request.index)}
-          delay={80000}
+          delay={8000}
         ></RequestToast>
       );
     });
