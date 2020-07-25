@@ -4,15 +4,15 @@ import {
   AiFillDollarCircle,
   AiFillCalendar,
   AiOutlineHistory,
-  AiOutlinePlus,
+  // AiOutlinePlus,
 } from "react-icons/ai";
 import {
-  GiFullMotorcycleHelmet,
+  // GiFullMotorcycleHelmet,
   GiTireTracks,
   GiThreeFriends,
 } from "react-icons/gi";
 import { FaPeopleCarry, FaUserGraduate } from "react-icons/fa";
-import { Badge, Button } from "react-bootstrap";
+import { Badge } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import Greeting from "../Usuarios/Greeting/Greeting";

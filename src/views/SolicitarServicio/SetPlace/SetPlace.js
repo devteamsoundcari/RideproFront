@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
   getDepartments,
@@ -14,7 +14,7 @@ import ModalNewTrack from "../../Tracks/ModalNewTrack/ModalNewTrack";
 
 const SetPlace = (props) => {
   const { userInfoContext } = useContext(AuthContext);
-  const history = useHistory();
+  // const history = useHistory();
   const { handleSubmit } = useForm();
   const [error, setError] = useState("");
   const [noTrack, setNoTrack] = useState(false);

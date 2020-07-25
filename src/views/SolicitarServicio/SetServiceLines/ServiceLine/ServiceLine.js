@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Card, Button, Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Card, Badge } from "react-bootstrap";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import "./ServiceLine.scss";
 import { Fade } from "react-awesome-reveal";
@@ -13,8 +13,8 @@ import {
 import vehiclesImg from "../../../../assets/img/vehicles.png";
 
 const ServiceLine = (props) => {
-  const [showFullDescription, setShowFullDescription] = useState(false);
-  const { name, description, short_description, image, id } = props.line;
+  // const [showFullDescription, setShowFullDescription] = useState(false);
+  const { name, short_description, image, id } = props.line;
   const [showServices, setShowServices] = useState(false);
   const [filteredServices, setFiltededServices] = useState([]);
   const { userInfoContext } = useContext(AuthContext);
@@ -56,7 +56,8 @@ const ServiceLine = (props) => {
           ></div>
           <div className="card-body">
             <p className="card-text">
-              {showFullDescription ? description : short_description}
+              {short_description}
+              {/* {showFullDescription ? description : short_description} */}
               {/* <span>
                 <Button
                   variant="link"
