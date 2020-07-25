@@ -9,6 +9,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./MyCalendar.scss";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
+import statusStepFormatter from "../../utils/statusStepFormatter";
 
 require("moment/locale/es.js");
 
@@ -57,71 +58,17 @@ const MyCalendar = () => {
   };
 
   const styleEvents = (event, start, end, isSelected) => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
+    const { bgColor, color } = statusStepFormatter(
+      event.status.step,
+      userInfoContext.profile
+    );
     let newStyle = {
-      backgroundColor: "",
-      color: "black",
+      color: color,
       borderRadius: "0px",
       border: "none",
     };
-
-    if (userInfoContext.profile === 2) {
-      switch (event.status.step) {
-        case 0:
-          newStyle.backgroundColor = "red";
-          newStyle.color = "#f5f5f5";
-          break;
-        case 1:
-          newStyle.backgroundColor = "yellow";
-          break;
-        case 2:
-          newStyle.backgroundColor = "orange";
-          break;
-        case 3:
-          newStyle.backgroundColor = "dodgerblue";
-          newStyle.color = "#fff";
-          break;
-        case 4:
-          newStyle.backgroundColor = "dodgerblue";
-          newStyle.color = "#fff";
-          break;
-        case 5:
-          newStyle.backgroundColor = "dodgerblue";
-          newStyle.color = "#fff";
-          break;
-        default:
-          break;
-      }
-    } else {
-      switch (event.status.step) {
-        case 0:
-          newStyle.backgroundColor = "red";
-          newStyle.color = "#f5f5f5";
-          break;
-        case 1:
-          newStyle.backgroundColor = "yellow";
-          break;
-        case 2:
-          newStyle.backgroundColor = "orange";
-          break;
-        case 3:
-          newStyle.backgroundColor = "dodgerblue";
-          newStyle.color = "#fff";
-          break;
-        case 4:
-          newStyle.backgroundColor = "mediumslateblue";
-          newStyle.color = "#fff";
-          break;
-        case 5:
-          newStyle.backgroundColor = "lightgreen";
-          break;
-        default:
-          break;
-      }
-    }
     return {
-      className: "",
+      className: bgColor,
       style: newStyle,
     };
   };
@@ -161,7 +108,7 @@ const MyCalendar = () => {
               </ListGroup.Item>
               <ListGroup.Item>
                 <FaDotCircle className="text-confirm-event" />{" "}
-                <small>CONFIRMAR SERVICIO</small>
+                <small>CONFIRMAR PROGRAMACIÓN</small>
               </ListGroup.Item>
               <ListGroup.Item>
                 <FaDotCircle className="text-event-confirmed" />{" "}

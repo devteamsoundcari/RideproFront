@@ -93,12 +93,14 @@ const RequestsContextProvider = (props) => {
             id: request.id,
             previousStatus: {
               name: oldRequest.status.name,
-              color: oldRequest.status.color_indicator
+              color: oldRequest.status.color_indicator,
+              step: oldRequest.status.step,
             },
             newStatus: {
               name: request.status.name,
-              color: request.status.color_indicator
-            }
+              color: request.status.color_indicator,
+              step: request.status.step,
+            },
           });
         }
       }

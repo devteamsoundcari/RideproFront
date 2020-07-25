@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import { Toast } from "react-bootstrap";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import "./RequestToast.scss";
+import statusStepFormatter from "../../utils/statusStepFormatter";
+import { AuthContext } from "../../contexts/AuthContext";
 
 interface RequestToastProps {
   index: number;
@@ -9,6 +11,7 @@ interface RequestToastProps {
   status: {
     name: string;
     color: string;
+    step: number;
   };
   onClose: () => void;
   show: boolean;
@@ -18,26 +21,34 @@ interface RequestToastProps {
 const RequestToast: React.FC<RequestToastProps> = (
   props: RequestToastProps
 ) => {
+  const { userInfoContext } = useContext(AuthContext);
+  const { bgColor, name, color } = statusStepFormatter(
+    props.status.step,
+    userInfoContext.profile
+  );
+
   return (
     <Toast
       key={props.index}
       onClose={props.onClose}
       show={props.show}
       delay={props.delay}
+      className={`custom-toast ${bgColor}`}
       autohide
     >
-      <Toast.Header closeButton closeLabel="Cerrar notificación">
+      <Toast.Header
+        closeButton
+        closeLabel="Cerrar notificación"
+        className={bgColor}
+        style={{ color: color }}
+      >
         <strong className="mr-auto">Actualización</strong>
       </Toast.Header>
-      <Toast.Body>
-        La solicitud {props.id} ha sido actualizada con el estado{" "}
-        <strong
-          style={{
-            backgroundColor: `black`,
-            color: props.status.color,
-          }}
-        >
-          <i>{props.status.name}</i>
+      <Toast.Body style={{ color: color }}>
+        La solicitud <strong>{props.id}</strong> ha sido actualizada con el
+        estado{" "}
+        <strong>
+          <i>{name}</i>
         </strong>
         .
       </Toast.Body>
@@ -51,6 +62,7 @@ interface RequestStatus {
   status: {
     name: string;
     color: string;
+    step: number;
   };
   show: boolean;
 }
@@ -70,7 +82,7 @@ export const RequestToastContainer: React.FC = () => {
           status={request.status}
           show={request.show}
           onClose={() => closeToast(request.index)}
-          delay={10000}
+          delay={80000}
         ></RequestToast>
       );
     });
@@ -88,7 +100,7 @@ export const RequestToastContainer: React.FC = () => {
           return r.index !== index;
         });
         setRequests(newRequests);
-      }, 500);
+      }, 300);
     }
   };
 
@@ -105,6 +117,7 @@ export const RequestToastContainer: React.FC = () => {
         status: {
           name: lastRequestInfo.newStatus.name,
           color: lastRequestInfo.newStatus.color,
+          step: lastRequestInfo.newStatus.step,
         },
         show: true,
       };

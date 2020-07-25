@@ -3,8 +3,24 @@
 }
 
 .request-toast-container {
-  position: absolute;
-  top: 2%;
+  position: fixed;
+  top: 10%;
   right: 2%;
   z-index: 999;
+}
+
+.custom-toast {
+  .toast-header {
+    border: none;
+    padding-top: 10px !important;
+    padding-bottom: 0px;
+    button {
+      opacity: 0.5 !important;
+      padding-bottom: 13px;
+      color: #333;
+    }
+  }
+  .toast-body {
+    padding-top: 0px !important;
+  }
 }
