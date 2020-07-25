@@ -19,6 +19,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import ClientRequestsHistory from "../../views/ClientRequestsHistory/ClientRequestsHistory";
 import Instructors from "../../views/Instructors/Instructors";
 import Providers from "../../views/Providers/Providers";
+import { RequestToastContainer } from "../../views/Notifications/RequestToast";
 
 const DashboardLayout: React.FC = () => {
   const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
@@ -40,6 +41,7 @@ const DashboardLayout: React.FC = () => {
           <main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-0">
             <NavBar />
             <Container fluid className="mt-2">
+              <RequestToastContainer />
               <Switch>
                 <Route path={`${path}/dashboard`}>
                   <Dashboard />
