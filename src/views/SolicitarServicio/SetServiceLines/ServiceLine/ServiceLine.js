@@ -57,14 +57,14 @@ const ServiceLine = (props) => {
           <div className="card-body">
             <p className="card-text">
               {showFullDescription ? description : short_description}
-              <span>
+              {/* <span>
                 <Button
                   variant="link"
                   onClick={() => setShowFullDescription(!showFullDescription)}
                 >
                   {showFullDescription ? "Ver menos" : "Ver más"}
                 </Button>
-              </span>
+              </span> */}
             </p>
             <div
               className="card-img-bottom"
@@ -96,54 +96,54 @@ const ServiceLine = (props) => {
               <div className="list-group list-group-flush">
                 {filteredServices.map((service) => {
                   return (
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip id={`tooltip-${service.name}`}>
-                          {service.description}
-                          {/* Tooltip on <strong>asd</strong>. */}
-                        </Tooltip>
-                      }
+                    // <OverlayTrigger
+                    //   placement="right"
+                    //   overlay={
+                    //     <Tooltip id={`tooltip-${service.name}`}>
+                    //       {service.description}
+                    //       {/* Tooltip on <strong>asd</strong>. */}
+                    //     </Tooltip>
+                    //   }
+                    // >
+                    <div
+                      className="list-group-item border-0 d-flex"
+                      onClick={(e) => handleClickService(e, service)}
+                      id={service.id}
                     >
-                      <div
-                        className="list-group-item border-0 d-flex"
-                        onClick={(e) => handleClickService(e, service)}
-                        id={service.id}
-                      >
-                        <div className="list-icon">
-                          <Badge
-                            variant="secondary"
-                            className="badge-circle badge-circle-light-secondary bx bxl-instagram-alt mr-1 text-danger"
-                          >
-                            {service.name.toLowerCase().includes("auto") ? (
-                              <AiFillCar />
-                            ) : service.name.toLowerCase().includes("moto") ? (
-                              <FaMotorcycle />
-                            ) : (
-                              <FaTruckMoving />
-                            )}
-                          </Badge>
-                        </div>
-                        <div className="list-content">
-                          <h5>{service.name}</h5>
-                          <div className="conventions">
-                            <p>
-                              <span>
-                                <FaDollarSign />
-                              </span>
-                              {service.ride_value} x {service.service_type}
-                            </p>
-                            <p>
-                              <span>
-                                <FaClock />
-                              </span>
-                              {service.duration} min
-                            </p>
-                          </div>
-                          {/* <p className="mb-0">{service.description}</p> */}
-                        </div>
+                      <div className="list-icon">
+                        <Badge
+                          variant="secondary"
+                          className="badge-circle badge-circle-light-secondary bx bxl-instagram-alt mr-1 text-danger"
+                        >
+                          {service.name.toLowerCase().includes("auto") ? (
+                            <AiFillCar />
+                          ) : service.name.toLowerCase().includes("moto") ? (
+                            <FaMotorcycle />
+                          ) : (
+                            <FaTruckMoving />
+                          )}
+                        </Badge>
                       </div>
-                    </OverlayTrigger>
+                      <div className="list-content">
+                        <h5>{service.name}</h5>
+                        <div className="conventions">
+                          <p>
+                            <span>
+                              <FaDollarSign />
+                            </span>
+                            {service.ride_value} x {service.service_type}
+                          </p>
+                          <p>
+                            <span>
+                              <FaClock />
+                            </span>
+                            {service.duration} min
+                          </p>
+                        </div>
+                        {/* <p className="mb-0">{service.description}</p> */}
+                      </div>
+                    </div>
+                    // </OverlayTrigger>
                   );
                 })}
                 <button
