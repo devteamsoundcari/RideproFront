@@ -15,6 +15,7 @@ import { RequestsContext } from "../../contexts/RequestsContext";
 import SingleRequestClient from "./SingleRequestClient/SingleRequestClient";
 import "./ClientRequestsHistory.scss";
 import ClientStatus from "../../utils/ClientStatus";
+import { dateFormatter } from "../../utils/helpFunctions";
 
 const ClientRequestsHistory = () => {
   const location = useLocation();
@@ -51,21 +52,8 @@ const ClientRequestsHistory = () => {
   const cityFormatter = (cell) =>
     cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
 
-  const dateFormatter = (cell) => {
-    let d = new Date(cell);
-    const dateTimeFormat = new Intl.DateTimeFormat("es-CO", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-    const [
-      { value: month },
-      ,
-      { value: day },
-      ,
-      { value: year },
-    ] = dateTimeFormat.formatToParts(d);
-    return `${month}/${day}/${year}`;
+  const formatDate = (cell) => {
+    return dateFormatter(cell);
   };
 
   const headerCreditFormatter = () => {
@@ -95,7 +83,7 @@ const ClientRequestsHistory = () => {
     {
       dataField: "created_at",
       text: "Fecha de solicitud",
-      formatter: dateFormatter,
+      formatter: formatDate,
       sort: true,
     },
     {
@@ -112,7 +100,7 @@ const ClientRequestsHistory = () => {
     {
       dataField: "start_time",
       text: "Fecha de Programación",
-      formatter: dateFormatter,
+      formatter: formatDate,
       sort: true,
     },
     {
@@ -130,11 +118,6 @@ const ClientRequestsHistory = () => {
     },
   ];
 
-  // const handleOnSelect = (row) => {
-  //   console.log("row", row);
-  //   setSelectedRow(row);
-  //   setModalShow(true);
-  // };
   const handleOnSelect = (row) => {
     history.push(`${url}/${row.id}`);
   };
@@ -177,13 +160,6 @@ const ClientRequestsHistory = () => {
           <Route path={`${path}/:requestId`} component={SingleRequestClient} />
         </Switch>
       )}
-      {/* {modalShow && (
-        <SingleRequestModal
-          show={true}
-          onHide={() => setModalShow(false)}
-          selectedRow={selectedRow}
-        />
-      )} */}
     </Container>
   );
 };
