@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Modal, Button, Spinner } from "react-bootstrap";
+import { Modal, Button, Spinner, Table } from "react-bootstrap";
 import { FaCheckCircle } from "react-icons/fa";
+import { AiOutlineWarning } from "react-icons/ai";
 import { Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -11,6 +12,8 @@ import {
   createDriver,
   sendEmail,
 } from "../../../controllers/apiRequests";
+import "./ServiceConfirmationModal.scss";
+import { formatAMPM, dateFormatter } from "../../../utils/helpFunctions";
 
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
@@ -35,22 +38,11 @@ const ConfirmServiceModal = (props) => {
   ] = useState([]);
   const [unregisteredParticipants, setUnregisteredParticipants] = useState([]);
   const [displayData, setDisplayData] = useState(false);
-  // const [newRegistered, setNewRegistered] = useState(
-  //   registeredParticipantsContext
-  // );
-  // const [finalParticipants, setFinalParticipants] = useState([]);
   const [newToRegister, setNewToRegister] = useState(
     participantsToRegisterContext
   );
   const [rides, setRides] = useState(props.rides);
   const [comment, setComment] = useState("");
-
-  const options = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
 
   const isParticipantRegistered = (participant) => {
     const registeredIDs = allParticipantsInfoContext.map((p) => {
@@ -199,7 +191,7 @@ const ConfirmServiceModal = (props) => {
   const successPropmt = () => {
     return (
       <React.Fragment>
-        <Modal.Body>
+        <Modal.Body className="texxt-center">
           <h3>
             ¡Solicitud creada! <FaCheckCircle />
           </h3>
@@ -251,72 +243,97 @@ const ConfirmServiceModal = (props) => {
           <Modal.Title>Confirmar servicio</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>
-            <strong>Servicio: </strong>
-            {props.service.name}
-          </p>
-          <p>
-            <strong>Fecha: </strong>
-            {props.date && props.date.date
-              ? props.date.date.toLocaleDateString("es-ES", options)
-              : "None"}
-          </p>
-          <p>
-            <strong>Hora: </strong>
-            {props.date && props.date.date
-              ? props.date.date.toLocaleTimeString()
-              : "None"}
-          </p>
-          <p>
-            <strong>Ciudad: </strong>
-            {props.place.place && `"${props.place.place}" - `}
-            {props.place.city && props.place.city.name
-              ? props.place.city.name
-              : "None"}{" "}
-            (
-            {props.place.department && props.place.department.name
-              ? props.place.department.name
-              : "None"}
-            )
-          </p>
-          <p>
-            <strong>Lugar: </strong>
-            {props.place.track.name
-              ? `Mi pista (${props.place.track.name})`
-              : "Pista ridepro"}
-          </p>
-          <p>
-            <strong>Rides utilizados: </strong>
-            {rides}
-          </p>
-
+          <ul>
+            <li>
+              <strong>Servicio: </strong>
+              {props.service.name}
+            </li>
+            <li>
+              <strong>Fecha: </strong>
+              {props.date && props.date.date
+                ? dateFormatter(props.date.date)
+                : "None"}
+            </li>
+            <li>
+              <strong>Hora: </strong>
+              {props.date && props.date.date
+                ? formatAMPM(props.date.date)
+                : "None"}
+            </li>
+            <li>
+              <strong>Ciudad: </strong>
+              {props.place.place && `"${props.place.place}" - `}
+              {props.place.city && props.place.city.name
+                ? props.place.city.name
+                : "None"}{" "}
+              (
+              {props.place.department && props.place.department.name
+                ? props.place.department.name
+                : "None"}
+              )
+            </li>
+            <li>
+              <strong>Lugar: </strong>
+              {props.place.track.name
+                ? `Mi pista (${props.place.track.name})`
+                : "Pista ridepro"}
+            </li>
+            <li>
+              <strong>Rides utilizados: </strong>
+              {rides}
+            </li>
+          </ul>
+          <hr />
           <strong>
             Participantes ({newToRegister.length}
             ):{" "}
           </strong>
-          <ul>
-            {newToRegister.map((participant, idx) => {
-              return (
-                <li key={idx}>
-                  {participant.first_name} {participant.last_name} (
-                  {participant.email})
-                </li>
-              );
-            })}
-          </ul>
+          <Table striped bordered hover size="sm">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {newToRegister.map((participant, idx) => {
+                return (
+                  <tr key={idx}>
+                    <td>
+                      {participant.first_name} {participant.last_name}
+                    </td>
+                    <td>{participant.email}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+          <hr />
+
           <strong>Comentarios adicionales:</strong>
           <Form.Control
             as="textarea"
-            rows="4"
+            rows="2"
             value={comment}
             onChange={handleComment}
           />
+          <hr />
+          <div className="w-100 text-center">
+            <p>
+              <AiOutlineWarning /> Importante <br />
+              <small>
+                Recuerda que puedes cancelar sin penalidad hasta 5 horas antes
+                del evento. Luego de este plazo se te cargara una penalidad
+                dependiendo el servicio.
+              </small>
+            </p>
+          </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCancel}>
+          <Button size="sm" variant="secondary" onClick={handleCancel}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleCreateService}>
+          <Button size="sm" variant="primary" onClick={handleCreateService}>
             Solicitar servicio
           </Button>
         </Modal.Footer>
@@ -364,6 +381,7 @@ const ConfirmServiceModal = (props) => {
     <Modal
       show={props.show}
       onHide={showSuccessPropmt ? handleOK : () => props.setShow(false)}
+      className="modal-confirm-service"
     >
       {showSpinner && loader()}
       {alreadyRegisteredParticipants.length > 0 && displayErrorParticipants()}

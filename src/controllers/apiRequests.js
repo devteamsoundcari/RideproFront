@@ -441,20 +441,25 @@ const editRequest = async (id, data) => {
 
 // ==================================== CANCEL REQUEST ID AND REFIND CREDITS ==================================================================
 
-const cancelRequestId = async (data) => {
+const cancelRequestId = async (data, penalty) => {
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${data.id}/`,
     data: {
-      status: `${process.env.REACT_APP_STATUS_CANCELED}`, //"f973cb97-ac8a-4ec9-b288-c003bedd5d93", // Status setp canceled 0
+      status: `${process.env.REACT_APP_STATUS_CANCELED}`,
       reject_msg: data.reject_msg,
     },
   }).catch((err) => {
     console.error(err);
     return err;
   });
-  let result2 = await increaseCredits(data.company, data.refund_credits); // Calling decrease
-  return { canceled: result, refund: result2 };
+  let res = 0;
+  if (penalty > 0) {
+    res = await decreaseUserCredits(data.user, data.companyId, penalty);
+  } else {
+    res = await increaseUserCredits(data.companyId, data.refund_credits);
+  }
+  return { canceled: result, refund: res };
 };
 
 /* =================================   CREATE A DRIVER  ===================================== */
@@ -683,33 +688,16 @@ const getRequestProviders = async (url) => {
   return requests.data;
 };
 
-/* =================================   DECREASE CREDITS IN COMPANY   ===================================== */
-// eslint-disable-next-line
-const decreaseCredits = async (company, credits) => {
-  const newCredit = company.credit - credits;
-  const { id } = company;
-  const result = await axios({
-    method: "PATCH",
-    url: `${process.env.REACT_APP_API_URL}/api/v1/companies/${id}/`,
-    data: {
-      credit: newCredit,
-    },
-  }).catch((err) => {
-    return err;
-  });
-  return result;
-};
+/* =================================   DECREASE CREDITS USER   ===================================== */
 
-const decreaseUserCredits = async (user, credits) => {
-  const newCredit = user.credit - credits;
-  const { company } = user;
+const decreaseUserCredits = async (user, companyId, credits) => {
+  const newCredit = parseInt(user.credit) - parseInt(credits);
   const result = await axios({
-    auth: false,
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       credit: newCredit,
-      company_id: company.id,
+      company_id: companyId,
     },
   }).catch((err) => {
     return err;
@@ -717,21 +705,20 @@ const decreaseUserCredits = async (user, credits) => {
   return result;
 };
 
-/* =================================   INCREASE CREDITS IN COMPANY   ===================================== */
-const increaseCredits = async (company, credits) => {
-  console.log("va", credits, "as", company);
+/* =================================   INCREASE CREDITS USER   ===================================== */
+
+const increaseUserCredits = async (companyId, credits) => {
+  console.log("company increase", credits);
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       credit: credits,
-      company_id: company.id,
+      company_id: companyId,
     },
   }).catch((err) => {
-    console.error(err);
     return err;
   });
-  console.log(result);
   return result;
 };
 
