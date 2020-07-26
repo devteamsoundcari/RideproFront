@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Col } from "react-bootstrap";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 interface PlaceProps {
   municipality: any;
@@ -57,7 +58,20 @@ const PlaceDate: React.FC<PlaceProps> = ({
       {track ? (
         <React.Fragment>
           <div className="col-3 mt-1">
-            <h6 className="invoice-to">Pista</h6>
+            {track?.latitude &&
+            track?.latitude !== "na" &&
+            track?.longitude &&
+            track.longitude !== "na" ? (
+              <a
+                target="n_blank"
+                className="m-0 p-0 track-link"
+                href={`https://www.google.com/maps/search/?api=1&query=${track?.latitude},${track?.longitude}`}
+              >
+                Pista <FaExternalLinkAlt />
+              </a>
+            ) : (
+              <h6 className="invoice-to">Pista</h6>
+            )}
             <div className="mb-1">
               <span>{track?.name}</span>
             </div>

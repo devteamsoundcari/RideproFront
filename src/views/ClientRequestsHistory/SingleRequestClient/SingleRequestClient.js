@@ -31,7 +31,7 @@ import {
   MdPeople,
   MdWarning,
 } from "react-icons/md";
-import { FaEnvelope } from "react-icons/fa";
+import { FaEnvelope, FaExternalLinkAlt } from "react-icons/fa";
 import { dateFormatter, formatAMPM } from "../../../utils/helpFunctions";
 import ClientStatus from "../../../utils/ClientStatus";
 import RegularExpressions from "../../../utils/RegularExpressions";
@@ -852,9 +852,22 @@ const SingleRequestClient = () => {
                             delay={{ show: 250, hide: 400 }}
                             overlay={renderTooltipTrack(data.track)}
                           >
-                            <Button variant="link" className="m-0 p-0">
-                              {data.track.name}
-                            </Button>
+                            {data.track.latitude &&
+                            data.track.latitude !== "na" &&
+                            data.track.longitude &&
+                            data.track.longitude !== "na" ? (
+                              <a
+                                className="m-0 p-0 track-link"
+                                target="n_blank"
+                                href={`https://www.google.com/maps/search/?api=1&query=${data.track.latitude},${data.track.longitude}`}
+                              >
+                                {data.track.name} <FaExternalLinkAlt />
+                              </a>
+                            ) : (
+                              <Button variant="link" className="m-0 p-0">
+                                {data.track.name}
+                              </Button>
+                            )}
                           </OverlayTrigger>
                         ) : (
                           <small>Pista Ridepro (Pendiente)</small>
