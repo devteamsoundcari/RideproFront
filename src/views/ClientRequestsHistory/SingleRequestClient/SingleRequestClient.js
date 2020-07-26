@@ -21,6 +21,7 @@ import {
   cancelRequestId,
   sendEmail,
   updateRequest,
+  fetchInstructor,
 } from "../../../controllers/apiRequests";
 import { TiCogOutline } from "react-icons/ti";
 import { EditableTable } from "../../../utils/EditableTable";
@@ -38,7 +39,7 @@ import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { RequestsContext } from "../../../contexts/RequestsContext";
 import ServiceEditConfirmationModal from "./ServiceEditConfirmationModal";
-import NotEnoughCreditsModal from "../SingleRequestModal/NotEnoughCreditsModal";
+import NotEnoughCreditsModal from "./NotEnoughCreditsModal";
 import "./SingleRequestClient.scss";
 
 const SingleRequestClient = () => {
@@ -74,6 +75,35 @@ const SingleRequestClient = () => {
   const [areDriversValid, setAreDriversValid] = useState(true);
   const [canSaveDrivers, setCanSaveDrivers] = useState(false);
   const [defaultTab, setDefaultTab] = useState("participants");
+  const [instructor, setInstructor] = useState(null);
+  const [penaltyRides, setPenaltyRides] = useState(0);
+
+  // ================ Set penalty rides =================
+
+  useEffect(() => {
+    if (data) {
+      let eventDate = new Date(data.start_time);
+      let now = new Date();
+      let diffHours = Math.floor(Math.abs(eventDate - now) / 36e5);
+      let hoursPriority = cancelationPriority(data.service.priority);
+      if (diffHours <= hoursPriority) {
+        setPenaltyRides(data.service.penalty_rides);
+      } else {
+        setPenaltyRides(0);
+      }
+    }
+  }, [data]);
+
+  // ===================== Get first instructor ========================
+  useEffect(() => {
+    async function getFirstInstructor(id) {
+      const res = await fetchInstructor(id);
+      setInstructor(res);
+    }
+    if (data && data.instructors.length > 0) {
+      getFirstInstructor(data.instructors[0]);
+    }
+  }, [data]);
 
   // ==================== Set defaulkey tab depending on status =====================
 
@@ -303,61 +333,67 @@ const SingleRequestClient = () => {
     //eslint-disable-next-line
   }, [newDrivers, registeredDrivers]);
 
-  const handleCancelEvent = async () => {
+  const cancelMessage = () => {
+    if (penaltyRides > 0) {
+      return `Cancelar este servicio te costara ${data.service.penalty_rides} rides`;
+    } else {
+      return "Cancelar este servicio no genera costo alguno.";
+    }
+  };
+
+  const handleCancelEvent = async (z) => {
     // setShowCancellationModal(true);
     swal({
       title: "Un momento!",
-      text: "¿Estas seguro que deseas cancelar esta solicitud?",
+      text: `${cancelMessage()} ¿Estas seguro que deseas cancelar esta solicitud?`,
       icon: "warning",
       buttons: ["No, volver", "Si, estoy seguro"],
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
         setLoading(true);
-        if (data.status.step === 1) {
-          let payload = {
-            id: requestId,
-            company: userInfoContext.company,
-            reject_msg: "Cancelado por el usuario",
-            refund_credits: userInfoContext.credit + data.spent_credit,
+
+        let payload = {
+          id: requestId,
+          user: userInfoContext,
+          companyId: userInfoContext.company.id,
+          reject_msg: `Cancelado por el usuario ${
+            penaltyRides ? `| Penalidad: $${penaltyRides} rides` : ""
+          }`,
+          refund_credits:
+            parseInt(userInfoContext.credit) + parseInt(data.spent_credit),
+        };
+        // console.log("payload", payload);
+        const res = await cancelRequestId(payload, penaltyRides);
+        if (res.canceled.status === 200 && res.refund.status === 200) {
+          setUserInfoContext({
+            ...userInfoContext,
+            credit: res.refund.data.credit,
+          });
+          swal("Poof! Esta solicitud ha sido cancelada", {
+            icon: "success",
+          });
+          setLoading(false);
+
+          const payload = {
+            id: res.canceled.data.id,
+            emailType: "canceledRequest",
+            subject: "Solicitud cancelada ❌",
+            email: userInfoContext.email,
+            name: userInfoContext.name,
+            date: res.canceled.data.start_time,
+            refund_credits: res.canceled.data.spent_credit,
+            service: res.canceled.data.service.name,
+            municipality: {
+              city: res.canceled.data.municipality.name,
+              department: res.canceled.data.municipality.department.name,
+            },
           };
-
-          const res = await cancelRequestId(payload);
-          if (res.canceled.status === 200 && res.refund.status === 200) {
-            setUserInfoContext({
-              ...userInfoContext,
-              credit: res.refund.data.credit,
-            });
-            swal("Poof! Esta solicitud ha sido cancelada", {
-              icon: "success",
-            });
-            setLoading(false);
-
-            const payload = {
-              id: res.canceled.data.id,
-              emailType: "canceledRequest",
-              subject: "Solicitud cancelada ❌",
-              email: userInfoContext.email,
-              name: userInfoContext.name,
-              date: res.canceled.data.start_time,
-              refund_credits: res.canceled.data.spent_credit,
-              service: res.canceled.data.service.name,
-              municipality: {
-                city: res.canceled.data.municipality.name,
-                department: res.canceled.data.municipality.department.name,
-              },
-            };
-            await sendEmail(payload); // SEND SERVICE CANCELED EMAIL TO USER
-          } else {
-            setLoading(false);
-            swal("Ooops! No pudimos cancelar la solicitud", {
-              icon: "error",
-            });
-          }
+          await sendEmail(payload); // SEND SERVICE CANCELED EMAIL TO USER
         } else {
-          // Check cancelation rules and disccount credit
-          swal("Te vamos a descontar rides!", {
-            icon: "warning",
+          setLoading(false);
+          swal("Ooops! No pudimos cancelar la solicitud", {
+            icon: "error",
           });
         }
       } else {
@@ -692,46 +728,6 @@ const SingleRequestClient = () => {
                         swal("Tranqui, no paso nada!");
                       }
                     });
-                    // let payload = {
-                    //   track:
-                    //     track !== null
-                    //       ? track.id
-                    //       : data.optional_place1
-                    //       ? data.optional_place1.id
-                    //       : "",
-                    //   start_time: data.optional_date1,
-                    //   status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
-                    // };
-                    // console.log("payload", payload);
-                    // let res = await updateRequest(payload, requestId);
-                    // if (res.status === 200) {
-                    //   // updateRequestsContext();
-                    //   swal("Solicitud actualizada!", {
-                    //     icon: "success",
-                    //   });
-                    //   // SEND EMAIL
-                    //   const payload = {
-                    //     id: requestId,
-                    //     emailType: "requestConfirmed",
-                    //     subject: "Servicio programado ✅",
-                    //     email: userInfoContext.email,
-                    //     name: userInfoContext.name,
-                    //     date:
-                    //       selectedOption === 1
-                    //         ? payload1.start_time
-                    //         : payload2.start_time,
-                    //     track:
-                    //       selectedOption === 1
-                    //         ? data.optional_place1
-                    //         : data.optional_place2,
-                    //     service: data.service.name,
-                    //   };
-                    //   await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
-                    // } else {
-                    //   swal("Oops, no se pudo actualizar el servicio.", {
-                    //     icon: "error",
-                    //   });
-                    // }
                   }
                 });
               }}
@@ -742,6 +738,24 @@ const SingleRequestClient = () => {
         </Tab>
       );
     }
+  };
+
+  const cancelationPriority = (priority) => {
+    switch (priority) {
+      case 0:
+        return 5;
+      case 1:
+        return 7;
+      default:
+        return 9;
+    }
+  };
+
+  const canBeCanceled = (date) => {
+    let eventTime = new Date(date);
+    let now = new Date();
+
+    return now >= eventTime || data.status.step === 0 ? false : true;
   };
 
   if (loading) {
@@ -784,8 +798,23 @@ const SingleRequestClient = () => {
                       {data?.municipality?.department?.name}
                     </span>
                   </div>
-                  <div className="col-6 text-right pr-4">
-                    <span>Creditos usados: ${data?.spent_credit}</span>
+                  <div className="col-6 text-right pr-4 mt-4">
+                    <span>
+                      <strong>Creditos usados:</strong> ${data?.spent_credit}
+                    </span>
+                    <br />
+                    {data && data.status.step > 2 ? (
+                      <span>
+                        <strong>Encargado Ridepro:</strong>{" "}
+                        {instructor ? (
+                          <span>{`${instructor.first_name} ${instructor.last_name}`}</span>
+                        ) : (
+                          "Cargando..."
+                        )}
+                      </span>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
                 <hr />
@@ -838,8 +867,8 @@ const SingleRequestClient = () => {
                   <div className="col-6 mt-1">
                     <div className="comments">
                       <p>Observaciones:</p>
-                      <div class="user-message">
-                        <div class="avatar">
+                      <div className="user-message">
+                        <div className="avatar">
                           <img
                             src={data ? data.customer.picture : ""}
                             alt={
@@ -851,19 +880,19 @@ const SingleRequestClient = () => {
                             height="32"
                           />
                         </div>
-                        <div class="d-inline-block mt-25">
-                          <h6 class="mb-0 text-bold-500">
+                        <div className="d-inline-block mt-25">
+                          <h6 className="mb-0 text-bold-500">
                             {data ? data.customer.first_name : ""}{" "}
                             {data ? data.customer.last_name : ""}
                           </h6>
-                          <p class="text-muted mt-1">
+                          <p className="text-muted mt-1">
                             <small>{data ? data.accept_msg : ""}</small>
                           </p>
                         </div>
                       </div>
                       {data && data.status.step === 0 ? (
-                        <div class="user-message">
-                          <div class="avatar">
+                        <div className="user-message">
+                          <div className="avatar">
                             <img
                               src={data ? data.customer.picture : ""}
                               alt={
@@ -875,12 +904,12 @@ const SingleRequestClient = () => {
                               height="32"
                             />
                           </div>
-                          <div class="d-inline-block mt-25">
-                            <h6 class="mb-0 text-bold-500">
+                          <div className="d-inline-block mt-25">
+                            <h6 className="mb-0 text-bold-500">
                               {data ? data.customer.first_name : ""}{" "}
                               {data ? data.customer.last_name : ""}
                             </h6>
-                            <p class="text-muted mt-1">
+                            <p className="text-muted mt-1">
                               <small>{data ? data.reject_msg : ""}</small>
                             </p>
                           </div>
@@ -991,24 +1020,37 @@ const SingleRequestClient = () => {
                                 <Row>
                                   <Col md={12}>
                                     <p>
-                                      Tus solicitudes podran ser canceladas sin
-                                      costo siempre y cuando la misma no haya
-                                      sido confirmada.
+                                      Recuerda que puedes cancelar sin penalidad{" "}
+                                      <strong>
+                                        hasta{" "}
+                                        {cancelationPriority(
+                                          data.municipality.service_priority
+                                        )}{" "}
+                                        horas antes
+                                      </strong>{" "}
+                                      del evento. Ten en cuenta que estos
+                                      valores pueden cambiar dependiendo del
+                                      lugar de la solicitud.
                                       <br />
-                                      {/* <br />
-                                      Si tu solicitud ha sido procesada por el
-                                      equipo de RidePro, el costo de la
-                                      cancelación estara basado en las horas
-                                      restantes para el dia del evento. */}
+                                      <br />
+                                      Luego de este plazo se te cargaran{" "}
+                                      <strong>
+                                        {data.service.penalty_rides} rides de
+                                        penalidad
+                                      </strong>{" "}
+                                      por este servicio.
+                                      <br />
                                     </p>
-                                    {data && data.status.step !== 0 ? (
+                                    {canBeCanceled(data.start_time) ? (
                                       <Button
                                         variant="danger"
                                         size="sm"
-                                        disabled={
-                                          data.status.step !== 1 ? true : false
+                                        // disabled={
+                                        //   data.status.step !== 1 ? true : false
+                                        // }
+                                        onClick={() =>
+                                          handleCancelEvent(penaltyRides)
                                         }
-                                        onClick={handleCancelEvent}
                                       >
                                         Cancelar solicitud
                                       </Button>
