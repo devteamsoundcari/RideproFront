@@ -18,7 +18,7 @@ const NavBar = () => {
     setUserInfoContext,
     setIsLoggedInContext,
   } = useContext(AuthContext);
-  const { setRequests, setCancelledRequests } = useContext(RequestsContext);
+  const { clear } = useContext(RequestsContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
@@ -28,8 +28,7 @@ const NavBar = () => {
     setAuthorizationToken();
     setIsLoggedInContext(false);
     setUserInfoContext({});
-    setRequests([]);
-    setCancelledRequests([]);
+    clear();
     history.push({
       pathname: "/login",
     });
