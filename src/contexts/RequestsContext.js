@@ -144,17 +144,12 @@ const RequestsContextProvider = (props) => {
               };
               requestsSocket.send(JSON.stringify(payload));
           }
-          console.log("opened");
         });
   
         requestsSocket.onmessage = async function (event) {
           let data = JSON.parse(event.data);
           await updateRequestInfo(data.data.id);
         };
-  
-        requestsSocket.onclose = (event) => {
-          console.log("closed");
-        }
   
         setRequestsSocket(requestsSocket);
       }
