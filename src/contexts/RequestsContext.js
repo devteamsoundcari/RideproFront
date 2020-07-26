@@ -11,11 +11,12 @@ import { getUserRequests, getRequest } from "../controllers/apiRequests";
 export const RequestsContext = createContext();
 
 const RequestsContextProvider = (props) => {
-  const { userInfoContext } = useContext(AuthContext);
+  const { userInfoContext, isLoggedInContext } = useContext(AuthContext);
   const [isLoadingRequests, setIsLoadingRequests] = useState(true);
   const [requests, setRequests] = useState([]);
   const [cancelledRequests, setCancelledRequests] = useState([]);
   const [statusNotifications, setStatusNotifications] = useState([]);
+  const [requestsSocket, setRequestsSocket] = useState(null);
   const requestsRef = React.useRef(requests);
 
   async function fetchRequests(url) {
@@ -57,6 +58,14 @@ const RequestsContextProvider = (props) => {
     setRequests([]);
     setCancelledRequests([]);
     fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
+  };
+
+  const clear = () => {
+    setRequests([]);
+    setCancelledRequests([]);
+    setStatusNotifications([]);
+    requestsSocket.close();
+    setRequestsSocket(null);
   };
 
   const updateRequestInfo = useCallback(async (id) => {
@@ -109,43 +118,54 @@ const RequestsContextProvider = (props) => {
   };
 
   useEffect(() => {
-    if (!isLoadingRequests) {
-      let token = localStorage.getItem("token");
-      let requestsSocket = new WebSocket(
-        `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
-      );
-
-      requestsSocket.addEventListener("open", () => {
-        let payload;
-        switch (userInfoContext.profile) {
-          case 1:
-          case 3:
-            payload = {
-              action: "subscribe_to_requests",
-              request_id: userInfoContext.id,
-            };
-            requestsSocket.send(JSON.stringify(payload));
-            break;
-          default:
-            payload = {
-              action: "subscribe_to_requests_from_customer",
-              customer: userInfoContext.id,
-              request_id: userInfoContext.id,
-            };
-            requestsSocket.send(JSON.stringify(payload));
+    if (requestsSocket === null) {
+      if (!isLoadingRequests && isLoggedInContext) {
+        let token = localStorage.getItem("token");
+        let requestsSocket = new WebSocket(
+          `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
+        );
+  
+        requestsSocket.addEventListener("open", () => {
+          let payload;
+          switch (userInfoContext.profile) {
+            case 1:
+            case 3:
+              payload = {
+                action: "subscribe_to_requests",
+                request_id: userInfoContext.id,
+              };
+              requestsSocket.send(JSON.stringify(payload));
+              break;
+            default:
+              payload = {
+                action: "subscribe_to_requests_from_customer",
+                customer: userInfoContext.id,
+                request_id: userInfoContext.id,
+              };
+              requestsSocket.send(JSON.stringify(payload));
+          }
+          console.log("opened");
+        });
+  
+        requestsSocket.onmessage = async function (event) {
+          let data = JSON.parse(event.data);
+          await updateRequestInfo(data.data.id);
+        };
+  
+        requestsSocket.onclose = (event) => {
+          console.log("closed");
         }
-      });
-
-      requestsSocket.onmessage = async function (event) {
-        let data = JSON.parse(event.data);
-        await updateRequestInfo(data.data.id);
-      };
+  
+        setRequestsSocket(requestsSocket);
+      }
     }
   }, [
     isLoadingRequests,
     userInfoContext.id,
     userInfoContext.profile,
     updateRequestInfo,
+    isLoggedInContext,
+    requestsSocket
   ]);
 
   return (
@@ -159,6 +179,7 @@ const RequestsContextProvider = (props) => {
         updateRequestInfo,
         isLoadingRequests,
         statusNotifications,
+        clear,
       }}
     >
       {props.children}
