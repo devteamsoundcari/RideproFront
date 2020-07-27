@@ -41,7 +41,6 @@ const SolicitarServicio = (props) => {
       setPlace("");
     }
     setPlace(data);
-    console.log(data);
   };
   useEffect(() => {
     if (place) {

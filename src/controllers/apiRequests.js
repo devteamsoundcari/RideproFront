@@ -357,6 +357,7 @@ const createRequest = async (data) => {
     new_request,
     accept_msg,
     fare_track,
+    company,
   } = data;
 
   const result = await axios({
@@ -386,6 +387,7 @@ const createRequest = async (data) => {
   });
   let creditDecreasing = await decreaseUserCredits(
     result.data.customer,
+    company.id,
     data.spent_credit
   ); // Calling decrease
   return { response: result, creditDecreasingResponse: creditDecreasing };
