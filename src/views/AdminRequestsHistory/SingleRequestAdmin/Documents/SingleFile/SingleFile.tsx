@@ -5,6 +5,7 @@ import { setRequestFile } from "../../../../../controllers/apiRequests";
 import { FaRegFilePdf, FaCheckCircle } from "react-icons/fa";
 import "./SingleFile.scss";
 import { RequestsContext } from "../../../../../contexts/RequestsContext";
+import { AuthContext } from "../../../../../contexts/AuthContext";
 
 type SingleFileProps = any;
 
@@ -12,6 +13,7 @@ const SingleFile: React.FC<SingleFileProps> = ({ document, requestId }) => {
   const [doc, setDoc] = useState<any>("");
   const [fileName, setFileName] = useState("Vacio");
   const { updateRequests } = useContext(RequestsContext);
+  const { userInfoContext } = useContext(AuthContext);
 
   useEffect(() => {
     setDoc(document);
@@ -62,6 +64,7 @@ const SingleFile: React.FC<SingleFileProps> = ({ document, requestId }) => {
             id={`custom-file-${doc.id}`}
             label={doc.file ? renderFileName() : fileName}
             custom
+            disabled={userInfoContext.profile !== 3 ? true : false}
             onChange={onFileUpload}
           />
         </Form>

@@ -20,6 +20,8 @@ const AuthContextProvider = (props) => {
         ? "cliente"
         : newUserInfo.profile === 3
         ? "operario"
+        : newUserInfo.profile === 5
+        ? "tecnico"
         : "";
 
     setUserInfoContext(newUserInfo);

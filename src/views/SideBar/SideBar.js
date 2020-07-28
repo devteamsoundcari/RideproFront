@@ -43,6 +43,9 @@ const SideBar = (props) => {
       case 3:
         setProfile("Operaciones");
         break;
+      case 5:
+        setProfile("Tecnico");
+        break;
       default:
         break;
     }
@@ -107,7 +110,7 @@ const SideBar = (props) => {
 
         <hr />
         <ul className="nav flex-column align-items-start">
-          {userInfoContext.profile !== 3 && (
+          {userInfoContext.profile === 2 && (
             <React.Fragment>
               {/* <li className="sidebar-nav-header">Destacado</li> */}
 
@@ -148,11 +151,16 @@ const SideBar = (props) => {
           </Link>
 
           <hr />
-          <li className="sidebar-nav-header">Mis pistas</li>
-          <Link to={`${props.url}/pistas`} className="nav-link">
-            <GiTireTracks className="mb-1 mr-2" />
-            Ver pistas{" "}
-          </Link>
+          {/* <li className="sidebar-nav-header">Mis pistas</li> */}
+          {userInfoContext.profile !== 5 && (
+            <React.Fragment>
+              <Link to={`${props.url}/pistas`} className="nav-link">
+                <GiTireTracks className="mb-1 mr-2" />
+                Ver pistas{" "}
+              </Link>
+              <hr />
+            </React.Fragment>
+          )}
           {/* <Link
             to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
             className="nav-link"
@@ -161,13 +169,12 @@ const SideBar = (props) => {
             Añadir pista{" "}
           </Link> */}
 
-          <hr />
           {userInfoContext.profile === 3 && (
             <React.Fragment>
-              <li className="sidebar-nav-header">Instructores</li>
+              {/* <li className="sidebar-nav-header">Instructores</li> */}
               <Link to={`${props.url}/instructores`} className="nav-link">
                 <FaUserGraduate className="mb-1 mr-2" />
-                Ver instructores{" "}
+                Instructores{" "}
               </Link>
               {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
@@ -178,10 +185,10 @@ const SideBar = (props) => {
               </Link> */}
 
               <hr />
-              <li className="sidebar-nav-header">Proveedores</li>
+              {/* <li className="sidebar-nav-header">Proveedores</li> */}
               <Link to={`${props.url}/proveedores`} className="nav-link">
                 <FaPeopleCarry className="mb-1 mr-2" />
-                Ver proveedores{" "}
+                Proveedores{" "}
               </Link>
               {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
