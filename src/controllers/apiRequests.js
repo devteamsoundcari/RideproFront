@@ -825,6 +825,50 @@ const createNewTrack = async (data) => {
   }
 };
 
+const editTrack = async (id, data) => {
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/tracks/${id}/`,
+    data: {
+      company: data.companyId,
+      address: data.address,
+      municipality: data.city,
+      name: data.name,
+      description: data.description,
+      fare: data.fare,
+      cellphone: data.cellphone,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      contact_email: data.contactEmail,
+      contact_name: data.contactName
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 200) {
+    return result.data;
+  } else {
+    return null;
+  }
+};
+
+const editTrackPicture = async (id, picture) => {
+  const formData = new FormData();
+  formData.append("picture", picture);
+  const result = await axios
+    .patch(`${process.env.REACT_APP_API_URL}/api/v1/tracks/${id}/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
+}
+
 /* =================================   GET ALL INSTRUCTORS  ===================================== */
 
 const getInstructors = async (url) => {
@@ -949,6 +993,8 @@ export {
   getServices,
   getLineServices,
   createNewTrack,
+  editTrack,
+  editTrackPicture,
   getTracks,
   getInstructors,
   createInstructor,
