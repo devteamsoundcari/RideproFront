@@ -364,7 +364,7 @@ const createRequest = async (data) => {
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/`,
     data: {
       service,
-      customer,
+      customer: customer.id,
       municipality,
       operator: null,
       instructor: "na",
@@ -384,10 +384,11 @@ const createRequest = async (data) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
-  let creditDecreasing = await decreaseUserCredits(
-    result.data.customer,
-    data.spent_credit
-  ); // Calling decrease
+  let payload = {
+    newCredit: parseInt(customer.credit) - parseInt(spent_credit),
+    companyId: data.company.id,
+  };
+  let creditDecreasing = await setUserCredits(payload); // Calling decrease
   return { response: result, creditDecreasingResponse: creditDecreasing };
 };
 
