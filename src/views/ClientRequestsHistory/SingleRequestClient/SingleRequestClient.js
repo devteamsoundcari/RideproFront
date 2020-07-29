@@ -640,6 +640,23 @@ const SingleRequestClient = () => {
                         service: data.service.name,
                       };
                       await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
+                      const payloadDrivers = {
+                        id: requestId,
+                        emailType: "requestConfirmedDrivers",
+                        subject: "Prueba programada ✅",
+                        email: allDrivers.map((driver) => driver.email),
+                        name: userInfoContext.name,
+                        date:
+                          selectedOption === 1
+                            ? payload1.start_time
+                            : payload2.start_time,
+                        track:
+                          selectedOption === 1
+                            ? data.optional_place1
+                            : data.optional_place2,
+                        service: data.service.name,
+                      };
+                      await sendEmail(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
                     } else {
                       swal("Oops, no se pudo actualizar el servicio.", {
                         icon: "error",
