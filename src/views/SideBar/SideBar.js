@@ -148,7 +148,7 @@ const SideBar = (props) => {
           </Link>
 
           <hr />
-          <li className="sidebar-nav-header">Mis pistas</li>
+          {/* <li className="sidebar-nav-header">Mis pistas</li> */}
           <Link to={`${props.url}/pistas`} className="nav-link">
             <GiTireTracks className="mb-1 mr-2" />
             Ver pistas{" "}

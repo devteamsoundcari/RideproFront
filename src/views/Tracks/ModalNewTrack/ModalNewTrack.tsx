@@ -325,9 +325,9 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 </small>
               </div>
             )}
-            <Form.Group id="formGridCheckbox">
+            {/* <Form.Group id="formGridCheckbox">
               <Form.Check type="checkbox" label="Añadir a pistas favoritas" />
-            </Form.Group>
+            </Form.Group> */}
             <Button className={`btn-${userInfoContext.perfil}`} type="submit">
               Agregar
             </Button>
