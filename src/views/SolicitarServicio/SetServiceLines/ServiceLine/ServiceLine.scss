@@ -47,12 +47,12 @@
       }
       .list-content {
         text-align: start;
-        h5 {
-          font-weight: 400;
-          letter-spacing: 0.05rem;
-          font-size: 1.2rem;
-          //   margin-bottom: 1.2rem;
-          text-transform: capitalize;
+        h6 {
+          font-size: 1rem;
+          font-weight: 500;
+          text-transform: uppercase;
+          margin-bottom: 0.2rem;
+          line-height: 1.4;
         }
         .conventions {
           display: flex;

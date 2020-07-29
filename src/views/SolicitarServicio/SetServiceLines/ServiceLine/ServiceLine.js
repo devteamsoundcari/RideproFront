@@ -9,6 +9,8 @@ import {
   FaTruckMoving,
   FaDollarSign,
   FaClock,
+  FaTruckLoading,
+  FaTruckPickup,
 } from "react-icons/fa";
 import vehiclesImg from "../../../../assets/img/vehicles.png";
 import swal from "sweetalert";
@@ -123,7 +125,15 @@ const ServiceLine = (props) => {
                         >
                           {service.name.toLowerCase().includes("auto") ? (
                             <AiFillCar />
-                          ) : service.name.toLowerCase().includes("moto") ? (
+                          ) : service.name
+                              .toLowerCase()
+                              .includes(" motocarro") ? (
+                            <FaTruckPickup />
+                          ) : service.name
+                              .toLowerCase()
+                              .includes(" montacarga") ? (
+                            <FaTruckLoading />
+                          ) : service.name.toLowerCase().includes(" moto") ? (
                             <FaMotorcycle />
                           ) : (
                             <FaTruckMoving />
@@ -131,7 +141,7 @@ const ServiceLine = (props) => {
                         </Badge>
                       </div>
                       <div className="list-content">
-                        <h5>{service.name}</h5>
+                        <h6>{service.name}</h6>
                         <div className="conventions">
                           <p>
                             <span>
