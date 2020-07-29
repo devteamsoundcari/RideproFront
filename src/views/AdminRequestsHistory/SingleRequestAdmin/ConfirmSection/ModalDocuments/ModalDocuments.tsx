@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import BootstrapTable from "react-bootstrap-table-next";
+import BootstrapTable, { SelectRowProps }from "react-bootstrap-table-next";
 import { Modal, Button } from "react-bootstrap";
 import {
   //   updateRequestDocuments,
@@ -49,10 +49,10 @@ const ModalDocuments: React.FC<ModalDocumentsProps> = ({
 
   const fuck = () => selectedDocuments.map((item) => item.id);
 
-  const selectRow = {
+  const selectRow: SelectRowProps<any> = {
     mode: "checkbox",
     clickToSelect: true,
-    bgColor: (row, rowIndex) => "lightgreen",
+    bgColor: "lightgreen",
     selected: fuck(),
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
