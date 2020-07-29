@@ -702,22 +702,7 @@ const decreaseUserCredits = async (user, companyId, credits) => {
   return result;
 };
 
-/* =================================   INCREASE CREDITS USER   ===================================== */
-
-const increaseUserCredits = async (companyId, credits) => {
-  console.log("company increase", credits);
-  const result = await axios({
-    method: "PATCH",
-    url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
-    data: {
-      credit: credits,
-      company_id: companyId,
-    },
-  }).catch((err) => {
-    return err;
-  });
-  return result;
-};
+/* =================================   SET CREDITS USER   ===================================== */
 
 const setUserCredits = async (data) => {
   const result = await axios({

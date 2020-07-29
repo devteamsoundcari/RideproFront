@@ -682,14 +682,29 @@ const SingleRequestClient = () => {
                       if (msg !== null) {
                         // setLoading(true);
 
+                        // let payload = {
+                        //   id: requestId,
+                        //   company: userInfoContext.company,
+                        //   reject_msg: msg ? msg : "na",
+                        //   refund_credits:
+                        //     userInfoContext.credit + data.spent_credit,
+                        // };
+
                         let payload = {
                           id: requestId,
-                          company: userInfoContext.company,
-                          reject_msg: msg ? msg : "na",
-                          refund_credits:
-                            userInfoContext.credit + data.spent_credit,
+                          user: userInfoContext,
+                          companyId: userInfoContext.company.id,
+                          reject_msg: msg
+                            ? msg
+                            : `Cancelado por el usuario ${
+                                penaltyRides
+                                  ? `| Penalidad: $${penaltyRides} rides`
+                                  : ""
+                              }`,
+                          newCredit:
+                            parseInt(userInfoContext.credit) +
+                            parseInt(data.spent_credit), // Removing penalty rides when rejecting a request
                         };
-
                         const res = await cancelRequestId(payload);
                         if (
                           res.canceled.status === 200 &&
