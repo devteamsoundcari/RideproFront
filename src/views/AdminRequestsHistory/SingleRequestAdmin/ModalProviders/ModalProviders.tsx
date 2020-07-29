@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-// import { useHistory, useRouteMatch } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import cellEditFactory from "react-bootstrap-table2-editor";
@@ -12,7 +11,6 @@ import {
   getProviders,
   updateRequestProviders,
 } from "../../../../controllers/apiRequests";
-import { RequestsContext } from "../../../../contexts/RequestsContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import "./ModalProviders.scss";
 import RegisterNewProvider from "../../../Providers/Registration/RegisterNewProvider";
@@ -21,6 +19,7 @@ interface ModalProvidersProps {
   requestId: number;
   handleClose: () => void;
   propsProviders: any[];
+  onUpdate: () => void;
 }
 
 type SelectedProviders = any;
@@ -29,26 +28,38 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
   requestId,
   handleClose,
   propsProviders,
+  onUpdate,
 }) => {
   const [providers, setProviders] = useState([]);
   const [selectedProviders, setSelectedProviders] = useState<SelectedProviders>(
     []
   );
-  // eslint-disable-next-line
   const [requestProviders, setRequestProviders] = useState<any[]>([]);
-  const { updateRequests } = useContext(RequestsContext);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
   const { SearchBar } = Search;
-  // const history = useHistory();
-  // let { url } = useRouteMatch();
+
   const [showAddProvidersModal, setShowAddProvidersModal] = useState(false);
+  const [providersToShow, setProvidersToShow] = useState([]);
 
   useEffect(() => {
     if (selectedProviders.length > 0) {
       setDisabled(false);
     }
   }, [selectedProviders]);
+
+  useEffect(() => {
+    let newArr: any = providers;
+    for (let index = 0; index < newArr.length; index++) {
+      let item: any = newArr[index];
+      requestProviders.forEach((ele: any) => {
+        if (item.id === ele.providers.id) {
+          item.fare = ele.fare;
+        }
+      });
+    }
+    setProvidersToShow(newArr);
+  }, [providers, requestProviders]);
 
   useEffect(() => {
     if (propsProviders.length > 0) {
@@ -62,7 +73,6 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
     const response = await getProviders(url);
     response.results.forEach(async (item: any) => {
       item.fare = 0;
-      //   item.f_p = 0;
       tempArr.push(item);
     });
     setProviders(tempArr);
@@ -118,15 +128,6 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
       headerClasses: "new-style",
       editCellClasses: "editing-cell",
     },
-    // {
-    //   dataField: "f_p",
-    //   text: "Viaticos $",
-    //   headerClasses: "new-style",
-    //   editCellClasses: "editing-cell",
-    //   headerStyle: {
-    //     width: "95px",
-    //   },
-    // },
   ];
 
   const expandRow = {
@@ -149,10 +150,6 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
                 <td>Documentos:</td>
                 <td className="users-view-email"> {row.documents}</td>
               </tr>
-              {/* <tr>
-                <td>Foto:</td>
-                <td>{row.picture}</td>
-              </tr> */}
             </tbody>
           </table>
         </Col>
@@ -225,18 +222,14 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
     });
     if (res.status === 201) {
       setDisabled(true);
-      updateRequests();
+      onUpdate();
       swal("Perfecto!", `Proveedores actualizados exitosamente!`, "success");
+      handleClose();
     }
   };
 
   // =============================== CLICK ON ADD INSTRUCTOR ====================================
   const handleClickAddProvider = () => {
-    // let newUrl = url.split("/")[1];
-    // history.push({
-    //   pathname: `/${newUrl}/proveedores`,
-    //   state: { detail: "some_value" },
-    // });
     setShowAddProvidersModal(true);
   };
 
@@ -254,26 +247,12 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
         <Modal.Body>
           <ToolkitProvider
             keyField="official_id"
-            data={providers}
+            data={providersToShow}
             columns={columns}
             search
           >
             {(props) => (
               <React.Fragment>
-                {/* {requestProviders.length > 0 && (
-                <Col>
-                  <ul className="list-unstyled">
-                    <small>Provideres: </small>
-                    {requestProviders.map((ins, idx) => (
-                      <li key={idx}>
-                        {ins.providers.first_name} {ins.providers.last_name}
-                        = <strong>$ {ins.fare}</strong>
-                      </li>
-                    ))}
-                  </ul>
-                </Col>
-              )} */}
-
                 <div className="top d-flex flex-wrap">
                   <div className="action-filters flex-grow-1">
                     <SearchBar

@@ -127,7 +127,7 @@ const SetParticipants = (props) => {
     if (participants.length <= 0) {
       return false;
     }
-    if (userInfoContext.company.credit < rides) {
+    if (userInfoContext.credit < rides) {
       return false;
     }
 

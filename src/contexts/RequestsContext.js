@@ -124,7 +124,7 @@ const RequestsContextProvider = (props) => {
         let requestsSocket = new WebSocket(
           `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
         );
-  
+
         requestsSocket.addEventListener("open", () => {
           let payload;
           switch (userInfoContext.profile) {
@@ -145,12 +145,12 @@ const RequestsContextProvider = (props) => {
               requestsSocket.send(JSON.stringify(payload));
           }
         });
-  
+
         requestsSocket.onmessage = async function (event) {
           let data = JSON.parse(event.data);
           await updateRequestInfo(data.data.id);
         };
-  
+
         setRequestsSocket(requestsSocket);
       }
     }
@@ -160,7 +160,7 @@ const RequestsContextProvider = (props) => {
     userInfoContext.profile,
     updateRequestInfo,
     isLoggedInContext,
-    requestsSocket
+    requestsSocket,
   ]);
 
   return (

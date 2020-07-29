@@ -34,7 +34,7 @@ const SetServiceLines = (props) => {
       <Row>
         {lineServices.map((line, idx) => {
           return (
-            <div className="col-xl-4 col-md-6 col-sm-12">
+            <div className="col-xl-4 col-md-6 col-sm-12" key={idx}>
               <ServiceLine
                 key={idx}
                 line={line}

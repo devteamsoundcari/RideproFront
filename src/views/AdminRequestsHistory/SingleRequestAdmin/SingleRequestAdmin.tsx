@@ -541,6 +541,7 @@ const SingleRequestAdmin = () => {
                     <ModalInstructors
                       requestId={requestId}
                       handleClose={() => setShowModalInstructors(false)}
+                      onUpdate={() => fetchRequest(requestId)}
                       propsInstructors={instructors}
                     />
                   )}
@@ -570,6 +571,7 @@ const SingleRequestAdmin = () => {
                     <ModalProviders
                       requestId={requestId}
                       handleClose={() => setShowModalProviders(false)}
+                      onUpdate={() => fetchRequest(requestId)}
                       propsProviders={providers}
                     />
                   )}

@@ -133,7 +133,7 @@ const ConfirmServiceModal = (props) => {
 
       const data = {
         service: props.service.id,
-        customer: userInfoContext.id,
+        customer: userInfoContext,
         municipality: props.place.city.id,
         place: "na",
         track: props.place.track.id,
