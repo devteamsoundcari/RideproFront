@@ -11,6 +11,7 @@ import {
   FaClock,
 } from "react-icons/fa";
 import vehiclesImg from "../../../../assets/img/vehicles.png";
+import swal from "sweetalert";
 
 const ServiceLine = (props) => {
   // const [showFullDescription, setShowFullDescription] = useState(false);
@@ -37,7 +38,11 @@ const ServiceLine = (props) => {
       document.getElementById(service.id).classList.add("card-service-active");
       props.handleClick(service);
     } else {
-      alert("Creditos insuficientes");
+      swal(
+        "Oops!",
+        "No tienes creditos suficientes para esta operación 😔",
+        "error"
+      );
     }
   };
 

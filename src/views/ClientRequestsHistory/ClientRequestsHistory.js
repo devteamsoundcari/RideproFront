@@ -34,7 +34,7 @@ const ClientRequestsHistory = () => {
   // ================================ FETCH REQUESTS ON LOAD =====================================================
 
   useEffect(() => {
-    if (requests.length > 1) {
+    if (requests.length >= 1) {
       let requestsToSort = [...requests];
       requestsToSort.sort((a, b) => {
         return b.id - a.id;
