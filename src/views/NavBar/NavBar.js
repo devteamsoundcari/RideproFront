@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { FaPowerOff, FaUser, FaRegBuilding, FaRubleSign } from "react-icons/fa";
+import { FaPowerOff, FaUser, FaRegBuilding } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
@@ -19,7 +19,7 @@ const NavBar = () => {
     setIsLoggedInContext,
   } = useContext(AuthContext);
   const { clear } = useContext(RequestsContext);
-  const [showProfileEditModal, setShowProfileEditModal] = useState(FaRubleSign);
+  const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
 
