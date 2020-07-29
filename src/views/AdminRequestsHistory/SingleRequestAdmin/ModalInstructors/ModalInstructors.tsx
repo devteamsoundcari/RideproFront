@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-// import { useHistory, useRouteMatch } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import cellEditFactory from "react-bootstrap-table2-editor";
@@ -12,7 +11,6 @@ import {
   getInstructors,
   updateRequestInstructors,
 } from "../../../../controllers/apiRequests";
-import { RequestsContext } from "../../../../contexts/RequestsContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import "./ModalInstructors.scss";
 import RegisterNewInstructor from "../../../Instructors/Registration/RegisterNewInstructor";
@@ -21,6 +19,7 @@ interface ModalInstructorsProps {
   requestId: number;
   handleClose: () => void;
   propsInstructors: any[];
+  onUpdate: () => void;
 }
 
 type SelectedInstructors = any;
@@ -29,26 +28,37 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   requestId,
   handleClose,
   propsInstructors,
+  onUpdate,
 }) => {
   const [instructors, setInstructors] = useState([]);
   const [selectedInstructors, setSelectedInstructors] = useState<
     SelectedInstructors
   >([]);
-  // eslint-disable-next-line
   const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
-  const { updateRequests } = useContext(RequestsContext);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
   const { SearchBar } = Search;
-  // const history = useHistory();
-  // let { url } = useRouteMatch();
   const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
+  const [instructorsToShow, setInstructorsToShow] = useState([]);
 
   useEffect(() => {
     if (selectedInstructors.length > 0) {
       setDisabled(false);
     }
   }, [selectedInstructors]);
+
+  useEffect(() => {
+    let newArr: any = instructors;
+    for (let index = 0; index < newArr.length; index++) {
+      let item: any = newArr[index];
+      requestInstructors.forEach((ele: any) => {
+        if (item.id === ele.instructors.id) {
+          item.fare = ele.fare;
+        }
+      });
+    }
+    setInstructorsToShow(newArr);
+  }, [instructors, requestInstructors]);
 
   useEffect(() => {
     if (propsInstructors.length > 0) {
@@ -211,18 +221,14 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     });
     if (res.status === 201) {
       setDisabled(true);
-      updateRequests();
+      onUpdate();
       swal("Perfecto!", `Instructores actualizados exitosamente!`, "success");
+      handleClose();
     }
   };
 
   // =============================== CLICK ON ADD INSTRUCTOR ====================================
   const handleClickAddInstructor = () => {
-    // let newUrl = url.split("/")[1];
-    // history.push({
-    //   pathname: `/${newUrl}/instructores`,
-    //   state: { detail: "some_value" },
-    // });
     setShowAddInstructorsModal(true);
   };
 
@@ -240,26 +246,12 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
         <Modal.Body>
           <ToolkitProvider
             keyField="official_id"
-            data={instructors}
+            data={instructorsToShow}
             columns={columns}
             search
           >
             {(props) => (
               <React.Fragment>
-                {/* {requestInstructors.length > 0 && (
-                <Col>
-                  <ul className="list-unstyled">
-                    <small>Instructores: </small>
-                    {requestInstructors.map((ins, idx) => (
-                      <li key={idx}>
-                        {ins.instructors.first_name} {ins.instructors.last_name}
-                        = <strong>$ {ins.fare}</strong>
-                      </li>
-                    ))}
-                  </ul>
-                </Col>
-              )} */}
-
                 <div className="top d-flex flex-wrap">
                   <div className="action-filters flex-grow-1">
                     <SearchBar
