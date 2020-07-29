@@ -10,7 +10,9 @@ import "./ProfileEditModal.scss";
 const ProfileEditModal = (props: any) => {
   const [stage, setStage] = useState("waiting");
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [showUserProfileEditModal, setShowUserProfileEditModal] = useState(false);
+  const [showUserProfileEditModal, setShowUserProfileEditModal] = useState(
+    false
+  );
   const [submittedData, setSubmittedData] = useState();
   const { userInfoContext, updateUserInfo } = useContext(AuthContext);
   const defaultValues = {
@@ -169,6 +171,33 @@ const ProfileEditModal = (props: any) => {
         <Form onSubmit={handleSubmit(onSubmit)} className="profile-edit-modal">
           <Modal.Body>
             <Form.Row>
+              <Col md={2}>
+                <Image
+                  src={userInfoContext.picture}
+                  fluid
+                  roundedCircle
+                  className="shadow"
+                />
+              </Col>
+              <Col md={10} className="pl-3">
+                <h6 className="mt-2">FOTO DE PERFIL</h6>
+                <div className="w-50 recommendation">
+                  <small>
+                    Para una correcta visualización el aspecto de la imagen debe
+                    ser lo mas cuadrado posible.
+                  </small>
+                </div>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  // className="mt-3"
+                  onClick={handleUserProfilePictureEditModal}
+                >
+                  Cambiar
+                </Button>
+              </Col>
+            </Form.Row>
+            <Form.Row className="mt-2">
               <Form.Group as={Col}>
                 <Form.Label>Nombre</Form.Label>
                 <Controller
@@ -264,19 +293,6 @@ const ProfileEditModal = (props: any) => {
                   <small>Cambiar contraseña</small>
                 </Button>
               </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Col>
-                <Form.Label>Foto de perfil</Form.Label>{" "}
-                <Button
-                  variant="link"
-                  size="sm"
-                  onClick={handleUserProfilePictureEditModal}
-                >
-                  <small>Editar</small>
-                </Button>
-                <Image src={userInfoContext.picture} fluid />
-              </Col>
             </Form.Row>
           </Modal.Body>
           <Modal.Footer>
