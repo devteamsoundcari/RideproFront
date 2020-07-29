@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Container, Row, Col, ListGroup, Button, Image } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
-import { FaTimesCircle, FaEdit } from "react-icons/fa";
-import BootstrapTable, { SelectRowProps }from "react-bootstrap-table-next";
+import BootstrapTable, { SelectRowProps } from "react-bootstrap-table-next";
 import ModalNewTrack from "./ModalNewTrack/ModalNewTrack";
 import { TrackEditModal } from "./TrackEditModal";
 import { getTracks } from "../../controllers/apiRequests";
@@ -62,16 +61,16 @@ const Tracks: React.FC = () => {
       setSelectedTrack(row);
       setTrackData(row);
       setShowTrackEditModal(true);
-    }
+    },
   };
 
   const setTrackData = (row: any) => {
     const track: Track = row;
     track.contactName = row.contact_name;
     track.contactEmail = row.contact_email;
-    
+
     setSelectedTrack(track);
-  }
+  };
 
   const updateTrackInfo = (track: Track) => {
     let newTracks = [...tracks];
@@ -81,7 +80,7 @@ const Tracks: React.FC = () => {
     }
 
     setTracks(newTracks);
-  }
+  };
 
   useEffect(() => {
     if (location.state !== undefined) {
@@ -144,7 +143,13 @@ const Tracks: React.FC = () => {
               Haz click en el boton "Agregar pista" para crear una nueva pista.
             </p>
           ) : (
-            <BootstrapTable bootstrap4 keyField="id" data={tracks} columns={fields} selectRow={selectRow} />
+            <BootstrapTable
+              bootstrap4
+              keyField="id"
+              data={tracks}
+              columns={fields}
+              selectRow={selectRow}
+            />
           )}
         </Row>
       </Col>
@@ -154,14 +159,13 @@ const Tracks: React.FC = () => {
           fetchTracks={handleFetch}
         />
       )}
-      {showTrackEditModal &&
-        selectedTrack && (
-          <TrackEditModal
-            onHide={() => setShowTrackEditModal(false)}
-            onTrackUpdate={updateTrackInfo}
-            track={selectedTrack}
-          />
-        )}
+      {showTrackEditModal && selectedTrack && (
+        <TrackEditModal
+          onHide={() => setShowTrackEditModal(false)}
+          onTrackUpdate={updateTrackInfo}
+          track={selectedTrack}
+        />
+      )}
     </Row>
   );
 };
