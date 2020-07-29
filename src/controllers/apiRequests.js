@@ -441,8 +441,8 @@ const editRequest = async (id, data) => {
 
 // ==================================== CANCEL REQUEST ID AND REFIND CREDITS ==================================================================
 
-const cancelRequestId = async (data, penalty) => {
-  const result = await axios({
+const cancelRequestId = async (data) => {
+  const resCancel = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${data.id}/`,
     data: {
@@ -453,13 +453,10 @@ const cancelRequestId = async (data, penalty) => {
     console.error(err);
     return err;
   });
-  let res = 0;
-  if (penalty > 0) {
-    res = await decreaseUserCredits(data.user, data.companyId, penalty);
-  } else {
-    res = await increaseUserCredits(data.companyId, data.refund_credits);
-  }
-  return { canceled: result, refund: res };
+
+  let resCredit = await setUserCredits(data);
+
+  return { canceled: resCancel, refund: resCredit };
 };
 
 /* =================================   CREATE A DRIVER  ===================================== */
@@ -722,12 +719,13 @@ const increaseUserCredits = async (companyId, credits) => {
   return result;
 };
 
-const setUserCredits = async (id, credits) => {
+const setUserCredits = async (data) => {
   const result = await axios({
     method: "PATCH",
-    url: `${process.env.REACT_APP_API_URL}/api/v1/users/${id}/`,
+    url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
-      credit: credits,
+      credit: data.newCredit,
+      company_id: data.companyId,
     },
   }).catch((err) => {
     return err;

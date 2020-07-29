@@ -360,11 +360,13 @@ const SingleRequestClient = () => {
           reject_msg: `Cancelado por el usuario ${
             penaltyRides ? `| Penalidad: $${penaltyRides} rides` : ""
           }`,
-          refund_credits:
-            parseInt(userInfoContext.credit) + parseInt(data.spent_credit),
+          newCredit:
+            parseInt(userInfoContext.credit) +
+            parseInt(data.spent_credit) -
+            parseInt(penaltyRides),
         };
         // console.log("payload", payload);
-        const res = await cancelRequestId(payload, penaltyRides);
+        const res = await cancelRequestId(payload);
         if (res.canceled.status === 200 && res.refund.status === 200) {
           setUserInfoContext({
             ...userInfoContext,
@@ -800,7 +802,11 @@ const SingleRequestClient = () => {
                   </div>
                   <div className="col-6 text-right pr-4 mt-4">
                     <span>
-                      <strong>Creditos usados:</strong> ${data?.spent_credit}
+                      <strong>
+                        Creditos{" "}
+                        {data?.status.step === 0 ? "reembolsados" : "usados"}:
+                      </strong>{" "}
+                      ${data?.spent_credit}
                     </span>
                     <br />
                     {data && data.status.step > 2 ? (
