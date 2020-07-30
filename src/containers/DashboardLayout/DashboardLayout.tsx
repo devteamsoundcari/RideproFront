@@ -50,7 +50,8 @@ const DashboardLayout: React.FC = () => {
                   <Usuarios />
                 </Route>
                 <Route path={`${path}/historial`}>
-                  {userInfoContext.profile === 2 ? (
+                  {userInfoContext.profile === 2 ||
+                  userInfoContext.profile === 7 ? (
                     <ClientRequestsHistory />
                   ) : (
                     <AdminRequestsHistory />
@@ -71,7 +72,7 @@ const DashboardLayout: React.FC = () => {
                 <Redirect from="/administrador" to="/administrador/dashboard" />
                 <Redirect from="/cliente" to="/cliente/dashboard" />
                 <Redirect from="/operario" to="/operario/dashboard" />
-                <Redirect from="/super-cliente" to="/super-cliente/dashboard" />
+                <Redirect from="/super-cliente" to="/super-cliente/historial" />
               </Switch>
             </Container>
           </main>

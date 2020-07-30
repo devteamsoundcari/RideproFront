@@ -992,7 +992,9 @@ const SingleRequestClient = () => {
                         </span>
                       }
                     >
-                      {data?.status?.step === 1 && allDrivers ? (
+                      {data?.status?.step === 1 &&
+                      userInfoContext.profile === 2 &&
+                      allDrivers ? (
                         <React.Fragment>
                           <EditableTable
                             size="sm"
@@ -1092,7 +1094,8 @@ const SingleRequestClient = () => {
                                       por este servicio.
                                       <br />
                                     </p>
-                                    {canBeCanceled(data.start_time) ? (
+                                    {canBeCanceled(data.start_time) &&
+                                    userInfoContext.profile === 2 ? (
                                       <Button
                                         variant="danger"
                                         size="sm"

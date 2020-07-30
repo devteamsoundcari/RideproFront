@@ -23,6 +23,7 @@ const RequestsContextProvider = (props) => {
     const fetchedRequests = [];
     const fetchedCancelledRequests = [];
     const response = await getUserRequests(url);
+    console.log("respoinse", response);
     response.results.map(async (item) => {
       let cancelDate = new Date(item.start_time);
       cancelDate.setDate(cancelDate.getDate() - 1);
@@ -54,7 +55,12 @@ const RequestsContextProvider = (props) => {
   }, [requests]);
 
   const updateRequests = () => {
-    let urlType = userInfoContext.profile === 2 ? "user_requests" : "requests";
+    let urlType =
+      userInfoContext.profile === 2
+        ? "user_requests"
+        : userInfoContext.profile === 7
+        ? "request_superuser"
+        : "requests";
     setRequests([]);
     setCancelledRequests([]);
     fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
