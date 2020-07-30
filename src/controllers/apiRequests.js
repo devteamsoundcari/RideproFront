@@ -779,7 +779,6 @@ const createNewTrack = async (data) => {
     longitude,
     contact_email,
     contact_name,
-    pictures,
   } = data;
   const result = await axios({
     method: "POST",
@@ -796,7 +795,6 @@ const createNewTrack = async (data) => {
       longitude,
       contact_email,
       contact_name,
-      pictures,
     },
   }).catch((err) => {
     console.error(err);
@@ -824,7 +822,7 @@ const editTrack = async (id, data) => {
       latitude: data.latitude,
       longitude: data.longitude,
       contact_email: data.contactEmail,
-      contact_name: data.contactName
+      contact_name: data.contactName,
     },
   }).catch((err) => {
     console.error(err);
@@ -851,7 +849,7 @@ const editTrackPicture = async (id, picture) => {
       return err.response.data;
     });
   return result;
-}
+};
 
 /* =================================   GET ALL INSTRUCTORS  ===================================== */
 
