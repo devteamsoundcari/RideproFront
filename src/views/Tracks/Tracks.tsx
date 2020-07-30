@@ -105,6 +105,7 @@ const Tracks: React.FC = () => {
     fetchTracks(
       `${process.env.REACT_APP_API_URL}/api/v1/tracks/?company=${userInfoContext.company.id}`
     );
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {

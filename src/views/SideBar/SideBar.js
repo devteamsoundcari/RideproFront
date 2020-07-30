@@ -161,6 +161,15 @@ const SideBar = (props) => {
               <hr />
             </React.Fragment>
           )}
+          {userInfoContext.profile === 7 && (
+            <React.Fragment>
+              <Link to={`${props.url}/sucursales`} className="nav-link">
+                <GiThreeFriends className="mb-1 mr-2" />
+                Sucursales
+              </Link>
+              <hr />
+            </React.Fragment>
+          )}
           {/* <Link
             to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
             className="nav-link"

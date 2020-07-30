@@ -202,6 +202,24 @@ const getUserInfo = async () => {
   return user.data;
 };
 
+/* =================================   GET SUPER USER COMPANIES   ===================================== */
+
+const getSuperUserCompanies = async () => {
+  const getInfo = async (url) => {
+    const userData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return userData;
+  };
+  let companies = await getInfo(
+    `${process.env.REACT_APP_API_URL}/api/v1/user_companies/`
+  );
+  return companies;
+};
+
 /* =================================   GET SERVICES   ===================================== */
 const getServices = async () => {
   const getInfo = async (url) => {
@@ -824,7 +842,7 @@ const editTrack = async (id, data) => {
       latitude: data.latitude,
       longitude: data.longitude,
       contact_email: data.contactEmail,
-      contact_name: data.contactName
+      contact_name: data.contactName,
     },
   }).catch((err) => {
     console.error(err);
@@ -851,7 +869,7 @@ const editTrackPicture = async (id, picture) => {
       return err.response.data;
     });
   return result;
-}
+};
 
 /* =================================   GET ALL INSTRUCTORS  ===================================== */
 
@@ -984,4 +1002,5 @@ export {
   createInstructor,
   getProviders,
   createProvider,
+  getSuperUserCompanies,
 };

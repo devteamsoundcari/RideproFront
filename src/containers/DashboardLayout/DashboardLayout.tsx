@@ -20,6 +20,7 @@ import ClientRequestsHistory from "../../views/ClientRequestsHistory/ClientReque
 import Instructors from "../../views/Instructors/Instructors";
 import Providers from "../../views/Providers/Providers";
 import { RequestToastContainer } from "../../views/Notifications/RequestToast";
+import Sucursales from "../../views/Sucursales/Sucursales";
 
 const DashboardLayout: React.FC = () => {
   const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
@@ -68,6 +69,9 @@ const DashboardLayout: React.FC = () => {
                 </Route>
                 <Route path={`${path}/proveedores`}>
                   <Providers />
+                </Route>
+                <Route path={`${path}/sucursales`}>
+                  <Sucursales />
                 </Route>
                 <Redirect from="/administrador" to="/administrador/dashboard" />
                 <Redirect from="/cliente" to="/cliente/dashboard" />
