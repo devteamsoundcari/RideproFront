@@ -102,7 +102,9 @@ const Tracks: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
+    fetchTracks(
+      `${process.env.REACT_APP_API_URL}/api/v1/tracks/?company=${userInfoContext.company.id}`
+    );
   }, []);
 
   useEffect(() => {
@@ -115,7 +117,9 @@ const Tracks: React.FC = () => {
 
   const handleFetch = () => {
     setFilteredTracks([]);
-    fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
+    fetchTracks(
+      `${process.env.REACT_APP_API_URL}/api/v1/tracks/?company=${userInfoContext.company.id}`
+    );
   };
 
   return (
