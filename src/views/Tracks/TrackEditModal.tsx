@@ -63,7 +63,7 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
   const onPictureChange = (track: Track) => {
     setPicture(track.pictures);
     props.onTrackUpdate(track);
-  }
+  };
 
   const onSubmit = (data: any) => {
     setShowConfirmationModal(true);
@@ -214,11 +214,7 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
               <Row>
                 <Col>
                   <Image
-                    src={
-                      picture !== "na"
-                        ? picture
-                        : defaultImage
-                    }
+                    src={picture ? picture : defaultImage}
                     width={251}
                     height={201}
                     thumbnail
