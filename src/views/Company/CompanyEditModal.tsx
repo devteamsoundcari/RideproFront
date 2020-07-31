@@ -31,7 +31,6 @@ const CompanyEditModal = (props: any) => {
   };
 
   const updateData = (e) => {
-    console.log(e);
     let inputName = e.target.name;
     let inputValue = e.target.value;
 

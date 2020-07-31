@@ -16,7 +16,6 @@ const Sucursales: React.FC<SucursalesProps> = () => {
     setLoading(true);
     const response = await getSuperUserCompanies();
     if (response.status === 200) {
-      console.log("companies", response.data.results);
       setCompanies(response.data.results);
     }
     setLoading(false);

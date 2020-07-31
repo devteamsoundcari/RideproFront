@@ -20,10 +20,8 @@ const PasswordRecover = (props) => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    console.log(data.email);
     setLoading(true);
-    let res = await passwordReset(data);
-    console.log(res);
+    await passwordReset(data);
     setEmail(data.email);
     setSmShow(true);
     setLoading(false);

@@ -23,7 +23,6 @@ const RequestsContextProvider = (props) => {
     const fetchedRequests = [];
     const fetchedCancelledRequests = [];
     const response = await getUserRequests(url);
-    console.log("respoinse", response);
     response.results.map(async (item) => {
       let cancelDate = new Date(item.start_time);
       cancelDate.setDate(cancelDate.getDate() - 1);

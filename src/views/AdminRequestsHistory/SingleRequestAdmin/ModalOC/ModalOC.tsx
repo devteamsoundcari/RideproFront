@@ -36,7 +36,6 @@ const ModalOC: React.FC<ModalOCProps> = ({
   useEffect(() => {
     setAllInstructors(instructors);
     instructors.forEach((item) => {
-      console.log(item);
       setInstFares({
         ...instFares,
         [item.instructors.id]: item.fare,
@@ -44,8 +43,6 @@ const ModalOC: React.FC<ModalOCProps> = ({
     });
     setAllProviders(providers);
     providers.forEach((item) => {
-      console.log(item);
-
       setProvsFares({
         ...provsFares,
         [item.providers.id]: item.fare,
@@ -57,11 +54,6 @@ const ModalOC: React.FC<ModalOCProps> = ({
 
     // eslint-disable-next-line
   }, [instructors, providers, track, fisrt_payment]);
-
-  useEffect(() => {
-    console.log(provsFares);
-    console.log(provsFares["00508eff-54ae-4a88-9c52-091a87475d5c"] - 0);
-  }, [provsFares]);
 
   const currencyFormatter = (ammount) => {
     return ammount.toLocaleString("es-CO", {

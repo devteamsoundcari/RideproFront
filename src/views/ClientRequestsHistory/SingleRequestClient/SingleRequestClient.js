@@ -145,7 +145,6 @@ const SingleRequestClient = () => {
     const responseRequest = await getRequest(id);
     setLoading(false);
     setData(responseRequest);
-    console.log(responseRequest);
   }
   useEffect(() => {
     fetchRequest(requestId);
@@ -365,7 +364,6 @@ const SingleRequestClient = () => {
             parseInt(data.spent_credit) -
             parseInt(penaltyRides),
         };
-        // console.log("payload", payload);
         const res = await cancelRequestId(payload);
         if (res.canceled.status === 200 && res.refund.status === 200) {
           setUserInfoContext({
@@ -611,7 +609,6 @@ const SingleRequestClient = () => {
                       start_time: data.optional_date2,
                       status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
                     };
-                    // console.log("payload", payload);
 
                     let res = await updateRequest(
                       selectedOption === 1 ? payload1 : payload2,

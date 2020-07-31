@@ -35,10 +35,7 @@ const RemoveModalConfirmation = () => {
         >
           No
         </Button>
-        <Button
-          variant="danger"
-          onClick={() => console.log(showRemoveUserModal.idx)}
-        >
+        <Button variant="danger">
           {`Si, estoy ` +
             `${
               {
