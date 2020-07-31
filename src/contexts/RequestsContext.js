@@ -116,10 +116,10 @@ const RequestsContextProvider = (props) => {
               step: request.status.step,
             },
           });
+          setStatusNotifications((previous) => [...previous, ...notifications]);
         }
       }
     }
-    setStatusNotifications((prev) => [...prev, ...notifications]);
   };
 
   useEffect(() => {

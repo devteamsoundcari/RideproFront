@@ -96,6 +96,7 @@ export const RequestToastContainer: React.FC = () => {
     if (i >= 0) {
       newRequests[i].show = false;
       setTimeout(() => {
+        let newRequests = [...requestsRef.current];
         newRequests = newRequests.filter((r) => {
           return r.index !== index;
         });
