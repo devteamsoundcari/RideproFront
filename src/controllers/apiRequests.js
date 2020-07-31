@@ -448,7 +448,7 @@ const editRequest = async (id, data) => {
       fare_track,
     },
   }).catch((err) => {
-    console.log(`Request error at /api/v1/requests/: `, err.request.response);
+    console.error(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
   let creditDecreasing = await decreaseUserCredits(
@@ -701,14 +701,14 @@ const getRequestProviders = async (url) => {
 
 /* =================================   DECREASE CREDITS USER   ===================================== */
 
-const decreaseUserCredits = async (user, companyId, credits) => {
+const decreaseUserCredits = async (user, credits) => {
   const newCredit = parseInt(user.credit) - parseInt(credits);
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       credit: newCredit,
-      company_id: companyId,
+      company_id: user.company.id,
     },
   }).catch((err) => {
     return err;
