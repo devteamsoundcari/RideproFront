@@ -202,6 +202,22 @@ const getUserInfo = async () => {
   return user.data;
 };
 
+const getCompanyUsers = async (companyId) => {
+  const getInfo = async (url) => {
+    const userData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return userData;
+  };
+  let users = await getInfo(
+    `${process.env.REACT_APP_API_URL}/api/v1/users?company=${companyId}`
+  );
+  return users.data;
+};
+
 /* =================================   GET SUPER USER COMPANIES   ===================================== */
 
 const getSuperUserCompanies = async () => {
@@ -996,4 +1012,5 @@ export {
   getProviders,
   createProvider,
   getSuperUserCompanies,
+  getCompanyUsers,
 };
