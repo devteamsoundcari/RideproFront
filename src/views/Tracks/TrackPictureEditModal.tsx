@@ -11,15 +11,16 @@ import {
 } from "react-bootstrap";
 import { FaCheckCircle } from "react-icons/fa";
 import { AuthContext } from "../../contexts/AuthContext";
+import { Track } from "./Tracks";
 import { editTrackPicture } from "../../controllers/apiRequests";
 
 interface TrackPictureEditModalProps {
   className?: string;
   picture: string;
-  trackId: number;
+  track: Track;
   show: boolean;
   onHide: () => void;
-  onUpdate: () => void;
+  onUpdate: Function;
 }
 
 const TrackPictureEditModal: React.FC<TrackPictureEditModalProps> = (
@@ -34,9 +35,9 @@ const TrackPictureEditModal: React.FC<TrackPictureEditModalProps> = (
   const save = async (e: any) => {
     setStage("loading");
     e.preventDefault();
-    editTrackPicture(props.trackId, selectedImage).then(async (result) => {
+    editTrackPicture(props.track.id, selectedImage).then(async (result) => {
       if (result.status === 200) {
-        props.onUpdate();
+        props.onUpdate(result.data);
         setStage("success");
       }
     });

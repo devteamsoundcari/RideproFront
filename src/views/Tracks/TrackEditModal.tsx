@@ -58,6 +58,12 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
   const { handleSubmit, control, watch } = form;
   const formValues = watch();
   const [canSave, setCanSave] = useState(false);
+  const [picture, setPicture] = useState(props.track.pictures);
+
+  const onPictureChange = (track: Track) => {
+    setPicture(track.pictures);
+    props.onTrackUpdate(track);
+  }
 
   const onSubmit = (data: any) => {
     setShowConfirmationModal(true);
@@ -179,11 +185,11 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
     return (
       <TrackPictureEditModal
         className="child-modal"
-        trackId={props.track.id}
+        track={props.track}
         show={showTrackPictureEditModal}
         onHide={closeTrackPictureEditModal}
-        onUpdate={() => props.onTrackUpdate(props.track)}
-        picture={props.track.pictures}
+        onUpdate={onPictureChange}
+        picture={picture}
       />
     );
   };
@@ -209,8 +215,8 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
                 <Col>
                   <Image
                     src={
-                      props.track.pictures !== "na"
-                        ? props.track.pictures
+                      picture !== "na"
+                        ? picture
                         : defaultImage
                     }
                     width={251}
