@@ -28,7 +28,7 @@ export interface Track {
 }
 
 const Tracks: React.FC = () => {
-  const [showAddTrack, setShowAddTrack] = useState(false);
+  const [showAddTrack, setShowAddTrack] = useState(true);
   const [showTrackEditModal, setShowTrackEditModal] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [filteredTracks, setFilteredTracks] = useState<Track[]>([]);
@@ -37,7 +37,7 @@ const Tracks: React.FC = () => {
   const location = useLocation();
 
   const formatLocation = (cell, row) => {
-    if (cell) {
+    if (cell !== "4.681475271707987") {
       return (
         <a
           className="m-0 p-0 track-link"
@@ -48,7 +48,7 @@ const Tracks: React.FC = () => {
         </a>
       );
     } else {
-      return "NA";
+      return "---";
     }
   };
 
