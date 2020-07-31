@@ -866,7 +866,7 @@ const editTrack = async (id, data) => {
 
 const editTrackPicture = async (id, picture) => {
   const formData = new FormData();
-  formData.append("picture", picture);
+  formData.append("pictures", picture);
   const result = await axios
     .patch(`${process.env.REACT_APP_API_URL}/api/v1/tracks/${id}/`, formData, {
       headers: {
