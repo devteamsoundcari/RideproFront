@@ -1,4 +1,10 @@
 .tracks {
+  .track-row{
+    &:hover {
+      background-color: lightgreen;
+      cursor: pointer;
+    }
+  }
   .card-columns {
     column-count: 4;
     .card {
