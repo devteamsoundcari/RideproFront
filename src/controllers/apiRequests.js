@@ -202,6 +202,24 @@ const getUserInfo = async () => {
   return user.data;
 };
 
+/* =================================   GET SUPER USER COMPANIES   ===================================== */
+
+const getSuperUserCompanies = async () => {
+  const getInfo = async (url) => {
+    const userData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return userData;
+  };
+  let companies = await getInfo(
+    `${process.env.REACT_APP_API_URL}/api/v1/user_companies/`
+  );
+  return companies;
+};
+
 /* =================================   GET SERVICES   ===================================== */
 const getServices = async () => {
   const getInfo = async (url) => {
@@ -576,7 +594,6 @@ const getRequest = async (id) => {
 /* =================================  ADD DOCUMENTS TO A REQUEST  ===================================== */
 
 const updateRequestDocuments = async (data) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_documents/`,
@@ -590,7 +607,6 @@ const updateRequestDocuments = async (data) => {
 /* =================================   POST REQUEST INSTRUCTORS FARE  ===================================== */
 
 const updateRequestInstructors = async (data) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_instructors/`,
@@ -602,7 +618,6 @@ const updateRequestInstructors = async (data) => {
 };
 
 const updateInstructorFares = async (data, id) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_ins/${id}/`,
@@ -615,7 +630,6 @@ const updateInstructorFares = async (data, id) => {
 /* =================================   POST REQUEST PROVIDERS FARE  ===================================== */
 
 const updateRequestProviders = async (data) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_providers/`,
@@ -627,7 +641,6 @@ const updateRequestProviders = async (data) => {
 };
 
 const updateProviderFares = async (data, id) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_prov/${id}/`,
@@ -982,4 +995,5 @@ export {
   createInstructor,
   getProviders,
   createProvider,
+  getSuperUserCompanies,
 };

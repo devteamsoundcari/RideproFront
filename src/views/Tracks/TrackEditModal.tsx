@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Col, Image, Row, Modal, Form, Button, Spinner } from "react-bootstrap";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { AuthContext } from "../../contexts/AuthContext.js";
 import { editTrack } from "../../controllers/apiRequests";
 import MapContainer from "./ModalNewTrack/MapContainer";
@@ -10,7 +9,7 @@ import TrackPictureEditModal from "./TrackPictureEditModal";
 
 interface TrackEditModalProps {
   onHide: () => void;
-  onTrackUpdate: (track: Track) => void
+  onTrackUpdate: (track: Track) => void;
   track: Track;
 }
 
@@ -19,7 +18,7 @@ interface TrackEditModalFormValues {
   address: string;
   fare?: number;
   description: string;
-  department: string
+  department: string;
   city: string;
   cellphone: string;
   contactName: string;
@@ -31,7 +30,9 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
 ) => {
   const [stage, setStage] = useState("waiting");
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [showTrackPictureEditModal, setShowTrackPictureEditModal] = useState(false);
+  const [showTrackPictureEditModal, setShowTrackPictureEditModal] = useState(
+    false
+  );
   const [activateMap, setActivateMap] = useState(false);
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
@@ -49,7 +50,9 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
     contactName: props.track.contactName,
     contactEmail: props.track.contactEmail,
   };
-  if (userInfoContext.profile !== 2) { defaultValues.fare = props.track.fare };
+  if (userInfoContext.profile !== 2) {
+    defaultValues.fare = props.track.fare;
+  }
 
   const form = useForm({ defaultValues: defaultValues });
   const { handleSubmit, control, watch } = form;
@@ -66,7 +69,7 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
     setStage("loading");
     let data = Object.assign(submittedData!);
     let payload = {
-      "description": data.description
+      description: data.description,
     };
 
     let result = await editTrack(props.track.id, payload);
@@ -194,16 +197,9 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
   };
 
   return (
-    <Modal
-      size={"lg"}
-      show={true}
-      onHide={exit}
-      className="modal-new-track"
-    >
+    <Modal size={"lg"} show={true} onHide={exit} className="modal-new-track">
       <Modal.Header closeButton className={`bg-${userInfoContext.perfil}`}>
-        <Modal.Title className="text-white">
-          Editar pista
-        </Modal.Title>
+        <Modal.Title className="text-white">Editar pista</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
@@ -212,174 +208,178 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
               <Row>
                 <Col>
                   <Image
-                      src={
-                        props.track.pictures !== "na"
-                          ? props.track.pictures
-                          : defaultImage
-                      }
-                      width={251}
-                      height={201}
-                      thumbnail
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Button variant="link" size="sm" onClick={handleTrackPictureEditModal}>
-                      Editar
-                    </Button>
-                  </Col>
-                </Row>
-              </Col>
-              <Col>
-                <Form.Row>
-                  <Form.Group as={Col}>
-                    <Form.Label>Departamento</Form.Label>
-                    <Controller
-                      as={<Form.Control type="text" />}
-                      name="department"
-                      control={control}
-                      disabled={true}
-                    />
-                  </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                  <Form.Group as={Col}>
-                    <Form.Label>Ciudad</Form.Label>
-                    <Controller
-                      as={<Form.Control type="text" />}
-                      name="city"
-                      control={control}
-                      disabled={true}
-                    />
-                  </Form.Group>
-                </Form.Row>
-              </Col>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridEmail">
-                <Form.Label>Nombre del lugar</Form.Label>
-                <Controller
-                  as={<Form.Control type="text" />}
-                  name="name"
-                  control={control}
-                  disabled={true}
-                />
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Dirección</Form.Label>
-                <Controller
-                  as={<Form.Control type="text" />}
-                  name="address"
-                  control={control}
-                  disabled={true}
-                 />
-              </Form.Group>
-              {userInfoContext.profile !== 2 && (
-                <Form.Group as={Col} controlId="formGridFare">
-                  <Form.Label>Tarifa promedio</Form.Label>
+                    src={
+                      props.track.pictures !== "na"
+                        ? props.track.pictures
+                        : defaultImage
+                    }
+                    width={251}
+                    height={201}
+                    thumbnail
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    onClick={handleTrackPictureEditModal}
+                  >
+                    Editar
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+            <Col>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <Form.Label>Departamento</Form.Label>
                   <Controller
                     as={<Form.Control type="text" />}
-                    name="fare"
+                    name="department"
                     control={control}
                     disabled={true}
                   />
                 </Form.Group>
-              )}
-            </Form.Row>
-            {props.track.latitude !== "na" && props.track.longitude !== "na" && (
-              <Row className="map-section">
-                <Col className="pr-0">
-                  <div className="mt-3 map-text">
-                    <h6>UBICACIÓN EN EL MAPA</h6>
-                    <Form.Check
-                      type="switch"
-                      id="custom-switch-map"
-                      onChange={() => setActivateMap(!activateMap)}
-                      label="Agregar ubicación"
-                    />
-                    {activateMap && (
-                      <div className="coords">
-                        <small>Latitud: {lat}</small>{" "}
-                        <small>Longitud: {lng}</small>
-                      </div>
-                    )}
-                  </div>
-                </Col>
-                <Col>
-                  <MapContainer
-                    isMarkerShown={activateMap}
-                    markerName={"ubicacion"}
-                    containerElement={
-                      <div
-                        className={`map-container ${activateMap ? "active" : ""}`}
-                      />
-                    }
-                    latitude={(x) => setLat(x)}
-                    longitude={(x) => setLng(x)}
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <Form.Label>Ciudad</Form.Label>
+                  <Controller
+                    as={<Form.Control type="text" />}
+                    name="city"
+                    control={control}
+                    disabled={true}
                   />
-                </Col>
-              </Row>
-            )}
-
-            <Form.Group controlId="formGridAddress1">
-              <Form.Label>Descripción</Form.Label>
+                </Form.Group>
+              </Form.Row>
+            </Col>
+          </Form.Row>
+          <Form.Row>
+            <Form.Group as={Col} controlId="formGridEmail">
+              <Form.Label>Nombre del lugar</Form.Label>
               <Controller
-                as={<Form.Control as="textarea" />}
-                name="description"
+                as={<Form.Control type="text" />}
+                name="name"
                 control={control}
+                disabled={true}
               />
             </Form.Group>
-
-            <hr />
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridContactName">
-                <Form.Label>Persona de contacto</Form.Label>
-                <Controller
-                  as={<Form.Control type="text" />}
-                  name="contactName"
-                  control={control}
-                  disabled={true}
-                />
-              </Form.Group>
-              <Form.Group as={Col} controlId="formGridContactPhone">
-                <Form.Label>Teléfono de contacto</Form.Label>
-                <Controller
-                  as={<Form.Control type="text" />}
-                  name="cellphone"
-                  control={control}
-                  disabled={true}
-                />
-              </Form.Group>
-              <Form.Group as={Col} controlId="formGridContactEmail">
-                <Form.Label>Email de contacto</Form.Label>
-                <Controller
-                  as={<Form.Control type="text" />}
-                  name="contactEmail"
-                  control={control}
-                  disabled={true}
-                />
-              </Form.Group>
-            </Form.Row>
-            <Form.Group id="formGridCheckbox">
-              <Form.Check type="checkbox" label="Añadir a pistas favoritas" />
+            <Form.Group as={Col}>
+              <Form.Label>Dirección</Form.Label>
+              <Controller
+                as={<Form.Control type="text" />}
+                name="address"
+                control={control}
+                disabled={true}
+              />
             </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              className={`btn-${userInfoContext.perfil}`}
-              type="submit"
-              disabled={!canSave}
-            >
-              Guardar
-            </Button>
-            <Button variant="secondary" onClick={exit}>
-              Cerrar
-            </Button>
-          </Modal.Footer>
-        </Form>
-        {confirmationModal()}
-        {trackPictureEditModal()}
-      </Modal>
-    );
-  };
+            {userInfoContext.profile !== 2 && (
+              <Form.Group as={Col} controlId="formGridFare">
+                <Form.Label>Tarifa promedio</Form.Label>
+                <Controller
+                  as={<Form.Control type="text" />}
+                  name="fare"
+                  control={control}
+                  disabled={true}
+                />
+              </Form.Group>
+            )}
+          </Form.Row>
+          {props.track.latitude !== "na" && props.track.longitude !== "na" && (
+            <Row className="map-section">
+              <Col className="pr-0">
+                <div className="mt-3 map-text">
+                  <h6>UBICACIÓN EN EL MAPA</h6>
+                  <Form.Check
+                    type="switch"
+                    id="custom-switch-map"
+                    onChange={() => setActivateMap(!activateMap)}
+                    label="Agregar ubicación"
+                  />
+                  {activateMap && (
+                    <div className="coords">
+                      <small>Latitud: {lat}</small>{" "}
+                      <small>Longitud: {lng}</small>
+                    </div>
+                  )}
+                </div>
+              </Col>
+              <Col>
+                <MapContainer
+                  isMarkerShown={activateMap}
+                  markerName={"ubicacion"}
+                  containerElement={
+                    <div
+                      className={`map-container ${activateMap ? "active" : ""}`}
+                    />
+                  }
+                  latitude={(x) => setLat(x)}
+                  longitude={(x) => setLng(x)}
+                />
+              </Col>
+            </Row>
+          )}
+
+          <Form.Group controlId="formGridAddress1">
+            <Form.Label>Descripción</Form.Label>
+            <Controller
+              as={<Form.Control as="textarea" />}
+              name="description"
+              control={control}
+            />
+          </Form.Group>
+
+          <hr />
+          <Form.Row>
+            <Form.Group as={Col} controlId="formGridContactName">
+              <Form.Label>Persona de contacto</Form.Label>
+              <Controller
+                as={<Form.Control type="text" />}
+                name="contactName"
+                control={control}
+                disabled={true}
+              />
+            </Form.Group>
+            <Form.Group as={Col} controlId="formGridContactPhone">
+              <Form.Label>Teléfono de contacto</Form.Label>
+              <Controller
+                as={<Form.Control type="text" />}
+                name="cellphone"
+                control={control}
+                disabled={true}
+              />
+            </Form.Group>
+            <Form.Group as={Col} controlId="formGridContactEmail">
+              <Form.Label>Email de contacto</Form.Label>
+              <Controller
+                as={<Form.Control type="text" />}
+                name="contactEmail"
+                control={control}
+                disabled={true}
+              />
+            </Form.Group>
+          </Form.Row>
+          <Form.Group id="formGridCheckbox">
+            <Form.Check type="checkbox" label="Añadir a pistas favoritas" />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className={`btn-${userInfoContext.perfil}`}
+            type="submit"
+            disabled={!canSave}
+          >
+            Guardar
+          </Button>
+          <Button variant="secondary" onClick={exit}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Form>
+      {confirmationModal()}
+      {trackPictureEditModal()}
+    </Modal>
+  );
+};

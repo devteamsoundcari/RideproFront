@@ -43,6 +43,9 @@ const SideBar = (props) => {
       case 3:
         setProfile("Operaciones");
         break;
+      case 7:
+        setProfile("Super-Cliente");
+        break;
       default:
         break;
     }
@@ -107,7 +110,7 @@ const SideBar = (props) => {
 
         <hr />
         <ul className="nav flex-column align-items-start">
-          {userInfoContext.profile !== 3 && (
+          {userInfoContext.profile === 2 && (
             <React.Fragment>
               {/* <li className="sidebar-nav-header">Destacado</li> */}
 
@@ -149,10 +152,24 @@ const SideBar = (props) => {
 
           <hr />
           {/* <li className="sidebar-nav-header">Mis pistas</li> */}
-          <Link to={`${props.url}/pistas`} className="nav-link">
-            <GiTireTracks className="mb-1 mr-2" />
-            Ver pistas{" "}
-          </Link>
+          {userInfoContext.profile !== 7 && (
+            <React.Fragment>
+              <Link to={`${props.url}/pistas`} className="nav-link">
+                <GiTireTracks className="mb-1 mr-2" />
+                Ver pistas{" "}
+              </Link>
+              <hr />
+            </React.Fragment>
+          )}
+          {userInfoContext.profile === 7 && (
+            <React.Fragment>
+              <Link to={`${props.url}/sucursales`} className="nav-link">
+                <GiThreeFriends className="mb-1 mr-2" />
+                Sucursales
+              </Link>
+              <hr />
+            </React.Fragment>
+          )}
           {/* <Link
             to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
             className="nav-link"
@@ -161,7 +178,6 @@ const SideBar = (props) => {
             Añadir pista{" "}
           </Link> */}
 
-          <hr />
           {userInfoContext.profile === 3 && (
             <React.Fragment>
               <li className="sidebar-nav-header">Instructores</li>

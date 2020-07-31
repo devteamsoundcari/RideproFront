@@ -100,7 +100,7 @@ const MyCalendar = () => {
     <Row className="calendarSection ml-1 mr-1 mb-4 overflow-auto">
       <Col md={2} className="conventions">
         <ListGroup>
-          {userInfoContext.profile === 2 ? (
+          {userInfoContext.profile === 2 || userInfoContext.profile === 7 ? (
             <React.Fragment>
               <ListGroup.Item>
                 <FaDotCircle className="text-event-requested" />{" "}

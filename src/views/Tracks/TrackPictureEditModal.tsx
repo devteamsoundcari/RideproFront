@@ -11,7 +11,6 @@ import {
 } from "react-bootstrap";
 import { FaCheckCircle } from "react-icons/fa";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Track } from "./Tracks";
 import { editTrackPicture } from "../../controllers/apiRequests";
 
 interface TrackPictureEditModalProps {
@@ -35,14 +34,12 @@ const TrackPictureEditModal: React.FC<TrackPictureEditModalProps> = (
   const save = async (e: any) => {
     setStage("loading");
     e.preventDefault();
-    editTrackPicture(props.trackId, selectedImage).then(
-      async (result) => {
-        if (result.status === 200) {
-          props.onUpdate();
-          setStage("success");
-        }
+    editTrackPicture(props.trackId, selectedImage).then(async (result) => {
+      if (result.status === 200) {
+        props.onUpdate();
+        setStage("success");
       }
-    );
+    });
   };
 
   const onFileUpload = (e: any) => {
@@ -108,10 +105,7 @@ const TrackPictureEditModal: React.FC<TrackPictureEditModalProps> = (
             <Container fluid>
               <Row>
                 <Col>
-                  <Image
-                    src={imgSrc ? imgSrc : props.picture}
-                    fluid
-                  />
+                  <Image src={imgSrc ? imgSrc : props.picture} fluid />
                 </Col>
               </Row>
               <Row>

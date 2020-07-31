@@ -26,6 +26,26 @@ const ProfileEditModal = (props: any) => {
   const { handleSubmit, errors, control, watch } = form;
   const formValues = watch();
   const [canSave, setCanSave] = useState(false);
+  const [profile, setProfile] = useState("");
+
+  useEffect(() => {
+    switch (userInfoContext.profile) {
+      case 1:
+        setProfile("Admin");
+        break;
+      case 2:
+        setProfile("Cliente");
+        break;
+      case 3:
+        setProfile("Operaciones");
+        break;
+      case 7:
+        setProfile("Super-Cliente");
+        break;
+      default:
+        break;
+    }
+  }, [userInfoContext]);
 
   const onSubmit = (data: any) => {
     setShowConfirmationModal(true);
@@ -166,7 +186,11 @@ const ProfileEditModal = (props: any) => {
     <>
       <Modal centered show={props.show} onHide={props.onHide} size="lg">
         <Modal.Header closeButton className={`bg-${userInfoContext.perfil}`}>
-          <Modal.Title className="text-white">Perfil</Modal.Title>
+          <Modal.Title className="text-white">
+            <h5>
+              Perfil <small>| {profile}</small>
+            </h5>
+          </Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleSubmit(onSubmit)} className="profile-edit-modal">
           <Modal.Body>

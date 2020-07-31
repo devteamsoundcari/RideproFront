@@ -145,7 +145,6 @@ const SingleRequestClient = () => {
     const responseRequest = await getRequest(id);
     setLoading(false);
     setData(responseRequest);
-    console.log(responseRequest);
   }
   useEffect(() => {
     fetchRequest(requestId);
@@ -365,7 +364,6 @@ const SingleRequestClient = () => {
             parseInt(data.spent_credit) -
             parseInt(penaltyRides),
         };
-        // console.log("payload", payload);
         const res = await cancelRequestId(payload);
         if (res.canceled.status === 200 && res.refund.status === 200) {
           setUserInfoContext({
@@ -611,7 +609,6 @@ const SingleRequestClient = () => {
                       start_time: data.optional_date2,
                       status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
                     };
-                    // console.log("payload", payload);
 
                     let res = await updateRequest(
                       selectedOption === 1 ? payload1 : payload2,
@@ -992,7 +989,9 @@ const SingleRequestClient = () => {
                         </span>
                       }
                     >
-                      {data?.status?.step === 1 && allDrivers ? (
+                      {data?.status?.step === 1 &&
+                      userInfoContext.profile === 2 &&
+                      allDrivers ? (
                         <React.Fragment>
                           <EditableTable
                             size="sm"
@@ -1092,7 +1091,8 @@ const SingleRequestClient = () => {
                                       por este servicio.
                                       <br />
                                     </p>
-                                    {canBeCanceled(data.start_time) ? (
+                                    {canBeCanceled(data.start_time) &&
+                                    userInfoContext.profile === 2 ? (
                                       <Button
                                         variant="danger"
                                         size="sm"

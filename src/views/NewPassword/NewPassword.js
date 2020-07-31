@@ -37,10 +37,6 @@ const NewPassword = (props) => {
 
   // ====================== GETTING THE ACTUAL PATH ======================
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  useEffect(() => {
     const url = window.location.href;
     if (url.includes("password-reset/confirm/")) {
       let arr = url.split("/");
