@@ -28,7 +28,7 @@ export interface Track {
 }
 
 const Tracks: React.FC = () => {
-  const [showAddTrack, setShowAddTrack] = useState(true);
+  const [showAddTrack, setShowAddTrack] = useState(false);
   const [showTrackEditModal, setShowTrackEditModal] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [filteredTracks, setFilteredTracks] = useState<Track[]>([]);
