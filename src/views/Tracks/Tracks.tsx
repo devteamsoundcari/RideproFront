@@ -35,6 +35,7 @@ const Tracks: React.FC = () => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const { userInfoContext } = useContext(AuthContext);
   const location = useLocation();
+  const defaultImage = require("../../assets/img/track.jpg");
 
   const formatLocation = (cell, row) => {
     if (cell !== "4.681475271707987") {
@@ -52,11 +53,39 @@ const Tracks: React.FC = () => {
     }
   };
 
+  const formatImg = (cell) => {
+    return (
+      <div
+        style={{
+          background: `url(${
+            cell ? cell : defaultImage
+          }) no-repeat center center`,
+          backgroundSize: "cover",
+          width: "4rem",
+          height: "4rem",
+          borderRadius: "50%",
+          margin: "auto",
+        }}
+      ></div>
+    );
+  };
+
   const fields = [
     {
       dataField: "id",
       text: "ID",
       hidden: true,
+    },
+    {
+      dataField: "pictures",
+      text: "Img",
+      formatter: formatImg,
+      headerStyle: {
+        width: "5rem",
+      },
+      style: {
+        padding: "5px 0px",
+      },
     },
     {
       dataField: "name",

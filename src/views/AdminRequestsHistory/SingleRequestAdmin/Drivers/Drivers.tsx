@@ -28,10 +28,8 @@ const Drivers: React.FC<DriversProps> = ({ drivers }) => {
 
   useEffect(() => {
     if (drivers && drivers.length > 0) {
-      getDrivers(drivers).then((data) => {
-        data.forEach((item) =>
-          setParticipants((oldArr: any) => [...oldArr, item])
-        );
+      getDrivers(drivers).then((data: any) => {
+        setParticipants(data);
       });
     }
   }, [drivers]);
