@@ -633,7 +633,9 @@ const SingleRequestClient = () => {
                             ? payload1.start_time
                             : payload2.start_time,
                         track:
-                          selectedOption === 1
+                          track !== null
+                            ? track
+                            : selectedOption === 1
                             ? data.optional_place1
                             : data.optional_place2,
                         service: data.service.name,
@@ -650,7 +652,9 @@ const SingleRequestClient = () => {
                             ? payload1.start_time
                             : payload2.start_time,
                         track:
-                          selectedOption === 1
+                          track !== null
+                            ? track
+                            : selectedOption === 1
                             ? data.optional_place1
                             : data.optional_place2,
                         service: data.service.name,
