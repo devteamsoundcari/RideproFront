@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Card, Form, Spinner } from "react-bootstrap";
 import swal from "sweetalert";
 import { setRequestFile } from "../../../../../controllers/apiRequests";
 import { FaRegFilePdf, FaCheckCircle } from "react-icons/fa";
 import "./SingleFile.scss";
-import { RequestsContext } from "../../../../../contexts/RequestsContext";
 import { AuthContext } from "../../../../../contexts/AuthContext";
 
 type SingleFileProps = any;
@@ -17,6 +16,7 @@ const SingleFile: React.FC<SingleFileProps> = ({
   const [doc, setDoc] = useState<any>("");
   const [fileName, setFileName] = useState("Vacio");
   const [loading, setLoading] = useState(false);
+  const { userInfoContext } = useContext(AuthContext);
 
   useEffect(() => {
     setDoc(document);

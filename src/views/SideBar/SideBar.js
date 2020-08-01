@@ -47,6 +47,7 @@ const SideBar = (props) => {
         break;
       case 5:
         setProfile("Tecnico");
+        break;
       case 7:
         setProfile("Super-Cliente");
         break;
@@ -168,7 +169,7 @@ const SideBar = (props) => {
 
           <hr />
           {/* <li className="sidebar-nav-header">Mis pistas</li> */}
-          {userInfoContext.profile !== 5 || userInfoContext.profile !== 7 ? (
+          {userInfoContext.profile !== 5 && userInfoContext.profile !== 7 ? (
             <React.Fragment>
               <Link to={`${props.url}/pistas`} className="nav-link">
                 <GiTireTracks className="mb-1 mr-2" />

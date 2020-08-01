@@ -143,6 +143,7 @@ const Login = () => {
           break;
         case 5:
           path = "/tecnico";
+          break;
         case 7:
           path = "/super-cliente";
           break;
