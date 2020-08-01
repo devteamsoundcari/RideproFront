@@ -659,7 +659,6 @@ const SingleRequestClient = () => {
                             : data.optional_place2,
                         service: data.service.name,
                       };
-                      console.log("emial participants", payload);
                       await sendEmail(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
                     } else {
                       swal("Oops, no se pudo actualizar el servicio.", {
