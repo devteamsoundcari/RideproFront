@@ -39,6 +39,9 @@ function App() {
                 <Route path="/tecnico">
                   <DashboardLayout />
                 </Route>
+                <Route path="/super-cliente">
+                  <DashboardLayout />
+                </Route>
                 <Route path="/login">
                   <Login />
                 </Route>

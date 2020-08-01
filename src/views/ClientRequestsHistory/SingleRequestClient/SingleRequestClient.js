@@ -106,6 +106,7 @@ const SingleRequestClient = () => {
   }, [data]);
 
   // ==================== Set defaulkey tab depending on status =====================
+  //
 
   useEffect(() => {
     if (data) {
@@ -145,8 +146,8 @@ const SingleRequestClient = () => {
     const responseRequest = await getRequest(id);
     setLoading(false);
     setData(responseRequest);
-    console.log(responseRequest);
   }
+
   useEffect(() => {
     fetchRequest(requestId);
     // eslint-disable-next-line
@@ -360,11 +361,12 @@ const SingleRequestClient = () => {
           reject_msg: `Cancelado por el usuario ${
             penaltyRides ? `| Penalidad: $${penaltyRides} rides` : ""
           }`,
-          refund_credits:
-            parseInt(userInfoContext.credit) + parseInt(data.spent_credit),
+          newCredit:
+            parseInt(userInfoContext.credit) +
+            parseInt(data.spent_credit) -
+            parseInt(penaltyRides),
         };
-        // console.log("payload", payload);
-        const res = await cancelRequestId(payload, penaltyRides);
+        const res = await cancelRequestId(payload);
         if (res.canceled.status === 200 && res.refund.status === 200) {
           setUserInfoContext({
             ...userInfoContext,
@@ -609,7 +611,6 @@ const SingleRequestClient = () => {
                       start_time: data.optional_date2,
                       status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
                     };
-                    // console.log("payload", payload);
 
                     let res = await updateRequest(
                       selectedOption === 1 ? payload1 : payload2,
@@ -632,12 +633,33 @@ const SingleRequestClient = () => {
                             ? payload1.start_time
                             : payload2.start_time,
                         track:
-                          selectedOption === 1
+                          track !== null
+                            ? track
+                            : selectedOption === 1
                             ? data.optional_place1
                             : data.optional_place2,
                         service: data.service.name,
                       };
                       await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
+                      const payloadDrivers = {
+                        id: requestId,
+                        emailType: "requestConfirmedDrivers",
+                        subject: "Prueba programada ✅",
+                        email: allDrivers.map((driver) => driver.email),
+                        name: userInfoContext.name,
+                        date:
+                          selectedOption === 1
+                            ? payload1.start_time
+                            : payload2.start_time,
+                        track:
+                          track !== null
+                            ? track
+                            : selectedOption === 1
+                            ? data.optional_place1
+                            : data.optional_place2,
+                        service: data.service.name,
+                      };
+                      await sendEmail(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
                     } else {
                       swal("Oops, no se pudo actualizar el servicio.", {
                         icon: "error",
@@ -680,14 +702,29 @@ const SingleRequestClient = () => {
                       if (msg !== null) {
                         // setLoading(true);
 
+                        // let payload = {
+                        //   id: requestId,
+                        //   company: userInfoContext.company,
+                        //   reject_msg: msg ? msg : "na",
+                        //   refund_credits:
+                        //     userInfoContext.credit + data.spent_credit,
+                        // };
+
                         let payload = {
                           id: requestId,
-                          company: userInfoContext.company,
-                          reject_msg: msg ? msg : "na",
-                          refund_credits:
-                            userInfoContext.credit + data.spent_credit,
+                          user: userInfoContext,
+                          companyId: userInfoContext.company.id,
+                          reject_msg: msg
+                            ? msg
+                            : `Cancelado por el usuario ${
+                                penaltyRides
+                                  ? `| Penalidad: $${penaltyRides} rides`
+                                  : ""
+                              }`,
+                          newCredit:
+                            parseInt(userInfoContext.credit) +
+                            parseInt(data.spent_credit), // Removing penalty rides when rejecting a request
                         };
-
                         const res = await cancelRequestId(payload);
                         if (
                           res.canceled.status === 200 &&
@@ -800,7 +837,11 @@ const SingleRequestClient = () => {
                   </div>
                   <div className="col-6 text-right pr-4 mt-4">
                     <span>
-                      <strong>Creditos usados:</strong> ${data?.spent_credit}
+                      <strong>
+                        Creditos{" "}
+                        {data?.status.step === 0 ? "reembolsados" : "usados"}:
+                      </strong>{" "}
+                      ${data?.spent_credit}
                     </span>
                     <br />
                     {data && data.status.step > 2 ? (
@@ -954,7 +995,9 @@ const SingleRequestClient = () => {
                         </span>
                       }
                     >
-                      {data?.status?.step === 1 && allDrivers ? (
+                      {data?.status?.step === 1 &&
+                      userInfoContext.profile === 2 &&
+                      allDrivers ? (
                         <React.Fragment>
                           <EditableTable
                             size="sm"
@@ -1054,7 +1097,8 @@ const SingleRequestClient = () => {
                                       por este servicio.
                                       <br />
                                     </p>
-                                    {canBeCanceled(data.start_time) ? (
+                                    {canBeCanceled(data.start_time) &&
+                                    userInfoContext.profile === 2 ? (
                                       <Button
                                         variant="danger"
                                         size="sm"

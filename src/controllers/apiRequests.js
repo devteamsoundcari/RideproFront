@@ -202,6 +202,40 @@ const getUserInfo = async () => {
   return user.data;
 };
 
+const getCompanyUsers = async (companyId) => {
+  const getInfo = async (url) => {
+    const userData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return userData;
+  };
+  let users = await getInfo(
+    `${process.env.REACT_APP_API_URL}/api/v1/users?company=${companyId}`
+  );
+  return users.data;
+};
+
+/* =================================   GET SUPER USER COMPANIES   ===================================== */
+
+const getSuperUserCompanies = async () => {
+  const getInfo = async (url) => {
+    const userData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return userData;
+  };
+  let companies = await getInfo(
+    `${process.env.REACT_APP_API_URL}/api/v1/user_companies/`
+  );
+  return companies;
+};
+
 /* =================================   GET SERVICES   ===================================== */
 const getServices = async () => {
   const getInfo = async (url) => {
@@ -365,7 +399,7 @@ const createRequest = async (data) => {
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/`,
     data: {
       service,
-      customer,
+      customer: customer.id,
       municipality,
       operator: null,
       instructor: "na",
@@ -385,11 +419,11 @@ const createRequest = async (data) => {
     console.log(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
-  let creditDecreasing = await decreaseUserCredits(
-    result.data.customer,
-    company.id,
-    data.spent_credit
-  ); // Calling decrease
+  let payload = {
+    newCredit: parseInt(customer.credit) - parseInt(spent_credit),
+    companyId: data.company.id,
+  };
+  let creditDecreasing = await setUserCredits(payload); // Calling decrease
   return { response: result, creditDecreasingResponse: creditDecreasing };
 };
 
@@ -431,7 +465,7 @@ const editRequest = async (id, data) => {
       fare_track,
     },
   }).catch((err) => {
-    console.log(`Request error at /api/v1/requests/: `, err.request.response);
+    console.error(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
   let creditDecreasing = await decreaseUserCredits(
@@ -443,8 +477,8 @@ const editRequest = async (id, data) => {
 
 // ==================================== CANCEL REQUEST ID AND REFIND CREDITS ==================================================================
 
-const cancelRequestId = async (data, penalty) => {
-  const result = await axios({
+const cancelRequestId = async (data) => {
+  const resCancel = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${data.id}/`,
     data: {
@@ -455,13 +489,10 @@ const cancelRequestId = async (data, penalty) => {
     console.error(err);
     return err;
   });
-  let res = 0;
-  if (penalty > 0) {
-    res = await decreaseUserCredits(data.user, data.companyId, penalty);
-  } else {
-    res = await increaseUserCredits(data.companyId, data.refund_credits);
-  }
-  return { canceled: result, refund: res };
+
+  let resCredit = await setUserCredits(data);
+
+  return { canceled: resCancel, refund: resCredit };
 };
 
 /* =================================   CREATE A DRIVER  ===================================== */
@@ -580,7 +611,6 @@ const getRequest = async (id) => {
 /* =================================  ADD DOCUMENTS TO A REQUEST  ===================================== */
 
 const updateRequestDocuments = async (data) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_documents/`,
@@ -594,7 +624,6 @@ const updateRequestDocuments = async (data) => {
 /* =================================   POST REQUEST INSTRUCTORS FARE  ===================================== */
 
 const updateRequestInstructors = async (data) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_instructors/`,
@@ -606,7 +635,6 @@ const updateRequestInstructors = async (data) => {
 };
 
 const updateInstructorFares = async (data, id) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_ins/${id}/`,
@@ -619,7 +647,6 @@ const updateInstructorFares = async (data, id) => {
 /* =================================   POST REQUEST PROVIDERS FARE  ===================================== */
 
 const updateRequestProviders = async (data) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "POST",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_providers/`,
@@ -631,7 +658,6 @@ const updateRequestProviders = async (data) => {
 };
 
 const updateProviderFares = async (data, id) => {
-  // console.log("ENVIA", data);
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_prov/${id}/`,
@@ -692,14 +718,14 @@ const getRequestProviders = async (url) => {
 
 /* =================================   DECREASE CREDITS USER   ===================================== */
 
-const decreaseUserCredits = async (user, companyId, credits) => {
+const decreaseUserCredits = async (user, credits) => {
   const newCredit = parseInt(user.credit) - parseInt(credits);
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       credit: newCredit,
-      company_id: companyId,
+      company_id: user.company.id,
     },
   }).catch((err) => {
     return err;
@@ -707,29 +733,15 @@ const decreaseUserCredits = async (user, companyId, credits) => {
   return result;
 };
 
-/* =================================   INCREASE CREDITS USER   ===================================== */
+/* =================================   SET CREDITS USER   ===================================== */
 
-const increaseUserCredits = async (companyId, credits) => {
-  console.log("company increase", credits);
+const setUserCredits = async (data) => {
   const result = await axios({
     method: "PATCH",
     url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
-      credit: credits,
-      company_id: companyId,
-    },
-  }).catch((err) => {
-    return err;
-  });
-  return result;
-};
-
-const setUserCredits = async (id, credits) => {
-  const result = await axios({
-    method: "PATCH",
-    url: `${process.env.REACT_APP_API_URL}/api/v1/users/${id}/`,
-    data: {
-      credit: credits,
+      credit: data.newCredit,
+      company_id: data.companyId,
     },
   }).catch((err) => {
     return err;
@@ -797,7 +809,6 @@ const createNewTrack = async (data) => {
     longitude,
     contact_email,
     contact_name,
-    pictures,
   } = data;
   const result = await axios({
     method: "POST",
@@ -814,7 +825,6 @@ const createNewTrack = async (data) => {
       longitude,
       contact_email,
       contact_name,
-      pictures,
     },
   }).catch((err) => {
     console.error(err);
@@ -825,6 +835,50 @@ const createNewTrack = async (data) => {
   } else {
     return false;
   }
+};
+
+const editTrack = async (id, data) => {
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/tracks/${id}/`,
+    data: {
+      company: data.companyId,
+      address: data.address,
+      municipality: data.city,
+      name: data.name,
+      description: data.description,
+      fare: data.fare,
+      cellphone: data.cellphone,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      contact_email: data.contactEmail,
+      contact_name: data.contactName,
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 200) {
+    return result.data;
+  } else {
+    return null;
+  }
+};
+
+const editTrackPicture = async (id, picture) => {
+  const formData = new FormData();
+  formData.append("pictures", picture);
+  const result = await axios
+    .patch(`${process.env.REACT_APP_API_URL}/api/v1/tracks/${id}/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
 };
 
 /* =================================   GET ALL INSTRUCTORS  ===================================== */
@@ -951,9 +1005,13 @@ export {
   getServices,
   getLineServices,
   createNewTrack,
+  editTrack,
+  editTrackPicture,
   getTracks,
   getInstructors,
   createInstructor,
   getProviders,
   createProvider,
+  getSuperUserCompanies,
+  getCompanyUsers,
 };

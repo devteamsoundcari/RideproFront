@@ -155,21 +155,23 @@ const ServiceEditConfirmationModal = (props) => {
       // THEN CREATE THE SERVICE
       let res = await editRequest(request.id, data);
       // THEN CHECKOUT THE ANSWER
+      setShowSpinner(false);
+      setShowSuccessPrompt(true);
+      updateRequests();
       if (
         res.response.status === 200 &&
         res.creditDecreasingResponse.status === 200
       ) {
-        setShowSpinner(false);
-        setShowSuccessPrompt(true);
-        updateRequests();
         setUserInfoContext({
           ...userInfoContext,
           credit: res.creditDecreasingResponse.data.credit,
         });
         setNewParticipantsContext(finalParticipants);
-        swal("Perfecto!", `Solicitud actualizada con exito`, "success");
-        handleCancel();
+        swal("¡Perfecto!", `Solicitud actualizada con exito`, "success");
+      } else if (res.response.status !== 200) {
+        swal("¡Error!", `Hubo un problema al actualizar la solicitud, intenta más tarde.`, "error");
       }
+      handleCancel();
     });
   };
 

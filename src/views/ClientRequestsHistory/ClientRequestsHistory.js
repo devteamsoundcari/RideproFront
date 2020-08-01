@@ -12,6 +12,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { RequestsContext } from "../../contexts/RequestsContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import SingleRequestClient from "./SingleRequestClient/SingleRequestClient";
 import "./ClientRequestsHistory.scss";
 import ClientStatus from "../../utils/ClientStatus";
@@ -22,6 +23,7 @@ const ClientRequestsHistory = () => {
   const history = useHistory();
   const [displayedRequests, setDisplayedRequests] = useState([]);
   const { requests, isLoadingRequests } = useContext(RequestsContext);
+  const { userInfoContext } = useContext(AuthContext);
   let { path, url } = useRouteMatch();
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const ClientRequestsHistory = () => {
   // ================================ FETCH REQUESTS ON LOAD =====================================================
 
   useEffect(() => {
-    if (requests.length > 1) {
+    if (requests.length >= 1) {
       let requestsToSort = [...requests];
       requestsToSort.sort((a, b) => {
         return b.id - a.id;
@@ -56,6 +58,9 @@ const ClientRequestsHistory = () => {
     return dateFormatter(cell);
   };
 
+  const formatName = (cell) => {
+    return `${cell.first_name} ${cell.last_name}`;
+  };
   const headerCreditFormatter = () => {
     return (
       <span className="credit-header">
@@ -73,12 +78,68 @@ const ClientRequestsHistory = () => {
     );
   };
 
-  const columns = [
+  const columnsClient = [
     {
       dataField: "id",
       text: "Cód.",
       headerClasses: "small-column",
       sort: true,
+    },
+    {
+      dataField: "created_at",
+      text: "Fecha de solicitud",
+      formatter: formatDate,
+      sort: true,
+    },
+    {
+      dataField: "municipality.name",
+      text: "Ciudad",
+      formatter: cityFormatter,
+      sort: true,
+    },
+    {
+      dataField: "service.name",
+      text: "Producto",
+      sort: true,
+    },
+    {
+      dataField: "start_time",
+      text: "Fecha de Programación",
+      formatter: formatDate,
+      sort: true,
+    },
+    {
+      dataField: "status.name",
+      text: "Estado",
+      formatter: statusFormatter,
+      sort: true,
+    },
+    {
+      dataField: "spent_credit",
+      text: "Rides",
+      headerClasses: "small-column",
+      formatter: creditFormatter,
+      headerFormatter: headerCreditFormatter,
+    },
+  ];
+
+  const columnsSuperclient = [
+    {
+      dataField: "id",
+      text: "Cód.",
+      headerClasses: "small-column",
+      sort: true,
+    },
+    {
+      dataField: "customer.company.name",
+      text: "Empresa",
+      sort: true,
+    },
+    {
+      dataField: "customer",
+      text: "Solicitador por",
+      sort: true,
+      formatter: formatName,
     },
     {
       dataField: "created_at",
@@ -149,7 +210,11 @@ const ClientRequestsHistory = () => {
                   bootstrap4
                   keyField="id"
                   data={displayedRequests}
-                  columns={columns}
+                  columns={
+                    userInfoContext.profile === 2
+                      ? columnsClient
+                      : columnsSuperclient
+                  }
                   selectRow={selectRow}
                   filter={filterFactory()}
                   pagination={paginationFactory()}

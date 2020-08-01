@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Card, Form } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Card, Form, Spinner } from "react-bootstrap";
 import swal from "sweetalert";
 import { setRequestFile } from "../../../../../controllers/apiRequests";
 import { FaRegFilePdf, FaCheckCircle } from "react-icons/fa";
@@ -9,11 +9,14 @@ import { AuthContext } from "../../../../../contexts/AuthContext";
 
 type SingleFileProps = any;
 
-const SingleFile: React.FC<SingleFileProps> = ({ document, requestId }) => {
+const SingleFile: React.FC<SingleFileProps> = ({
+  document,
+  requestId,
+  onUpdate,
+}) => {
   const [doc, setDoc] = useState<any>("");
   const [fileName, setFileName] = useState("Vacio");
-  const { updateRequests } = useContext(RequestsContext);
-  const { userInfoContext } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setDoc(document);
@@ -22,17 +25,19 @@ const SingleFile: React.FC<SingleFileProps> = ({ document, requestId }) => {
   const onFileUpload = (e: any) => {
     let uploadedFile = e.target.files[0];
     if (uploadedFile && uploadedFile.type === "application/pdf") {
+      setLoading(true);
       setFileName(uploadedFile.name);
       setRequestFile(requestId, doc.id, doc.document.id, uploadedFile).then(
         async (result) => {
           if (result.status === 200) {
+            setLoading(false);
             swal("Buen trabajo!", "Carga exitosa!", "success");
-            updateRequests();
+            onUpdate();
           }
         }
       );
     } else {
-      swal("Oops!", "Solo se permite formato .pdf", "error");
+      swal("Oops!", "Sólo se permite formato .pdf", "error");
     }
   };
 
@@ -54,9 +59,13 @@ const SingleFile: React.FC<SingleFileProps> = ({ document, requestId }) => {
             <a href={doc.file} target={"n_blank"} className="pdf-icon">
               <FaRegFilePdf />
             </a>
-            <span className="pdf-icon text-success">
-              <FaCheckCircle />
-            </span>
+            {loading ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              <span className="pdf-icon text-success">
+                <FaCheckCircle />
+              </span>
+            )}
           </div>
         )}
         <Form className="m-2">

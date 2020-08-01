@@ -89,10 +89,11 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   useEffect(() => {
     if (showAlternative) {
       if (
-        opt1.place &&
-        opt1.place !== "Seleccione..." &&
-        opt2.place &&
-        opt2.place !== "Seleccione..."
+        propsTrack ||
+        (opt1.place &&
+          opt1.place !== "Seleccione..." &&
+          opt2.place &&
+          opt2.place !== "Seleccione...")
       ) {
         if (opt1.date && opt2.date) {
           setDisabled(false);

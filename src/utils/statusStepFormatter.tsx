@@ -1,5 +1,5 @@
 const statusStepFormatter = (step: number, profile: number) => {
-  if (profile === 2) {
+  if (profile === 2 || profile === 7) {
     switch (step) {
       case 0:
         return {

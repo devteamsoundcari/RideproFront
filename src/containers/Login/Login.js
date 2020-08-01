@@ -74,6 +74,8 @@ const Login = () => {
             ? "operario"
             : res.profile === 5
             ? "tecnico"
+            : res.profile === 7
+            ? "super-cliente"
             : ""
         }`,
         picture: res.picture,
@@ -141,6 +143,8 @@ const Login = () => {
           break;
         case 5:
           path = "/tecnico";
+        case 7:
+          path = "/super-cliente";
           break;
         default:
           path = "/";

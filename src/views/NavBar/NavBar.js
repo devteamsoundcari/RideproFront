@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { FaBell, FaPowerOff, FaUser, FaRegBuilding } from "react-icons/fa";
+import { FaPowerOff, FaUser, FaRegBuilding } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
@@ -18,7 +18,7 @@ const NavBar = () => {
     setUserInfoContext,
     setIsLoggedInContext,
   } = useContext(AuthContext);
-  const { setRequests, setCancelledRequests } = useContext(RequestsContext);
+  const { clear } = useContext(RequestsContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
@@ -28,8 +28,7 @@ const NavBar = () => {
     setAuthorizationToken();
     setIsLoggedInContext(false);
     setUserInfoContext({});
-    setRequests([]);
-    setCancelledRequests([]);
+    clear();
     history.push({
       pathname: "/login",
     });
@@ -95,9 +94,9 @@ const NavBar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
-            <Nav.Link>
+            {/* <Nav.Link>
               <FaBell />
-            </Nav.Link>
+            </Nav.Link> */}
             <div className="userOptions">
               <NavDropdown
                 alignRight

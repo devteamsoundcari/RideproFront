@@ -348,6 +348,7 @@ const RegistrarNuevoUsuario = () => {
                   <option value="">Seleccione...</option>
                   <option value="1">Administrador</option>
                   <option value="2">Cliente</option>
+                  <option value="7">SuperCliente</option>
                   <option value="3">Operaciones</option>
                   <option value="5">Técnico</option>
                 </Form.Control>

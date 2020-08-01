@@ -31,7 +31,6 @@ const CompanyEditModal = (props: any) => {
   };
 
   const updateData = (e) => {
-    console.log(e);
     let inputName = e.target.name;
     let inputValue = e.target.value;
 
@@ -80,6 +79,32 @@ const CompanyEditModal = (props: any) => {
       <Form onSubmit={handleSubmit(onSubmit)} className="company-edit-modal">
         <Modal.Body>
           <Form.Row>
+            <Col md={2}>
+              <Image
+                src={company.logo}
+                fluid
+                roundedCircle
+                className="shadow"
+              />
+            </Col>
+            <Col md={10} className="pl-3">
+              <h6 className="mt-2">LOGO</h6>
+              <div className="w-50 recommendation">
+                <small>
+                  Para una correcta visualización el aspecto de la imagen debe
+                  ser lo mas cuadrado posible.
+                </small>
+              </div>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handleCompanyLogoEditModal}
+              >
+                Editar
+              </Button>
+            </Col>
+          </Form.Row>
+          <Form.Row className="mt-3">
             <Form.Group as={Col}>
               <Form.Label>Nombre</Form.Label>
               <Controller
@@ -139,19 +164,6 @@ const CompanyEditModal = (props: any) => {
                 onChange={updateData}
               />
             </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Col>
-              <Form.Label>Logo</Form.Label>{" "}
-              <Button
-                variant="link"
-                size="sm"
-                onClick={handleCompanyLogoEditModal}
-              >
-                <small>Editar</small>
-              </Button>
-              <Image src={company.logo} fluid />
-            </Col>
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>

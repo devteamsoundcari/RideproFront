@@ -61,36 +61,39 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
   //========================== HANDLE SUBMIT =====================================
 
   const onSubmit = async (data: any) => {
-    if (city.id) {
-      setError(false);
-      setLoading(true);
-      data.trackMunicipality = city.id;
-      data.companyId = userInfoContext.company.id;
-      if (userInfoContext.profile === 2) {
-        data.fare = 0;
-      }
-      data.latitude = lat;
-      data.longitude = lng;
-      data.pictures = "na";
-      const response = await createNewTrack(data);
-      if (response) {
-        setLoading(false);
-        // setSuccess(true);
-        fetchTracks();
-        swal("Perfecto!", `Pista registrada existosamente`, "success");
-
-        handleClose();
-
-        // setTimeout(() => {
-        //   setSuccess(false);
-        // }, 1000);
+    swal({
+      title: "Importante",
+      text:
+        "Une vez crees una pista no podras eliminar o cambiar su nombre o dirección",
+      icon: "warning",
+      buttons: ["Volver", "Continuar"],
+      dangerMode: true,
+    }).then(async (willCreate) => {
+      if (willCreate && city.id) {
+        setError(false);
+        setLoading(true);
+        data.trackMunicipality = city.id;
+        data.companyId = userInfoContext.company.id;
+        if (userInfoContext.profile === 2) {
+          data.fare = 0;
+        }
+        data.latitude = lat;
+        data.longitude = lng;
+        data.pictures = "na";
+        const response = await createNewTrack(data);
+        if (response) {
+          setLoading(false);
+          fetchTracks();
+          swal("Perfecto!", `Pista registrada existosamente`, "success");
+          handleClose();
+        } else {
+          console.log("Algo paso!, no fue posible crear la pista");
+        }
       } else {
-        console.log("Algo paso!, no fue posible crear la pista");
+        // setError(true);
+        setLoading(false);
       }
-    } else {
-      setError(true);
-      setLoading(false);
-    }
+    });
   };
 
   // =========================== FETCHING DEPARTMENTS ===================================
@@ -325,9 +328,9 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 </small>
               </div>
             )}
-            <Form.Group id="formGridCheckbox">
+            {/* <Form.Group id="formGridCheckbox">
               <Form.Check type="checkbox" label="Añadir a pistas favoritas" />
-            </Form.Group>
+            </Form.Group> */}
             <Button className={`btn-${userInfoContext.perfil}`} type="submit">
               Agregar
             </Button>

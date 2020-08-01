@@ -119,7 +119,6 @@ const SetPlace = (props) => {
     if (department.id) {
       setFilteredTracks([]);
       tracks.forEach((item) => {
-        console.log("TEM ", item);
         if (
           item.municipality.department.id === parseInt(department.id) &&
           userInfoContext.company.id === item.company.id

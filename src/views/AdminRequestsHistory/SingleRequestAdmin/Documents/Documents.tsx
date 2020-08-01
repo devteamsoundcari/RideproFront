@@ -11,9 +11,7 @@ const Documents: React.FC<DocumentsProps> = ({ requestId, documentsOk }) => {
   // ================================ FETCH REQUEST INSTRUCTORS ON LOAD =====================================================
   const fetchRequestInstructors = async (url) => {
     const response = await getRequestInstructors(url);
-    response.results.forEach(async (item) => {
-      setRequestDocuments((oldArr: any) => [...oldArr, item]);
-    });
+    setRequestDocuments(response.results);
     if (response.next) {
       return await fetchRequestInstructors(response.next);
     }
@@ -50,6 +48,11 @@ const Documents: React.FC<DocumentsProps> = ({ requestId, documentsOk }) => {
                   document={document}
                   key={idx}
                   requestId={requestId}
+                  onUpdate={() =>
+                    fetchRequestInstructors(
+                      `${process.env.REACT_APP_API_URL}/api/v1/request_doc/?request=${requestId}`
+                    )
+                  }
                 />
               );
             })}

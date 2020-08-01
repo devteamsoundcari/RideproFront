@@ -12,11 +12,12 @@ import {
   GiThreeFriends,
 } from "react-icons/gi";
 import { FaPeopleCarry, FaUserGraduate } from "react-icons/fa";
-import { Badge } from "react-bootstrap";
+import { Badge, Button } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import Greeting from "../Usuarios/Greeting/Greeting";
 import defaultCompanyLogo from "../../assets/img/companydefault.png";
+import ModalContact from "../ModalContact/ModalContact";
 import logo from "../../assets/img/logo.png";
 import "./SideBar.scss";
 
@@ -25,6 +26,7 @@ const SideBar = (props) => {
   const { updateRequests } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const [showContactModal, setShowContactModal] = useState(false);
 
   useEffect(() => {
     if (userInfoContext.company.logo !== "") {
@@ -45,6 +47,8 @@ const SideBar = (props) => {
         break;
       case 5:
         setProfile("Tecnico");
+      case 7:
+        setProfile("Super-Cliente");
         break;
       default:
         break;
@@ -97,12 +101,24 @@ const SideBar = (props) => {
             </div>
           </li>
           {profile === "Cliente" ? (
-            <li>
-              <Badge>
-                <AiFillDollarCircle />
-                <small>{userInfoContext.credit}</small>
-              </Badge>
-            </li>
+            <React.Fragment>
+              <li>
+                <Badge>
+                  <AiFillDollarCircle />
+                  <small>{userInfoContext.credit}</small>
+                </Badge>
+              </li>
+              <Button
+                variant="link"
+                className="text-white pt-0"
+                onClick={() => setShowContactModal(true)}
+              >
+                <small>¿Sin créditos?</small>
+              </Button>
+              {showContactModal && (
+                <ModalContact handleClose={() => setShowContactModal(false)} />
+              )}
+            </React.Fragment>
           ) : (
             ""
           )}
@@ -152,11 +168,22 @@ const SideBar = (props) => {
 
           <hr />
           {/* <li className="sidebar-nav-header">Mis pistas</li> */}
-          {userInfoContext.profile !== 5 && (
+          {userInfoContext.profile !== 5 || userInfoContext.profile !== 7 ? (
             <React.Fragment>
               <Link to={`${props.url}/pistas`} className="nav-link">
                 <GiTireTracks className="mb-1 mr-2" />
                 Ver pistas{" "}
+              </Link>
+              <hr />
+            </React.Fragment>
+          ) : (
+            ""
+          )}
+          {userInfoContext.profile === 7 && (
+            <React.Fragment>
+              <Link to={`${props.url}/sucursales`} className="nav-link">
+                <GiThreeFriends className="mb-1 mr-2" />
+                Sucursales
               </Link>
               <hr />
             </React.Fragment>
