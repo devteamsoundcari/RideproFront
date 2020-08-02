@@ -1,0 +1,108 @@
+.modal-upload-reports {
+  .action-filters {
+    width: auto;
+    margin: 10px 0px;
+    // background-color: red;
+    label {
+      margin-bottom: 0px;
+    }
+    .custome-search-field {
+      min-width: 29rem;
+      height: 2rem;
+    }
+  }
+  .action-btns {
+  }
+
+  table {
+    .expand-cell-header {
+      padding: 0px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .new-style {
+      color: #475f7b;
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      font-weight: bold;
+      line-height: 1.4;
+      text-transform: uppercase;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .row-new-style {
+      vertical-align: middle;
+      color: #475f7b;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      td {
+        overflow: hidden;
+      }
+      .expand-cell {
+        padding: 0px;
+        text-align: center;
+        vertical-align: middle;
+      }
+    }
+    .parent-expand-foo {
+      background-color: lightgreen;
+    }
+    .expanded-div {
+      img {
+        max-width: 100px;
+        max-height: 100px;
+      }
+      table {
+        margin-bottom: 0px;
+        color: #727e8c;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        td {
+          padding: 0.3rem 0;
+        }
+      }
+    }
+    .react-bootstrap-table-editing-cell {
+      overflow: visible;
+      //   padding-bottom: 0.5rem;
+      label {
+        cursor: pointer;
+        color: #333;
+        background-color: lightgreen;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px 14px;
+        border-radius: 5px;
+        line-height: 18px;
+        text-transform: capitalize;
+        text-align: center;
+        &:hover {
+          color: #fff;
+          background-color: green;
+        }
+      }
+      #custom-file-translate-scss {
+        display: none;
+      }
+      .custom-file-input:lang(es) ~ .custom-file-label::after {
+        display: none;
+      }
+    }
+    .editing-cell {
+      padding: 0px 10px;
+      vertical-align: middle;
+      input {
+        height: 20px;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        line-height: 1.4;
+      }
+    }
+    .selection-cell {
+      padding: 0px;
+      text-align: center;
+      vertical-align: middle;
+    }
+  }
+}

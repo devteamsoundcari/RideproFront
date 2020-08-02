@@ -6,18 +6,26 @@ import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
 import "./Login.scss";
-import bgImage from "../../assets/img/loginImage.jpg";
+import bgImage from "../../assets/img/loginImage.png";
 // import bgPage from "../../assets/img/bgLogin.jpg";
 import logo from "../../assets/img/logo.png";
-import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
+import {
+  Container,
+  Col,
+  Card,
+  Row,
+  Button,
+  Form,
+  Spinner,
+} from "react-bootstrap";
 import PasswordRecover from "../../views/PasswordRecover/PasswordRecover";
-import NewPassword from "../../views/NewPassword/NewPassword";
+// import NewPassword from "../../views/NewPassword/NewPassword";
 
 const Login = () => {
   const history = useHistory();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showPasswordReset, setShowPasswordReset] = useState(false);
-  const [resetPwd, setResetPwd] = useState(null);
   const [userInfo, setUserInfo] = useState({
     isSignedIn: false,
   });
@@ -27,17 +35,20 @@ const Login = () => {
   // ====================== ON SUBMIT THE FORM ======================
   const onSubmit = async (data) => {
     // ======================= GETTING TOKEN ==========================
+    setLoading(true);
     let res = await getLoginToken(data);
     if (res.error) {
       // This means the user is not registered
       await setAuthorizationToken(res.token);
       setError(res.error);
+      setLoading(false);
     } else {
       // Save token in LocalStorage
       await setAuthorizationToken(res.token);
       setError("");
       // Get the user info
       await SetUser();
+      setLoading(false);
     }
   };
 
@@ -54,28 +65,27 @@ const Login = () => {
         email: res.email,
         charge: res.charge,
         profile: res.profile,
+        perfil: `${
+          res.profile === 1
+            ? "admin"
+            : res.profile === 2
+            ? "cliente"
+            : res.profile === 3
+            ? "operario"
+            : res.profile === 5
+            ? "tecnico"
+            : res.profile === 7
+            ? "super-cliente"
+            : ""
+        }`,
         picture: res.picture,
         url: res.url,
         company: res.company,
         gender: res.gender,
+        credit: res.credit,
       });
     }
   };
-
-  // ====================== GETTING THE ACTUAL PATH ======================
-
-  useEffect(() => {
-    const url = window.location.href;
-    let arr = url.split("/");
-    let [uid, token] = arr.slice(Math.max(arr.length - 2, 1));
-    if (uid.length === 3) {
-      console.log(uid.length === 3 && token);
-      setResetPwd({
-        uid,
-        token,
-      });
-    }
-  }, []);
 
   // ====================== IF TOKEN IN STORAGE SET INFO ======================
   useEffect(() => {
@@ -101,10 +111,12 @@ const Login = () => {
         email: userInfo.email,
         charge: userInfo.charge,
         profile: userInfo.profile,
+        perfil: userInfo.perfil,
         picture: userInfo.picture,
         url: userInfo.url,
         company: userInfo.company,
         gender: userInfo.gender,
+        credit: userInfo.credit,
       });
     }
     // eslint-disable-next-line
@@ -113,7 +125,11 @@ const Login = () => {
   // ====================== REDIRECT DEPENDING ON PROFILE ======================
   useEffect(() => {
     if (userInfo.isSignedIn) {
-      console.log("user", userInfo);
+      console.log(
+        "%c ✅ User info:",
+        "color: orange; font-weight: bold;",
+        userInfo
+      );
       let path = "/";
       switch (userInfo.profile) {
         case 1:
@@ -124,6 +140,12 @@ const Login = () => {
           break;
         case 3:
           path = "/operario";
+          break;
+        case 5:
+          path = "/tecnico";
+          break;
+        case 7:
+          path = "/super-cliente";
           break;
         default:
           path = "/";
@@ -142,8 +164,6 @@ const Login = () => {
   // ====================== RETURN ======================
   if (showPasswordReset) {
     return <PasswordRecover comeBack={renderPasswordReset} />;
-  } else if (resetPwd) {
-    return <NewPassword data={resetPwd} />;
   } else {
     return (
       <Container className="justify-content-md-center d-flex mt-5 mb-5 loginForm">
@@ -159,11 +179,11 @@ const Login = () => {
                     </h1>
                   </Card.Title>
                   <Card.Text className="text-center">
-                    Tu cuenta será validada por el administrador, quien te
-                    asignará un tipo de perfil.{" "}
-                    <a href="#test">
+                    Gracias por registrarte en RIDE PRO. Tu cuenta y perfil de
+                    usuario será validada por nuestro equipo.{" "}
+                    {/* <a href="#test">
                       <strong>¿Problemas para iniciar sesión?</strong>
-                    </a>
+                    </a> */}
                   </Card.Text>
                   <Card.Body>
                     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -207,6 +227,7 @@ const Login = () => {
                         className="m-auto"
                       >
                         Ingresar
+                        {loading && <Spinner animation="border" size="sm" />}
                       </Button>
                       <Button variant="link" onClick={renderPasswordReset}>
                         <small>Olvidé mi contraseña</small>
@@ -220,7 +241,7 @@ const Login = () => {
                 md={6}
                 className="bgImageLogin"
                 style={{
-                  background: `url(${bgImage}) no-repeat center`,
+                  background: `url(${bgImage}) no-repeat center center`,
                 }}
               ></Col>
             </Row>

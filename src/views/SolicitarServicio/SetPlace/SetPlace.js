@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
   getDepartments,
@@ -10,10 +10,11 @@ import {
 import { Container, Form, Col, Button, Card, Spinner } from "react-bootstrap";
 import "./SetPlace.scss";
 import useDropdown from "../../../utils/useDropdown";
+import ModalNewTrack from "../../Tracks/ModalNewTrack/ModalNewTrack";
 
 const SetPlace = (props) => {
   const { userInfoContext } = useContext(AuthContext);
-  const history = useHistory();
+  // const history = useHistory();
   const { handleSubmit } = useForm();
   const [error, setError] = useState("");
   const [noTrack, setNoTrack] = useState(false);
@@ -24,6 +25,7 @@ const SetPlace = (props) => {
   const [department, setDpto] = useState("");
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState({});
+  const [showModalTracks, setShowModalTracks] = useState(false);
   const [selectedDepartment, DepartmentsDropdown] = useDropdown(
     "Departamento",
     "Seleccione...",
@@ -114,12 +116,11 @@ const SetPlace = (props) => {
   // =============================== FILTER TRACKS BY CITY ====================================
 
   useEffect(() => {
-    if (city.id) {
+    if (department.id) {
       setFilteredTracks([]);
       tracks.forEach((item) => {
-        console.log("TEM ", item);
         if (
-          item.municipality.id === parseInt(city.id) &&
+          item.municipality.department.id === parseInt(department.id) &&
           userInfoContext.company.id === item.company.id
         ) {
           setFilteredTracks((oldArr) => [...oldArr, item]);
@@ -127,7 +128,7 @@ const SetPlace = (props) => {
       });
     }
     //eslint-disable-next-line
-  }, [city, tracks]);
+  }, [department, tracks]);
 
   const handleCheckChange = () => {
     setNoTrack(!noTrack);
@@ -181,10 +182,11 @@ const SetPlace = (props) => {
   // =============================== CLICK ON ADD TRACK ====================================
 
   const handleClick = () => {
-    let url = `${
-      userInfoContext.profile === 1 ? "/administrador" : "/cliente"
-    }/pistas`;
-    history.push(url);
+    // let url = `${
+    //   userInfoContext.profile === 1 ? "/administrador" : "/cliente"
+    // }/pistas`;
+    // history.push(url);
+    setShowModalTracks(true);
   };
 
   // ==================================== SUBMIT THE FORM ========================================
@@ -232,7 +234,7 @@ const SetPlace = (props) => {
                 {!filteredTracks.length && city.id ? (
                   <div className="d-flex justify-content-center mt-2">
                     <small className="font-italic text-danger">
-                      No tienes pistas en esta ciudad
+                      No tienes pistas en {department.name}
                     </small>
                   </div>
                 ) : (
@@ -244,7 +246,7 @@ const SetPlace = (props) => {
                   onClick={handleClick}
                   className="mt-2"
                 >
-                  Administrar mis pistas
+                  Agregar pista
                 </Button>
               </Card.Body>
             </Card>
@@ -271,6 +273,14 @@ const SetPlace = (props) => {
           <Button type="submit">Continuar</Button>
         </Form.Row>
       </Form>
+      {showModalTracks && (
+        <ModalNewTrack
+          handleClose={() => setShowModalTracks(false)}
+          fetchTracks={() =>
+            fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`)
+          }
+        />
+      )}
     </Container>
   );
 };

@@ -24,19 +24,15 @@ const UploadExcelFile: React.FC<Props> = ({ addItem }) => {
 
   const isInfoOk = (participant) => {
     if (isNaN(participant.official_id)) {
-      // console.log(typeof participant.official_id, participant.official_id);
       setIncompleteParticipants((prevArr) => [...prevArr, participant]);
       return false;
     } else if (typeof participant.first_name !== "string") {
-      // console.log(typeof participant.first_name, participant.first_name);
       setIncompleteParticipants((prevArr) => [...prevArr, participant]);
       return false;
     } else if (typeof participant.last_name !== "string") {
-      // console.log(typeof participant.last_name, participant.last_name);
       setIncompleteParticipants((prevArr) => [...prevArr, participant]);
       return false;
     } else if (typeof participant.email !== "string") {
-      // console.log(typeof participant.email, participant.email);
       setIncompleteParticipants((prevArr) => [...prevArr, participant]);
       return false;
     } else if (
@@ -66,7 +62,7 @@ const UploadExcelFile: React.FC<Props> = ({ addItem }) => {
     if (hasMissingProperties(participant)) {
       setIncompleteParticipants((prevArr) => [...prevArr, participant]);
     } else {
-      isInfoOk(participant) ? addItem(participant) : console.log("paila");
+      isInfoOk(participant) ? addItem(participant) : console.log("error");
     }
   };
 

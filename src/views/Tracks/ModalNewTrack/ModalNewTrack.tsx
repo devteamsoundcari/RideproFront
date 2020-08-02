@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Modal, Form, Button, Col, Spinner } from "react-bootstrap";
+import { Modal, Form, Button, Col, Spinner, Row } from "react-bootstrap";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { FaCheckCircle } from "react-icons/fa";
 import useDropdown from "../../../utils/useDropdown";
@@ -9,6 +9,9 @@ import {
 } from "../../../controllers/apiRequests";
 import { useForm } from "react-hook-form";
 import { createNewTrack } from "../../../controllers/apiRequests";
+import swal from "sweetalert";
+import MapContainer from "./MapContainer";
+import "./ModalNewTrack.scss";
 
 interface Props {
   handleClose: () => void;
@@ -35,11 +38,15 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
   const { userInfoContext } = useContext(AuthContext);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  //eslint-disable-next-line
   const [success, setSuccess] = useState(false);
   const [departments, setDepartments] = useState<Departments>([]);
   const [department, setDpto] = useState<Department>({ id: "", name: "" });
   const [cities, setCities] = useState<Cities>([]);
   const [city, setCity] = useState<City>({ id: "", name: "" });
+  const [activateMap, setActivateMap] = useState(false);
+  const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(0);
   const [selectedDepartment, DepartmentsDropdown] = useDropdown(
     "Departamento",
     "Seleccione...",
@@ -54,33 +61,39 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
   //========================== HANDLE SUBMIT =====================================
 
   const onSubmit = async (data: any) => {
-    if (city.id) {
-      setError(false);
-      setLoading(true);
-      data.trackMunicipality = city.id;
-      data.companyId = userInfoContext.company.id;
-      if (userInfoContext.profile === 2) {
-        data.fare = 0;
-      }
-      data.latitude = "na";
-      data.longitude = "na";
-      data.pictures = "na";
-      const response = await createNewTrack(data);
-      if (response) {
-        setLoading(false);
-        setSuccess(true);
-        fetchTracks();
-        setTimeout(() => {
-          setSuccess(false);
+    swal({
+      title: "Importante",
+      text:
+        "Une vez crees una pista no podras eliminar o cambiar su nombre o dirección",
+      icon: "warning",
+      buttons: ["Volver", "Continuar"],
+      dangerMode: true,
+    }).then(async (willCreate) => {
+      if (willCreate && city.id) {
+        setError(false);
+        setLoading(true);
+        data.trackMunicipality = city.id;
+        data.companyId = userInfoContext.company.id;
+        if (userInfoContext.profile === 2) {
+          data.fare = 0;
+        }
+        data.latitude = lat;
+        data.longitude = lng;
+        data.pictures = "na";
+        const response = await createNewTrack(data);
+        if (response) {
+          setLoading(false);
+          fetchTracks();
+          swal("Perfecto!", `Pista registrada existosamente`, "success");
           handleClose();
-        }, 1000);
+        } else {
+          console.log("Algo paso!, no fue posible crear la pista");
+        }
       } else {
-        console.log("Algo paso!, no fue posible crear la pista");
+        // setError(true);
+        setLoading(false);
       }
-    } else {
-      setError(true);
-      setLoading(false);
-    }
+    });
   };
 
   // =========================== FETCHING DEPARTMENTS ===================================
@@ -163,9 +176,10 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
       size={loading ? "sm" : success ? "sm" : "lg"}
       show={true}
       onHide={handleClose}
+      className="modal-new-track"
     >
-      <Modal.Header closeButton>
-        <Modal.Title>
+      <Modal.Header closeButton className={`bg-${userInfoContext.perfil}`}>
+        <Modal.Title className="text-white">
           {loading
             ? "Creando pista..."
             : success
@@ -196,34 +210,19 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
             </Form.Row>
             <Form.Row>
               <Form.Group as={Col} controlId="formGridEmail">
-                <Form.Label>
-                  <h5>Nombre del lugar</h5>
-                </Form.Label>
+                <Form.Label>Nombre del lugar</Form.Label>
                 <input
                   className="form-control"
                   type="text"
-                  placeholder="Coliseo municipal"
+                  // placeholder="Coliseo municipal"
                   name="trackName"
                   ref={register({ required: true, maxLength: 80 })}
                 />
               </Form.Group>
-              <Form.Group as={Col} controlId="formGridPassword">
-                <Form.Label>
-                  <h5>Dirección</h5>
-                </Form.Label>
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="calle 26s # 48-23"
-                  name="trackAddress"
-                  ref={register({ required: true, maxLength: 80 })}
-                />
-              </Form.Group>
+
               {userInfoContext.profile !== 2 && (
                 <Form.Group as={Col} controlId="formGridFare">
-                  <Form.Label>
-                    <h5>Tarifa</h5>
-                  </Form.Label>
+                  <Form.Label>Tarifa promedio</Form.Label>
                   <input
                     className="form-control"
                     type="number"
@@ -234,10 +233,56 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 </Form.Group>
               )}
             </Form.Row>
+
+            <Row className="map-section">
+              <Col className="pr-0">
+                <Form.Label>Dirección</Form.Label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="trackAddress"
+                  ref={register({ required: true, maxLength: 80 })}
+                />
+                <div className="mt-3 map-text">
+                  <h6>
+                    UBICACIÓN EN EL MAPA <span>(opcional)</span>
+                  </h6>
+                  <p>
+                    Arrastra el marcador rojo hasta el lugar exacto de la pista.
+                    Recuerda que poner una ubicación errornea podra causar
+                    retrasos y confusiones.
+                  </p>
+                  <Form.Check
+                    type="switch"
+                    id="custom-switch-map"
+                    onChange={() => setActivateMap(!activateMap)}
+                    label="Agregar ubicación"
+                  />
+                  {activateMap && (
+                    <div className="coords">
+                      <small>Latitud: {lat}</small>{" "}
+                      <small>Longitud: {lng}</small>
+                    </div>
+                  )}
+                </div>
+              </Col>
+              <Col>
+                <MapContainer
+                  isMarkerShown={activateMap}
+                  markerName={"ubicacion"}
+                  containerElement={
+                    <div
+                      className={`map-container ${activateMap ? "active" : ""}`}
+                    />
+                  }
+                  latitude={(x) => setLat(x)}
+                  longitude={(x) => setLng(x)}
+                />
+              </Col>
+            </Row>
+
             <Form.Group controlId="formGridAddress1">
-              <Form.Label>
-                <h5>Descripción</h5>
-              </Form.Label>
+              <Form.Label>Descripción</Form.Label>
               <textarea
                 className="form-control"
                 placeholder="Por favor escriba una descripcion del lugar ..."
@@ -249,9 +294,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
             <hr />
             <Form.Row>
               <Form.Group as={Col} controlId="formGridContactName">
-                <Form.Label>
-                  <h5>Persona de contacto</h5>
-                </Form.Label>
+                <Form.Label>Persona de contacto</Form.Label>
                 <input
                   className="form-control"
                   type="text"
@@ -260,9 +303,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridContactPhone">
-                <Form.Label>
-                  <h5>Teléfono de contacto</h5>
-                </Form.Label>
+                <Form.Label>Teléfono de contacto</Form.Label>
                 <input
                   className="form-control"
                   type="number"
@@ -271,9 +312,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridContactEmail">
-                <Form.Label>
-                  <h5>Email de contacto</h5>
-                </Form.Label>
+                <Form.Label>Email de contacto</Form.Label>
                 <input
                   className="form-control"
                   type="email"
@@ -289,11 +328,10 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
                 </small>
               </div>
             )}
-            <Form.Group id="formGridCheckbox">
+            {/* <Form.Group id="formGridCheckbox">
               <Form.Check type="checkbox" label="Añadir a pistas favoritas" />
-            </Form.Group>
-
-            <Button variant="primary" type="submit">
+            </Form.Group> */}
+            <Button className={`btn-${userInfoContext.perfil}`} type="submit">
               Agregar
             </Button>
           </Form>

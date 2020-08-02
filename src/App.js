@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  // BrowserRouter as Router,
+  Route,
+  Switch,
+  HashRouter,
+} from "react-router-dom";
 import Login from "./containers/Login/Login";
 import Home from "./containers/Home/Home";
 import DashboardLayout from "./containers/DashboardLayout/DashboardLayout.tsx";
@@ -7,6 +12,7 @@ import AuthContextProvider from "./contexts/AuthContext";
 import ServiceContextProvider from "./contexts/ServiceContext";
 import ParticipantsContextProvider from "./contexts/ParticipantsContext";
 import RequestsContextProvider from "./contexts/RequestsContext";
+import NewPassword from "./views/NewPassword/NewPassword";
 
 function App() {
   // ========================================================================
@@ -16,7 +22,7 @@ function App() {
       <ServiceContextProvider>
         <RequestsContextProvider>
           <ParticipantsContextProvider>
-            <Router>
+            <HashRouter>
               <Switch>
                 <Route exact path="/">
                   <Home />
@@ -30,13 +36,22 @@ function App() {
                 <Route path="/operario">
                   <DashboardLayout />
                 </Route>
+                <Route path="/tecnico">
+                  <DashboardLayout />
+                </Route>
+                <Route path="/super-cliente">
+                  <DashboardLayout />
+                </Route>
                 <Route path="/login">
                   <Login />
+                </Route>
+                <Route path="/password-reset">
+                  <NewPassword />
                 </Route>
                 {/* <Route path="/login/:id/:token" render={<DashboardLayout />} /> */}
               </Switch>
               {/* <Redirect from="/" to="/" /> */}
-            </Router>
+            </HashRouter>
           </ParticipantsContextProvider>
         </RequestsContextProvider>
       </ServiceContextProvider>

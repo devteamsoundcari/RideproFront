@@ -6,10 +6,14 @@ $theme-colors: (
   "operario": #14524f,
   "admin": #970c0f,
   "cliente": #1d1d1b,
+  "tecnico": #14213d,
+  "super-cliente": #383d41,
   "disabled": #e9ecef,
   "event-requested": yellow,
   "confirm-event": orange,
   "event-confirmed": dodgerblue,
+  "confirm-docs": mediumslateblue,
+  "upload-reports": deeppink,
   "event-finished": lightgreen,
   "event-canceled": red,
 );
@@ -17,6 +21,7 @@ $theme-colors: (
 html {
   background-color: gainsboro;
   height: 100%;
+  letter-spacing: 0.01rem;
   body {
     background-color: gainsboro;
     height: 100%;
@@ -24,6 +29,21 @@ html {
       height: 100%;
       .row {
         height: 100%;
+      }
+    }
+    label {
+      color: #475f7b;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+      line-height: 1.4;
+    }
+    .close {
+      color: #fff;
+      text-shadow: none;
+      &:hover {
+        color: #fff;
       }
     }
   }
@@ -60,6 +80,17 @@ html {
     @content;
   }
 }
+
+.swal-text {
+  // background-color: #fefae3;
+  // padding: 17px;
+  // border: 1px solid #f0e1a1;
+  display: block;
+  margin: 22px;
+  text-align: center;
+  color: #61534e;
+}
+
 // $border-radius: 2rem;
 
 // .btn-lg {

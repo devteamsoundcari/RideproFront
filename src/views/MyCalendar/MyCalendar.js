@@ -1,55 +1,40 @@
 import React, { useState, useEffect, Children, useContext } from "react";
 import { Card, Spinner, Row, Col, ListGroup, Form } from "react-bootstrap";
-import { FaDotCircle, FaUsers } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 import { MdPlace } from "react-icons/md";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { useHistory } from "react-router-dom";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./MyCalendar.scss";
-// import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
+import statusStepFormatter from "../../utils/statusStepFormatter";
+import CalendarConventions from "../../utils/CalendarConventions";
 
 require("moment/locale/es.js");
 
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
-  const [requests, setRequests] = useState([]);
-  //eslint-disable-next-line
-  const [loading, setLoading] = useState(true);
+  const [displayedRequests, setDisplayedRequests] = useState([]);
   const history = useHistory();
-  const {
-    requestsInfoContext,
-    canceledRequestContext,
-    loadingContext,
-  } = useContext(RequestsContext);
-  const [seeCanceledEvents, setSeeCanceledEvents] = useState(false);
+  const { requests, cancelledRequests, isLoadingRequests } = useContext(
+    RequestsContext
+  );
+  const { userInfoContext } = useContext(AuthContext);
+  const [seeCancelledEvents, setSeeCancelledEvents] = useState(false);
   const [withCanceledRequests, setWithCanceledRequests] = useState({});
 
   // =============================== GETTING ALL THE EVENTS AND DISPLAYING THEM TO CALENDAR =============================================
 
   useEffect(() => {
-    setRequests(requestsInfoContext);
-    setWithCanceledRequests(requestsInfoContext);
-    canceledRequestContext.forEach((item) => {
+    setDisplayedRequests(requests);
+    setWithCanceledRequests(requests);
+    cancelledRequests.forEach((item) => {
       setWithCanceledRequests((prev) => [...prev, item]);
     });
-  }, [requestsInfoContext, canceledRequestContext]);
-
-  useEffect(() => {
-    if (requests.length > 1) {
-      // Show and hide spinner
-      if (requests.length > 0) {
-        setLoading(false);
-      }
-    } else {
-      if (requests.length > 0) {
-        setLoading(false);
-      }
-    }
-    //eslint-disable-next-line
-  }, [requests]);
+  }, [requests, cancelledRequests]);
 
   //============================================ HANDLING CLICKING ON EVENT ===========================================================
 
@@ -59,19 +44,6 @@ const MyCalendar = () => {
       state: { event: event },
     });
   };
-
-  //============================================ HANDLING CLICKING ON SLOT ===========================================================
-
-  // const handleSelectSlot = (data) => {
-  //   // ================= GETTING REQUESTING DATE ====================
-  //   let requestDate = new Date();
-  //   requestDate.setDate(requestDate.getDate() + 1);
-  //   if (data.start <= requestDate) {
-  //     alert("No puedes pedir servicios para esta fecha");
-  //   } else {
-  //     props.selectSlot(data);
-  //   }
-  // };
 
   // ==============================================================================================================================
 
@@ -87,33 +59,17 @@ const MyCalendar = () => {
   };
 
   const styleEvents = (event, start, end, isSelected) => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
+    const { bgColor, color } = statusStepFormatter(
+      event.status.step,
+      userInfoContext.profile
+    );
     let newStyle = {
-      backgroundColor: "",
-      color: "black",
+      color: color,
       borderRadius: "0px",
       border: "none",
     };
-    switch (event.status.step) {
-      case 0:
-        newStyle.backgroundColor = "red";
-        newStyle.color = "#f5f5f5";
-        break;
-      case 1:
-        newStyle.backgroundColor = "yellow";
-        break;
-      case 2:
-        newStyle.backgroundColor = "orange";
-        break;
-      default:
-        break;
-    }
-    // if (start < now && event.status.step !== 0) {
-    //   newStyle.backgroundColor = "dodgerblue";
-    // }
     return {
-      className: "",
+      className: bgColor,
       style: newStyle,
     };
   };
@@ -142,40 +98,17 @@ const MyCalendar = () => {
   };
 
   return (
-    <Row className="calendarSection ml-1 mr-1">
+    <Row className="calendarSection ml-1 mr-1 mb-4 overflow-auto">
       <Col md={2} className="conventions">
-        {/* <Button
-          variant="primary"
-          block
-          className="mb-3 mt-3"
-          disabled={userInfoContext.profile !== 2 ? true : false}
-        >
-          SOLICITAR
-        </Button> */}
         <ListGroup>
-          <ListGroup.Item>
-            <FaDotCircle className="text-event-requested" />{" "}
-            <small>SIN CONFIRMAR</small>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <FaDotCircle className="text-confirm-event" />{" "}
-            <small>CONFIRMAR PROGRAMACIÓN</small>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <FaDotCircle className="text-event-confirmed" />{" "}
-            <small>CONFIRMADO</small>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <FaDotCircle className="text-event-finished" />{" "}
-            <small>TERMINADO</small>
-          </ListGroup.Item>
+          <CalendarConventions />
           <ListGroup.Item>
             <Form.Check
               custom
               type="checkbox"
               id="custom-checkbox"
-              label="VER CANCELADOS"
-              onClick={() => setSeeCanceledEvents(!seeCanceledEvents)}
+              label="VER SOLICITUDES CANCELADAS"
+              onClick={() => setSeeCancelledEvents(!seeCancelledEvents)}
             />
           </ListGroup.Item>
         </ListGroup>
@@ -183,7 +116,7 @@ const MyCalendar = () => {
       <Col md={10} className="eventsCalendar pl-0">
         <Card>
           <Card.Body>
-            {loadingContext && (
+            {isLoadingRequests && (
               <div>
                 Cargando Eventos...
                 <Spinner animation="border" size="sm" role="status">
@@ -197,13 +130,11 @@ const MyCalendar = () => {
               defaultDate={new Date()}
               defaultView="month"
               views={{ month: true }}
-              events={seeCanceledEvents ? withCanceledRequests : requests}
-              // min={new Date(2020, 10, 0, 10, 0, 0)}
-              // max={new Date(2020, 10, 0, 22, 0, 0)}
-              // timeslots={8}
+              events={
+                seeCancelledEvents ? withCanceledRequests : displayedRequests
+              }
               style={{ height: "100vh" }}
               onSelectEvent={(event) => handleClick(event)}
-              // onSelectSlot={handleSelectSlot}
               components={{
                 dateCellWrapper: ColoredDateCellWrapper,
                 event: eventFormatter,

@@ -1,100 +1,56 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
-import { RequestsContext } from "../../contexts/RequestsContext";
-import { Container, Card, ProgressBar, Spinner } from "react-bootstrap";
+import {
+  useLocation,
+  Route,
+  Switch,
+  useRouteMatch,
+  useHistory,
+} from "react-router-dom";
+import { Container, Card, Spinner, Alert } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import { RequestsContext } from "../../contexts/RequestsContext";
+import SingleRequestAdmin from "./SingleRequestAdmin/SingleRequestAdmin";
 import "./AdminRequestsHistory.scss";
-import SingleRequestModalAdmin from "./SingleRequestModalAdmin/SingleRequestModalAdmin";
+import { AuthContext } from "../../contexts/AuthContext";
+import OperacionesStatus from "../../utils/OperacionesStatus";
+import TecnicoStatus from "../../utils/TecnicoStatus";
 
 const AdminRequestsHistory = () => {
   const location = useLocation();
-  const [modalShow, setModalShow] = useState(false);
-  const [selectedRow, setSelectedRow] = useState({});
-  //eslint-disable-next-line
-  const [loading, setLoading] = useState(true);
-  const [requests, setRequests] = useState([]);
-  const [sortedRequests, setSortedRequests] = useState([]);
-  const { requestsInfoContext } = useContext(RequestsContext);
+  const history = useHistory();
+  const [displayedRequests, setDisplayedRequests] = useState([]);
+  const { requests, isLoadingRequests } = useContext(RequestsContext);
+  const { userInfoContext } = useContext(AuthContext);
+  let { path, url } = useRouteMatch();
 
   useEffect(() => {
     if (location.state) {
       handleOnSelect(location.state.event);
     }
+    // eslint-disable-next-line
   }, [location]);
 
-  // ================================ FETCH REQUESTS ON LOAD =====================================================
-
   useEffect(() => {
-    setRequests(requestsInfoContext);
-  }, [requestsInfoContext]);
-
-  // ========================================= LOADING SPINNER =====================================
-
-  useEffect(() => {
-    // Sorting requests so that the most recent goes on top
     if (requests.length > 1) {
-      requests.sort((a, b) => {
-        return a.id - b.id;
+      let requestsToSort = [...requests];
+      requestsToSort.sort((a, b) => {
+        return b.id - a.id;
       });
-      // setRequestInfoContext(requests.reverse());
-      setSortedRequests(requests.reverse());
-      // Show and hide spinner
-      if (sortedRequests.length) {
-        setLoading(false);
-      }
-    } else {
-      setSortedRequests(requests);
-      if (requests.length > 0) {
-        setLoading(false);
-      }
+      setDisplayedRequests(requestsToSort);
     }
-    //eslint-disable-next-line
   }, [requests]);
 
-  //  ========================================================================================
-
   const statusFormatter = (cell, row) => {
-    switch (row.status.step) {
-      case 0:
-        return (
-          <div className="text-center">
-            <small>Evento cancelado</small>
-          </div>
-        );
-      case 1:
-        return (
-          <div className="text-center">
-            <small>Esperando confirmación</small>
-            <ProgressBar
-              variant="event-requested"
-              now={20}
-              label={`${60}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 2:
-        return (
-          <div className="text-center">
-            <small>Esperando al cliente</small>
-            <ProgressBar
-              variant="confirm-event"
-              now={30}
-              label={`${40}%`}
-              srOnly
-            />
-          </div>
-        );
-      default:
-        return <p>Undefined</p>;
+    if (userInfoContext.profile === 3) {
+      return <OperacionesStatus step={row.status.step} />;
+    } else {
+      return <TecnicoStatus step={row.status.step} />;
     }
   };
-
   const cityFormatter = (cell) =>
     cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
-
   const dateFormatter = (cell) => {
     let d = new Date(cell);
     const dateTimeFormat = new Intl.DateTimeFormat("es-CO", {
@@ -111,7 +67,6 @@ const AdminRequestsHistory = () => {
     ] = dateTimeFormat.formatToParts(d);
     return `${month}/${day}/${year}`;
   };
-
   const waitingTimeFormatter = (cell, row) => {
     let created = new Date(row.created_at);
     let now = new Date();
@@ -119,7 +74,6 @@ const AdminRequestsHistory = () => {
     var hourDifference = difference / 1000 / 3600;
     return `${Math.floor(hourDifference)} h`;
   };
-
   const columns = [
     {
       dataField: "id",
@@ -170,9 +124,7 @@ const AdminRequestsHistory = () => {
   ];
 
   const handleOnSelect = (row) => {
-    console.log("row", row);
-    setSelectedRow(row);
-    setModalShow(true);
+    history.push(`${url}/${row.id}`);
   };
 
   const selectRow = {
@@ -184,30 +136,34 @@ const AdminRequestsHistory = () => {
 
   return (
     <Container fluid="md" id="client-requests-history">
-      {requests.length === 0 ? (
+      {isLoadingRequests ? (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
       ) : (
-        <Card>
-          <BootstrapTable
-            bootstrap4
-            keyField="id"
-            data={requests}
-            columns={columns}
-            // expandRow={expandRow}
-            selectRow={selectRow}
-            filter={filterFactory()}
-            pagination={paginationFactory()}
-          />
-        </Card>
-      )}
-      {modalShow && (
-        <SingleRequestModalAdmin
-          show={true}
-          onHide={() => setModalShow(false)}
-          selectedRow={selectedRow}
-        />
+        <Switch>
+          <Route exact path={path}>
+            <Card>
+              {displayedRequests.length === 0 ? (
+                <Alert variant="light">
+                  <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
+                  <p>Para crear una solicitud, ingresa a "Solicitar".</p>
+                </Alert>
+              ) : (
+                <BootstrapTable
+                  bootstrap4
+                  keyField="id"
+                  data={displayedRequests}
+                  columns={columns}
+                  selectRow={selectRow}
+                  filter={filterFactory()}
+                  pagination={paginationFactory()}
+                />
+              )}
+            </Card>
+          </Route>
+          <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />
+        </Switch>
       )}
     </Container>
   );

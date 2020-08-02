@@ -1,19 +1,31 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import ModalSuccess from "./ModalSuccess/ModalSuccess";
-import { Container, Col, Card, Row, Button, Form } from "react-bootstrap";
+import {
+  Container,
+  Col,
+  Card,
+  Row,
+  Button,
+  Form,
+  Spinner,
+} from "react-bootstrap";
 import logo from "../../assets/img/logo.png";
 import { passwordReset } from "../../controllers/apiRequests";
+import "./PasswordRecover.scss";
 
 const PasswordRecover = (props) => {
   const [email, setEmail] = useState(null);
   const [smShow, setSmShow] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    console.log(data.email);
+    setLoading(true);
     await passwordReset(data);
     setEmail(data.email);
     setSmShow(true);
+    setLoading(false);
+
     // Object.assign(data, { emailType: "passwordReset" }); // EMAIL TYPE
     // await sendEmail(data); // SEND WELCOME EMAIL TO USER
   };
@@ -25,13 +37,13 @@ const PasswordRecover = (props) => {
   };
 
   return (
-    <Container>
+    <Container className="password-recover">
       <Row className="justify-content-md-center">
         <Col md={6} sm={12}>
           <Card>
             <Card.Body>
               <Card.Title className="text-center">
-                <img className="mb-4" src={logo} alt="" />
+                <img className="mb-4 company-logo" src={logo} alt="" />
                 <h1 className="h3 mb-3 font-weight-normal">
                   Recuperar contraseña
                 </h1>
@@ -65,6 +77,9 @@ const PasswordRecover = (props) => {
                   <Button variant="primary" type="submit" className="m-auto">
                     Restrablecer contraseña
                   </Button>
+                  {loading && (
+                    <Spinner animation="border" role="status"></Spinner>
+                  )}
                 </Form>
               </Card.Body>
             </Card.Body>

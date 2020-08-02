@@ -4,38 +4,37 @@ import {
   AiFillDollarCircle,
   AiFillCalendar,
   AiOutlineHistory,
-  AiOutlinePlus,
+  // AiOutlinePlus,
 } from "react-icons/ai";
 import {
-  GiFullMotorcycleHelmet,
+  // GiFullMotorcycleHelmet,
   GiTireTracks,
   GiThreeFriends,
 } from "react-icons/gi";
 import { FaPeopleCarry, FaUserGraduate } from "react-icons/fa";
-import { Badge } from "react-bootstrap";
+import { Badge, Button } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import Greeting from "../Usuarios/Greeting/Greeting";
 import defaultCompanyLogo from "../../assets/img/companydefault.png";
-import defaultCompanyImg from "../../assets/img/defaultCompanyImg.png";
-import { getUserRequests, fetchDriver } from "../../controllers/apiRequests";
+import ModalContact from "../ModalContact/ModalContact";
 import logo from "../../assets/img/logo.png";
-
 import "./SideBar.scss";
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
-  const {
-    setRequestsInfoContext,
-    setCanceledRequestContext,
-    setLoadingContext,
-  } = useContext(RequestsContext);
+  const { updateRequests } = useContext(RequestsContext);
   const [profile, setProfile] = useState("");
-  const profilePicture = userInfoContext.company.logo
-    ? userInfoContext.company.logo
-    : defaultCompanyLogo;
+  const [profilePicture, setProfilePicture] = useState("");
+  const [showContactModal, setShowContactModal] = useState(false);
 
   useEffect(() => {
+    if (userInfoContext.company.logo !== "") {
+      setProfilePicture(userInfoContext.company.logo);
+    } else {
+      setProfilePicture(defaultCompanyLogo);
+    }
+
     switch (userInfoContext.profile) {
       case 1:
         setProfile("Admin");
@@ -44,7 +43,13 @@ const SideBar = (props) => {
         setProfile("Cliente");
         break;
       case 3:
-        setProfile("Operario");
+        setProfile("Operaciones");
+        break;
+      case 5:
+        setProfile("Tecnico");
+        break;
+      case 7:
+        setProfile("Super-Cliente");
         break;
       default:
         break;
@@ -54,44 +59,9 @@ const SideBar = (props) => {
   // ========================= SETTING REQUESTS CONTEXT ON LOAD =======================================
 
   useEffect(() => {
-    let urlType = userInfoContext.profile === 2 ? "user_requests" : "requests";
-    async function fetchRequests(url) {
-      const response = await getUserRequests(url);
-      response.results.map(async (item) => {
-        // ================= GETTING CANCELING DATE ====================
-        let cancelDate = new Date(item.start_time);
-        cancelDate.setDate(cancelDate.getDate() - 1);
-        item.cancelDate = cancelDate;
-
-        item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
-        item.start = new Date(item.start_time);
-        item.end = new Date(item.finish_time);
-
-        // =========== GETTING INFO OF EACH DRIVER =================
-        getDrivers(item.drivers).then((data) => {
-          item.drivers = data;
-          if (item.status.step === 0) {
-            setCanceledRequestContext((prev) => [...prev, item]);
-          } else {
-            setRequestsInfoContext((prev) => [...prev, item]);
-          }
-        });
-        setLoadingContext(false);
-
-        return true;
-      });
-      if (response.next) {
-        setLoadingContext(true);
-        return await fetchRequests(response.next);
-      }
-    }
-    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
+    updateRequests();
     // eslint-disable-next-line
   }, []);
-
-  const getDrivers = async (driversIds) => {
-    return Promise.all(driversIds.map((id) => fetchDriver(id)));
-  };
 
   //========================================================================================================
 
@@ -109,15 +79,13 @@ const SideBar = (props) => {
         </div>
         <ul className="nav flex-column">
           <li>
-            <img
-              alt="profileImg"
-              className="shadow"
-              src={
-                userInfoContext.profile === 2
-                  ? profilePicture
-                  : defaultCompanyImg
-              }
-            />
+            <div
+              className="company-logo"
+              style={{
+                background: `url(${profilePicture})`,
+              }}
+            ></div>
+            {/* <img alt="profileImg" className="shadow" src={profilePicture} /> */}
           </li>
           <li>
             <div className="greeting">
@@ -129,15 +97,29 @@ const SideBar = (props) => {
               <small>{userInfoContext.charge}</small>
               <br />
               <small>{userInfoContext.company.name}</small>
+              {/* <Button className="nav-company" variant="link" size="sm"> */}
+              {/* </Button> */}
             </div>
           </li>
           {profile === "Cliente" ? (
-            <li>
-              <Badge>
-                <AiFillDollarCircle />
-                <small>{userInfoContext.company.credit}</small>
-              </Badge>
-            </li>
+            <React.Fragment>
+              <li>
+                <Badge>
+                  <AiFillDollarCircle />
+                  <small>{userInfoContext.credit}</small>
+                </Badge>
+              </li>
+              <Button
+                variant="link"
+                className="text-white pt-0"
+                onClick={() => setShowContactModal(true)}
+              >
+                <small>¿Sin créditos?</small>
+              </Button>
+              {showContactModal && (
+                <ModalContact handleClose={() => setShowContactModal(false)} />
+              )}
+            </React.Fragment>
           ) : (
             ""
           )}
@@ -145,26 +127,25 @@ const SideBar = (props) => {
 
         <hr />
         <ul className="nav flex-column align-items-start">
-          {userInfoContext.profile !== 3 && (
+          {userInfoContext.profile === 2 && (
             <React.Fragment>
-              <li className="sidebar-nav-header">Destacado</li>
+              {/* <li className="sidebar-nav-header">Destacado</li> */}
 
               <Link to={`${props.url}/solicitar`} className="nav-link">
-                <GiFullMotorcycleHelmet className="mb-1 mr-2" />
-                Solicitar{" "}
+                {/* <GiFullMotorcycleHelmet className="mb-1 mr-2" /> */}
                 <Badge pill variant="success">
-                  Nuevo!
+                  Solicitar servicio
                 </Badge>
               </Link>
               <hr />
             </React.Fragment>
           )}
-          <li className="sidebar-nav-header">Menú</li>
+          {/* <li className="sidebar-nav-header">Menú</li> */}
 
           <Link
             to={`${props.url}/dashboard`}
             className="nav-link"
-            activeClassName="active"
+            // activeClassName="active"
             // exact={true}
           >
             <AiFillCalendar className="mb-1 mr-2" />
@@ -178,7 +159,7 @@ const SideBar = (props) => {
           )}
           <Link
             to={`${props.url}/historial`}
-            activeClassName="active"
+            // activeClassName="active"
             // exact={true}
             className="nav-link"
           >
@@ -187,26 +168,41 @@ const SideBar = (props) => {
           </Link>
 
           <hr />
-          <li className="sidebar-nav-header">Mis pistas</li>
-          <Link to={`${props.url}/pistas`} className="nav-link">
-            <GiTireTracks className="mb-1 mr-2" />
-            Ver pistas{" "}
-          </Link>
-          <Link
+          {/* <li className="sidebar-nav-header">Mis pistas</li> */}
+          {userInfoContext.profile !== 5 && userInfoContext.profile !== 7 ? (
+            <React.Fragment>
+              <Link to={`${props.url}/pistas`} className="nav-link">
+                <GiTireTracks className="mb-1 mr-2" />
+                Ver pistas{" "}
+              </Link>
+              <hr />
+            </React.Fragment>
+          ) : (
+            ""
+          )}
+          {userInfoContext.profile === 7 && (
+            <React.Fragment>
+              <Link to={`${props.url}/sucursales`} className="nav-link">
+                <GiThreeFriends className="mb-1 mr-2" />
+                Sucursales
+              </Link>
+              <hr />
+            </React.Fragment>
+          )}
+          {/* <Link
             to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
             className="nav-link"
           >
             <AiOutlinePlus className="mb-1 mr-2" />
             Añadir pista{" "}
-          </Link>
+          </Link> */}
 
-          <hr />
           {userInfoContext.profile === 3 && (
             <React.Fragment>
-              <li className="sidebar-nav-header">Instructores</li>
+              {/* <li className="sidebar-nav-header">Instructores</li> */}
               <Link to={`${props.url}/instructores`} className="nav-link">
                 <FaUserGraduate className="mb-1 mr-2" />
-                Ver instructores{" "}
+                Instructores{" "}
               </Link>
               {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
@@ -217,10 +213,10 @@ const SideBar = (props) => {
               </Link> */}
 
               <hr />
-              <li className="sidebar-nav-header">Proveedores</li>
+              {/* <li className="sidebar-nav-header">Proveedores</li> */}
               <Link to={`${props.url}/proveedores`} className="nav-link">
                 <FaPeopleCarry className="mb-1 mr-2" />
-                Ver proveedores{" "}
+                Proveedores{" "}
               </Link>
               {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}

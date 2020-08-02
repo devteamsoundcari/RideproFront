@@ -8,7 +8,7 @@ import {
 } from "../../../controllers/apiRequests";
 import SuccessModal from "../SuccessModal";
 import useDropdown from "../../../utils/useDropdown";
-
+import swal from "sweetalert";
 
 const RegisterNewProvider = () => {
   const { register, handleSubmit, errors } = useForm();
@@ -16,9 +16,7 @@ const RegisterNewProvider = () => {
     name: "",
     email: "",
   });
-  const [providerErrorMessage, setProviderErrorMessage] = useState(
-    ""
-  );
+  const [providerErrorMessage, setProviderErrorMessage] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [smShow, setSmShow] = useState(false);
 
@@ -43,7 +41,7 @@ const RegisterNewProvider = () => {
     municipality: {},
     cellphone: "",
     officialId: "",
-    services: ""
+    services: "",
   });
 
   // ================================= ON SUMBIT THE FORM ==========================================
@@ -64,7 +62,9 @@ const RegisterNewProvider = () => {
         name: d.name,
         email: d.email,
       });
-      setSmShow(true); // SHOW MODAL
+      swal("Perfecto!", `${d.name} fue registrado existosamente`, "success");
+
+      // setSmShow(true); // SHOW MODAL
       setData({
         name: "",
         email: "",
@@ -119,7 +119,7 @@ const RegisterNewProvider = () => {
     fetchDepartments(`${process.env.REACT_APP_API_URL}/api/v1/departments/`);
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     if (currentDepartment.id && currentDepartment.name) {
       const items = [];
       setLoading(true);
@@ -146,7 +146,7 @@ const RegisterNewProvider = () => {
       );
     }
   }, [currentDepartment]);
- 
+
   useEffect(() => {
     if (!isNaN(selectedDepartment)) {
       setCurrentDepartment({
@@ -160,21 +160,23 @@ const RegisterNewProvider = () => {
 
   useEffect(() => {
     if (!isNaN(selectedMunicipality)) {
-      let city = municipalities.find((city) => city.id === parseInt(selectedMunicipality));
+      let city = municipalities.find(
+        (city) => city.id === parseInt(selectedMunicipality)
+      );
       setData({
         ...data,
         municipality: {
           id: selectedMunicipality,
-          name: document.getElementById(`use-dropdown-option-${selectedMunicipality}`)
-            .innerHTML,
+          name: document.getElementById(
+            `use-dropdown-option-${selectedMunicipality}`
+          ).innerHTML,
           service_priority: city.service_priority,
-        }
+        },
       });
     }
     // eslint-disable-next-line
   }, [selectedMunicipality]);
- 
- 
+
   // ================================= UPDATE STATE AS THE USER TYPES ==========================================
 
   const updateData = (e) => {
@@ -261,13 +263,15 @@ const RegisterNewProvider = () => {
                   autoComplete="off"
                   ref={register({
                     required: true,
-                    pattern: /^E?\d+$/ 
+                    pattern: /^E?\d+$/,
                   })}
                 />
                 <Form.Text className="text-muted">
-                  {errors.officialId && <span>Ingrese un número de documento válido.</span>}
-                </Form.Text> 
-              </Form.Group> 
+                  {errors.officialId && (
+                    <span>Ingrese un número de documento válido.</span>
+                  )}
+                </Form.Text>
+              </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
                   Servicios<span> *</span>
@@ -284,14 +288,16 @@ const RegisterNewProvider = () => {
                 <Form.Text>
                   {errors.name && <span>Ingrese un servicio.</span>}
                 </Form.Text>
-              </Form.Group> 
+              </Form.Group>
             </Form.Row>
             <Form.Row>
               <Form.Group as={Col}>
                 <Form.Label>Departamento</Form.Label>
-                  <DepartmentsDropdown />
+                <DepartmentsDropdown />
+              </Form.Group>
+              <Form.Group as={Col}>
                 <Form.Label>Ciudad</Form.Label>
-                  <MunicipalitiesDropdown/>
+                <MunicipalitiesDropdown />
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
@@ -306,12 +312,14 @@ const RegisterNewProvider = () => {
                   autoComplete="off"
                   ref={register({
                     required: true,
-                    pattern: /^\d{7,10}$/
+                    pattern: /^\d{7,10}$/,
                   })}
                 />
                 <Form.Text className="text-muted">
-                  {errors.cellphone && <span>Ingrese un número de teléfono válido.</span>}
-                </Form.Text> 
+                  {errors.cellphone && (
+                    <span>Ingrese un número de teléfono válido.</span>
+                  )}
+                </Form.Text>
               </Form.Group>
             </Form.Row>
 

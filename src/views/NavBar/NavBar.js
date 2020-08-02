@@ -1,17 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  FaBell,
-  // FaSearch,
-  FaPowerOff,
-  // FaQuestionCircle,
-  // FaRoute,
-} from "react-icons/fa";
+import { FaPowerOff, FaUser, FaRegBuilding } from "react-icons/fa";
 import setAuthorizationToken from "../../controllers/setAuthorizationToken";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
-
-import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Nav, Navbar, NavDropdown, Image } from "react-bootstrap";
+import ProfileEditModal from "../Profile/ProfileEditModal";
+import PasswordChangeModal from "../Profile/Password/PasswordChangeModal";
+import CompanyEditModal from "../Company/CompanyEditModal";
 import "./NavBar.scss";
 
 const NavBar = () => {
@@ -22,40 +18,21 @@ const NavBar = () => {
     setUserInfoContext,
     setIsLoggedInContext,
   } = useContext(AuthContext);
-  const { setRequestsInfoContext, setCanceledRequestContext } = useContext(
-    RequestsContext
-  );
-  //eslint-disable-next-line
-  const [profile, setProfile] = useState("");
+  const { clear } = useContext(RequestsContext);
+  const [showProfileEditModal, setShowProfileEditModal] = useState(false);
+  const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
+  const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
 
   const logout = () => {
     console.log("Bye bye");
     setAuthorizationToken();
     setIsLoggedInContext(false);
     setUserInfoContext({});
-    setRequestsInfoContext([]);
-    setCanceledRequestContext([]);
+    clear();
     history.push({
       pathname: "/login",
     });
   };
-
-  useEffect(() => {
-    switch (userInfoContext.profile) {
-      case 1:
-        setProfile("Admin");
-        break;
-      case 2:
-        setProfile("Cliente");
-        break;
-      case 3:
-        setProfile("Operario");
-        break;
-      default:
-        break;
-    }
-    // eslint-disable-next-line
-  }, [userInfoContext]);
 
   useState(() => {
     window.addEventListener("scroll", () => {
@@ -67,49 +44,93 @@ const NavBar = () => {
     });
   });
 
+  const hideProfileEditModal = () => {
+    setShowProfileEditModal(false);
+  };
+
+  const profileEditModal = () => {
+    return (
+      <ProfileEditModal
+        show={showProfileEditModal}
+        onHide={hideProfileEditModal}
+        onClickOnChangePassword={displayPasswordChangeModal}
+      />
+    );
+  };
+
+  const hideAll = () => {
+    setShowProfileEditModal(false);
+    setShowPasswordChangeModal(false);
+  };
+
+  const displayPasswordChangeModal = () => {
+    setShowProfileEditModal(false);
+    setShowPasswordChangeModal(true);
+  };
+
+  const hidePasswordChangeModal = () => {
+    setShowPasswordChangeModal(false);
+    setShowProfileEditModal(true);
+  };
+
+  const passwordChangeModal = () => {
+    return (
+      <PasswordChangeModal
+        show={showPasswordChangeModal}
+        onHide={hideAll}
+        onExit={hidePasswordChangeModal}
+      />
+    );
+  };
+
   return (
-    <Navbar
-      bg={filled ? "white" : ""}
-      className={filled ? "nav-scrolled" : ""}
-      sticky="top"
-      expand="lg"
-    >
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        {/* <Nav className="mr-auto">
-          <Nav.Link href="#home">
-            <FaQuestionCircle /> Ayuda
-          </Nav.Link>
-          <Nav.Link href="#link">
-            <FaRoute />
-          </Nav.Link>
-        </Nav> */}
-        <Nav className="ml-auto">
-          {/* <Nav.Link href="#home">
-            <FaSearch />
-          </Nav.Link> */}
-          <Nav.Link href="#link">
-            <FaBell />
-          </Nav.Link>
-          <div className="userOptions">
-            <NavDropdown
-              alignRight
-              title={`${userInfoContext.name} ${userInfoContext.lastName}`}
-              id="basic-nav-dropdown"
-            >
-              <NavDropdown.Item onClick={logout}>
-                <FaPowerOff /> Cerrar sesión
-              </NavDropdown.Item>
-            </NavDropdown>
-            {/* <Image
-              src={userInfoContext.company.logo}
-              roundedCircle
-              className="shadow-sm"
-            /> */}
-          </div>
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
+    <>
+      <Navbar
+        bg={filled ? "white" : ""}
+        className={filled ? "nav-scrolled" : ""}
+        sticky="top"
+        expand="lg"
+      >
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ml-auto">
+            {/* <Nav.Link>
+              <FaBell />
+            </Nav.Link> */}
+            <div className="userOptions">
+              <NavDropdown
+                alignRight
+                title={`${userInfoContext.name} ${userInfoContext.lastName}`}
+                id="basic-nav-dropdown"
+              >
+                <NavDropdown.Item onClick={() => setShowProfileEditModal(true)}>
+                  <FaUser /> Perfil
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => setShowCompanyEditModal(true)}>
+                  <FaRegBuilding /> Compañia
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={logout}>
+                  <FaPowerOff /> Cerrar sesión
+                </NavDropdown.Item>
+              </NavDropdown>
+              <Image
+                src={userInfoContext.picture}
+                roundedCircle
+                className="shadow-sm"
+              />
+            </div>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+      {showProfileEditModal && profileEditModal()}
+      {showPasswordChangeModal && passwordChangeModal()}
+      {showCompanyEditModal && (
+        <CompanyEditModal
+          show={true}
+          onHide={() => setShowCompanyEditModal(false)}
+        />
+      )}
+    </>
   );
 };
 

@@ -19,6 +19,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 import ClientRequestsHistory from "../../views/ClientRequestsHistory/ClientRequestsHistory";
 import Instructors from "../../views/Instructors/Instructors";
 import Providers from "../../views/Providers/Providers";
+import { RequestToastContainer } from "../../views/Notifications/RequestToast";
+import Sucursales from "../../views/Sucursales/Sucursales";
 
 const DashboardLayout: React.FC = () => {
   const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
@@ -40,6 +42,7 @@ const DashboardLayout: React.FC = () => {
           <main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-0">
             <NavBar />
             <Container fluid className="mt-2">
+              <RequestToastContainer />
               <Switch>
                 <Route path={`${path}/dashboard`}>
                   <Dashboard />
@@ -48,7 +51,8 @@ const DashboardLayout: React.FC = () => {
                   <Usuarios />
                 </Route>
                 <Route path={`${path}/historial`}>
-                  {userInfoContext.profile === 2 ? (
+                  {userInfoContext.profile === 2 ||
+                  userInfoContext.profile === 7 ? (
                     <ClientRequestsHistory />
                   ) : (
                     <AdminRequestsHistory />
@@ -66,9 +70,14 @@ const DashboardLayout: React.FC = () => {
                 <Route path={`${path}/proveedores`}>
                   <Providers />
                 </Route>
+                <Route path={`${path}/sucursales`}>
+                  <Sucursales />
+                </Route>
                 <Redirect from="/administrador" to="/administrador/dashboard" />
                 <Redirect from="/cliente" to="/cliente/dashboard" />
-                <Redirect from="/operario" to="/operario/historial" />
+                <Redirect from="/operario" to="/operario/dashboard" />
+                <Redirect from="/tecnico" to="/tecnico/dashboard" />
+                <Redirect from="/super-cliente" to="/super-cliente/dashboard" />
               </Switch>
             </Container>
           </main>

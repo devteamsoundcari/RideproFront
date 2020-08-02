@@ -1,0 +1,85 @@
+import React, { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { ListGroup } from "react-bootstrap";
+import { FaDotCircle } from "react-icons/fa";
+
+type CalendarConventionsProps = any;
+
+const CalendarConventions: React.FC<CalendarConventionsProps> = () => {
+  const { userInfoContext } = useContext(AuthContext);
+  return (
+    <React.Fragment>
+      {userInfoContext.profile === 2 || userInfoContext.profile === 7 ? (
+        <React.Fragment>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-requested" />{" "}
+            <small>SERVICIOS SOLICITADOS</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-confirm-event" />{" "}
+            <small>CONFIRMAR PROGRAMACIÓN</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-confirmed" />{" "}
+            <small>SERVICIO PROGRAMADO</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-finished" />{" "}
+            <small>SERVICIO TERMINADO</small>
+          </ListGroup.Item>
+        </React.Fragment>
+      ) : userInfoContext.profile === 5 ? (
+        <React.Fragment>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-requested" />{" "}
+            <small>ESPERANDO CONFIRMACIÓN</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-confirm-event" />{" "}
+            <small>ESPERANDO AL CLIENTE</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-confirmed" />{" "}
+            <small>PROGRAMACIÓN ACEPATADA</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-confirm-docs" />{" "}
+            <small>CONFIRMAR DOCUMENTOS</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-upload-reports" />{" "}
+            <small>GENERAR INFORMES</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-finished" />{" "}
+            <small>FINALIZADO</small>
+          </ListGroup.Item>
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-requested" />{" "}
+            <small>ESPERANDO CONFIRMACIÓN</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-confirm-event" />{" "}
+            <small>ESPERANDO AL CLIENTE</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-confirmed" />{" "}
+            <small>PROGRAMACIÓN ACEPATADA</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-confirm-docs" />{" "}
+            <small>CONFIRMAR DOCUMENTOS</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-finished" />{" "}
+            <small>FINALIZADO</small>
+          </ListGroup.Item>
+        </React.Fragment>
+      )}
+    </React.Fragment>
+  );
+};
+export default CalendarConventions;

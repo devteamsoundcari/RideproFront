@@ -27,6 +27,7 @@ const SetParticipants = (props) => {
   const [areParticipantsValid, setAreParticipantsValid] = useState(false);
   const [participantsDB, setParticipantsDB] = useState([]);
   const [rides, setRides] = useState(0);
+  const [availableCredits, setAvailableCredits] = useState(0);
   //eslint-disable-next-line
   const [dataTable, setDataTable] = useState([]);
   const [registeredParticipants, setRegisteredParticipants] = useState([]);
@@ -108,6 +109,11 @@ const SetParticipants = (props) => {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    setAvailableCredits(userInfoContext.credit);
+    //eslint-disable-next-line
+  }, []);
+
   // ============================================  HANDLE SUMBIT  ================================================
 
   const handleFinalizar = () => {
@@ -121,7 +127,7 @@ const SetParticipants = (props) => {
     if (participants.length <= 0) {
       return false;
     }
-    if (userInfoContext.company.credit < rides) {
+    if (userInfoContext.credit < rides) {
       return false;
     }
 
@@ -241,7 +247,7 @@ const SetParticipants = (props) => {
           <p>
             Creditos a utilizar:
             <small>
-              {rides} / {userInfoContext.company.credit}
+              {rides} / {availableCredits}
             </small>
           </p>
           <p>
