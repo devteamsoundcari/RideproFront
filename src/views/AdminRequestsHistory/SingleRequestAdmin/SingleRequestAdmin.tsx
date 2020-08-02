@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { Row, ProgressBar, Button, Spinner } from "react-bootstrap";
+import { Row, Button, Spinner } from "react-bootstrap";
 import { FaCheckCircle, FaTimes } from "react-icons/fa";
 import swal from "sweetalert";
 import {
@@ -632,33 +632,55 @@ const SingleRequestAdmin = () => {
                 )}
               </React.Fragment>
             )}
-            {userInfoContext.profile === 5 && (
-              <React.Fragment>
-                <div className="card invoice-action-wrapper mt-2 shadow-none border">
-                  <div className="card-body">
-                    <div className="invoice-action-btn">
-                      <Button
-                        variant="light"
-                        className="btn-block"
-                        onClick={() => setShowModalUploadReports(true)}
-                      >
-                        <span>Generar Informes </span>
-                      </Button>
-                      {showModalUploadReports && (
-                        <ModalUploadReports
-                          drivers={data?.drivers}
-                          handleClose={() => setShowModalUploadReports(false)}
-                        />
-                      )}
-                    </div>
-                    <div className="invoice-action-btn">
-                      <Button className="btn-block btn-success">
-                        <span>Confirmar Finalizado</span>
-                      </Button>
+            {userInfoContext.profile === 5 && data?.status?.step ? (
+              data?.status?.step > 4 ? (
+                <React.Fragment>
+                  <div className="card invoice-action-wrapper mt-2 shadow-none border">
+                    <div className="card-body">
+                      <div className="invoice-action-btn">
+                        <Button
+                          variant="light"
+                          className="btn-block"
+                          onClick={() => setShowModalUploadReports(true)}
+                        >
+                          <span>Generar Informes </span>
+                        </Button>
+                        {showModalUploadReports && (
+                          <ModalUploadReports
+                            drivers={data?.drivers}
+                            handleClose={() => setShowModalUploadReports(false)}
+                          />
+                        )}
+                      </div>
+                      <div className="invoice-action-btn">
+                        <Button
+                          className="btn-block btn-success"
+                          onClick={() => {
+                            swal({
+                              title: "¿Estas seguro?",
+                              text:
+                                "Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!",
+                              icon: "warning",
+                              buttons: ["No, volver", "Si, confirmar servicio"],
+                              dangerMode: true,
+                            }).then(async (willUpdate) => {
+                              if (willUpdate) {
+                                alert("ok");
+                              }
+                            });
+                          }}
+                        >
+                          <span>Confirmar Finalizado</span>
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </React.Fragment>
+                </React.Fragment>
+              ) : (
+                ""
+              )
+            ) : (
+              ""
             )}
           </div>
         </Row>

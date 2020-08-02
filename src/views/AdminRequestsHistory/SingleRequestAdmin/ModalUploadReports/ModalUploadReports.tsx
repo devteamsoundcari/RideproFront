@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Row, Col, ButtonGroup, Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import cellEditFactory, { Type } from "react-bootstrap-table2-editor";
 import { FaUpload, FaSave } from "react-icons/fa";
 import { fetchDriver } from "../../../../controllers/apiRequests";
-import { RequestsContext } from "../../../../contexts/RequestsContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import "./ModalUploadReports.scss";
 
@@ -102,12 +101,16 @@ const ModalUploadReports: React.FC<ModalUploadReports> = ({
         type: Type.SELECT,
         options: [
           {
-            value: "Aprobado",
-            label: "Aprobado",
+            value: "Cumple",
+            label: "Cumple",
           },
           {
-            value: "No aprobado",
-            label: "No aprobado",
+            value: "No cumple",
+            label: "No cumple",
+          },
+          {
+            value: "No asistio",
+            label: "No asistio",
           },
         ],
       },
