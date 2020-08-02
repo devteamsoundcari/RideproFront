@@ -45,6 +45,9 @@ const SideBar = (props) => {
       case 3:
         setProfile("Operaciones");
         break;
+      case 5:
+        setProfile("Tecnico");
+        break;
       case 7:
         setProfile("Super-Cliente");
         break;
@@ -166,7 +169,7 @@ const SideBar = (props) => {
 
           <hr />
           {/* <li className="sidebar-nav-header">Mis pistas</li> */}
-          {userInfoContext.profile !== 7 && (
+          {userInfoContext.profile !== 5 && userInfoContext.profile !== 7 ? (
             <React.Fragment>
               <Link to={`${props.url}/pistas`} className="nav-link">
                 <GiTireTracks className="mb-1 mr-2" />
@@ -174,6 +177,8 @@ const SideBar = (props) => {
               </Link>
               <hr />
             </React.Fragment>
+          ) : (
+            ""
           )}
           {userInfoContext.profile === 7 && (
             <React.Fragment>
@@ -194,10 +199,10 @@ const SideBar = (props) => {
 
           {userInfoContext.profile === 3 && (
             <React.Fragment>
-              <li className="sidebar-nav-header">Instructores</li>
+              {/* <li className="sidebar-nav-header">Instructores</li> */}
               <Link to={`${props.url}/instructores`} className="nav-link">
                 <FaUserGraduate className="mb-1 mr-2" />
-                Ver instructores{" "}
+                Instructores{" "}
               </Link>
               {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
@@ -208,10 +213,10 @@ const SideBar = (props) => {
               </Link> */}
 
               <hr />
-              <li className="sidebar-nav-header">Proveedores</li>
+              {/* <li className="sidebar-nav-header">Proveedores</li> */}
               <Link to={`${props.url}/proveedores`} className="nav-link">
                 <FaPeopleCarry className="mb-1 mr-2" />
-                Ver proveedores{" "}
+                Proveedores{" "}
               </Link>
               {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}

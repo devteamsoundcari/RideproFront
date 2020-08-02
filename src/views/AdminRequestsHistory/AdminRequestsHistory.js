@@ -6,21 +6,23 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom";
-import { Container, Card, ProgressBar, Spinner, Alert } from "react-bootstrap";
+import { Container, Card, Spinner, Alert } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import SingleRequestAdmin from "./SingleRequestAdmin/SingleRequestAdmin";
 import "./AdminRequestsHistory.scss";
+import { AuthContext } from "../../contexts/AuthContext";
+import OperacionesStatus from "../../utils/OperacionesStatus";
+import TecnicoStatus from "../../utils/TecnicoStatus";
 
 const AdminRequestsHistory = () => {
   const location = useLocation();
   const history = useHistory();
   const [displayedRequests, setDisplayedRequests] = useState([]);
-  const { requests, isLoadingRequests } = useContext(
-    RequestsContext
-  );
+  const { requests, isLoadingRequests } = useContext(RequestsContext);
+  const { userInfoContext } = useContext(AuthContext);
   let { path, url } = useRouteMatch();
 
   useEffect(() => {
@@ -41,75 +43,10 @@ const AdminRequestsHistory = () => {
   }, [requests]);
 
   const statusFormatter = (cell, row) => {
-    switch (row.status.step) {
-      case 0:
-        return (
-          <div className="text-center">
-            <small>Evento cancelado</small>
-          </div>
-        );
-      case 1:
-        return (
-          <div className="text-center">
-            <small>Esperando confirmación</small>
-            <ProgressBar
-              variant="event-requested"
-              now={20}
-              label={`${60}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 2:
-        return (
-          <div className="text-center">
-            <small>Esperando al cliente</small>
-            <ProgressBar
-              variant="confirm-event"
-              now={30}
-              label={`${40}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 3:
-        return (
-          <div className="text-center">
-            <small>Programación aceptada</small>
-            <ProgressBar
-              variant="event-confirmed"
-              now={30}
-              label={`${40}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 4:
-        return (
-          <div className="text-center">
-            <small>Confirmar recepción de documentos</small>
-            <ProgressBar
-              variant={"confirm-docs"}
-              now={70}
-              label={`${80}%`}
-              srOnly
-            />
-          </div>
-        );
-      case 5:
-        return (
-          <div className="text-center">
-            <small>Evento Finalizado</small>
-            <ProgressBar
-              variant={"event-finished"}
-              now={100}
-              label={`${100}%`}
-              srOnly
-            />
-          </div>
-        );
-      default:
-        return <p>Undefined</p>;
+    if (userInfoContext.profile === 3) {
+      return <OperacionesStatus step={row.status.step} />;
+    } else {
+      return <TecnicoStatus step={row.status.step} />;
     }
   };
   const cityFormatter = (cell) =>
@@ -210,21 +147,19 @@ const AdminRequestsHistory = () => {
               {displayedRequests.length === 0 ? (
                 <Alert variant="light">
                   <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
-                  <p>
-                    Para crear una solicitud, ingresa a "Solicitar".
-                  </p>
+                  <p>Para crear una solicitud, ingresa a "Solicitar".</p>
                 </Alert>
-              ) : 
-              (<BootstrapTable
-                bootstrap4
-                keyField="id"
-                data={displayedRequests}
-                columns={columns}
-                selectRow={selectRow}
-                filter={filterFactory()}
-                pagination={paginationFactory()}
-              />)
-              }
+              ) : (
+                <BootstrapTable
+                  bootstrap4
+                  keyField="id"
+                  data={displayedRequests}
+                  columns={columns}
+                  selectRow={selectRow}
+                  filter={filterFactory()}
+                  pagination={paginationFactory()}
+                />
+              )}
             </Card>
           </Route>
           <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />

@@ -22,10 +22,20 @@ const RequestToast: React.FC<RequestToastProps> = (
   props: RequestToastProps
 ) => {
   const { userInfoContext } = useContext(AuthContext);
-  const { bgColor, name, color } = statusStepFormatter(
-    props.status.step,
-    userInfoContext.profile
-  );
+  const [name, setName] = useState<any>("");
+  const [bgColor, setBgColor] = useState<any>("");
+  const [color, setColor] = useState<any>("");
+
+  useEffect(() => {
+    let res: any = statusStepFormatter(
+      props?.status.step,
+      userInfoContext.profile
+    );
+    setName(res.name);
+    setColor(res.color);
+    setBgColor(res.bgColor);
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <Toast

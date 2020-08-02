@@ -15,7 +15,10 @@ const AllUsers = (props) => {
         profileName = "Cliente";
         break;
       case 3:
-        profileName = "Operario";
+        profileName = "Operaciones";
+        break;
+      case 5:
+        profileName = "Técnico";
         break;
       default:
         profileName = "No definido";

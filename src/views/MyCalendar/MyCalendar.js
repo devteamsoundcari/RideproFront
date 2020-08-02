@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Children, useContext } from "react";
 import { Card, Spinner, Row, Col, ListGroup, Form } from "react-bootstrap";
-import { FaDotCircle, FaUsers } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 import { MdPlace } from "react-icons/md";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { useHistory } from "react-router-dom";
@@ -10,6 +10,7 @@ import "./MyCalendar.scss";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import statusStepFormatter from "../../utils/statusStepFormatter";
+import CalendarConventions from "../../utils/CalendarConventions";
 
 require("moment/locale/es.js");
 
@@ -100,49 +101,7 @@ const MyCalendar = () => {
     <Row className="calendarSection ml-1 mr-1 mb-4 overflow-auto">
       <Col md={2} className="conventions">
         <ListGroup>
-          {userInfoContext.profile === 2 || userInfoContext.profile === 7 ? (
-            <React.Fragment>
-              <ListGroup.Item>
-                <FaDotCircle className="text-event-requested" />{" "}
-                <small>SERVICIOS SOLICITADOS</small>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <FaDotCircle className="text-confirm-event" />{" "}
-                <small>CONFIRMAR PROGRAMACIÓN</small>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <FaDotCircle className="text-event-confirmed" />{" "}
-                <small>SERVICIO PROGRAMADO</small>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <FaDotCircle className="text-event-finished" />{" "}
-                <small>SERVICIO TERMINADO</small>
-              </ListGroup.Item>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <ListGroup.Item>
-                <FaDotCircle className="text-event-requested" />{" "}
-                <small>ESPERANDO CONFIRMACIÓN</small>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <FaDotCircle className="text-confirm-event" />{" "}
-                <small>ESPERANDO AL CLIENTE</small>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <FaDotCircle className="text-event-confirmed" />{" "}
-                <small>PROGRAMACIÓN ACEPATADA</small>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <FaDotCircle className="text-confirm-docs" />{" "}
-                <small>CONFIRMAR DOCUMENTOS</small>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <FaDotCircle className="text-event-finished" />{" "}
-                <small>FINALIZADO</small>
-              </ListGroup.Item>
-            </React.Fragment>
-          )}
+          <CalendarConventions />
           <ListGroup.Item>
             <Form.Check
               custom

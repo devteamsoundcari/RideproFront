@@ -36,6 +36,9 @@ function App() {
                 <Route path="/operario">
                   <DashboardLayout />
                 </Route>
+                <Route path="/tecnico">
+                  <DashboardLayout />
+                </Route>
                 <Route path="/super-cliente">
                   <DashboardLayout />
                 </Route>
