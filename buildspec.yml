@@ -4,6 +4,9 @@ phases:
   install:
     commands:
       # install node 12 and npm
+      - apt-get update
+      - apt-get upgrade
+      - apt-get install -y python-software-properties
       - echo Installing Node 12 and npm...
       - curl -sL https://deb.nodesource.com/setup_12.x | bash -
       - apt install -y nodejs
