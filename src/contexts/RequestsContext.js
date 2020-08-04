@@ -122,51 +122,51 @@ const RequestsContextProvider = (props) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (requestsSocket === null) {
-  //     if (!isLoadingRequests && isLoggedInContext) {
-  //       let token = localStorage.getItem("token");
-  //       let requestsSocket = new WebSocket(
-  //         `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
-  //       );
+  useEffect(() => {
+    if (requestsSocket === null) {
+      if (!isLoadingRequests && isLoggedInContext) {
+        let token = localStorage.getItem("token");
+        let requestsSocket = new WebSocket(
+          `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
+        );
 
-  //       requestsSocket.addEventListener("open", () => {
-  //         let payload;
-  //         switch (userInfoContext.profile) {
-  //           case 1:
-  //           case 3:
-  //             payload = {
-  //               action: "subscribe_to_requests",
-  //               request_id: userInfoContext.id,
-  //             };
-  //             requestsSocket.send(JSON.stringify(payload));
-  //             break;
-  //           default:
-  //             payload = {
-  //               action: "subscribe_to_requests_from_customer",
-  //               customer: userInfoContext.id,
-  //               request_id: userInfoContext.id,
-  //             };
-  //             requestsSocket.send(JSON.stringify(payload));
-  //         }
-  //       });
+        requestsSocket.addEventListener("open", () => {
+          let payload;
+          switch (userInfoContext.profile) {
+            case 1:
+            case 3:
+              payload = {
+                action: "subscribe_to_requests",
+                request_id: userInfoContext.id,
+              };
+              requestsSocket.send(JSON.stringify(payload));
+              break;
+            default:
+              payload = {
+                action: "subscribe_to_requests_from_customer",
+                customer: userInfoContext.id,
+                request_id: userInfoContext.id,
+              };
+              requestsSocket.send(JSON.stringify(payload));
+          }
+        });
 
-  //       requestsSocket.onmessage = async function (event) {
-  //         let data = JSON.parse(event.data);
-  //         await updateRequestInfo(data.data.id);
-  //       };
+        requestsSocket.onmessage = async function (event) {
+          let data = JSON.parse(event.data);
+          await updateRequestInfo(data.data.id);
+        };
 
-  //       setRequestsSocket(requestsSocket);
-  //     }
-  //   }
-  // }, [
-  //   isLoadingRequests,
-  //   userInfoContext.id,
-  //   userInfoContext.profile,
-  //   updateRequestInfo,
-  //   isLoggedInContext,
-  //   requestsSocket,
-  // ]);
+        setRequestsSocket(requestsSocket);
+      }
+    }
+  }, [
+    isLoadingRequests,
+    userInfoContext.id,
+    userInfoContext.profile,
+    updateRequestInfo,
+    isLoggedInContext,
+    requestsSocket,
+  ]);
 
   return (
     <RequestsContext.Provider
