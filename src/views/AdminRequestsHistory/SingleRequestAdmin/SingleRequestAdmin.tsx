@@ -112,26 +112,26 @@ const SingleRequestAdmin = () => {
     // eslint-disable-next-line
   }, []);
   // ============ Listening Socket==================
-  useEffect(() => {
-    let token = localStorage.getItem("token");
-    let requestsSocket = new WebSocket(
-      `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
-    );
-    requestsSocket.addEventListener("open", () => {
-      let payload = {
-        action: "subscribe_to_requests",
-        request_id: userInfoContext.id,
-      };
-      requestsSocket.send(JSON.stringify(payload));
-    });
-    requestsSocket.onmessage = async function (event) {
-      let data = JSON.parse(event.data);
-      if (data.data.id === parseInt(requestId)) {
-        fetchRequest(data.data.id);
-      }
-    };
-    // eslint-disable-next-line
-  }, []);
+  // useEffect(() => {
+  //   let token = localStorage.getItem("token");
+  //   let requestsSocket = new WebSocket(
+  //     `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
+  //   );
+  //   requestsSocket.addEventListener("open", () => {
+  //     let payload = {
+  //       action: "subscribe_to_requests",
+  //       request_id: userInfoContext.id,
+  //     };
+  //     requestsSocket.send(JSON.stringify(payload));
+  //   });
+  //   requestsSocket.onmessage = async function (event) {
+  //     let data = JSON.parse(event.data);
+  //     if (data.data.id === parseInt(requestId)) {
+  //       fetchRequest(data.data.id);
+  //     }
+  //   };
+  //   // eslint-disable-next-line
+  // }, []);
 
   const formatAMPM = (startDate) => {
     let date = new Date(startDate);
