@@ -50,7 +50,7 @@ const MapContainer = compose(
           position={{ lat: lat, lng: lng }}
           onDragEnd={(e) => onMarkerDragEnd(e)}
           icon={{
-            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+            url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
           }}
         />
       )}

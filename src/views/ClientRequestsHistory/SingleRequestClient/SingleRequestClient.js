@@ -1133,7 +1133,7 @@ const SingleRequestClient = () => {
                                           <span className="text-muted ">
                                             <MdLocalPhone />
                                           </span>
-                                          <h5>+ (810) 2548 2568</h5>
+                                          <h5>+ (319) 242 1712</h5>
                                           <p className="text-muted font-medium-1">
                                             {" "}
                                             Disponibles 24*7. Estaremos felices
@@ -1145,8 +1145,8 @@ const SingleRequestClient = () => {
                                             <FaEnvelope />
                                           </span>
                                           <h5>
-                                            <a href="contacto@ridepro.co">
-                                              contacto@ridepro.co
+                                            <a href="sdelrio@ridepro.co">
+                                              sdelrio@ridepro.co
                                             </a>
                                           </h5>
                                           <p className="text-muted font-medium-1">
