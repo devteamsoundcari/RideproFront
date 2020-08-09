@@ -77,7 +77,17 @@ function ClientStatus({ step }) {
         </div>
       );
     default:
-      return <p>Undefined</p>;
+      return (
+        <div className="text-center">
+          <small>Servicio Finalizado</small>
+          <ProgressBar
+            variant="event-finished"
+            now={100}
+            label={`${100}%`}
+            srOnly
+          />
+        </div>
+      );
   }
 }
 
