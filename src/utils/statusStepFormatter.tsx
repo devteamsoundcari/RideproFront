@@ -40,9 +40,9 @@ const statusStepFormatter = (step: number, profile: number) => {
         };
       default:
         return {
-          name: "Undefined",
-          bgColor: "bg-dark",
-          color: "#fff",
+          name: "Servicio finalizado",
+          bgColor: "bg-event-finished",
+          color: "#333",
         };
     }
     // Tecnico
