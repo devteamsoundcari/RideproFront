@@ -8,7 +8,7 @@ import {
 } from "../../../controllers/apiRequests";
 import ModalSuccess from "./ModalSuccess/ModalSuccess";
 
-const RegistrarNuevoUsuario = () => {
+const RegistrarNuevoUsuario = ({ onUpdate }) => {
   const { register, handleSubmit, errors } = useForm();
   const [companies, setCompanies] = useState([]);
   const [passError, setPassError] = useState("");
@@ -40,6 +40,7 @@ const RegistrarNuevoUsuario = () => {
       // IF SUCCESS
       if (response) {
         setLoading(false); // HIDE SPINNER
+        onUpdate();
         setUserErrorMessage(""); // DELETE ERROR MESSAGE
         setUserSucessMessage({
           // PASS PROPS TO MODAL
