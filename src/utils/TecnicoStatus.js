@@ -77,7 +77,8 @@ function TecnicoStatus({ step }) {
           />
         </div>
       );
-    case 6:
+
+    default:
       return (
         <div className="text-center">
           <small>
@@ -91,8 +92,6 @@ function TecnicoStatus({ step }) {
           />
         </div>
       );
-    default:
-      return <p>Undefined</p>;
   }
 }
 

@@ -86,9 +86,9 @@ const statusStepFormatter = (step: number, profile: number) => {
         };
       default:
         return {
-          name: "Undefined",
-          bgColor: "bg-dark",
-          color: "#fff",
+          name: "Evento finalizado",
+          bgColor: "bg-event-finished",
+          color: "#333",
         };
     }
   } else {
