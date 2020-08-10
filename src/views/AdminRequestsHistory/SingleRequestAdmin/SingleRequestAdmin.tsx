@@ -98,7 +98,7 @@ const SingleRequestAdmin = () => {
   const { userInfoContext } = useContext(AuthContext);
   const [documentsOk, setDocumentsOk] = useState(false);
   const [showModalOC, setShowModalOC] = useState(false);
-  const [showModalUploadReports, setShowModalUploadReports] = useState(true);
+  const [showModalUploadReports, setShowModalUploadReports] = useState(false);
 
   async function fetchRequest(id: string) {
     setLoading(true);
@@ -386,7 +386,11 @@ const SingleRequestAdmin = () => {
                 <hr />
                 <div className="mx-md-25 text-center pl-3 pr-3">
                   <h6>Participantes ({data?.drivers.length})</h6>
-                  <Drivers drivers={data?.drivers} />
+                  <Drivers
+                    drivers={data?.drivers}
+                    status={data?.status?.step}
+                    requestId={requestId}
+                  />
                 </div>
                 {data?.status?.step ? (
                   data?.status?.step > 3 ? (
@@ -641,6 +645,7 @@ const SingleRequestAdmin = () => {
                         <Button
                           variant="light"
                           className="btn-block"
+                          disabled={data?.status?.step === 6 ? true : false}
                           onClick={() => setShowModalUploadReports(true)}
                         >
                           <span>Generar Informes </span>
@@ -649,12 +654,14 @@ const SingleRequestAdmin = () => {
                           <ModalUploadReports
                             drivers={data?.drivers}
                             handleClose={() => setShowModalUploadReports(false)}
+                            requestId={requestId}
                           />
                         )}
                       </div>
                       <div className="invoice-action-btn">
                         <Button
                           className="btn-block btn-success"
+                          disabled={data?.status?.step === 6 ? true : false}
                           onClick={() => {
                             swal({
                               title: "¿Estas seguro?",
@@ -665,7 +672,36 @@ const SingleRequestAdmin = () => {
                               dangerMode: true,
                             }).then(async (willUpdate) => {
                               if (willUpdate) {
-                                alert("ok");
+                                let payload = {
+                                  new_request: 0, // It wont be a new request anymore
+                                  operator: userInfoContext.id,
+                                  status: `${process.env.REACT_APP_STATUS_STEP_6}`,
+                                };
+
+                                let res = await updateRequest(
+                                  payload,
+                                  requestId
+                                );
+                                if (res.status === 200) {
+                                  // setDisabled(true);
+                                  swal("Solicitud actualizada!", {
+                                    icon: "success",
+                                  });
+                                  // SEND EMAIL
+                                  // const payload = {
+                                  //   id: requestId,
+                                  //   emailType: "requestOptions",
+                                  //   subject: "Ev solicitud ⚠️",
+                                  //   email: data?.customer?.email,
+                                  //   name: data?.customer?.first_name,
+                                  //   optional_place1: data?.optional_place1,
+                                  //   optional_place2: data?.optional_place2,
+                                  //   optional_date1: data?.optional_date1,
+                                  //   optional_date2: data?.optional_date2,
+                                  //   service: data?.service,
+                                  // };
+                                  // await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
+                                }
                               }
                             });
                           }}

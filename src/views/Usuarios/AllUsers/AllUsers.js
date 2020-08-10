@@ -20,6 +20,9 @@ const AllUsers = (props) => {
       case 5:
         profileName = "Técnico";
         break;
+      case 7:
+        profileName = "SuperCliente";
+        break;
       default:
         profileName = "No definido";
         break;
