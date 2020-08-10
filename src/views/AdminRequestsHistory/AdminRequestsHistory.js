@@ -68,11 +68,15 @@ const AdminRequestsHistory = () => {
     return `${month}/${day}/${year}`;
   };
   const waitingTimeFormatter = (cell, row) => {
-    let created = new Date(row.created_at);
+    let created = new Date(row.updated_at);
     let now = new Date();
     var difference = Math.abs(now.getTime() - created.getTime());
     var hourDifference = difference / 1000 / 3600;
-    return `${Math.floor(hourDifference)} h`;
+    if (row.status.step === 8) {
+      return "Completado";
+    } else {
+      return <small>hace {Math.floor(hourDifference)} horas</small>;
+    }
   };
   const columns = [
     {
@@ -111,7 +115,7 @@ const AdminRequestsHistory = () => {
     },
     {
       dataField: "finish_time",
-      text: "Tiempo de espera",
+      text: "Última interacción",
       formatter: waitingTimeFormatter,
       sort: true,
     },

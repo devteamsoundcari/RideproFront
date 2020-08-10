@@ -41,6 +41,7 @@ import { RequestsContext } from "../../../contexts/RequestsContext";
 import ServiceEditConfirmationModal from "./ServiceEditConfirmationModal";
 import NotEnoughCreditsModal from "./NotEnoughCreditsModal";
 import "./SingleRequestClient.scss";
+import SingleDriver from "../../AdminRequestsHistory/SingleRequestAdmin/Drivers/SingleDriver";
 
 const SingleRequestClient = () => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
@@ -994,6 +995,7 @@ const SingleRequestClient = () => {
                           <MdPeople /> Participantes
                         </span>
                       }
+                      style={{ overflow: "auto" }}
                     >
                       {data?.status?.step === 1 &&
                       userInfoContext.profile === 2 &&
@@ -1029,18 +1031,24 @@ const SingleRequestClient = () => {
                               <th>Apellido</th>
                               <th>Email</th>
                               <th>Teléfono</th>
+                              {data.status.step > 5 && (
+                                <React.Fragment>
+                                  <th className="text-white">Resultado</th>
+                                  <th className="text-white">Link</th>
+                                  <th className="text-white">Reporte</th>
+                                </React.Fragment>
+                              )}
                             </tr>
                           </thead>
                           <tbody>
                             {allDrivers.map((driver, idx) => {
                               return (
-                                <tr key={idx}>
-                                  <td>{driver.official_id}</td>
-                                  <td>{driver.first_name}</td>
-                                  <td>{driver.last_name}</td>
-                                  <td>{driver.email}</td>
-                                  <td>{driver.cellphone}</td>
-                                </tr>
+                                <SingleDriver
+                                  data={driver}
+                                  key={idx}
+                                  requestId={requestId}
+                                  status={data.status.step}
+                                />
                               );
                             })}
                           </tbody>

@@ -361,6 +361,20 @@ const getUsers = async (url) => {
   return users.data;
 };
 
+const getUserReport = async (url) => {
+  const getInfo = async () => {
+    const usersData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return usersData;
+  };
+  let users = await getInfo();
+  return users.data;
+};
+
 /* =================================   GET MUNICIPALITIES   ===================================== */
 const getMunicipalities = async (url) => {
   const getInfo = async () => {
@@ -960,6 +974,45 @@ const createProvider = async (data) => {
     return false;
   }
 };
+
+const updateParticipantReport = async (data, requestId) => {
+  if (data.file && data.file.name) {
+    const formData = new FormData();
+    formData.append("file", data.file);
+    await axios
+      .patch(
+        `${process.env.REACT_APP_API_URL}/api/v1/request_drivers/${data.id}/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .catch((err) => {
+        console.error(err);
+        return err.response.data;
+      });
+  }
+
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/request_drivers/${data.id}/`,
+    data: {
+      description: data.description,
+      quialified: data.quialified,
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 200) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 // ================================================================================
 
 export {
@@ -1013,4 +1066,6 @@ export {
   createProvider,
   getSuperUserCompanies,
   getCompanyUsers,
+  getUserReport,
+  updateParticipantReport,
 };
