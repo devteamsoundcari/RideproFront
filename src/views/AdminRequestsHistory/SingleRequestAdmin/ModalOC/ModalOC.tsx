@@ -345,7 +345,7 @@ const ModalOC: React.FC<ModalOCProps> = ({
                 let payload = {
                   new_request: 0, // It wont be a new request anymore
                   operator: userInfoContext.id,
-                  status: `${process.env.REACT_APP_STATUS_STEP_5}`,
+                  status: `${process.env.REACT_APP_STATUS_STEP_6}`,
                 };
                 let res = await updateRequest(payload, requestId);
                 if (res.status === 200) {

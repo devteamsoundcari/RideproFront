@@ -32,12 +32,6 @@ const statusStepFormatter = (step: number, profile: number) => {
           bgColor: "bg-event-confirmed",
           color: "#fff",
         };
-      case 5:
-        return {
-          name: "Servicio programado",
-          bgColor: "bg-event-confirmed",
-          color: "#fff",
-        };
       default:
         return {
           name: "Servicio finalizado",
@@ -73,12 +67,6 @@ const statusStepFormatter = (step: number, profile: number) => {
           color: "#fff",
         };
       case 4:
-        return {
-          name: "Confirmar recepción de documentos",
-          bgColor: "bg-confirm-docs",
-          color: "#fff",
-        };
-      case 5:
         return {
           name: "Generar informes",
           bgColor: "bg-upload-reports",
@@ -126,15 +114,16 @@ const statusStepFormatter = (step: number, profile: number) => {
         };
       case 5:
         return {
+          name: "Confirmar recepción de documentos",
+          bgColor: "bg-confirm-docs",
+          color: "#fff",
+        };
+
+      default:
+        return {
           name: "Evento Finalizado",
           bgColor: "bg-event-finished",
           color: "#333",
-        };
-      default:
-        return {
-          name: "Undefined",
-          bgColor: "bg-dark",
-          color: "#fff",
         };
     }
   }

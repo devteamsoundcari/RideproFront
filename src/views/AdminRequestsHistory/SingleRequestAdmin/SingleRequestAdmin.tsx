@@ -606,7 +606,7 @@ const SingleRequestAdmin = () => {
                             <Button
                               className="btn-block btn-success"
                               disabled={
-                                documentsOk && data?.status?.step < 5
+                                documentsOk && data?.status?.step < 6
                                   ? false
                                   : true
                               }
@@ -636,7 +636,9 @@ const SingleRequestAdmin = () => {
                 )}
               </React.Fragment>
             )}
-            {userInfoContext.profile === 5 ? (
+            {userInfoContext.profile === 5 &&
+            data?.status?.step &&
+            data?.status?.step > 3 ? (
               <React.Fragment>
                 <div className="card invoice-action-wrapper mt-2 shadow-none border">
                   <div className="card-body">
@@ -644,7 +646,7 @@ const SingleRequestAdmin = () => {
                       <Button
                         variant="light"
                         className="btn-block"
-                        disabled={data?.status?.step === 6 ? true : false}
+                        disabled={data?.status?.step > 4 ? true : false}
                         onClick={() => setShowModalUploadReports(true)}
                       >
                         <span>Generar Informes </span>
@@ -660,7 +662,7 @@ const SingleRequestAdmin = () => {
                     <div className="invoice-action-btn">
                       <Button
                         className="btn-block btn-success"
-                        disabled={data?.status?.step === 6 ? true : false}
+                        disabled={data?.status?.step > 4 ? true : false}
                         onClick={() => {
                           swal({
                             title: "¿Estas seguro?",
@@ -674,7 +676,7 @@ const SingleRequestAdmin = () => {
                               let payload = {
                                 new_request: 0, // It wont be a new request anymore
                                 operator: userInfoContext.id,
-                                status: `${process.env.REACT_APP_STATUS_STEP_6}`,
+                                status: `${process.env.REACT_APP_STATUS_STEP_5}`,
                               };
 
                               let res = await updateRequest(payload, requestId);
