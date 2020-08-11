@@ -11,7 +11,7 @@ import {
   GiTireTracks,
   GiThreeFriends,
 } from "react-icons/gi";
-import { FaPeopleCarry, FaUserGraduate } from "react-icons/fa";
+import { FaPeopleCarry, FaUserGraduate, FaRegBuilding } from "react-icons/fa";
 import { Badge, Button } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
@@ -151,12 +151,6 @@ const SideBar = (props) => {
             <AiFillCalendar className="mb-1 mr-2" />
             Calendario
           </Link>
-          {userInfoContext.profile === 1 && (
-            <Link to={`${props.url}/usuarios`} className="nav-link">
-              <GiThreeFriends className="mb-1 mr-2" />
-              Usuarios
-            </Link>
-          )}
           <Link
             to={`${props.url}/historial`}
             // activeClassName="active"
@@ -168,7 +162,19 @@ const SideBar = (props) => {
           </Link>
 
           <hr />
-          {/* <li className="sidebar-nav-header">Mis pistas</li> */}
+          {userInfoContext.profile === 1 && (
+            <React.Fragment>
+              <li className="sidebar-nav-header">Administrar</li>
+              <Link to={`${props.url}/usuarios`} className="nav-link">
+                <GiThreeFriends className="mb-1 mr-2" />
+                Usuarios
+              </Link>
+              <Link to={`${props.url}/empresas`} className="nav-link">
+                <FaRegBuilding className="mb-1 mr-2" />
+                Empresas
+              </Link>
+            </React.Fragment>
+          )}
           {userInfoContext.profile !== 5 && userInfoContext.profile !== 7 ? (
             <React.Fragment>
               <Link to={`${props.url}/pistas`} className="nav-link">

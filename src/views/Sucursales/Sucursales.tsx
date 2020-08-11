@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Alert, Container, Spinner, Card, Table } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import { AuthContext } from "../../contexts/AuthContext";
+
 import {
   getSuperUserCompanies,
   getCompanyUsers,
@@ -14,6 +16,7 @@ const Sucursales: React.FC<SucursalesProps> = () => {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<any>({});
+  const { userInfoContext } = useContext(AuthContext);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -37,7 +40,7 @@ const Sucursales: React.FC<SucursalesProps> = () => {
   // ================================ FETCH COMPANIES ON LOAD=====================================================
   const fetchCompanies = async () => {
     setLoading(true);
-    const response = await getSuperUserCompanies();
+    const response = await getSuperUserCompanies(userInfoContext.id);
     if (response.status === 200) {
       setCompanies(response.data.results);
     }
@@ -46,7 +49,7 @@ const Sucursales: React.FC<SucursalesProps> = () => {
 
   useEffect(() => {
     fetchCompanies();
-    // setCompanies()
+    // eslint-disable-next-line
   }, []);
 
   const columns = [

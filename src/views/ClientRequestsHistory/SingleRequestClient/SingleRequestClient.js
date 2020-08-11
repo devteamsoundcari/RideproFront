@@ -1031,7 +1031,7 @@ const SingleRequestClient = () => {
                               <th>Apellido</th>
                               <th>Email</th>
                               <th>Teléfono</th>
-                              {data.status.step > 5 && (
+                              {data.status.step > 4 && (
                                 <React.Fragment>
                                   <th className="text-white">Resultado</th>
                                   <th className="text-white">Link</th>

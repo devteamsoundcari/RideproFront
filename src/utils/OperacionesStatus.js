@@ -58,8 +58,8 @@ function OperacionesStatus({ step }) {
         <div className="text-center">
           <small>Confirmar recepción de documentos</small>
           <ProgressBar
-            variant="event-confirmed"
-            now={40}
+            variant="confirm-docs"
+            now={60}
             label={`${60}%`}
             srOnly
           />
@@ -68,18 +68,16 @@ function OperacionesStatus({ step }) {
     case 5:
       return (
         <div className="text-center">
-          <small>
-            Evento Finalizado <FaCheckCircle className="text-success" />
-          </small>
+          <small>Confirmar recepción de documentos</small>
           <ProgressBar
-            variant="event-finished"
-            now={100}
-            label={`${100}%`}
+            variant="confirm-docs"
+            now={60}
+            label={`${60}%`}
             srOnly
           />
         </div>
       );
-    case 6:
+    default:
       return (
         <div className="text-center">
           <small>
@@ -93,8 +91,6 @@ function OperacionesStatus({ step }) {
           />
         </div>
       );
-    default:
-      return <p>Undefined</p>;
   }
 }
 

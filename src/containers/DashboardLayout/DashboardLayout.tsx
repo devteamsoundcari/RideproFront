@@ -3,6 +3,7 @@ import NavBar from "../../views/NavBar/NavBar";
 import "./DashboardLayout.scss";
 import SideBar from "../../views/SideBar/SideBar";
 import Usuarios from "../../views/Usuarios/Usuarios";
+import Companies from "../../views/Companies/Companies";
 import AdminRequestsHistory from "../../views/AdminRequestsHistory/AdminRequestsHistory";
 import Dashboard from "../../views/Dashboard/Dashboard";
 import {
@@ -50,6 +51,9 @@ const DashboardLayout: React.FC = () => {
                 <Route path={`${path}/usuarios`}>
                   <Usuarios />
                 </Route>
+                <Route path={`${path}/empresas`}>
+                  <Companies />
+                </Route>
                 <Route path={`${path}/historial`}>
                   {userInfoContext.profile === 2 ||
                   userInfoContext.profile === 7 ? (
@@ -73,7 +77,7 @@ const DashboardLayout: React.FC = () => {
                 <Route path={`${path}/sucursales`}>
                   <Sucursales />
                 </Route>
-                <Redirect from="/administrador" to="/administrador/dashboard" />
+                <Redirect from="/administrador" to="/administrador/usuarios" />
                 <Redirect from="/cliente" to="/cliente/dashboard" />
                 <Redirect from="/operario" to="/operario/dashboard" />
                 <Redirect from="/tecnico" to="/tecnico/dashboard" />
