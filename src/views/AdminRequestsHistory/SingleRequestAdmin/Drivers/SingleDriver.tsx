@@ -27,14 +27,14 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
       <td>{data?.last_name}</td>
       <td className="text-primary font-weight-bold">{data?.email}</td>
       <td>{data?.cellphone}</td>
-      {status > 4 && (
+      {report.file && (
         <React.Fragment>
           <td>
             {report.quialified === "" || report.quialified === null
               ? "No asistio"
               : report.quialified
-              ? "Aprobado"
-              : "No aprobado"}
+              ? "Cumple"
+              : "No cumple"}
           </td>
           <td>
             <a href={report.description} target="n_blank">

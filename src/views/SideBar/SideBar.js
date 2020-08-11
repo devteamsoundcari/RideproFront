@@ -11,11 +11,18 @@ import {
   GiTireTracks,
   GiThreeFriends,
 } from "react-icons/gi";
-import { FaPeopleCarry, FaUserGraduate, FaRegBuilding } from "react-icons/fa";
+import {
+  FaPeopleCarry,
+  FaUserGraduate,
+  FaRegBuilding,
+  FaUserShield,
+  FaPaperclip,
+  FaDollarSign,
+} from "react-icons/fa";
 import { Badge, Button } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
-import Greeting from "../Usuarios/Greeting/Greeting";
+import Greeting from "../../utils/Greeting/Greeting";
 import defaultCompanyLogo from "../../assets/img/companydefault.png";
 import ModalContact from "../ModalContact/ModalContact";
 import logo from "../../assets/img/logo.png";
@@ -173,13 +180,25 @@ const SideBar = (props) => {
                 <FaRegBuilding className="mb-1 mr-2" />
                 Empresas
               </Link>
+              <Link to={`${props.url}/superclientes`} className="nav-link">
+                <FaUserShield className="mb-1 mr-2" />
+                SuperClientes
+              </Link>
+              <Link to={`${props.url}/documentos`} className="nav-link">
+                <FaPaperclip className="mb-1 mr-2" />
+                Documentos
+              </Link>
+              <Link to={`${props.url}/creditos`} className="nav-link">
+                <FaDollarSign className="mb-1 mr-2" />
+                Créditos
+              </Link>
             </React.Fragment>
           )}
           {userInfoContext.profile !== 5 && userInfoContext.profile !== 7 ? (
             <React.Fragment>
               <Link to={`${props.url}/pistas`} className="nav-link">
                 <GiTireTracks className="mb-1 mr-2" />
-                Ver pistas{" "}
+                {userInfoContext.profile === 1 ? "Pistas" : "Ver pistas"}
               </Link>
               <hr />
             </React.Fragment>
