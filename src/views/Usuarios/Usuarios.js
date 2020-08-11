@@ -9,24 +9,26 @@ const Usuarios = () => {
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async (url) => {
-    let tempUsers = [];
     const response = await getUsers(url);
-    response.results.forEach(async (item) => {
-      tempUsers.push(item);
-    });
-    setUsers(tempUsers);
+    setUsers((oldArr) => [...oldArr, ...response.results]);
     if (response.next) {
-      return await getUsers(response.next);
+      return await fetchUsers(response.next);
     }
   };
   useEffect(() => {
     fetchUsers(`${process.env.REACT_APP_API_URL}/api/v1/users/`);
+    // eslint-disable-next-line
   }, []);
 
   return (
     <Row>
       <Col>
-        <RegistrarNuevoUsuario />
+        <RegistrarNuevoUsuario
+          onUpdate={() => {
+            setUsers([]);
+            fetchUsers(`${process.env.REACT_APP_API_URL}/api/v1/users/`);
+          }}
+        />
         <AllUsers users={users} />
       </Col>
     </Row>

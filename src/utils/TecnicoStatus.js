@@ -56,18 +56,6 @@ function TecnicoStatus({ step }) {
     case 4:
       return (
         <div className="text-center">
-          <small>Confirmar recepción de documentos</small>
-          <ProgressBar
-            variant="event-confirmed"
-            now={40}
-            label={`${60}%`}
-            srOnly
-          />
-        </div>
-      );
-    case 5:
-      return (
-        <div className="text-center">
           <small>Generar Informes</small>
           <ProgressBar
             variant="upload-reports"
@@ -77,7 +65,7 @@ function TecnicoStatus({ step }) {
           />
         </div>
       );
-    case 6:
+    default:
       return (
         <div className="text-center">
           <small>
@@ -91,8 +79,6 @@ function TecnicoStatus({ step }) {
           />
         </div>
       );
-    default:
-      return <p>Undefined</p>;
   }
 }
 

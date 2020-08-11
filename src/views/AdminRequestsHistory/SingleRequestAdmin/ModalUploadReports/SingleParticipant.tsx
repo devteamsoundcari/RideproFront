@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Spinner } from "react-bootstrap";
 import { FaUpload, FaSave, FaCheckCircle } from "react-icons/fa";
 import {
   getUserReport,
@@ -14,6 +14,7 @@ const SingleParticipant: React.FC<SingleParticipantProps> = ({
   requestId,
 }) => {
   const [report, setReport] = useState<any>({});
+  const [loading, setLoading] = useState(false);
 
   const fetchReport = async (url) => {
     const response = await getUserReport(url);
@@ -30,12 +31,14 @@ const SingleParticipant: React.FC<SingleParticipantProps> = ({
   };
 
   const handleSave = async () => {
+    setLoading(true);
     let res = await updateParticipantReport(report);
     if (res) {
       swal("Perfecto", "Reporte actualizado correctamente", "success");
     } else {
       swal("Oops", "No pudimos actualizar el reporte", "error");
     }
+    setLoading(false);
   };
 
   return (
@@ -105,10 +108,14 @@ const SingleParticipant: React.FC<SingleParticipantProps> = ({
         />
       </td>
       <td>
-        <Button variant="link" size="sm" onClick={handleSave}>
-          <FaSave />
-          Guardar
-        </Button>
+        {loading ? (
+          <Spinner animation="border" size="sm" />
+        ) : (
+          <Button variant="link" size="sm" onClick={handleSave}>
+            <FaSave />
+            Guardar
+          </Button>
+        )}
       </td>
     </tr>
   );

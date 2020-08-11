@@ -162,9 +162,13 @@ const Tracks: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchTracks(
-      `${process.env.REACT_APP_API_URL}/api/v1/tracks/?company=${userInfoContext.company.id}`
-    );
+    if (userInfoContext.profile === 1) {
+      fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
+    } else {
+      fetchTracks(
+        `${process.env.REACT_APP_API_URL}/api/v1/tracks/?company=${userInfoContext.company.id}`
+      );
+    }
     //eslint-disable-next-line
   }, []);
 

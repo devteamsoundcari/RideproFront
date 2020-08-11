@@ -220,7 +220,7 @@ const getCompanyUsers = async (companyId) => {
 
 /* =================================   GET SUPER USER COMPANIES   ===================================== */
 
-const getSuperUserCompanies = async () => {
+const getSuperUserCompanies = async (userId) => {
   const getInfo = async (url) => {
     const userData = await axios({
       method: "GET",
@@ -231,7 +231,7 @@ const getSuperUserCompanies = async () => {
     return userData;
   };
   let companies = await getInfo(
-    `${process.env.REACT_APP_API_URL}/api/v1/user_companies/`
+    `${process.env.REACT_APP_API_URL}/api/v1/user_companies/?user=${userId}`
   );
   return companies;
 };

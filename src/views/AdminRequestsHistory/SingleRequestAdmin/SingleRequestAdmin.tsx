@@ -606,7 +606,7 @@ const SingleRequestAdmin = () => {
                             <Button
                               className="btn-block btn-success"
                               disabled={
-                                documentsOk && data?.status?.step < 5
+                                documentsOk && data?.status?.step < 6
                                   ? false
                                   : true
                               }
@@ -636,85 +636,80 @@ const SingleRequestAdmin = () => {
                 )}
               </React.Fragment>
             )}
-            {userInfoContext.profile === 5 && data?.status?.step ? (
-              data?.status?.step > 4 ? (
-                <React.Fragment>
-                  <div className="card invoice-action-wrapper mt-2 shadow-none border">
-                    <div className="card-body">
-                      <div className="invoice-action-btn">
-                        <Button
-                          variant="light"
-                          className="btn-block"
-                          disabled={data?.status?.step === 6 ? true : false}
-                          onClick={() => setShowModalUploadReports(true)}
-                        >
-                          <span>Generar Informes </span>
-                        </Button>
-                        {showModalUploadReports && (
-                          <ModalUploadReports
-                            drivers={data?.drivers}
-                            handleClose={() => setShowModalUploadReports(false)}
-                            requestId={requestId}
-                          />
-                        )}
-                      </div>
-                      <div className="invoice-action-btn">
-                        <Button
-                          className="btn-block btn-success"
-                          disabled={data?.status?.step === 6 ? true : false}
-                          onClick={() => {
-                            swal({
-                              title: "¿Estas seguro?",
-                              text:
-                                "Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!",
-                              icon: "warning",
-                              buttons: ["No, volver", "Si, confirmar servicio"],
-                              dangerMode: true,
-                            }).then(async (willUpdate) => {
-                              if (willUpdate) {
-                                let payload = {
-                                  new_request: 0, // It wont be a new request anymore
-                                  operator: userInfoContext.id,
-                                  status: `${process.env.REACT_APP_STATUS_STEP_6}`,
-                                };
+            {userInfoContext.profile === 5 &&
+            data?.status?.step &&
+            data?.status?.step > 3 ? (
+              <React.Fragment>
+                <div className="card invoice-action-wrapper mt-2 shadow-none border">
+                  <div className="card-body">
+                    <div className="invoice-action-btn">
+                      <Button
+                        variant="light"
+                        className="btn-block"
+                        disabled={data?.status?.step > 4 ? true : false}
+                        onClick={() => setShowModalUploadReports(true)}
+                      >
+                        <span>Generar Informes </span>
+                      </Button>
+                      {showModalUploadReports && (
+                        <ModalUploadReports
+                          drivers={data?.drivers}
+                          handleClose={() => setShowModalUploadReports(false)}
+                          requestId={requestId}
+                        />
+                      )}
+                    </div>
+                    <div className="invoice-action-btn">
+                      <Button
+                        className="btn-block btn-success"
+                        disabled={data?.status?.step > 4 ? true : false}
+                        onClick={() => {
+                          swal({
+                            title: "¿Estas seguro?",
+                            text:
+                              "Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!",
+                            icon: "warning",
+                            buttons: ["No, volver", "Si, confirmar servicio"],
+                            dangerMode: true,
+                          }).then(async (willUpdate) => {
+                            if (willUpdate) {
+                              let payload = {
+                                new_request: 0, // It wont be a new request anymore
+                                operator: userInfoContext.id,
+                                status: `${process.env.REACT_APP_STATUS_STEP_5}`,
+                              };
 
-                                let res = await updateRequest(
-                                  payload,
-                                  requestId
-                                );
-                                if (res.status === 200) {
-                                  // setDisabled(true);
-                                  swal("Solicitud actualizada!", {
-                                    icon: "success",
-                                  });
-                                  // SEND EMAIL
-                                  // const payload = {
-                                  //   id: requestId,
-                                  //   emailType: "requestOptions",
-                                  //   subject: "Ev solicitud ⚠️",
-                                  //   email: data?.customer?.email,
-                                  //   name: data?.customer?.first_name,
-                                  //   optional_place1: data?.optional_place1,
-                                  //   optional_place2: data?.optional_place2,
-                                  //   optional_date1: data?.optional_date1,
-                                  //   optional_date2: data?.optional_date2,
-                                  //   service: data?.service,
-                                  // };
-                                  // await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
-                                }
+                              let res = await updateRequest(payload, requestId);
+                              if (res.status === 200) {
+                                // setDisabled(true);
+                                swal("Solicitud actualizada!", {
+                                  icon: "success",
+                                });
+                                // SEND EMAIL
+                                // const payload = {
+                                //   id: requestId,
+                                //   emailType: "requestOptions",
+                                //   subject: "Ev solicitud ⚠️",
+                                //   email: data?.customer?.email,
+                                //   name: data?.customer?.first_name,
+                                //   optional_place1: data?.optional_place1,
+                                //   optional_place2: data?.optional_place2,
+                                //   optional_date1: data?.optional_date1,
+                                //   optional_date2: data?.optional_date2,
+                                //   service: data?.service,
+                                // };
+                                // await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
                               }
-                            });
-                          }}
-                        >
-                          <span>Confirmar Finalizado</span>
-                        </Button>
-                      </div>
+                            }
+                          });
+                        }}
+                      >
+                        <span>Confirmar Finalizado</span>
+                      </Button>
                     </div>
                   </div>
-                </React.Fragment>
-              ) : (
-                ""
-              )
+                </div>
+              </React.Fragment>
             ) : (
               ""
             )}

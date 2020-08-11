@@ -9,7 +9,7 @@ const CalendarConventions: React.FC<CalendarConventionsProps> = () => {
   const { userInfoContext } = useContext(AuthContext);
   return (
     <React.Fragment>
-      {userInfoContext.profile === 2 || userInfoContext.profile === 7 ? (
+      {userInfoContext.profile === 2 || userInfoContext.profile === 7 ? ( // Cliente y supercliente
         <React.Fragment>
           <ListGroup.Item>
             <FaDotCircle className="text-event-requested" />{" "}
@@ -28,7 +28,7 @@ const CalendarConventions: React.FC<CalendarConventionsProps> = () => {
             <small>SERVICIO TERMINADO</small>
           </ListGroup.Item>
         </React.Fragment>
-      ) : userInfoContext.profile === 5 ? (
+      ) : userInfoContext.profile === 5 ? ( // Tecnico
         <React.Fragment>
           <ListGroup.Item>
             <FaDotCircle className="text-event-requested" />{" "}
@@ -43,10 +43,6 @@ const CalendarConventions: React.FC<CalendarConventionsProps> = () => {
             <small>PROGRAMACIÓN ACEPATADA</small>
           </ListGroup.Item>
           <ListGroup.Item>
-            <FaDotCircle className="text-confirm-docs" />{" "}
-            <small>CONFIRMAR DOCUMENTOS</small>
-          </ListGroup.Item>
-          <ListGroup.Item>
             <FaDotCircle className="text-upload-reports" />{" "}
             <small>GENERAR INFORMES</small>
           </ListGroup.Item>
@@ -56,6 +52,7 @@ const CalendarConventions: React.FC<CalendarConventionsProps> = () => {
           </ListGroup.Item>
         </React.Fragment>
       ) : (
+        // Operaciones y admin
         <React.Fragment>
           <ListGroup.Item>
             <FaDotCircle className="text-event-requested" />{" "}

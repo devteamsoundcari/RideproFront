@@ -27,7 +27,7 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
       <td>{data?.last_name}</td>
       <td className="text-primary font-weight-bold">{data?.email}</td>
       <td>{data?.cellphone}</td>
-      {status > 5 && (
+      {status > 4 && (
         <React.Fragment>
           <td>
             {report.quialified === "" || report.quialified === null

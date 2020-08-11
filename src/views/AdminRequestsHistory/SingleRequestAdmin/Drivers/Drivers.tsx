@@ -46,7 +46,7 @@ const Drivers: React.FC<DriversProps> = ({ drivers, status, requestId }) => {
           <th className="text-white">Apellido</th>
           <th className="text-white">Email</th>
           <th className="text-white">Teléfono</th>
-          {status > 5 && (
+          {status > 4 && (
             <React.Fragment>
               <th className="text-white">Resultado</th>
               <th className="text-white">Link</th>
