@@ -2,8 +2,8 @@ import React, { useEffect, useContext } from "react";
 import NavBar from "../../views/NavBar/NavBar";
 import "./DashboardLayout.scss";
 import SideBar from "../../views/SideBar/SideBar";
-import Usuarios from "../../views/Usuarios/Usuarios";
-import Companies from "../../views/Companies/Companies";
+import Usuarios from "../../views/AdminTabs/Usuarios/Usuarios";
+import Companies from "../../views/AdminTabs/Companies/Companies";
 import AdminRequestsHistory from "../../views/AdminRequestsHistory/AdminRequestsHistory";
 import Dashboard from "../../views/Dashboard/Dashboard";
 import {
@@ -22,6 +22,9 @@ import Instructors from "../../views/Instructors/Instructors";
 import Providers from "../../views/Providers/Providers";
 import { RequestToastContainer } from "../../views/Notifications/RequestToast";
 import Sucursales from "../../views/Sucursales/Sucursales";
+import SuperClients from "../../views/AdminTabs/SuperClients/SuperClients";
+import RequiredDocuments from "../../views/AdminTabs/RequiredDocuments/RequiredDocuments";
+import AdminCredits from "../../views/AdminTabs/AdminCredits/AdminCredits";
 
 const DashboardLayout: React.FC = () => {
   const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
@@ -73,6 +76,15 @@ const DashboardLayout: React.FC = () => {
                 </Route>
                 <Route path={`${path}/proveedores`}>
                   <Providers />
+                </Route>
+                <Route path={`${path}/superclientes`}>
+                  <SuperClients />
+                </Route>
+                <Route path={`${path}/documentos`}>
+                  <RequiredDocuments />
+                </Route>
+                <Route path={`${path}/creditos`}>
+                  <AdminCredits />
                 </Route>
                 <Route path={`${path}/sucursales`}>
                   <Sucursales />

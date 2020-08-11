@@ -646,7 +646,7 @@ const SingleRequestAdmin = () => {
                       <Button
                         variant="light"
                         className="btn-block"
-                        disabled={data?.status?.step > 4 ? true : false}
+                        disabled={data?.status?.step < 4 ? true : false}
                         onClick={() => setShowModalUploadReports(true)}
                       >
                         <span>Generar Informes </span>

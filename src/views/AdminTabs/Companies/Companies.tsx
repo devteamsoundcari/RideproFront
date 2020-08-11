@@ -3,6 +3,6 @@ import React from "react";
 type CompaniesProps = any;
 
 const Companies: React.FC<CompaniesProps> = () => {
-  return <div>Have a good coding</div>;
+  return <div>Registar y listar empresas</div>;
 };
 export default Companies;

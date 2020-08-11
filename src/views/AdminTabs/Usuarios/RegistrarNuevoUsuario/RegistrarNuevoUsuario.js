@@ -5,7 +5,7 @@ import {
   saveNewUser,
   sendEmail,
   getCompanies,
-} from "../../../controllers/apiRequests";
+} from "../../../../controllers/apiRequests";
 import ModalSuccess from "./ModalSuccess/ModalSuccess";
 
 const RegistrarNuevoUsuario = ({ onUpdate }) => {
