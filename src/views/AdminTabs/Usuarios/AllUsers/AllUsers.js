@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import "./AllUsers.scss";
 
 const AllUsers = (props) => {
@@ -70,12 +71,32 @@ const AllUsers = (props) => {
       text: "email",
     },
   ];
+
+  const MySearch = (props) => {
+    let input;
+    const handleChange = () => {
+      props.onSearch(input.value);
+    };
+    return (
+      <div>
+        <input
+          className="form-control"
+          // style={{ backgroundColor: "pink" }}
+          placeholder="Buscar..."
+          ref={(n) => (input = n)}
+          onChange={handleChange}
+          type="text"
+        />
+      </div>
+    );
+  };
+
   return (
-    <Card className="allUsers mt-3">
+    <Card className="allUsers mt-3 mb-5">
       <Card.Body>
         <Card.Title>Usuarios</Card.Title>
         <Card.Body>
-          <BootstrapTable
+          <ToolkitProvider
             bootstrap4
             // defaultSorted={defaultSorted}
             keyField="id"
@@ -83,7 +104,16 @@ const AllUsers = (props) => {
             columns={columns}
             pagination={paginationFactory()}
             hover
-          />
+            search
+          >
+            {(props) => (
+              <div>
+                <MySearch {...props.searchProps} />
+                <hr />
+                <BootstrapTable {...props.baseProps} />
+              </div>
+            )}
+          </ToolkitProvider>
         </Card.Body>
       </Card.Body>
     </Card>

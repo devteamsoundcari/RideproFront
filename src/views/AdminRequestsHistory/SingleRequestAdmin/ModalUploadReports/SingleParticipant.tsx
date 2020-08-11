@@ -60,10 +60,10 @@ const SingleParticipant: React.FC<SingleParticipantProps> = ({
             No asistió
           </option>
           <option value={1} selected={report.quialified ? true : false}>
-            Aprobó
+            Cumple
           </option>
           <option value={0} selected={!report.quialified ? true : false}>
-            No aprobó
+            No cumple
           </option>
         </Form.Control>
       </td>
