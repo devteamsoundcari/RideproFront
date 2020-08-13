@@ -279,7 +279,7 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
                         size="sm"
                         onClick={handleClickAddProvider}
                       >
-                        Administrar Proveedores
+                        Agregar Proveedor
                       </Button>
                       <Button
                         size="sm"
