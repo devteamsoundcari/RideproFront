@@ -68,7 +68,14 @@ const AllUsers = (props) => {
     },
     {
       dataField: "email",
-      text: "email",
+      text: "Email",
+    },
+    {
+      dataField: "credit",
+      text: "Cred",
+      classes: "small-column",
+      headerClasses: "small-column",
+      formatter: (cell) => <p>${cell}</p>,
     },
   ];
 
