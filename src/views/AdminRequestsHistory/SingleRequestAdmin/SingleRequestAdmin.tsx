@@ -685,20 +685,15 @@ const SingleRequestAdmin = () => {
                                 swal("Solicitud actualizada!", {
                                   icon: "success",
                                 });
-                                // SEND EMAIL
-                                // const payload = {
-                                //   id: requestId,
-                                //   emailType: "requestOptions",
-                                //   subject: "Ev solicitud ⚠️",
-                                //   email: data?.customer?.email,
-                                //   name: data?.customer?.first_name,
-                                //   optional_place1: data?.optional_place1,
-                                //   optional_place2: data?.optional_place2,
-                                //   optional_date1: data?.optional_date1,
-                                //   optional_date2: data?.optional_date2,
-                                //   service: data?.service,
-                                // };
-                                // await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
+                                // SEND EMAIL TO CLIENT
+                                const payload = {
+                                  id: requestId,
+                                  emailType: "requestFinished",
+                                  subject: "Servicio Finalizado ✔️",
+                                  email: data?.customer?.email,
+                                  name: data?.customer?.first_name,
+                                };
+                                await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
                               }
                             }
                           });
