@@ -100,6 +100,7 @@ const SingleRequestAdmin = () => {
   const [showModalOC, setShowModalOC] = useState(false);
   const [showModalUploadReports, setShowModalUploadReports] = useState(false);
   const [participantsInfo, setParticipantsInfo] = useState([]);
+  const [allReportsOk, setAllReportsOk] = useState(false);
 
   async function fetchRequest(id: string) {
     setLoading(true);
@@ -392,6 +393,7 @@ const SingleRequestAdmin = () => {
                     status={data?.status?.step}
                     requestId={requestId}
                     onUpdate={(data) => setParticipantsInfo(data)}
+                    allReportsOk={(x) => setAllReportsOk(x)}
                   />
                 </div>
                 {data?.status?.step ? (
@@ -610,7 +612,9 @@ const SingleRequestAdmin = () => {
                             <Button
                               className="btn-block btn-success"
                               disabled={
-                                documentsOk && data?.status?.step < 6
+                                documentsOk &&
+                                data?.status?.step < 6 &&
+                                allReportsOk
                                   ? false
                                   : true
                               }

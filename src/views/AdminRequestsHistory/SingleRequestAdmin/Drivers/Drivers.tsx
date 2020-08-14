@@ -9,6 +9,7 @@ interface DriversProps {
   status: any;
   requestId: string;
   onUpdate: (x) => void;
+  allReportsOk: (x) => void;
 }
 
 interface Participant {
@@ -26,8 +27,10 @@ const Drivers: React.FC<DriversProps> = ({
   status,
   requestId,
   onUpdate,
+  allReportsOk,
 }) => {
   const [participants, setParticipants] = useState<ParticipantsData>([]);
+  const [reports, setReports] = useState<any>([]);
 
   // ================================ FETCH REQUEST INSTRUCTORS ON LOAD =====================================================
 
@@ -45,7 +48,16 @@ const Drivers: React.FC<DriversProps> = ({
 
   useEffect(() => {
     onUpdate(participants);
+    // eslint-disable-next-line
   }, [participants]);
+
+  useEffect(() => {
+    if (participants.length === reports.length) {
+      allReportsOk(true);
+    } else {
+      allReportsOk(false);
+    }
+  }, [reports, participants, allReportsOk]);
 
   return (
     <Table bordered hover size="sm" className="mb-3 participants-table-admin">
@@ -71,7 +83,9 @@ const Drivers: React.FC<DriversProps> = ({
             data={participant}
             key={idx}
             requestId={requestId}
-            status={status}
+            onUpdate={(data: any) => {
+              setReports((reports) => [...reports, data]);
+            }}
           />
         ))}
       </tbody>

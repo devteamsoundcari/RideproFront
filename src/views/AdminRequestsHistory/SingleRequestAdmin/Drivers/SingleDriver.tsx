@@ -7,7 +7,7 @@ type SingleDriverProps = any;
 const SingleDriver: React.FC<SingleDriverProps> = ({
   data,
   requestId,
-  status,
+  onUpdate,
 }) => {
   const [report, setReport] = useState<any>({});
   const fetchReport = async (url) => {
@@ -19,6 +19,13 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
       `${process.env.REACT_APP_API_URL}/api/v1/request_drivers/?request=${requestId}&driver=${data.id}`
     );
   }, [requestId, data]);
+
+  useEffect(() => {
+    if (report.description) {
+      onUpdate(report);
+    }
+    // eslint-disable-next-line
+  }, [report]);
 
   return (
     <tr>
