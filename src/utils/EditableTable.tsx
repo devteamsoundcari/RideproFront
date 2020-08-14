@@ -51,7 +51,7 @@ export class EditableTable extends React.Component<
           headings.set(field, false);
           insertionRow.set(field, "");
         }
-      } 
+      }
     });
 
     let dataSet = [...props.dataSet].map((record: any, index: number) => {
@@ -65,7 +65,7 @@ export class EditableTable extends React.Component<
       return {
         id: index,
         readOnly: this.props.readOnly || false,
-        data: newRecord
+        data: newRecord,
       };
     });
 
@@ -75,13 +75,31 @@ export class EditableTable extends React.Component<
       insertionRow: insertionRow,
       insertionRowErrors: [],
       displayErrors: headings,
-      autoIncrement: dataSet.length + 1
+      autoIncrement: dataSet.length + 1,
     };
 
     this.firstRow = createRef();
   }
 
   validate(row: any, fieldName: string) {
+    let errors = [...this.state.errors];
+
+    this.checkRegex(row, fieldName, errors);
+    this.checkEmptyValues(row, fieldName, errors);
+    if (this.props.fields[fieldName].unique) {
+      this.checkDuplicates(row, fieldName, errors);
+      this.clearDuplicates(fieldName, errors);
+    }
+
+    this.setState((current) => ({
+      ...current,
+      errors: errors
+    }), () => {
+      this.props.onValidate(this.state.errors.length <= 0 ? true : false);
+    });
+  }
+
+  checkRegex(row: any, fieldName: string, errors: Array<Error>) {
     const field = this.props.fields[fieldName];
     const regex = field.regex;
     let idx: number;
@@ -93,7 +111,7 @@ export class EditableTable extends React.Component<
     ) {
       let err: Error;
 
-      idx = this.state.errors.findIndex(
+      idx = errors.findIndex(
         (e: Error) =>
           e.id === row.id && e.type === "regex" && e.column === fieldName
       );
@@ -104,21 +122,50 @@ export class EditableTable extends React.Component<
           type: "regex",
           message: this.props.fields[fieldName].errorMessages.regex,
         };
-        this.state.errors.push(err);
+        errors.push(err);
       }
     } else {
-      idx = this.state.errors.findIndex(
+      idx = errors.findIndex(
         (e: Error) =>
           e.id === row.id && e.type === "regex" && e.column === fieldName
       );
       if (idx >= 0) {
-        this.state.errors.splice(idx);
+        errors.splice(idx, 1);
       }
     }
-    this.props.onValidate(this.state.errors.length <= 0 ? true : false);
   }
 
-  checkDuplicates(row: any, fieldName: string) {
+  checkEmptyValues(row: any, fieldName: string, errors: Array<Error>) {
+    let idx: number;
+
+    if (row.data[fieldName] === "") {
+      let err: Error;
+
+      idx = errors.findIndex(
+        (e: Error) =>
+          e.id === row.id && e.type === "empty" && e.column === fieldName
+      );
+      if (idx < 0) {
+        err = {
+          id: row.id,
+          column: fieldName,
+          type: "empty",
+          message: "Este valor no debe ser vacío.",
+        };
+        errors.push(err);
+      }
+    } else {
+      idx = errors.findIndex(
+        (e: Error) =>
+          e.id === row.id && e.type === "empty" && e.column === fieldName
+      );
+      if (idx >= 0) {
+        errors.splice(idx, 1);
+      }
+    }
+  }
+
+  checkDuplicates(row: any, fieldName: string, errors: Array<Error>) {
     let idx: number;
 
     if (
@@ -128,7 +175,7 @@ export class EditableTable extends React.Component<
     ) {
       let err: Error;
 
-      idx = this.state.errors.findIndex(
+      idx = errors.findIndex(
         (e: Error) => e.id === row.id && e.type === "unique"
       );
       if (idx < 0) {
@@ -138,14 +185,31 @@ export class EditableTable extends React.Component<
           type: "unique",
           message: this.props.fields[fieldName].errorMessages.unique,
         };
-        this.state.errors.push(err);
+        errors.push(err);
       }
     } else {
-      idx = this.state.errors.findIndex(
+      idx = errors.findIndex(
         (e: Error) => e.id === row.id && e.type === "unique"
       );
       if (idx >= 0) {
-        this.state.errors.splice(idx);
+        errors.splice(idx, 1);
+      }
+    }
+  }
+
+  clearDuplicates(fieldName: string, errors: Array<Error>) {
+    let dataSet = [...this.state.dataSet];
+    for (let record of dataSet) {
+      let filtered = dataSet.filter((r: any) =>
+        r.data[fieldName] === record.data[fieldName]
+      );
+      if (filtered.length === 1) {
+        let errorIndex = errors.findIndex((e: Error) =>
+          e.id === record.id && e.type === "unique"
+        )
+        if (errorIndex >= 0) {
+          errors.splice(errorIndex, 1);
+        }
       }
     }
   }
@@ -261,12 +325,15 @@ export class EditableTable extends React.Component<
   }
 
   removeErrors(id: number) {
-    this.setState((current) => ({
-      ...current,
-      errors: this.state.errors.filter((err: Error) => id !== err.id),
-    }), () => {
-      this.onDataSetValidation();
-    });
+    this.setState(
+      (current) => ({
+        ...current,
+        errors: this.state.errors.filter((err: Error) => id !== err.id),
+      }),
+      () => {
+        this.onDataSetValidation();
+      }
+    );
   }
 
   deleteRow(id: number) {
@@ -328,9 +395,6 @@ export class EditableTable extends React.Component<
       }),
       () => {
         this.validate(row, column);
-        if (this.props.fields[column].unique === true) {
-          this.checkDuplicates(row, column);
-        }
         this.onDataSetUpdate();
         this.onDataSetValidation();
       }
@@ -370,12 +434,16 @@ export class EditableTable extends React.Component<
   }
 
   isInsertionRowEmpty() {
-    let isEmpty: boolean = true;
+    let isEmpty: boolean = false;
 
-    this.state.insertionRow.forEach(
-      (value: string, key: string, map: Map<string, string>) =>
-        (isEmpty = map.get(key) === "")
-    );
+    for (let value of Array.from(this.state.insertionRow.values())) {
+      if (value !== "") {
+        continue;
+      } else {
+        isEmpty = true;
+        break;
+      }
+    }
 
     return isEmpty;
   }
@@ -407,7 +475,7 @@ export class EditableTable extends React.Component<
       (current) => ({
         ...current,
         dataSet: dataSet,
-        autoIncrement: this.state.autoIncrement + 1
+        autoIncrement: this.state.autoIncrement + 1,
       }),
       () => {
         this.onDataSetUpdate();
@@ -499,7 +567,7 @@ export class EditableTable extends React.Component<
     return true;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: any) {
     if (prevProps.recordToAdd !== this.props.recordToAdd) {
       let newRow: any = {};
       let filtered: any = {};
@@ -524,16 +592,13 @@ export class EditableTable extends React.Component<
         (current) => ({
           ...current,
           dataSet: [newRow, ...this.state.dataSet],
-          autoIncrement: this.state.autoIncrement + 1
+          autoIncrement: this.state.autoIncrement + 1,
         }),
         () => {
           this.state.dataSet.forEach((row: any) => {
             for (const field in row.data) {
               if (this.props.fields[field].format !== "boolean") {
                 this.validate(row, field);
-              }
-              if (this.props.fields[field].unique === true) {
-                this.checkDuplicates(row, field);
               }
             }
           });
@@ -560,7 +625,11 @@ export class EditableTable extends React.Component<
               }
             }
           }
-          return { id: index, readOnly: this.props.readOnlyIf(filtered), data: filtered };
+          return {
+            id: index,
+            readOnly: this.props.readOnlyIf(filtered),
+            data: filtered,
+          };
         }
       );
 
@@ -568,16 +637,13 @@ export class EditableTable extends React.Component<
         (current) => ({
           ...current,
           dataSet: newRecords,
-          autoIncrement: newRecords.length + 1
+          autoIncrement: newRecords.length + 1,
         }),
         () => {
           this.state.dataSet.forEach((row: any) => {
             for (const field in row.data) {
               if (this.props.fields[field].format !== "boolean") {
                 this.validate(row, field);
-              }
-              if (this.props.fields[field].unique === true) {
-                this.checkDuplicates(row, field);
               }
             }
           });
@@ -590,14 +656,16 @@ export class EditableTable extends React.Component<
   }
 
   render() {
-    let headers = Object.keys(this.props.fields).map((name: string) => {
-      if (!this.props.fields[name].hidden) {
-        return <th key={name}>{this.props.fields[name].name}</th>;
+    let headers = Object.keys(this.props.fields).map(
+      (name: string, index: number) => {
+        if (!this.props.fields[name].hidden) {
+          return <th key={index}>{this.props.fields[name].name}</th>;
+        }
+        return null;
       }
-      return null;
-    });
+    );
 
-    let InsertButton = (props: any) => {
+    let InsertButton = () => {
       return (
         <td>
           <div className="cell-button">
@@ -625,22 +693,25 @@ export class EditableTable extends React.Component<
           props.ref = null;
         }
 
+        if (this.isInsertionFieldIncorrect(field)) {
+          props['data-tip'] = true
+          props['data-for'] = `ir-${field}`
+          props['data-event'] = "focus keyup"
+          props['data-event-off'] = "blur"
+          props['data-multiline'] = true
+        }
+
         return (
           <td
-            key={field}
             className={this.isInsertionFieldIncorrect(field) ? "incorrect" : ""}
           >
             <Form.Control
               type="text"
-              data-tip
-              data-for={`ir-${field}`}
-              data-event="focus keyup"
-              data-event-off="blur"
-              data-multiline={true}
               value={this.state.insertionRow.get(field)}
               onChange={this.handleNewRow.bind(this)}
               data-column={field}
               {...props}
+              key={index}
             />
             {this.isInsertionFieldIncorrect(field) && (
               <ReactTooltip id={`ir-${field}`} type="error" effect="solid">
@@ -679,6 +750,11 @@ export class EditableTable extends React.Component<
             }
 
             if (this.isIncorrect(row.id, field)) {
+              props['data-tip'] = true;
+              props['data-for'] = `row-${row.id}-${field}`;
+              props['data-event'] = "focus keyup";
+              props['data-event-off'] = "blur";
+              props['data-multiline'] = true;
               if (cls !== "") {
                 cls += " incorrect";
               } else {
@@ -691,11 +767,6 @@ export class EditableTable extends React.Component<
                 <td key={field} className={cls}>
                   <Form.Control
                     type="text"
-                    data-tip
-                    data-for={`row-${row.id}-${field}`}
-                    data-event="focus keyup"
-                    data-event-off="blur"
-                    data-multiline={true}
                     value={String(row.data[field])}
                     className="content-editable"
                     data-column={field}
