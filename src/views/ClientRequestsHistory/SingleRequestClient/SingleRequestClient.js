@@ -542,237 +542,240 @@ const SingleRequestClient = () => {
             )}
           </div>
 
-          <div className="text-center w-100">
-            <Button
-              variant="success"
-              size="sm"
-              disabled={selectedOption !== 0 ? false : true}
-              onClick={() => {
-                swal({
-                  title: "Confirmando programación",
-                  text: `Tu solicitud se llevara acabo el ${
-                    selectedOption === 1
-                      ? dateFormatter(data.optional_date1)
-                      : selectedOption === 2
-                      ? dateFormatter(data.optional_date2)
-                      : ""
-                  } en ${
-                    track
-                      ? track.name
-                      : selectedOption === 1
-                      ? data.optional_place1.name
-                      : selectedOption === 2
-                      ? data.optional_place2.name
-                      : ""
-                  } - ${
-                    track
-                      ? track.municipality.name
-                      : selectedOption === 1
-                      ? data.optional_place1.municipality.name
-                      : selectedOption === 2
-                      ? data.optional_place2.municipality.name
-                      : ""
-                  } - ${
-                    track
-                      ? track.municipality.department.name
-                      : selectedOption === 1
-                      ? data.optional_place1.municipality.department.name
-                      : selectedOption === 2
-                      ? data.optional_place2.municipality.department.name
-                      : ""
-                  } a las ${
-                    selectedOption === 1
-                      ? formatAMPM(new Date(data.optional_date1))
-                      : selectedOption === 2
-                      ? formatAMPM(new Date(data.optional_date2))
-                      : ""
-                  }`,
-                  icon: "info",
-                  buttons: ["No, volver", "Si, confirmar servicio"],
-                  dangerMode: true,
-                }).then(async (willUpdate) => {
-                  if (willUpdate) {
-                    let payload1 = {
-                      track:
-                        track !== null
-                          ? track.id
-                          : data.optional_place1
-                          ? data.optional_place1.id
-                          : "",
-                      start_time: data.optional_date1,
-                      status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
-                    };
-                    let payload2 = {
-                      track:
-                        track !== null
-                          ? track.id
-                          : data.optional_place2
-                          ? data.optional_place2.id
-                          : "",
-                      start_time: data.optional_date2,
-                      status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
-                    };
+          {userInfoContext.profile === 2 && (
+            <div className="text-center w-100">
+              <Button
+                variant="success"
+                size="sm"
+                disabled={selectedOption !== 0 ? false : true}
+                onClick={() => {
+                  swal({
+                    title: "Confirmando programación",
+                    text: `Tu solicitud se llevara acabo el ${
+                      selectedOption === 1
+                        ? dateFormatter(data.optional_date1)
+                        : selectedOption === 2
+                        ? dateFormatter(data.optional_date2)
+                        : ""
+                    } en ${
+                      track
+                        ? track.name
+                        : selectedOption === 1
+                        ? data.optional_place1.name
+                        : selectedOption === 2
+                        ? data.optional_place2.name
+                        : ""
+                    } - ${
+                      track
+                        ? track.municipality.name
+                        : selectedOption === 1
+                        ? data.optional_place1.municipality.name
+                        : selectedOption === 2
+                        ? data.optional_place2.municipality.name
+                        : ""
+                    } - ${
+                      track
+                        ? track.municipality.department.name
+                        : selectedOption === 1
+                        ? data.optional_place1.municipality.department.name
+                        : selectedOption === 2
+                        ? data.optional_place2.municipality.department.name
+                        : ""
+                    } a las ${
+                      selectedOption === 1
+                        ? formatAMPM(new Date(data.optional_date1))
+                        : selectedOption === 2
+                        ? formatAMPM(new Date(data.optional_date2))
+                        : ""
+                    }`,
+                    icon: "info",
+                    buttons: ["No, volver", "Si, confirmar servicio"],
+                    dangerMode: true,
+                  }).then(async (willUpdate) => {
+                    if (willUpdate) {
+                      let payload1 = {
+                        track:
+                          track !== null
+                            ? track.id
+                            : data.optional_place1
+                            ? data.optional_place1.id
+                            : "",
+                        start_time: data.optional_date1,
+                        status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
+                      };
+                      let payload2 = {
+                        track:
+                          track !== null
+                            ? track.id
+                            : data.optional_place2
+                            ? data.optional_place2.id
+                            : "",
+                        start_time: data.optional_date2,
+                        status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
+                      };
 
-                    let res = await updateRequest(
-                      selectedOption === 1 ? payload1 : payload2,
-                      requestId
-                    );
-                    if (res.status === 200) {
-                      updateRequests();
-                      swal("Solicitud actualizada!", {
-                        icon: "success",
-                      });
-                      // SEND EMAIL
-                      const payload = {
-                        id: requestId,
-                        emailType: "requestConfirmed",
-                        subject: "Servicio programado ✅",
-                        email: userInfoContext.email,
-                        name: userInfoContext.name,
-                        date:
-                          selectedOption === 1
-                            ? payload1.start_time
-                            : payload2.start_time,
-                        track:
-                          track !== null
-                            ? track
-                            : selectedOption === 1
-                            ? data.optional_place1
-                            : data.optional_place2,
-                        service: data.service.name,
-                      };
-                      await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
-                      const payloadDrivers = {
-                        id: requestId,
-                        emailType: "requestConfirmedDrivers",
-                        subject: "Prueba programada ✅",
-                        email: allDrivers.map((driver) => driver.email),
-                        name: userInfoContext.name,
-                        date:
-                          selectedOption === 1
-                            ? payload1.start_time
-                            : payload2.start_time,
-                        track:
-                          track !== null
-                            ? track
-                            : selectedOption === 1
-                            ? data.optional_place1
-                            : data.optional_place2,
-                        service: data.service.name,
-                      };
-                      await sendEmail(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
-                    } else {
-                      swal("Oops, no se pudo actualizar el servicio.", {
-                        icon: "error",
+                      let res = await updateRequest(
+                        selectedOption === 1 ? payload1 : payload2,
+                        requestId
+                      );
+                      if (res.status === 200) {
+                        updateRequests();
+                        swal("Solicitud actualizada!", {
+                          icon: "success",
+                        });
+                        // SEND EMAIL
+                        const payload = {
+                          id: requestId,
+                          emailType: "requestConfirmed",
+                          subject: "Servicio programado ✅",
+                          email: userInfoContext.email,
+                          name: userInfoContext.name,
+                          date:
+                            selectedOption === 1
+                              ? payload1.start_time
+                              : payload2.start_time,
+                          track:
+                            track !== null
+                              ? track
+                              : selectedOption === 1
+                              ? data.optional_place1
+                              : data.optional_place2,
+                          service: data.service.name,
+                        };
+                        await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
+                        const payloadDrivers = {
+                          id: requestId,
+                          emailType: "requestConfirmedDrivers",
+                          subject: "Prueba programada ✅",
+                          email: allDrivers.map((driver) => driver.email),
+                          name: userInfoContext.name,
+                          date:
+                            selectedOption === 1
+                              ? payload1.start_time
+                              : payload2.start_time,
+                          track:
+                            track !== null
+                              ? track
+                              : selectedOption === 1
+                              ? data.optional_place1
+                              : data.optional_place2,
+                          service: data.service.name,
+                        };
+                        await sendEmail(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
+                      } else {
+                        swal("Oops, no se pudo actualizar el servicio.", {
+                          icon: "error",
+                        });
+                      }
+                    }
+                  });
+                }}
+              >
+                Aceptar programación
+              </Button>
+              <Button
+                variant="danger"
+                size="sm"
+                className="ml-2"
+                onClick={() => {
+                  swal({
+                    title: "Rechazar programación",
+                    text: `Estamos tristes de no poder cumplir con tus requerimientos. Si rechazas la programación la solicitud quedara cancelada. ¿Que deseas hacer?`,
+                    icon: "info",
+                    buttons: ["Volver", "Reachazar programación"],
+                    dangerMode: true,
+                  }).then(async (willUpdate) => {
+                    if (willUpdate) {
+                      swal({
+                        title: "¿Por qué cancelas?",
+                        content: {
+                          element: "input",
+                          attributes: {
+                            placeholder: "Escribe el motivo de la cancelación",
+                            rows: "4",
+                            cols: "50",
+                          },
+                        },
+                        buttons: {
+                          cancel: "Volver",
+                          confirm: "Continuar",
+                        },
+                      }).then(async (msg) => {
+                        if (msg !== null) {
+                          // setLoading(true);
+
+                          // let payload = {
+                          //   id: requestId,
+                          //   company: userInfoContext.company,
+                          //   reject_msg: msg ? msg : "na",
+                          //   refund_credits:
+                          //     userInfoContext.credit + data.spent_credit,
+                          // };
+
+                          let payload = {
+                            id: requestId,
+                            user: userInfoContext,
+                            companyId: userInfoContext.company.id,
+                            reject_msg: msg
+                              ? msg
+                              : `Cancelado por el usuario ${
+                                  penaltyRides
+                                    ? `| Penalidad: $${penaltyRides} rides`
+                                    : ""
+                                }`,
+                            newCredit:
+                              parseInt(userInfoContext.credit) +
+                              parseInt(data.spent_credit), // Removing penalty rides when rejecting a request
+                          };
+                          const res = await cancelRequestId(payload);
+                          if (
+                            res.canceled.status === 200 &&
+                            res.refund.status === 200
+                          ) {
+                            setUserInfoContext({
+                              ...userInfoContext,
+                              credit: res.refund.data.credit,
+                            });
+                            swal("Poof! Esta solicitud ha sido cancelada", {
+                              icon: "success",
+                            });
+                            setLoading(false);
+
+                            const payload = {
+                              id: res.canceled.data.id,
+                              emailType: "canceledRequest",
+                              subject: "Solicitud cancelada ❌",
+                              email: userInfoContext.email,
+                              name: userInfoContext.name,
+                              date: res.canceled.data.start_time,
+                              refund_credits: res.canceled.data.spent_credit,
+                              service: res.canceled.data.service.name,
+                              municipality: {
+                                city: res.canceled.data.municipality.name,
+                                department:
+                                  res.canceled.data.municipality.department
+                                    .name,
+                              },
+                            };
+                            await sendEmail(payload); // SEND SERVICE CANCELED EMAIL TO USER
+                          } else {
+                            setLoading(false);
+                            swal("Ooops! No pudimos cancelar la solicitud", {
+                              icon: "error",
+                            });
+                          }
+                        } else {
+                          swal("Tranqui, no paso nada!");
+                        }
                       });
                     }
-                  }
-                });
-              }}
-            >
-              Aceptar programación
-            </Button>
-            <Button
-              variant="danger"
-              size="sm"
-              className="ml-2"
-              onClick={() => {
-                swal({
-                  title: "Rechazar programación",
-                  text: `Estamos tristes de no poder cumplir con tus requerimientos. Si rechazas la programación la solicitud quedara cancelada. ¿Que deseas hacer?`,
-                  icon: "info",
-                  buttons: ["Volver", "Reachazar programación"],
-                  dangerMode: true,
-                }).then(async (willUpdate) => {
-                  if (willUpdate) {
-                    swal({
-                      title: "¿Por qué cancelas?",
-                      content: {
-                        element: "input",
-                        attributes: {
-                          placeholder: "Escribe el motivo de la cancelación",
-                          rows: "4",
-                          cols: "50",
-                        },
-                      },
-                      buttons: {
-                        cancel: "Volver",
-                        confirm: "Continuar",
-                      },
-                    }).then(async (msg) => {
-                      if (msg !== null) {
-                        // setLoading(true);
-
-                        // let payload = {
-                        //   id: requestId,
-                        //   company: userInfoContext.company,
-                        //   reject_msg: msg ? msg : "na",
-                        //   refund_credits:
-                        //     userInfoContext.credit + data.spent_credit,
-                        // };
-
-                        let payload = {
-                          id: requestId,
-                          user: userInfoContext,
-                          companyId: userInfoContext.company.id,
-                          reject_msg: msg
-                            ? msg
-                            : `Cancelado por el usuario ${
-                                penaltyRides
-                                  ? `| Penalidad: $${penaltyRides} rides`
-                                  : ""
-                              }`,
-                          newCredit:
-                            parseInt(userInfoContext.credit) +
-                            parseInt(data.spent_credit), // Removing penalty rides when rejecting a request
-                        };
-                        const res = await cancelRequestId(payload);
-                        if (
-                          res.canceled.status === 200 &&
-                          res.refund.status === 200
-                        ) {
-                          setUserInfoContext({
-                            ...userInfoContext,
-                            credit: res.refund.data.credit,
-                          });
-                          swal("Poof! Esta solicitud ha sido cancelada", {
-                            icon: "success",
-                          });
-                          setLoading(false);
-
-                          const payload = {
-                            id: res.canceled.data.id,
-                            emailType: "canceledRequest",
-                            subject: "Solicitud cancelada ❌",
-                            email: userInfoContext.email,
-                            name: userInfoContext.name,
-                            date: res.canceled.data.start_time,
-                            refund_credits: res.canceled.data.spent_credit,
-                            service: res.canceled.data.service.name,
-                            municipality: {
-                              city: res.canceled.data.municipality.name,
-                              department:
-                                res.canceled.data.municipality.department.name,
-                            },
-                          };
-                          await sendEmail(payload); // SEND SERVICE CANCELED EMAIL TO USER
-                        } else {
-                          setLoading(false);
-                          swal("Ooops! No pudimos cancelar la solicitud", {
-                            icon: "error",
-                          });
-                        }
-                      } else {
-                        swal("Tranqui, no paso nada!");
-                      }
-                    });
-                  }
-                });
-              }}
-            >
-              Rechazar
-            </Button>
-          </div>
+                  });
+                }}
+              >
+                Rechazar
+              </Button>
+            </div>
+          )}
         </Tab>
       );
     }

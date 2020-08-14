@@ -51,7 +51,10 @@ const SingleFile: React.FC<SingleFileProps> = ({
     return (
       <Card className="single-file">
         <Card.Body>
-          <Card.Title>{doc.document.name}</Card.Title>
+          <Card.Title>
+            {doc.document.name}{" "}
+            {loading && <Spinner animation="border" size="sm" />}
+          </Card.Title>
           <Card.Text>{doc.document.description}</Card.Text>
         </Card.Body>
         {doc.file && (
