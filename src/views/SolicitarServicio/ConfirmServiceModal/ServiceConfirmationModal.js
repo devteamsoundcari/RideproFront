@@ -127,6 +127,8 @@ const ConfirmServiceModal = (props) => {
     // REGITER PARTICIPANTS
     registerDrivers().then(async (registeredIDs) => {
       // THEN CREATE THE DATA TO THE SERVICE
+      //================================================================================
+
       let driversIDs = [];
       registeredParticipantsContext.forEach((item) => driversIDs.push(item.id));
       registeredIDs.forEach((item) => driversIDs.push(item));
@@ -161,6 +163,10 @@ const ConfirmServiceModal = (props) => {
           credit: res.creditDecreasingResponse.data.credit,
         });
 
+        let emailParticipants = unregisteredParticipantsContext.concat(
+          registeredParticipantsContext
+        );
+
         const payload = {
           id: res.response.data.id,
           emailType: "newRequest",
@@ -169,7 +175,7 @@ const ConfirmServiceModal = (props) => {
           name: userInfoContext.name,
           date: data.start_time,
           spent_credits: data.spent_credit,
-          participantes: registeredParticipantsContext,
+          participantes: emailParticipants,
           service: props.service.name,
           municipality: {
             city: props.place.city.name,
