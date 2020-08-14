@@ -99,6 +99,7 @@ const SingleRequestAdmin = () => {
   const [documentsOk, setDocumentsOk] = useState(false);
   const [showModalOC, setShowModalOC] = useState(false);
   const [showModalUploadReports, setShowModalUploadReports] = useState(false);
+  const [participantsInfo, setParticipantsInfo] = useState([]);
 
   async function fetchRequest(id: string) {
     setLoading(true);
@@ -390,6 +391,7 @@ const SingleRequestAdmin = () => {
                     drivers={data?.drivers}
                     status={data?.status?.step}
                     requestId={requestId}
+                    onUpdate={(data) => setParticipantsInfo(data)}
                   />
                 </div>
                 {data?.status?.step ? (
@@ -594,6 +596,8 @@ const SingleRequestAdmin = () => {
                         fisrt_payment={data?.f_p_track}
                         requestId={requestId}
                         status={data?.status}
+                        date={data?.start_time}
+                        participants={participantsInfo}
                       />
                     )
                   : ""}
