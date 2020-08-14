@@ -278,7 +278,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                         size="sm"
                         onClick={handleClickAddInstructor}
                       >
-                        Administrar Instructores
+                        Agregar Instructor
                       </Button>
                       <Button
                         size="sm"

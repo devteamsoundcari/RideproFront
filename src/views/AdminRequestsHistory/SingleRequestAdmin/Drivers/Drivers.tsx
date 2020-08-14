@@ -8,6 +8,7 @@ interface DriversProps {
   drivers: any;
   status: any;
   requestId: string;
+  onUpdate: (x) => void;
 }
 
 interface Participant {
@@ -20,7 +21,12 @@ interface Participant {
 
 type ParticipantsData = Participant[];
 
-const Drivers: React.FC<DriversProps> = ({ drivers, status, requestId }) => {
+const Drivers: React.FC<DriversProps> = ({
+  drivers,
+  status,
+  requestId,
+  onUpdate,
+}) => {
   const [participants, setParticipants] = useState<ParticipantsData>([]);
 
   // ================================ FETCH REQUEST INSTRUCTORS ON LOAD =====================================================
@@ -36,6 +42,10 @@ const Drivers: React.FC<DriversProps> = ({ drivers, status, requestId }) => {
       });
     }
   }, [drivers]);
+
+  useEffect(() => {
+    onUpdate(participants);
+  }, [participants]);
 
   return (
     <Table bordered hover size="sm" className="mb-3 participants-table-admin">

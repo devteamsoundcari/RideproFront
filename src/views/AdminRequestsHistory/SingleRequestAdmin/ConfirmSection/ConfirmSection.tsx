@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
+import CryptoJS from "crypto-js";
 import { FaCheckCircle, FaTimes, FaSave } from "react-icons/fa";
-import { Table, Button, Modal, Form } from "react-bootstrap";
+import { Table, Button, Modal, Form, Spinner } from "react-bootstrap";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import {
   updateInstructorFares,
   updateProviderFares,
   updateRequest,
   updateRequestDocuments,
+  sendEmail,
 } from "../../../../controllers/apiRequests";
 import swal from "sweetalert";
 import ModalDocuments from "./ModalDocuments/ModalDocuments";
@@ -21,6 +23,8 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
   fare_track,
   fisrt_payment,
   status,
+  date,
+  participants,
 }) => {
   const [showModalProviders, setShowModalProviders] = useState(false);
   const [showModalDocuments, setShowModalDocuments] = useState(false);
@@ -34,6 +38,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
   const [trackFare, setTrackFare] = useState(0);
   const [selectedDocuments, setSelectedDocuments] = useState<any>([]);
   const [wasReviewed, setWasReviewed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setAllInstructors(instructors);
@@ -63,6 +68,12 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
     currency: "COP",
     minimumFractionDigits: 0,
   });
+
+  const hashCode = (id, requestId) => {
+    return CryptoJS.AES.encrypt(String(id + requestId), "fuckyoucode")
+      .toString()
+      .substr(-7);
+  };
 
   return (
     <div className="card invoice-action-wrapper mt-2 shadow-none border">
@@ -344,6 +355,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
               }).then(async (willUpdate) => {
                 if (willUpdate) {
                   let docsIds: any = [];
+                  setLoading(true);
                   selectedDocuments.forEach((doc: any) => {
                     docsIds.push(doc.id);
                   });
@@ -359,7 +371,80 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                   let resDocs = await updateRequestDocuments(payloadDocs);
                   let resStatus = await updateRequest(payloadStatus, requestId);
                   if (resStatus.status === 200 && resDocs.status === 201) {
-                    // setDisabled(true);
+                    // Hash for every provider and isntructor
+                    track.hash = hashCode(track.id, requestId);
+                    providers.forEach(
+                      (item) => (item.hash = hashCode(item.id, requestId))
+                    );
+                    instructors.forEach(
+                      (item) => (item.hash = hashCode(item.id, requestId))
+                    );
+                    // Send track email
+                    let trackPayload = {
+                      id: requestId,
+                      emailType: "requestConfirmedTrack",
+                      subject: "Evento confirmado ✔️",
+                      email: track.contact_email,
+                      name: track.contact_name,
+                      instructor: instructors[0].instructors,
+                      hash: track.hash,
+                      firstPayment: trackFP,
+                      date: date,
+                    };
+
+                    await sendEmail(trackPayload);
+
+                    // Send providers email
+                    providers.forEach(async (prov) => {
+                      let providerPayload = {
+                        id: requestId,
+                        emailType: "requestConfirmedProvider",
+                        subject: "Evento confirmado ✔️",
+                        email: prov.providers.email,
+                        name: prov.providers.name,
+                        instructor: instructors[0].instructors,
+                        hash: prov.hash,
+                        firstPayment: prov.first_payment,
+                        date: date,
+                        track: track,
+                      };
+                      await sendEmail(providerPayload);
+                    });
+
+                    // Send instructors email
+                    instructors.forEach(async (ins) => {
+                      let instructorPayload = {
+                        id: requestId,
+                        emailType: "requestConfirmedInstructor",
+                        subject: "Evento confirmado ✔️",
+                        email: ins.instructors.email,
+                        name: ins.instructors.first_name,
+                        hash: ins.hash,
+                        firstPayment: ins.first_payment,
+                        date: date,
+                        track: track,
+                        participantes: participants,
+                        documents: selectedDocuments,
+                      };
+                      await sendEmail(instructorPayload);
+                    });
+
+                    // Send admin email
+                    let adminPayload = {
+                      id: requestId,
+                      emailType: "requestConfirmedAdmin",
+                      subject: "Proveedores confirmados ✔️",
+                      email: "aliados@ridepro.co",
+                      date: date,
+                      track: track,
+                      trackFirstPayment: trackFP,
+                      providers: providers,
+                      instructors: instructors,
+                    };
+                    await sendEmail(adminPayload);
+
+                    setLoading(false);
+
                     swal("Solicitud actualizada!", {
                       icon: "success",
                     });
@@ -372,7 +457,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
               });
             }}
           >
-            Confirmar
+            Confirmar {loading && <Spinner animation="border" />}
           </Button>
         </div>
       </div>

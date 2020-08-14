@@ -271,6 +271,22 @@ const getLineServices = async () => {
   return services.data.results;
 };
 
+const getDocuments = async () => {
+  const getInfo = async (url) => {
+    const docsData = await axios({
+      method: "GET",
+      url,
+    }).catch((err) => {
+      return err;
+    });
+    return docsData;
+  };
+  let docs = await getInfo(
+    `${process.env.REACT_APP_API_URL}/api/v1/documents/`
+  );
+  return docs.data;
+};
+
 /* =================================   GET COMPANIES   ===================================== */
 const getCompanies = async () => {
   const getInfo = async (url) => {
@@ -1068,4 +1084,5 @@ export {
   getCompanyUsers,
   getUserReport,
   updateParticipantReport,
+  getDocuments,
 };

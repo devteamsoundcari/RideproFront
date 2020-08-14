@@ -1,81 +1,60 @@
-import React from "react";
-import { Card } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Card, Image } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-import "./AllUsers.scss";
+import { getCompanies } from "../../../controllers/apiRequests";
+type AllCompaniesProps = any;
 
-const AllUsers = (props) => {
-  const profileFormatter = (cell, row) => {
-    let profileName = "";
-    switch (row.profile) {
-      case 1:
-        profileName = "Admin";
-        break;
-      case 2:
-        profileName = "Cliente";
-        break;
-      case 3:
-        profileName = "Operaciones";
-        break;
-      case 5:
-        profileName = "Técnico";
-        break;
-      case 7:
-        profileName = "SuperCliente";
-        break;
-      default:
-        profileName = "No definido";
-        break;
+const AllCompanies: React.FC<AllCompaniesProps> = () => {
+  const [companies, setCompanies] = useState([]);
+
+  useEffect(() => {
+    async function fetchCompanies() {
+      let res = await getCompanies();
+      if (res) {
+        setCompanies(res.results);
+      } else {
+        console.log("No hay empresas registradas");
+      }
     }
+    fetchCompanies();
+  }, []);
 
-    return (
-      <span>
-        <strong>{profileName}</strong>
-      </span>
-    );
+  const logoFormatter = (cell) => {
+    return <Image src={cell} roundedCircle width="50" height="50" />;
   };
 
   const columns = [
     {
-      dataField: "id",
-      text: "Id",
-      sort: true,
-      classes: "small-column",
-      headerClasses: "small-column",
-    },
-    {
-      dataField: "profile",
-      text: "Perfil",
-      sort: true,
+      dataField: "logo",
+      text: "Logo",
+      formatter: logoFormatter,
       classes: "md-column",
       headerClasses: "md-column",
-      formatter: profileFormatter,
+    },
+    {
+      dataField: "name",
+      text: "Nombre",
+      sort: true,
     },
 
     {
-      dataField: "company.name",
-      text: "Empresa",
+      dataField: "nit",
+      text: "Nit",
       sort: true,
     },
     {
-      dataField: "first_name",
-      text: "Nombre",
+      dataField: "address",
+      text: "Dirección",
     },
     {
-      dataField: "last_name",
-      text: "Apellido",
+      dataField: "phone",
+      text: "Teléfono",
     },
     {
-      dataField: "email",
-      text: "Email",
-    },
-    {
-      dataField: "credit",
-      text: "Cred",
-      classes: "small-column",
-      headerClasses: "small-column",
-      formatter: (cell) => <p>${cell}</p>,
+      dataField: "arl",
+      text: "ARL",
     },
   ];
 
@@ -97,17 +76,16 @@ const AllUsers = (props) => {
       </div>
     );
   };
-
   return (
     <Card className="allUsers mt-3 mb-5">
       <Card.Body>
-        <Card.Title>Usuarios</Card.Title>
+        <Card.Title>Empresas</Card.Title>
         <Card.Body>
           <ToolkitProvider
             bootstrap4
             // defaultSorted={defaultSorted}
             keyField="id"
-            data={props.users}
+            data={companies}
             columns={columns}
             pagination={paginationFactory()}
             hover
@@ -126,5 +104,4 @@ const AllUsers = (props) => {
     </Card>
   );
 };
-
-export default AllUsers;
+export default AllCompanies;

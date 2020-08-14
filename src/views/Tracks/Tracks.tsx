@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Row, Col, Container, Card } from "react-bootstrap";
+import { Row, Col, Container, Card, Spinner } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import BootstrapTable, { SelectRowProps } from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
@@ -33,6 +33,7 @@ const Tracks: React.FC = () => {
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [filteredTracks, setFilteredTracks] = useState<Track[]>([]);
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [loading, setLoading] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
   const location = useLocation();
   const defaultImage = require("../../assets/img/track.jpg");
@@ -159,6 +160,7 @@ const Tracks: React.FC = () => {
     if (response.next) {
       return await getTracks(response.next);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -201,6 +203,7 @@ const Tracks: React.FC = () => {
                 >
                   Agregar pista
                 </button>
+                {loading && <Spinner animation="border" size="sm" />}
               </div>
             </div>
           </div>
