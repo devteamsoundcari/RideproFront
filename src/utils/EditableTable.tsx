@@ -91,12 +91,15 @@ export class EditableTable extends React.Component<
       this.clearDuplicates(fieldName, errors);
     }
 
-    this.setState((current) => ({
-      ...current,
-      errors: errors
-    }), () => {
-      this.props.onValidate(this.state.errors.length <= 0 ? true : false);
-    });
+    this.setState(
+      (current) => ({
+        ...current,
+        errors: errors,
+      }),
+      () => {
+        this.props.onValidate(this.state.errors.length <= 0 ? true : false);
+      }
+    );
   }
 
   checkRegex(row: any, fieldName: string, errors: Array<Error>) {
@@ -170,7 +173,10 @@ export class EditableTable extends React.Component<
 
     if (
       this.state.dataSet.find(
-        (r: any) => r.id !== row.id && r.data[fieldName] === row.data[fieldName]
+        (r: any) =>
+          r.id !== row.id &&
+          r.data[fieldName] === row.data[fieldName] &&
+          r.data[fieldName] !== ""
       )
     ) {
       let err: Error;
@@ -200,13 +206,13 @@ export class EditableTable extends React.Component<
   clearDuplicates(fieldName: string, errors: Array<Error>) {
     let dataSet = [...this.state.dataSet];
     for (let record of dataSet) {
-      let filtered = dataSet.filter((r: any) =>
-        r.data[fieldName] === record.data[fieldName]
+      let filtered = dataSet.filter(
+        (r: any) => r.data[fieldName] === record.data[fieldName]
       );
       if (filtered.length === 1) {
-        let errorIndex = errors.findIndex((e: Error) =>
-          e.id === record.id && e.type === "unique"
-        )
+        let errorIndex = errors.findIndex(
+          (e: Error) => e.id === record.id && e.type === "unique"
+        );
         if (errorIndex >= 0) {
           errors.splice(errorIndex, 1);
         }
@@ -694,11 +700,11 @@ export class EditableTable extends React.Component<
         }
 
         if (this.isInsertionFieldIncorrect(field)) {
-          props['data-tip'] = true
-          props['data-for'] = `ir-${field}`
-          props['data-event'] = "focus keyup"
-          props['data-event-off'] = "blur"
-          props['data-multiline'] = true
+          props["data-tip"] = true;
+          props["data-for"] = `ir-${field}`;
+          props["data-event"] = "focus keyup";
+          props["data-event-off"] = "blur";
+          props["data-multiline"] = true;
         }
 
         return (
@@ -750,11 +756,11 @@ export class EditableTable extends React.Component<
             }
 
             if (this.isIncorrect(row.id, field)) {
-              props['data-tip'] = true;
-              props['data-for'] = `row-${row.id}-${field}`;
-              props['data-event'] = "focus keyup";
-              props['data-event-off'] = "blur";
-              props['data-multiline'] = true;
+              props["data-tip"] = true;
+              props["data-for"] = `row-${row.id}-${field}`;
+              props["data-event"] = "focus keyup";
+              props["data-event-off"] = "blur";
+              props["data-multiline"] = true;
               if (cls !== "") {
                 cls += " incorrect";
               } else {
