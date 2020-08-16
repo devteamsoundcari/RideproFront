@@ -70,11 +70,21 @@ const AdminRequestsHistory = () => {
   const waitingTimeFormatter = (cell, row) => {
     let created = new Date(row.updated_at);
     let now = new Date();
-    var difference = Math.abs(now.getTime() - created.getTime());
-    var hourDifference = difference / 1000 / 3600;
-    if (row.status.step === 8) {
-      return "Completado";
+    let difference = Math.abs(now.getTime() - created.getTime());
+    let hourDifference = difference / 1000 / 3600;
+    let days = Math.floor(hourDifference / 24);
+    if (userInfoContext.profile === 3 && row.status.step > 5) {
+      return <small>Completado el {dateFormatter(created)}</small>;
+    } else if (userInfoContext.profile === 5 && row.status.step > 4) {
+      return <small>Completado el {dateFormatter(created)}</small>;
     } else {
+      if (hourDifference > 24) {
+        return (
+          <small>
+            Hace {days} {days > 1 ? "días" : "día"}
+          </small>
+        );
+      }
       return <small>hace {Math.floor(hourDifference)} horas</small>;
     }
   };

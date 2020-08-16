@@ -129,7 +129,7 @@ const MyCalendar = () => {
               localizer={localizer}
               defaultDate={new Date()}
               defaultView="month"
-              views={{ month: true }}
+              views={{ month: true, day: true }}
               events={
                 seeCancelledEvents ? withCanceledRequests : displayedRequests
               }
