@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
+import CryptoJS from "crypto-js";
 import { FaSave } from "react-icons/fa";
 import "./ModalOC.scss";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { AuthContext } from "../../../../contexts/AuthContext";
+import { RequestsContext } from "../../../../contexts/RequestsContext";
 import {
   updateInstructorFares,
   updateProviderFares,
@@ -29,26 +31,25 @@ const ModalOC: React.FC<ModalOCProps> = ({
   const [allProviders, setAllProviders] = useState([]);
   const [theTrack, setTheTrack] = useState<any>({});
   const { userInfoContext } = useContext(AuthContext);
+  const { updateRequests } = useContext(RequestsContext);
   const [instFares, setInstFares] = useState({});
   const [provsFares, setProvsFares] = useState({});
   const [trackFare, setTrackFare] = useState(0);
 
   useEffect(() => {
+    let insObj = {};
+    let provsObj = {};
     setAllInstructors(instructors);
     instructors.forEach((item) => {
-      setInstFares({
-        ...instFares,
-        [item.instructors.id]: item.fare,
-      });
+      insObj[item.instructors.id] = item.fare;
     });
+    setInstFares(insObj);
     setAllProviders(providers);
     providers.forEach((item) => {
-      setProvsFares({
-        ...provsFares,
-        [item.providers.id]: item.fare,
-      });
+      provsObj[item.providers.id] = item.fare;
     });
 
+    setProvsFares(provsObj);
     setTheTrack(track);
     setTrackFare(fare_track);
 
@@ -61,6 +62,12 @@ const ModalOC: React.FC<ModalOCProps> = ({
       currency: "COP",
       minimumFractionDigits: 0,
     });
+  };
+
+  const hashCode = (id, requestId) => {
+    return CryptoJS.AES.encrypt(String(id + requestId), "fuckyoucode")
+      .toString()
+      .substr(-7);
   };
 
   return (
@@ -144,6 +151,8 @@ const ModalOC: React.FC<ModalOCProps> = ({
                               instructor.id
                             );
                             if (res.status === 200) {
+                              updateRequests();
+
                               swal(
                                 "Tarifa Actualizada!",
                                 `la tarifa de ${
@@ -228,6 +237,7 @@ const ModalOC: React.FC<ModalOCProps> = ({
                               provider.id
                             );
                             if (res.status === 200) {
+                              updateRequests();
                               swal(
                                 "Tarifa Actualizada!",
                                 `La tarifa de ${
@@ -349,31 +359,87 @@ const ModalOC: React.FC<ModalOCProps> = ({
                 };
                 let res = await updateRequest(payload, requestId);
                 if (res.status === 200) {
+                  swal("Actualizando. . .", {
+                    buttons: {},
+                    closeOnClickOutside: false,
+                  });
+
+                  track.hash = hashCode(track.id, requestId);
+                  track.first_payment = fisrt_payment;
+                  track.fare = trackFare;
+                  providers.forEach(
+                    (item) => (item.hash = hashCode(item.id, requestId))
+                  );
+                  instructors.forEach(
+                    (item) => (item.hash = hashCode(item.id, requestId))
+                  );
+
+                  // Send track email
+                  let trackPayload = {
+                    id: requestId,
+                    emailType: "requestFinishedAll",
+                    subject: "Gracias por tus servicios ✔️",
+                    email: track.contact_email,
+                    name: track.contact_name,
+                    date: date,
+                    fare: track.fare,
+                    firstPayment: track.first_payment,
+                    hash: track.hash,
+                  };
+                  await sendEmail(trackPayload);
+
+                  // Send email to each instructor
+                  instructors.forEach(async (ins) => {
+                    let instructosPayload = {
+                      id: requestId,
+                      emailType: "requestFinishedAll",
+                      subject: "Gracias por tus servicios ✔️",
+                      email: ins.instructors.email,
+                      name: ins.instructors.first_name,
+                      date: date,
+                      fare: ins.fare,
+                      firstPayment: ins.first_payment,
+                      hash: ins.hash,
+                    };
+                    await sendEmail(instructosPayload);
+                  });
+
+                  // Send email to each instructor
+                  providers.forEach(async (prov) => {
+                    let providersPayload = {
+                      id: requestId,
+                      emailType: "requestFinishedAll",
+                      subject: "Gracias por tus servicios ✔️",
+                      email: prov.providers.email,
+                      name: prov.providers.name,
+                      date: date,
+                      fare: prov.fare,
+                      firstPayment: prov.first_payment,
+                      hash: prov.hash,
+                    };
+                    await sendEmail(providersPayload);
+                  });
+
+                  //Email to admins
+                  let adminPayload = {
+                    id: requestId,
+                    emailType: "ocAdmin",
+                    subject: `OC Servicio#${requestId} 📑`,
+                    email: ["sdelrio@ridepro.co", "aliados@ridepro.co"],
+                    date: date,
+                    track: track,
+                    instructors: instructors,
+                    providers: providers,
+                    service: service,
+                  };
+                  await sendEmail(adminPayload);
+
                   swal(
                     "Felicitaciones!",
                     `Haz culminado tus labores con la solicitud #${requestId} 👍`,
                     "success"
                   );
-                  //TODO: Sent emails to every provider
-                  // SEND EMAIL
-                  const payload = {
-                    id: requestId,
-                    emailType: "ocAdmin",
-                    subject: `OC Servicio#${requestId} 📑`,
-                    uniqId: `${requestId}-${
-                      providers.length + instructors.length + 1
-                    }`,
-                    email: "sdelrio@ridepro.co",
-                    name: "Sergio",
-                    date: date,
-                    track: track,
-                    track_balance: fare_track - fisrt_payment,
-                    instructors: instructors,
-                    providers: providers,
-                    service: service,
-                  };
-                  await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
-
+                  updateRequests();
                   handleClose();
                 } else {
                   swal(
