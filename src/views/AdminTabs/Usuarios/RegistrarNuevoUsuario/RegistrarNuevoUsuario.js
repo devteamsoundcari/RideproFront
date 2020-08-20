@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Col, Spinner, Form, Button, Modal } from "react-bootstrap";
+import { Col, Card, Spinner, Form, Button } from "react-bootstrap";
 import {
   saveNewUser,
   sendEmail,
@@ -8,7 +8,7 @@ import {
 } from "../../../../controllers/apiRequests";
 import ModalSuccess from "./ModalSuccess/ModalSuccess";
 
-const RegistrarNuevoUsuario = ({ onUpdate, handleClose }) => {
+const RegistrarNuevoUsuario = ({ onUpdate }) => {
   const { register, handleSubmit, errors } = useForm();
   const [companies, setCompanies] = useState([]);
   const [passError, setPassError] = useState("");
@@ -113,7 +113,6 @@ const RegistrarNuevoUsuario = ({ onUpdate, handleClose }) => {
     fetchCompanies(`${process.env.REACT_APP_API_URL}/api/v1/companies/`);
     // eslint-disable-next-line
   }, []);
-
   // ================================= UPDATE STATE AS THE USER TYPES ==========================================
 
   const updateData = (e) => {
@@ -156,223 +155,223 @@ const RegistrarNuevoUsuario = ({ onUpdate, handleClose }) => {
   // ================================= RETURN ==========================================
 
   return (
-    <Modal show={true} onHide={handleClose} size="lg" className="usuarios">
-      <Modal.Header>Registrar nuevo usuario</Modal.Header>
-      <Modal.Body>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Label>
-                Nombre<span> *</span>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Nombre"
-                name="name"
-                onChange={updateData}
-                value={data.name}
-                autoComplete="off"
-                ref={register({ required: true })}
-              />
-              <Form.Text>
-                {errors.name && <span>Ingrese un nombre válido.</span>}
-              </Form.Text>
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>
-                Apellido<span> *</span>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Apellido"
-                name="lastName"
-                onChange={updateData}
-                value={data.lastName}
-                autoComplete="off"
-                ref={register({ required: true })}
-              />
-              <Form.Text>
-                {errors.lastName && <span>Ingrese un apellido válido.</span>}
-              </Form.Text>
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>
-                Género<span> *</span>
-              </Form.Label>
-              <Form.Control
-                as="select"
-                placeholder="Género"
-                name="gender"
-                onChange={updateData}
-                autoComplete="off"
-                ref={register({ required: true })}
-              >
-                <option value="M">M</option>
-                <option value="F">F</option>
-                <option value="F">O</option>
-              </Form.Control>
-              <Form.Text>
-                {errors.gender && <span>Ingrese un género</span>}
-              </Form.Text>
-            </Form.Group>
-          </Form.Row>
+    <React.Fragment>
+      <Card className="usuarios">
+        <Card.Body>
+          <Card.Title>Registrar nuevo usuario</Card.Title>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  Nombre<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Nombre"
+                  name="name"
+                  onChange={updateData}
+                  value={data.name}
+                  autoComplete="off"
+                  ref={register({ required: true })}
+                />
+                <Form.Text>
+                  {errors.name && <span>Ingrese un nombre válido.</span>}
+                </Form.Text>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  Apellido<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Apellido"
+                  name="lastName"
+                  onChange={updateData}
+                  value={data.lastName}
+                  autoComplete="off"
+                  ref={register({ required: true })}
+                />
+                <Form.Text>
+                  {errors.lastName && <span>Ingrese un apellido válido.</span>}
+                </Form.Text>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  Género<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  placeholder="Género"
+                  name="gender"
+                  onChange={updateData}
+                  autoComplete="off"
+                  ref={register({ required: true })}
+                >
+                  <option value="M">M</option>
+                  <option value="F">F</option>
+                  <option value="F">O</option>
+                </Form.Control>
+                <Form.Text>
+                  {errors.gender && <span>Ingrese un género</span>}
+                </Form.Text>
+              </Form.Group>
+            </Form.Row>
 
-          <Form.Row>
-            <Form.Group as={Col} controlId="formBasicEmail">
-              <Form.Label>
-                Correro electrónico<span> *</span>
-              </Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Correo electrónico"
-                name="email"
-                onChange={updateData}
-                value={data.email}
-                autoComplete="off"
-                ref={register({
-                  required: true,
-                  pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
-                })}
-              />
-              <Form.Text className="text-muted">
-                {errors.email && <span>Ingrese un email válido.</span>}
-              </Form.Text>
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>
-                Contraseña<span> *</span>
-              </Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Contraseña"
-                name="password"
-                id="newUserPassword"
-                onChange={updateData}
-                value={data.password}
-                autoComplete="off"
-                ref={register({
-                  required: true,
-                  // Min 8 digits, 1 uppercase, 1 number, 1 spec char
-                  pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/i,
-                })}
-              />
-              <Form.Text className="text-muted">
-                La contraseña debe tener ocho caracteres como mínimo y debe
-                incluír una mayúscula, un número y un caracter especial
-                (@$!%*?&).
-                <br></br>
-                {errors.password && <span>Ingrese una contraseña válida</span>}
-              </Form.Text>
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>
-                Confirmar contraseña<span> *</span>
-              </Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirmar contraseña"
-                name="passwordRepeat"
-                id="newUserPassword2"
-                onChange={updateData}
-                value={data.passwordRepeat}
-                autoComplete="off"
-                ref={register({ required: true })}
-              />
-              <Form.Text className="text-muted">
-                <span>{passError}</span>
-                <br></br>
-                {errors.passwordRepeat && <span>Confirma la contraseña</span>}
-              </Form.Text>
-            </Form.Group>
-            <Form.Group className="showPassword">
-              <Form.Check
-                type="checkbox"
-                label="Mostar contraseña"
-                onClick={handleShowPass}
-              />
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Label>Empresa</Form.Label>
-              <Form.Control
-                type="number"
-                name="company"
-                onChange={updateData}
-                value={data.empresa}
-                autoComplete="off"
-                placeholder="Empresa"
-                as="select"
-                ref={register({ required: true })}
-              >
-                <option value="">Seleccione...</option>
-                {companies.map((comp) => {
-                  return (
-                    <option key={comp.id} value={comp.id}>
-                      {comp.name}
-                    </option>
-                  );
-                })}
-              </Form.Control>
-              {errors.company && (
-                <span>Por favor, selecciona una empresa.</span>
-              )}
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>
-                Cargo en la Empresa<span> *</span>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Cargo..."
-                name="charge"
-                onChange={updateData}
-                value={data.charge}
-                autoComplete="off"
-                ref={register}
-              />
-            </Form.Group>
-            <Form.Group as={Col} md={4} controlId="formGridState">
-              <Form.Label>
-                Tipo de perfil<span> *</span>
-              </Form.Label>
-              <Form.Control
-                as="select"
-                name="profileType"
-                onChange={updateData}
-                autoComplete="off"
-                ref={register({ required: true })}
-              >
-                <option value="">Seleccione...</option>
-                <option value="1">Administrador</option>
-                <option value="2">Cliente</option>
-                <option value="7">SuperCliente</option>
-                <option value="3">Operaciones</option>
-                <option value="5">Técnico</option>
-              </Form.Control>
-              {errors.profileType && (
-                <small>Por favor, seleccione un perfil.</small>
-              )}
-            </Form.Group>
-          </Form.Row>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" type="submit" disabled={isLoading}>
-          Registrar usuario
-        </Button>
-        {showSpinner()}
-        {showErrorMessage()}
-      </Modal.Footer>
+            <Form.Row>
+              <Form.Group as={Col} controlId="formBasicEmail">
+                <Form.Label>
+                  Correro electrónico<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Correo electrónico"
+                  name="email"
+                  onChange={updateData}
+                  value={data.email}
+                  autoComplete="off"
+                  ref={register({
+                    required: true,
+                    pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
+                  })}
+                />
+                <Form.Text className="text-muted">
+                  {errors.email && <span>Ingrese un email válido.</span>}
+                </Form.Text>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  Contraseña<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Contraseña"
+                  name="password"
+                  id="newUserPassword"
+                  onChange={updateData}
+                  value={data.password}
+                  autoComplete="off"
+                  ref={register({
+                    required: true,
+                    // Min 8 digits, 1 uppercase, 1 number, 1 spec char
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/i,
+                  })}
+                />
+                <Form.Text className="text-muted">
+                  La contraseña debe tener ocho caracteres como mínimo y debe
+                  incluír una mayúscula, un número y un caracter especial
+                  (@$!%*?&).
+                  <br></br>
+                  {errors.password && (
+                    <span>Ingrese una contraseña válida</span>
+                  )}
+                </Form.Text>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  Confirmar contraseña<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Confirmar contraseña"
+                  name="passwordRepeat"
+                  id="newUserPassword2"
+                  onChange={updateData}
+                  value={data.passwordRepeat}
+                  autoComplete="off"
+                  ref={register({ required: true })}
+                />
+                <Form.Text className="text-muted">
+                  <span>{passError}</span>
+                  <br></br>
+                  {errors.passwordRepeat && <span>Confirma la contraseña</span>}
+                </Form.Text>
+              </Form.Group>
+              <Form.Group className="showPassword">
+                <Form.Check
+                  type="checkbox"
+                  label="Mostar contraseña"
+                  onClick={handleShowPass}
+                />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Empresa</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="company"
+                  onChange={updateData}
+                  value={data.empresa}
+                  autoComplete="off"
+                  placeholder="Empresa"
+                  as="select"
+                  ref={register({ required: true })}
+                >
+                  <option value="">Seleccione...</option>
+                  {companies.map((comp) => {
+                    return (
+                      <option key={comp.id} value={comp.id}>
+                        {comp.name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+                {errors.company && (
+                  <span>Por favor, selecciona una empresa.</span>
+                )}
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  Cargo en la Empresa<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Cargo..."
+                  name="charge"
+                  onChange={updateData}
+                  value={data.charge}
+                  autoComplete="off"
+                  ref={register}
+                />
+              </Form.Group>
+              <Form.Group as={Col} md={4} controlId="formGridState">
+                <Form.Label>
+                  Tipo de perfil<span> *</span>
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  name="profileType"
+                  onChange={updateData}
+                  autoComplete="off"
+                  ref={register({ required: true })}
+                >
+                  <option value="">Seleccione...</option>
+                  <option value="1">Administrador</option>
+                  <option value="2">Cliente</option>
+                  <option value="7">SuperCliente</option>
+                  <option value="3">Operaciones</option>
+                  <option value="5">Técnico</option>
+                </Form.Control>
+                {errors.profileType && (
+                  <small>Por favor, seleccione un perfil.</small>
+                )}
+              </Form.Group>
+            </Form.Row>
+
+            <Button variant="primary" type="submit" disabled={isLoading}>
+              Registrar usuario
+            </Button>
+            {showSpinner()}
+            {showErrorMessage()}
+          </Form>
+        </Card.Body>
+      </Card>
       <ModalSuccess
         show={smShow}
         onHide={() => setSmShow(false)}
         data={userSucessMessage}
       />
-    </Modal>
+    </React.Fragment>
   );
 };
 
