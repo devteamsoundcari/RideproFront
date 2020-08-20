@@ -991,7 +991,7 @@ const createProvider = async (data) => {
   }
 };
 
-const updateParticipantReport = async (data, requestId) => {
+const updateParticipantReport = async (data, requestId, file) => {
   if (data.file && data.file.name) {
     const formData = new FormData();
     formData.append("file", data.file);

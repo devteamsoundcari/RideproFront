@@ -664,6 +664,7 @@ const SingleRequestAdmin = () => {
                           drivers={data?.drivers}
                           handleClose={() => setShowModalUploadReports(false)}
                           requestId={requestId}
+                          onUpdate={() => fetchRequest(requestId)}
                         />
                       )}
                     </div>

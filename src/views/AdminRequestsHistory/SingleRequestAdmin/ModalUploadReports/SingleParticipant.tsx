@@ -12,6 +12,7 @@ type SingleParticipantProps = any;
 const SingleParticipant: React.FC<SingleParticipantProps> = ({
   data,
   requestId,
+  onUpdate,
 }) => {
   const [report, setReport] = useState<any>({});
   const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ const SingleParticipant: React.FC<SingleParticipantProps> = ({
     } else {
       swal("Oops", "No pudimos actualizar el reporte", "error");
     }
+    onUpdate();
     setLoading(false);
   };
 
@@ -83,7 +85,8 @@ const SingleParticipant: React.FC<SingleParticipantProps> = ({
       </td>
       <td>
         <Form.File
-          id="custom-file-translate-scss"
+          id={`custom-file-translate-${data.official_id}`}
+          className="custom-file-translate-scss"
           label={
             <span>
               {report.file ? (

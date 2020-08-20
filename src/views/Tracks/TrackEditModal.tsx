@@ -368,15 +368,15 @@ export const TrackEditModal: React.FC<TrackEditModalProps> = (
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
+          <Button variant="secondary" onClick={exit}>
+            Cerrar
+          </Button>
           <Button
             className={`btn-${userInfoContext.perfil}`}
             type="submit"
             disabled={!canSave}
           >
             Guardar
-          </Button>
-          <Button variant="secondary" onClick={exit}>
-            Cerrar
           </Button>
         </Modal.Footer>
       </Form>

@@ -1,13 +1,13 @@
 import React from "react";
-import { Card, Form, Button, Col } from "react-bootstrap";
+import { Modal, Form, Button, Col } from "react-bootstrap";
 
 type NewDocumentProps = any;
 
-const NewDocument: React.FC<NewDocumentProps> = () => {
+const NewDocument: React.FC<NewDocumentProps> = ({ handleClose }) => {
   return (
-    <Card className="usuarios">
-      <Card.Body>
-        <Card.Title>Registrar nuevo documento</Card.Title>
+    <Modal show={true} onHide={handleClose} size="lg">
+      <Modal.Body>
+        <Modal.Title>Registrar nuevo documento</Modal.Title>
         <Form>
           <Form.Row>
             <Form.Group as={Col} controlId="formGridDocument">
@@ -24,13 +24,17 @@ const NewDocument: React.FC<NewDocumentProps> = () => {
             <Form.Label>Descripción</Form.Label>
             <Form.Control as="textarea" rows="2" />
           </Form.Group>
-
-          <Button variant="primary" type="submit">
-            Registrar
-          </Button>
         </Form>
-      </Card.Body>
-    </Card>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+        <Button variant="primary" type="submit">
+          Registrar
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 export default NewDocument;

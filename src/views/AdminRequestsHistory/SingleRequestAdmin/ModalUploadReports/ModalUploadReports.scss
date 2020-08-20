@@ -23,8 +23,10 @@
         background-color: green;
       }
     }
-    #custom-file-translate-scss {
-      display: none;
+    .custom-file-translate-scss {
+      input {
+        display: none;
+      }
     }
     .custom-file-input:lang(es) ~ .custom-file-label::after {
       display: none;

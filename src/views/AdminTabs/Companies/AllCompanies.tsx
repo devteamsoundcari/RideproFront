@@ -3,24 +3,25 @@ import { Card, Image } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-import { getCompanies } from "../../../controllers/apiRequests";
+import { getCompanies, getUsers } from "../../../controllers/apiRequests";
 type AllCompaniesProps = any;
 
 const AllCompanies: React.FC<AllCompaniesProps> = () => {
-  const [companies, setCompanies] = useState([]);
+  const [companies, setCompanies] = useState<any>([]);
 
-  useEffect(() => {
-    async function fetchCompanies() {
-      let res = await getCompanies();
-      if (res) {
-        setCompanies(res.results);
-      } else {
-        console.log("No hay empresas registradas");
-      }
+  const fetchCompanies = async (url) => {
+    const response = await getUsers(url);
+    setCompanies((oldArr: any) => [...oldArr, ...response.results]);
+    if (response.next) {
+      return await fetchCompanies(response.next);
     }
-    fetchCompanies();
+  };
+  useEffect(() => {
+    fetchCompanies(`${process.env.REACT_APP_API_URL}/api/v1/companies/`);
+    // eslint-disable-next-line
   }, []);
 
+  // `${process.env.REACT_APP_API_URL}/api/v1/companies/`
   const logoFormatter = (cell) => {
     return <Image src={cell} roundedCircle width="50" height="50" />;
   };

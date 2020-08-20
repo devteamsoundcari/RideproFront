@@ -28,10 +28,13 @@ const ModalUploadReports: React.FC<ModalUploadReportsType> = ({
   handleClose,
   drivers,
   requestId,
+  onUpdate,
 }) => {
   const { userInfoContext } = useContext(AuthContext);
   // const { SearchBar } = Search;
   const [participants, setParticipants] = useState<ParticipantsData>([]);
+
+  const handleUpdate = () => onUpdate();
 
   // ================================ FETCH REQUEST INSTRUCTORS ON LOAD =====================================================
 
@@ -42,11 +45,13 @@ const ModalUploadReports: React.FC<ModalUploadReportsType> = ({
   useEffect(() => {
     if (drivers && drivers.length > 0) {
       getDrivers(drivers).then((data) => {
+        let oldArr: any = [];
         data.forEach((item: any) => {
           item.result = "---";
           item.url = "---";
-          setParticipants((oldArr: any) => [...oldArr, item]);
+          oldArr.push(item);
         });
+        setParticipants(oldArr);
       });
     }
   }, [drivers]);
@@ -76,8 +81,13 @@ const ModalUploadReports: React.FC<ModalUploadReportsType> = ({
             </tr>
           </thead>
           <tbody>
-            {participants.map((driver) => (
-              <SingleParticipant data={driver} requestId={requestId} />
+            {participants.map((driver, idx) => (
+              <SingleParticipant
+                key={idx}
+                data={driver}
+                requestId={requestId}
+                onUpdate={() => handleUpdate()}
+              />
             ))}
           </tbody>
         </Table>
