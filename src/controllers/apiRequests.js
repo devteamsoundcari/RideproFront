@@ -287,6 +287,26 @@ const getDocuments = async () => {
   return docs.data;
 };
 
+const createDocument = async (data, file) => {
+  const formData = new FormData();
+  if (file) {
+    formData.append("template", file);
+  }
+  formData.append("name", data.name);
+  formData.append("description", data.description ? data.description : "NA");
+  const result = await axios
+    .post(`${process.env.REACT_APP_API_URL}/api/v1/documents/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
+};
+
 /* =================================   GET COMPANIES   ===================================== */
 const getCompanies = async () => {
   const getInfo = async (url) => {
@@ -302,6 +322,29 @@ const getCompanies = async () => {
     `${process.env.REACT_APP_API_URL}/api/v1/companies/`
   );
   return company.data;
+};
+const createCompany = async (data, logo) => {
+  const formData = new FormData();
+  if (logo) {
+    formData.append("logo", logo);
+  }
+  formData.append("name", data.name);
+  formData.append("address", data.address ? data.address : "NA");
+  formData.append("phone", data.phone ? data.phone : "NA");
+  formData.append("arl", data.arl ? data.arl : "NA");
+  formData.append("nit", data.nit ? data.nit : "NA");
+  formData.append("credit", 0);
+  const result = await axios
+    .post(`${process.env.REACT_APP_API_URL}/api/v1/companies/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
 };
 
 const editCompany = async (id, data) => {
@@ -1060,6 +1103,7 @@ export {
   getRequest,
   updateRequestDocuments,
   getRequestDocuments,
+  createDocument,
   updateRequestInstructors,
   updateInstructorFares,
   updateRequestProviders,
@@ -1085,4 +1129,5 @@ export {
   getUserReport,
   updateParticipantReport,
   getDocuments,
+  createCompany,
 };

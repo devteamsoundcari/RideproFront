@@ -1,45 +1,65 @@
-import React, { useEffect, useState } from "react";
-import { Card, Image } from "react-bootstrap";
+import React from "react";
+import { Card } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-type AllCompaniesProps = any;
+import "../Usuarios/AllUsers/AllUsers.scss";
 
-const AllCompanies: React.FC<AllCompaniesProps> = ({ companies }) => {
-  const logoFormatter = (cell) => {
-    return <Image src={cell} roundedCircle width="50" height="50" />;
+const AllSuperClients = (props) => {
+  const profileFormatter = (cell, row) => {
+    let profileName = "";
+    switch (row.profile) {
+      case 1:
+        profileName = "Admin";
+        break;
+      case 2:
+        profileName = "Cliente";
+        break;
+      case 3:
+        profileName = "Operaciones";
+        break;
+      case 5:
+        profileName = "Técnico";
+        break;
+      case 7:
+        profileName = "SuperCliente";
+        break;
+      default:
+        profileName = "No definido";
+        break;
+    }
+
+    return (
+      <span>
+        <strong>{profileName}</strong>
+      </span>
+    );
   };
 
   const columns = [
     {
-      dataField: "logo",
-      text: "Logo",
-      formatter: logoFormatter,
-      classes: "md-column",
-      headerClasses: "md-column",
+      dataField: "id",
+      text: "Id",
+      sort: true,
+      classes: "small-column",
+      headerClasses: "small-column",
     },
     {
-      dataField: "name",
+      dataField: "company.name",
+      text: "Empresa",
+      sort: true,
+    },
+    {
+      dataField: "first_name",
       text: "Nombre",
-      sort: true,
-    },
-
-    {
-      dataField: "nit",
-      text: "Nit",
-      sort: true,
     },
     {
-      dataField: "address",
-      text: "Dirección",
+      dataField: "last_name",
+      text: "Apellido",
     },
     {
-      dataField: "phone",
-      text: "Teléfono",
-    },
-    {
-      dataField: "arl",
-      text: "ARL",
+      dataField: "email",
+      text: "Email",
     },
   ];
 
@@ -61,16 +81,17 @@ const AllCompanies: React.FC<AllCompaniesProps> = ({ companies }) => {
       </div>
     );
   };
+
   return (
     <Card className="allUsers mt-3 mb-5">
       <Card.Body>
-        <Card.Title>Empresas</Card.Title>
+        <Card.Title>Superusuarios</Card.Title>
         <Card.Body>
           <ToolkitProvider
             bootstrap4
             // defaultSorted={defaultSorted}
             keyField="id"
-            data={companies}
+            data={props.users}
             columns={columns}
             pagination={paginationFactory()}
             hover
@@ -89,4 +110,5 @@ const AllCompanies: React.FC<AllCompaniesProps> = ({ companies }) => {
     </Card>
   );
 };
-export default AllCompanies;
+
+export default AllSuperClients;
