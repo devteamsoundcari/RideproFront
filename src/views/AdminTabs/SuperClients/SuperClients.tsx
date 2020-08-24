@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import { getUsers } from "../../../controllers/apiRequests";
-import AllSuperClients from "./AllSuperClients";
+import AllSuperClients from "./AllSuperClients/AllSuperClients";
 import AttachCompanyToUser from "./AttachCompanyToUser";
 type SuperClientsProps = any;
 
@@ -23,21 +23,18 @@ const SuperClients: React.FC<SuperClientsProps> = () => {
   return (
     <Row>
       <Col>
-        <Button variant="primary" onClick={() => setShowModal(true)}>
-          Asignar empresa a superusuario
-        </Button>
         {/* <RegistrarNuevoUsuario
           onUpdate={() => {
             setUsers([]);
             fetchUsers(`${process.env.REACT_APP_API_URL}/api/v1/users/`);
           }}
         /> */}
-        {showModal && (
+        {/* {showModal && (
           <AttachCompanyToUser
             handleClose={() => setShowModal(false)}
             onUpdate={() => console.log("As")}
           />
-        )}
+        )} */}
         <AllSuperClients users={users} />
       </Col>
     </Row>

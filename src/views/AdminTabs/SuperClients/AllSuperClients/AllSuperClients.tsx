@@ -3,39 +3,11 @@ import { Card } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-import "../Usuarios/AllUsers/AllUsers.scss";
+import "../../Usuarios/AllUsers/AllUsers.scss";
+import "./AllSuperClients.scss";
+import ExpandSection from "./ExpandSection";
 
 const AllSuperClients = (props) => {
-  const profileFormatter = (cell, row) => {
-    let profileName = "";
-    switch (row.profile) {
-      case 1:
-        profileName = "Admin";
-        break;
-      case 2:
-        profileName = "Cliente";
-        break;
-      case 3:
-        profileName = "Operaciones";
-        break;
-      case 5:
-        profileName = "Técnico";
-        break;
-      case 7:
-        profileName = "SuperCliente";
-        break;
-      default:
-        profileName = "No definido";
-        break;
-    }
-
-    return (
-      <span>
-        <strong>{profileName}</strong>
-      </span>
-    );
-  };
-
   const columns = [
     {
       dataField: "id",
@@ -45,17 +17,17 @@ const AllSuperClients = (props) => {
       headerClasses: "small-column",
     },
     {
-      dataField: "company.name",
-      text: "Empresa",
-      sort: true,
-    },
-    {
       dataField: "first_name",
       text: "Nombre",
     },
     {
       dataField: "last_name",
       text: "Apellido",
+    },
+    {
+      dataField: "company.name",
+      text: "Empresa",
+      sort: true,
     },
     {
       dataField: "email",
@@ -82,6 +54,26 @@ const AllSuperClients = (props) => {
     );
   };
 
+  const expandRow = {
+    parentClassName: "parent-row",
+    className: "expanding-foo",
+    onlyOneExpanding: true,
+    renderer: (row) => <ExpandSection row={row} />,
+    showExpandColumn: true,
+    expandHeaderColumnRenderer: ({ isAnyExpands }) => {
+      if (isAnyExpands) {
+        return <b>-</b>;
+      }
+      return <b>+</b>;
+    },
+    expandColumnRenderer: ({ expanded }) => {
+      if (expanded) {
+        return <b>-</b>;
+      }
+      return <b>+</b>;
+    },
+  };
+
   return (
     <Card className="allUsers mt-3 mb-5">
       <Card.Body>
@@ -90,6 +82,7 @@ const AllSuperClients = (props) => {
           <ToolkitProvider
             bootstrap4
             // defaultSorted={defaultSorted}
+
             keyField="id"
             data={props.users}
             columns={columns}
@@ -101,7 +94,11 @@ const AllSuperClients = (props) => {
               <div>
                 <MySearch {...props.searchProps} />
                 <hr />
-                <BootstrapTable {...props.baseProps} />
+                <BootstrapTable
+                  {...props.baseProps}
+                  expandRow={expandRow}
+                  rowClasses={"rowClass"}
+                />
               </div>
             )}
           </ToolkitProvider>

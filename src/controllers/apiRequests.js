@@ -236,6 +236,36 @@ const getSuperUserCompanies = async (userId) => {
   return companies;
 };
 
+const setSuperUserCompany = async (user, company) => {
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/`,
+    data: {
+      user,
+      companies: company,
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 201) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const deleteSuperUserCompany = async (data) => {
+  await axios({
+    method: "DELETE",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/`,
+    data,
+  }).catch((err) => {
+    console.log(err.response);
+  });
+  return true;
+};
+
 /* =================================   GET SERVICES   ===================================== */
 const getServices = async () => {
   const getInfo = async (url) => {
@@ -1075,6 +1105,8 @@ const updateParticipantReport = async (data, requestId, file) => {
 // ================================================================================
 
 export {
+  deleteSuperUserCompany,
+  setSuperUserCompany,
   sendEmail,
   saveNewUser,
   getUsers,
