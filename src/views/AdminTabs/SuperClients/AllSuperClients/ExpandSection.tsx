@@ -46,7 +46,16 @@ const ExpandSection = ({ row }) => {
                 if (willUpdate) {
                   console.log("delete", cmpny.id);
                   let res = await deleteSuperUserCompany(cmpny.id);
-                  console.log("res", res);
+                  if (res) {
+                    swal(
+                      "Perfecto!",
+                      `Empresa desvinculada existosamente`,
+                      "success"
+                    );
+                    fetchCompanies();
+                  } else {
+                    console.error("Opps, no se pudo devincular la empresa");
+                  }
                 }
               });
             }}

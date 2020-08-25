@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Col, Modal, Spinner } from "react-bootstrap";
+import { Form, Button, Modal, Spinner } from "react-bootstrap";
 import { getUsers } from "../../../controllers/apiRequests";
 import { setSuperUserCompany } from "../../../controllers/apiRequests";
 import swal from "sweetalert";

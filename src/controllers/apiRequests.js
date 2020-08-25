@@ -258,8 +258,7 @@ const setSuperUserCompany = async (user, company) => {
 const deleteSuperUserCompany = async (data) => {
   await axios({
     method: "DELETE",
-    url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/`,
-    data,
+    url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/${data}`,
   }).catch((err) => {
     console.log(err.response);
   });
@@ -334,6 +333,52 @@ const createDocument = async (data, file) => {
       console.error(err);
       return err.response.data;
     });
+  return result;
+};
+
+const createSale = async (data) => {
+  const formData = new FormData();
+  if (data.file) {
+    formData.append("file", data.file);
+  }
+  formData.append("bill_id", data.bill_id);
+  formData.append("payment_method", data.payment_method);
+  formData.append("value", data.value);
+  formData.append("credits", data.credits);
+  formData.append("buyer", data.buyer);
+  formData.append("seller", data.seller);
+  formData.append("notes", data.notes);
+
+  const result = await axios
+    .post(`${process.env.REACT_APP_API_URL}/api/v1/sale_credits/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  let payload = {
+    newCredit: parseInt(data.user.credit) + parseInt(data.credits),
+    userId: data.user.id,
+    companyId: data.user.company.id,
+  };
+  let creditSetting = await setUserIdCredits(payload);
+  return { sale: result, creditsAssigned: creditSetting };
+};
+
+const setUserIdCredits = async (data) => {
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/users/${data.userId}/`,
+    data: {
+      credit: data.newCredit,
+      company_id: data.companyId,
+    },
+  }).catch((err) => {
+    return err;
+  });
   return result;
 };
 
@@ -1162,4 +1207,5 @@ export {
   updateParticipantReport,
   getDocuments,
   createCompany,
+  createSale,
 };
