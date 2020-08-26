@@ -22,7 +22,9 @@ import Documents from "./Documents/Documents";
 import ModalOC from "./ModalOC/ModalOC";
 import OperacionesStatus from "../../../utils/OperacionesStatus";
 import TecnicoStatus from "../../../utils/TecnicoStatus";
+import AdminStatus from "../../../utils/AdminStatus";
 import ModalUploadReports from "./ModalUploadReports/ModalUploadReports";
+import ModalInvoice from "./ModalInvoice/ModalInvoice";
 
 interface Service {
   name: string;
@@ -101,6 +103,7 @@ const SingleRequestAdmin = () => {
   const [showModalUploadReports, setShowModalUploadReports] = useState(false);
   const [participantsInfo, setParticipantsInfo] = useState([]);
   const [allReportsOk, setAllReportsOk] = useState(false);
+  const [showModalInvoice, setShowModalInvoice] = useState(false);
 
   async function fetchRequest(id: string) {
     setLoading(true);
@@ -167,6 +170,8 @@ const SingleRequestAdmin = () => {
   const renderStatus = () => {
     if (userInfoContext.profile === 3) {
       return <OperacionesStatus step={data?.status?.step} />;
+    } else if (userInfoContext.profile === 1) {
+      return <AdminStatus step={data?.status?.step} />;
     } else {
       return <TecnicoStatus step={data?.status?.step} />;
     }
@@ -716,6 +721,26 @@ const SingleRequestAdmin = () => {
               </React.Fragment>
             ) : (
               ""
+            )}
+            {userInfoContext.profile === 1 && data?.status?.step
+              ? data?.status?.step > 4 && (
+                  <div className="card invoice-action-wrapper mt-2 shadow-none border">
+                    <div className="card-body">
+                      <div className="invoice-action-btn">
+                        <Button
+                          className="btn-block btn-success"
+                          disabled={data?.status?.step > 5}
+                          onClick={() => setShowModalInvoice(true)}
+                        >
+                          <span>Adjuntar factura</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              : ""}
+            {showModalInvoice && (
+              <ModalInvoice handleClose={() => setShowModalInvoice(false)} />
             )}
           </div>
         </Row>

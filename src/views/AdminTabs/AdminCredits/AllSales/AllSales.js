@@ -67,12 +67,6 @@ const AllSales = (props) => {
       sort: true,
     },
     {
-      dataField: "value",
-      text: "$",
-      classes: "small-column",
-      headerClasses: "small-column",
-    },
-    {
       dataField: "credits",
       text: "Cred",
       classes: "small-column",
@@ -100,6 +94,7 @@ const AllSales = (props) => {
   };
 
   const expandRow = {
+    parentClassName: "parent-row",
     renderer: (row) => (
       <Row className="expand-credits">
         <Col md={6}>
@@ -108,13 +103,23 @@ const AllSales = (props) => {
             <p>{row.notes}</p>
           </div>
         </Col>
-        <Col md={6}>
+        <Col md={3}>
           <h6>Forma de Pago:</h6>
           <p>{paymentFormatter("", row)}</p>
           <h6>Valor:</h6>
           <p>{row.value}</p>
+        </Col>
+        <Col md={3}>
           <h6>Creditos asignados:</h6>
           <p>{row.credits}</p>
+          {row.file && (
+            <React.Fragment>
+              <h6>Orden de compra:</h6>
+              <a href={row.file} target="n_blank">
+                link
+              </a>
+            </React.Fragment>
+          )}
         </Col>
       </Row>
     ),
@@ -138,7 +143,11 @@ const AllSales = (props) => {
               <div>
                 <MySearch {...props.searchProps} />
                 <hr />
-                <BootstrapTable {...props.baseProps} expandRow={expandRow} />
+                <BootstrapTable
+                  {...props.baseProps}
+                  expandRow={expandRow}
+                  rowClasses={"rowClass"}
+                />
               </div>
             )}
           </ToolkitProvider>

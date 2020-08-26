@@ -16,6 +16,7 @@ import "./AdminRequestsHistory.scss";
 import { AuthContext } from "../../contexts/AuthContext";
 import OperacionesStatus from "../../utils/OperacionesStatus";
 import TecnicoStatus from "../../utils/TecnicoStatus";
+import AdminStatus from "../../utils/AdminStatus";
 
 const AdminRequestsHistory = () => {
   const location = useLocation();
@@ -45,6 +46,8 @@ const AdminRequestsHistory = () => {
   const statusFormatter = (cell, row) => {
     if (userInfoContext.profile === 3) {
       return <OperacionesStatus step={row.status.step} />;
+    } else if (userInfoContext.profile === 1) {
+      return <AdminStatus step={row.status.step} />;
     } else {
       return <TecnicoStatus step={row.status.step} />;
     }
