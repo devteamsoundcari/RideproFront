@@ -804,6 +804,31 @@ const updateRequestProviders = async (data) => {
   return result;
 };
 
+const sendInvoice = async (data) => {
+  const formData = new FormData();
+  if (data.file) {
+    formData.append("file", data.file);
+  }
+  formData.append("description", data.description);
+  formData.append("seller", data.seller);
+  formData.append("buyer", data.buyer);
+  formData.append("payment_method", data.payment_method);
+  formData.append("value", data.value);
+  formData.append("notes", data.notes);
+  formData.append("bill_id", data.bill_id);
+  const result = await axios
+    .post(`${process.env.REACT_APP_API_URL}/api/v1/bills/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
+};
+
 const updateProviderFares = async (data, id) => {
   const result = await axios({
     method: "PATCH",
@@ -1208,4 +1233,5 @@ export {
   getDocuments,
   createCompany,
   createSale,
+  sendInvoice,
 };

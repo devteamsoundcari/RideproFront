@@ -25,6 +25,7 @@ import TecnicoStatus from "../../../utils/TecnicoStatus";
 import AdminStatus from "../../../utils/AdminStatus";
 import ModalUploadReports from "./ModalUploadReports/ModalUploadReports";
 import ModalInvoice from "./ModalInvoice/ModalInvoice";
+import Invoice from "./Invoice/Invoice";
 
 interface Service {
   name: string;
@@ -416,6 +417,16 @@ const SingleRequestAdmin = () => {
                 ) : (
                   ""
                 )}
+                {userInfoContext.profile === 1 &&
+                data?.status?.step &&
+                data?.status?.step > 5 ? (
+                  <React.Fragment>
+                    <hr />
+                    <Invoice data={data} />
+                  </React.Fragment>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>
@@ -740,7 +751,11 @@ const SingleRequestAdmin = () => {
                 )
               : ""}
             {showModalInvoice && (
-              <ModalInvoice handleClose={() => setShowModalInvoice(false)} />
+              <ModalInvoice
+                handleClose={() => setShowModalInvoice(false)}
+                requestInfo={data}
+                onUpdate={() => fetchRequest(requestId)}
+              />
             )}
           </div>
         </Row>

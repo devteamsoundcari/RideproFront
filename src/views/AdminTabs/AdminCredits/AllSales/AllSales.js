@@ -95,6 +95,7 @@ const AllSales = (props) => {
 
   const expandRow = {
     parentClassName: "parent-row",
+    onlyOneExpanding: true,
     renderer: (row) => (
       <Row className="expand-credits">
         <Col md={6}>
