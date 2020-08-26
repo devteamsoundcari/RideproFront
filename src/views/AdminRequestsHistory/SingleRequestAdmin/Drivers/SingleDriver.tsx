@@ -21,7 +21,7 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
   }, [requestId, data]);
 
   useEffect(() => {
-    if (report.description) {
+    if (report.file) {
       onUpdate(report);
     }
     // eslint-disable-next-line

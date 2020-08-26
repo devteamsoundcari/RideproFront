@@ -114,6 +114,12 @@ const statusStepFormatter = (step: number, profile: number) => {
         };
       case 5:
         return {
+          name: "Confirmar recepción de documentos",
+          bgColor: "bg-confirm-docs",
+          color: "#fff",
+        };
+      case 6:
+        return {
           name: "Adjuntar factura",
           bgColor: "bg-upload-reports",
           color: "#fff",

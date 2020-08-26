@@ -66,6 +66,10 @@ const CalendarConventions: React.FC<CalendarConventionsProps> = () => {
             <small>PROGRAMACIÓN ACEPATADA</small>
           </ListGroup.Item>
           <ListGroup.Item>
+            <FaDotCircle className="text-confirm-docs" />{" "}
+            <small>ESPERANDO RECEPCIÓN DE DOCUMENTOS</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
             <FaDotCircle className="text-upload-reports" />{" "}
             <small>ADJUNTAR FACTURA</small>
           </ListGroup.Item>

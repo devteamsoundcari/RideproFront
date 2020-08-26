@@ -22,7 +22,7 @@ const ModalInvoice = ({ handleClose, requestInfo, onUpdate }) => {
     data.payment_method = "na";
     let response = await sendInvoice(data);
     let responseRequest = await updateRequest(
-      { status: process.env.REACT_APP_STATUS_STEP_6 },
+      { status: process.env.REACT_APP_STATUS_STEP_7 },
       requestInfo.id
     );
     console.log("response reuqest", responseRequest);

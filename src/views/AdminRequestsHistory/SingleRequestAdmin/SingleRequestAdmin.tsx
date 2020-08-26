@@ -419,7 +419,7 @@ const SingleRequestAdmin = () => {
                 )}
                 {userInfoContext.profile === 1 &&
                 data?.status?.step &&
-                data?.status?.step > 5 ? (
+                data?.status?.step > 6 ? (
                   <React.Fragment>
                     <hr />
                     <Invoice data={data} />
@@ -734,13 +734,13 @@ const SingleRequestAdmin = () => {
               ""
             )}
             {userInfoContext.profile === 1 && data?.status?.step
-              ? data?.status?.step > 4 && (
+              ? data?.status?.step > 5 && (
                   <div className="card invoice-action-wrapper mt-2 shadow-none border">
                     <div className="card-body">
                       <div className="invoice-action-btn">
                         <Button
                           className="btn-block btn-success"
-                          disabled={data?.status?.step > 5}
+                          disabled={data?.status?.step > 6}
                           onClick={() => setShowModalInvoice(true)}
                         >
                           <span>Adjuntar factura</span>

@@ -68,6 +68,18 @@ function AdminStatus({ step }) {
     case 5:
       return (
         <div className="text-center">
+          <small>Esperando recepción de documentos</small>
+          <ProgressBar
+            variant="confirm-docs"
+            now={60}
+            label={`${60}%`}
+            srOnly
+          />
+        </div>
+      );
+    case 6:
+      return (
+        <div className="text-center">
           <small>Adjuntar factura</small>
           <ProgressBar
             variant="upload-reports"
