@@ -91,7 +91,7 @@
       }
     }
     .incorrect {
-      .content-editable {
+      input {
         border: 2px solid red;
       }
       .new-row {
