@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import BootstrapTable, { SelectRowProps }from "react-bootstrap-table-next";
+import BootstrapTable, { SelectRowProps } from "react-bootstrap-table-next";
 import { Modal, Button } from "react-bootstrap";
 import {
   //   updateRequestDocuments,
@@ -44,6 +44,26 @@ const ModalDocuments: React.FC<ModalDocumentsProps> = ({
       dataField: "description",
       text: "Descripción",
       headerClasses: "new-style",
+    },
+    {
+      dataField: "template",
+      text: "Plantilla",
+      headerClasses: "new-style",
+      formatter: (data) => {
+        if (data) {
+          return (
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={() => window.open(data, "_blank", "resizable=yes")}
+            >
+              Ver plantilla
+            </Button>
+          );
+        } else {
+          return "NA";
+        }
+      },
     },
   ];
 

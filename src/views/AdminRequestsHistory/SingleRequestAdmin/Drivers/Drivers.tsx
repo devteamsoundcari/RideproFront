@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Table } from "react-bootstrap";
 import { fetchDriver } from "../../../../controllers/apiRequests";
 import "./Drivers.scss";
 import SingleDriver from "./SingleDriver";
+import { ReportsContext } from "../../../../contexts/ReportsContext";
 
 interface DriversProps {
   drivers: any;
@@ -30,7 +31,7 @@ const Drivers: React.FC<DriversProps> = ({
   allReportsOk,
 }) => {
   const [participants, setParticipants] = useState<ParticipantsData>([]);
-  const [reports, setReports] = useState<any>([]);
+  const { reportsInfoContext } = useContext(ReportsContext);
 
   // ================================ FETCH REQUEST INSTRUCTORS ON LOAD =====================================================
 
@@ -52,12 +53,12 @@ const Drivers: React.FC<DriversProps> = ({
   }, [participants]);
 
   useEffect(() => {
-    if (participants.length === reports.length) {
+    if (participants.length === reportsInfoContext.length) {
       allReportsOk(true);
     } else {
       allReportsOk(false);
     }
-  }, [reports, participants, allReportsOk]);
+  }, [reportsInfoContext, participants, allReportsOk]);
 
   return (
     <Table bordered hover size="sm" className="mb-3 participants-table-admin">
@@ -79,14 +80,7 @@ const Drivers: React.FC<DriversProps> = ({
       </thead>
       <tbody>
         {participants?.map((participant, idx) => (
-          <SingleDriver
-            data={participant}
-            key={idx}
-            requestId={requestId}
-            onUpdate={(data: any) => {
-              setReports((reports) => [...reports, data]);
-            }}
-          />
+          <SingleDriver data={participant} key={idx} requestId={requestId} />
         ))}
       </tbody>
     </Table>

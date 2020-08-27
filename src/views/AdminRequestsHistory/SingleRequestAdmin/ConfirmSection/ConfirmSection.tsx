@@ -25,6 +25,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
   status,
   date,
   participants,
+  service,
 }) => {
   const [showModalProviders, setShowModalProviders] = useState(false);
   const [showModalDocuments, setShowModalDocuments] = useState(false);
@@ -56,6 +57,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
       })
     );
 
+    console.log("track", track);
     setTheTrack(track);
     setTrackFP(fisrt_payment);
     setTrackFare(fare_track);
@@ -238,70 +240,72 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                       </tr>
                     );
                   })}
-                  <tr>
-                    <td>Pista</td>
-                    <td>{theTrack.contact_name}</td>
-                    <td>{theTrack.cellphone}</td>
-                    <td>{theTrack.contact_email}</td>
-                    <td>
-                      <Form.Control
-                        size="sm"
-                        type="number"
-                        placeholder="$0"
-                        value={trackFare}
-                        min={0}
-                        onChange={(x) => {
-                          setTrackFare(x.target.value);
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <Form.Control
-                        size="sm"
-                        type="number"
-                        placeholder="$0"
-                        value={trackFP}
-                        min={0}
-                        onChange={(x) => {
-                          setTrackFP(x.target.value);
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <Button
-                        variant="link"
-                        size="sm"
-                        onClick={async () => {
-                          let res = await updateRequest(
-                            {
-                              f_p_track: trackFP,
-                              fare_track: trackFare,
-                            },
-                            requestId
-                          );
-                          if (res.status === 200) {
-                            swal(
-                              "Pago registado!",
-                              `El pago de ${
-                                theTrack.contact_name
-                              } por ${formatter.format(
-                                trackFP
-                              )} fue registrado 👍`,
-                              "success"
+                  {theTrack.company && theTrack.company.name === "Ridepro" && (
+                    <tr>
+                      <td>Pista</td>
+                      <td>{theTrack.contact_name}</td>
+                      <td>{theTrack.cellphone}</td>
+                      <td>{theTrack.contact_email}</td>
+                      <td>
+                        <Form.Control
+                          size="sm"
+                          type="number"
+                          placeholder="$0"
+                          value={trackFare}
+                          min={0}
+                          onChange={(x) => {
+                            setTrackFare(x.target.value);
+                          }}
+                        />
+                      </td>
+                      <td>
+                        <Form.Control
+                          size="sm"
+                          type="number"
+                          placeholder="$0"
+                          value={trackFP}
+                          min={0}
+                          onChange={(x) => {
+                            setTrackFP(x.target.value);
+                          }}
+                        />
+                      </td>
+                      <td>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          onClick={async () => {
+                            let res = await updateRequest(
+                              {
+                                f_p_track: trackFP,
+                                fare_track: trackFare,
+                              },
+                              requestId
                             );
-                          } else {
-                            swal(
-                              "Algo pasa!",
-                              "No pudimos actualizar el pago 😢",
-                              "error"
-                            );
-                          }
-                        }}
-                      >
-                        <FaSave />
-                      </Button>
-                    </td>
-                  </tr>
+                            if (res.status === 200) {
+                              swal(
+                                "Pago registado!",
+                                `El pago de ${
+                                  theTrack.contact_name
+                                } por ${formatter.format(
+                                  trackFP
+                                )} fue registrado 👍`,
+                                "success"
+                              );
+                            } else {
+                              swal(
+                                "Algo pasa!",
+                                "No pudimos actualizar el pago 😢",
+                                "error"
+                              );
+                            }
+                          }}
+                        >
+                          <FaSave />
+                        </Button>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </Table>
             </Modal.Body>
@@ -379,20 +383,25 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                     instructors.forEach(
                       (item) => (item.hash = hashCode(item.id, requestId))
                     );
-                    // Send track email
-                    let trackPayload = {
-                      id: requestId,
-                      emailType: "requestConfirmedTrack",
-                      subject: "Evento confirmado ✔️",
-                      email: track.contact_email,
-                      name: track.contact_name,
-                      instructor: instructors[0].instructors,
-                      hash: track.hash,
-                      firstPayment: trackFP,
-                      date: date,
-                    };
 
-                    await sendEmail(trackPayload);
+                    // Send track email if track is part of ridepro
+                    if (
+                      theTrack.company &&
+                      theTrack.company.name === "Ridepro"
+                    ) {
+                      let trackPayload = {
+                        id: requestId,
+                        emailType: "requestConfirmedTrack",
+                        subject: "Evento confirmado ✔️",
+                        email: track.contact_email,
+                        name: track.contact_name,
+                        instructor: instructors[0].instructors,
+                        hash: track.hash,
+                        firstPayment: trackFP,
+                        date: date,
+                      };
+                      await sendEmail(trackPayload);
+                    }
 
                     // Send providers email
                     providers.forEach(async (prov) => {
@@ -425,6 +434,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                         track: track,
                         participantes: participants,
                         documents: selectedDocuments,
+                        service: service?.name,
                       };
                       await sendEmail(instructorPayload);
                     });

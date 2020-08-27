@@ -616,6 +616,7 @@ const SingleRequestAdmin = () => {
                         status={data?.status}
                         date={data?.start_time}
                         participants={participantsInfo}
+                        service={data?.service}
                       />
                     )
                   : ""}
