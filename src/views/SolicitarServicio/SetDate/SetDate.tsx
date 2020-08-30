@@ -108,11 +108,11 @@ const SetDate = (props) => {
   });
 
   useEffect(() => {
-    if (date.date === null)
-      setDate((prevDate) => ({
-        ...prevDate,
-        date: minDate,
-      }));
+    // if (date.date !== null)
+    setDate((prevDate) => ({
+      ...prevDate,
+      date: minDate,
+    }));
     // eslint-disable-next-line
   }, [minDate]);
 

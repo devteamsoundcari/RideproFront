@@ -1,45 +1,37 @@
 import React from "react";
-import { Card, Image } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-type AllCompaniesProps = any;
+import "../../Usuarios/AllUsers/AllUsers.scss";
+import "./AllSuperClients.scss";
+import ExpandSection from "./ExpandSection";
 
-const AllCompanies: React.FC<AllCompaniesProps> = ({ companies }) => {
-  const logoFormatter = (cell) => {
-    return <Image src={cell} roundedCircle width="50" height="50" />;
-  };
-
+const AllSuperClients = (props) => {
   const columns = [
     {
-      dataField: "logo",
-      text: "Logo",
-      formatter: logoFormatter,
-      classes: "md-column",
-      headerClasses: "md-column",
+      dataField: "id",
+      text: "Id",
+      sort: true,
+      classes: "small-column",
+      headerClasses: "small-column",
     },
     {
-      dataField: "name",
+      dataField: "first_name",
       text: "Nombre",
+    },
+    {
+      dataField: "last_name",
+      text: "Apellido",
+    },
+    {
+      dataField: "company.name",
+      text: "Empresa",
       sort: true,
     },
-
     {
-      dataField: "nit",
-      text: "Nit",
-      sort: true,
-    },
-    {
-      dataField: "address",
-      text: "Dirección",
-    },
-    {
-      dataField: "phone",
-      text: "Teléfono",
-    },
-    {
-      dataField: "arl",
-      text: "ARL",
+      dataField: "email",
+      text: "Email",
     },
   ];
 
@@ -61,16 +53,38 @@ const AllCompanies: React.FC<AllCompaniesProps> = ({ companies }) => {
       </div>
     );
   };
+
+  const expandRow = {
+    parentClassName: "parent-row",
+    className: "expanding-foo",
+    onlyOneExpanding: true,
+    renderer: (row) => <ExpandSection row={row} />,
+    showExpandColumn: true,
+    expandHeaderColumnRenderer: ({ isAnyExpands }) => {
+      if (isAnyExpands) {
+        return <b>-</b>;
+      }
+      return <b>+</b>;
+    },
+    expandColumnRenderer: ({ expanded }) => {
+      if (expanded) {
+        return <b>-</b>;
+      }
+      return <b>+</b>;
+    },
+  };
+
   return (
     <Card className="allUsers mt-3 mb-5">
       <Card.Body>
-        <Card.Title>Empresas</Card.Title>
+        <Card.Title>Superusuarios</Card.Title>
         <Card.Body>
           <ToolkitProvider
             bootstrap4
             // defaultSorted={defaultSorted}
+
             keyField="id"
-            data={companies}
+            data={props.users}
             columns={columns}
             pagination={paginationFactory()}
             hover
@@ -80,7 +94,11 @@ const AllCompanies: React.FC<AllCompaniesProps> = ({ companies }) => {
               <div>
                 <MySearch {...props.searchProps} />
                 <hr />
-                <BootstrapTable {...props.baseProps} />
+                <BootstrapTable
+                  {...props.baseProps}
+                  expandRow={expandRow}
+                  rowClasses={"rowClass"}
+                />
               </div>
             )}
           </ToolkitProvider>
@@ -89,4 +107,5 @@ const AllCompanies: React.FC<AllCompaniesProps> = ({ companies }) => {
     </Card>
   );
 };
-export default AllCompanies;
+
+export default AllSuperClients;

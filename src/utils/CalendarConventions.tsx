@@ -51,6 +51,33 @@ const CalendarConventions: React.FC<CalendarConventionsProps> = () => {
             <small>FINALIZADO</small>
           </ListGroup.Item>
         </React.Fragment>
+      ) : userInfoContext.profile === 1 ? ( // Admin
+        <React.Fragment>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-requested" />{" "}
+            <small>ESPERANDO CONFIRMACIÓN</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-confirm-event" />{" "}
+            <small>ESPERANDO AL CLIENTE</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-confirmed" />{" "}
+            <small>PROGRAMACIÓN ACEPATADA</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-confirm-docs" />{" "}
+            <small>ESPERANDO RECEPCIÓN DE DOCUMENTOS</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-upload-reports" />{" "}
+            <small>ADJUNTAR FACTURA</small>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <FaDotCircle className="text-event-finished" />{" "}
+            <small>FINALIZADO</small>
+          </ListGroup.Item>
+        </React.Fragment>
       ) : (
         // Operaciones y admin
         <React.Fragment>

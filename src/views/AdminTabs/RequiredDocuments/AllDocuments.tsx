@@ -1,26 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { FaExternalLinkAlt } from "react-icons/fa";
 import { Card } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-import { getDocuments } from "../../../controllers/apiRequests";
 type AllDocumentsProps = any;
 
-const AllDocuments: React.FC<AllDocumentsProps> = () => {
-  const [documents, setDocuments] = useState([]);
-
-  useEffect(() => {
-    async function fetchDocuments() {
-      let res = await getDocuments();
-      if (res) {
-        setDocuments(res.results);
-      } else {
-        console.log("No hay empresas registradas");
-      }
+const AllDocuments: React.FC<AllDocumentsProps> = ({ documents }) => {
+  const linkFormatter = (cell) => {
+    if (cell) {
+      return (
+        <a href={cell} target="n_blank">
+          <FaExternalLinkAlt />
+        </a>
+      );
     }
-    fetchDocuments();
-  }, []);
-
+  };
   const columns = [
     {
       dataField: "name",
@@ -38,6 +33,7 @@ const AllDocuments: React.FC<AllDocumentsProps> = () => {
       text: "Plantilla",
       classes: "md-column",
       headerClasses: "md-column",
+      formatter: linkFormatter,
     },
   ];
 

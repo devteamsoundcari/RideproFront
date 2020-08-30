@@ -264,75 +264,80 @@ const ModalOC: React.FC<ModalOCProps> = ({
                 </tr>
               );
             })}
-            <tr>
-              <td>Pista</td>
-              <td>{theTrack.contact_name}</td>
-              <td>{theTrack.cellphone}</td>
-              <td>
-                <small>{theTrack.contact_email}</small>
-              </td>
-              <td>
-                <Form.Control
-                  size="sm"
-                  type="number"
-                  placeholder="$0"
-                  value={trackFare}
-                  min={100}
-                  onChange={(x) => {
-                    setTrackFare(x.target.value);
-                  }}
-                />
-              </td>
-              <td>{currencyFormatter(fisrt_payment)}</td>
-              <td>{currencyFormatter(trackFare - fisrt_payment)}</td>
-              <td>
-                <Button
-                  variant="link"
-                  onClick={async () => {
-                    swal({
-                      title: "¿Estas seguro?",
-                      text: `${
-                        theTrack.contact_name
-                      } recibirá un email con pago inmediato por ${currencyFormatter(
-                        trackFare - fisrt_payment
-                      )}
+            {theTrack.compay && theTrack.company.name === "Ridepro" && (
+              <tr>
+                <td>Pista</td>
+                <td>{theTrack.contact_name}</td>
+                <td>{theTrack.cellphone}</td>
+                <td>
+                  <small>{theTrack.contact_email}</small>
+                </td>
+                <td>
+                  <Form.Control
+                    size="sm"
+                    type="number"
+                    placeholder="$0"
+                    value={trackFare}
+                    min={100}
+                    onChange={(x) => {
+                      setTrackFare(x.target.value);
+                    }}
+                  />
+                </td>
+                <td>{currencyFormatter(fisrt_payment)}</td>
+                <td>{currencyFormatter(trackFare - fisrt_payment)}</td>
+                <td>
+                  <Button
+                    variant="link"
+                    onClick={async () => {
+                      swal({
+                        title: "¿Estas seguro?",
+                        text: `${
+                          theTrack.contact_name
+                        } recibirá un email con pago inmediato por ${currencyFormatter(
+                          trackFare - fisrt_payment
+                        )}
                         Una vez envies las orden de compra no habra paso atras!`,
-                      icon: "warning",
-                      buttons: ["No, dejame revisar", "Si, actualizar tarifa"],
-                      dangerMode: false,
-                    }).then(async (willDelete) => {
-                      if (willDelete) {
-                        let res = await updateRequest(
-                          {
-                            fare_track: trackFare,
-                          },
-                          requestId
-                        );
-                        if (res.status === 200) {
-                          swal(
-                            "Tarifa Actualizada!",
-                            `La tarifa de ${
-                              theTrack.contact_name
-                            } por ${currencyFormatter(
-                              trackFare
-                            )} fue actualizada 👍`,
-                            "success"
+                        icon: "warning",
+                        buttons: [
+                          "No, dejame revisar",
+                          "Si, actualizar tarifa",
+                        ],
+                        dangerMode: false,
+                      }).then(async (willDelete) => {
+                        if (willDelete) {
+                          let res = await updateRequest(
+                            {
+                              fare_track: trackFare,
+                            },
+                            requestId
                           );
-                        } else {
-                          swal(
-                            "Algo pasa!",
-                            "No pudimos actualizar la tarifa 😢",
-                            "error"
-                          );
+                          if (res.status === 200) {
+                            swal(
+                              "Tarifa Actualizada!",
+                              `La tarifa de ${
+                                theTrack.contact_name
+                              } por ${currencyFormatter(
+                                trackFare
+                              )} fue actualizada 👍`,
+                              "success"
+                            );
+                          } else {
+                            swal(
+                              "Algo pasa!",
+                              "No pudimos actualizar la tarifa 😢",
+                              "error"
+                            );
+                          }
                         }
-                      }
-                    });
-                  }}
-                >
-                  <FaSave />
-                </Button>
-              </td>
-            </tr>
+                      });
+                    }}
+                  >
+                    <FaSave />
+                  </Button>
+                </td>
+              </tr>
+            )}
           </tbody>
         </Table>
       </Modal.Body>
@@ -374,19 +379,21 @@ const ModalOC: React.FC<ModalOCProps> = ({
                     (item) => (item.hash = hashCode(item.id, requestId))
                   );
 
-                  // Send track email
-                  let trackPayload = {
-                    id: requestId,
-                    emailType: "requestFinishedAll",
-                    subject: "Gracias por tus servicios ✔️",
-                    email: track.contact_email,
-                    name: track.contact_name,
-                    date: date,
-                    fare: track.fare,
-                    firstPayment: track.first_payment,
-                    hash: track.hash,
-                  };
-                  await sendEmail(trackPayload);
+                  // Send track email if track is part of ridepro
+                  if (track.company.name === "Ridepro") {
+                    let trackPayload = {
+                      id: requestId,
+                      emailType: "requestFinishedAll",
+                      subject: "Gracias por tus servicios ✔️",
+                      email: track.contact_email,
+                      name: track.contact_name,
+                      date: date,
+                      fare: track.fare,
+                      firstPayment: track.first_payment,
+                      hash: track.hash,
+                    };
+                    await sendEmail(trackPayload);
+                  }
 
                   // Send email to each instructor
                   instructors.forEach(async (ins) => {

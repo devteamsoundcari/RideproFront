@@ -116,7 +116,7 @@ const NavBar = () => {
               <Image
                 src={userInfoContext.picture}
                 roundedCircle
-                className="shadow-sm"
+                className={`shadow-sm border border-${userInfoContext.perfil}`}
               />
             </div>
           </Nav>

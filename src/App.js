@@ -13,6 +13,7 @@ import ServiceContextProvider from "./contexts/ServiceContext";
 import ParticipantsContextProvider from "./contexts/ParticipantsContext";
 import RequestsContextProvider from "./contexts/RequestsContext";
 import NewPassword from "./views/NewPassword/NewPassword";
+import ReportsContextProvider from "./contexts/ReportsContext";
 
 function App() {
   // ========================================================================
@@ -22,36 +23,38 @@ function App() {
       <ServiceContextProvider>
         <RequestsContextProvider>
           <ParticipantsContextProvider>
-            <HashRouter>
-              <Switch>
-                <Route exact path="/">
-                  <Home />
-                </Route>
-                <Route path="/administrador">
-                  <DashboardLayout />
-                </Route>
-                <Route path="/cliente">
-                  <DashboardLayout />
-                </Route>
-                <Route path="/operario">
-                  <DashboardLayout />
-                </Route>
-                <Route path="/tecnico">
-                  <DashboardLayout />
-                </Route>
-                <Route path="/super-cliente">
-                  <DashboardLayout />
-                </Route>
-                <Route path="/login">
-                  <Login />
-                </Route>
-                <Route path="/password-reset">
-                  <NewPassword />
-                </Route>
-                {/* <Route path="/login/:id/:token" render={<DashboardLayout />} /> */}
-              </Switch>
-              {/* <Redirect from="/" to="/" /> */}
-            </HashRouter>
+            <ReportsContextProvider>
+              <HashRouter>
+                <Switch>
+                  <Route exact path="/">
+                    <Home />
+                  </Route>
+                  <Route path="/administrador">
+                    <DashboardLayout />
+                  </Route>
+                  <Route path="/cliente">
+                    <DashboardLayout />
+                  </Route>
+                  <Route path="/operario">
+                    <DashboardLayout />
+                  </Route>
+                  <Route path="/tecnico">
+                    <DashboardLayout />
+                  </Route>
+                  <Route path="/super-cliente">
+                    <DashboardLayout />
+                  </Route>
+                  <Route path="/login">
+                    <Login />
+                  </Route>
+                  <Route path="/password-reset">
+                    <NewPassword />
+                  </Route>
+                  {/* <Route path="/login/:id/:token" render={<DashboardLayout />} /> */}
+                </Switch>
+                {/* <Redirect from="/" to="/" /> */}
+              </HashRouter>
+            </ReportsContextProvider>
           </ParticipantsContextProvider>
         </RequestsContextProvider>
       </ServiceContextProvider>
