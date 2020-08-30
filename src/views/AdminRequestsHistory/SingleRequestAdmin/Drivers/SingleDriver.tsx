@@ -18,10 +18,11 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
     setReport(response.results[0]);
   };
   useEffect(() => {
+    setReportsInfoContext([]);
     fetchReport(
       `${process.env.REACT_APP_API_URL}/api/v1/request_drivers/?request=${requestId}&driver=${data.id}`
     );
-  }, [requestId, data]);
+  }, [requestId, data, setReportsInfoContext]);
 
   useEffect(() => {
     if (report.file) {
