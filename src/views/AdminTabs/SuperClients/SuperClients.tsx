@@ -9,7 +9,8 @@ const SuperClients: React.FC<SuperClientsProps> = () => {
 
   const fetchUsers = async (url) => {
     const response = await getUsers(url);
-    setUsers(response.results.filter((item) => item.profile === 7));
+    let filtered = response.results.filter((item) => item.profile === 7);
+    setUsers((oldArr) => [...oldArr, ...filtered]);
     if (response.next) {
       return await fetchUsers(response.next);
     }
