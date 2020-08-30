@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { getUserReport } from "../../../../controllers/apiRequests";
 import { FaExternalLinkAlt, FaFilePdf } from "react-icons/fa";
-
+import { ReportsContext } from "../../../../contexts/ReportsContext";
 type SingleDriverProps = any;
 
 const SingleDriver: React.FC<SingleDriverProps> = ({
@@ -10,6 +10,9 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
   onUpdate,
 }) => {
   const [report, setReport] = useState<any>({});
+  const { reportsInfoContext, setReportsInfoContext } = useContext(
+    ReportsContext
+  );
   const fetchReport = async (url) => {
     const response = await getUserReport(url);
     setReport(response.results[0]);
@@ -21,8 +24,8 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
   }, [requestId, data]);
 
   useEffect(() => {
-    if (report.description) {
-      onUpdate(report);
+    if (report.file) {
+      setReportsInfoContext([...reportsInfoContext, report]);
     }
     // eslint-disable-next-line
   }, [report]);

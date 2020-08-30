@@ -1,0 +1,14 @@
+.parent-row {
+    background: lightgreen;
+}
+
+.expanding-foo {
+    background: whitesmoke;
+}
+
+.rowClass {
+    &:hover {
+        background: lightgreen;
+        cursor: pointer;
+    }
+}

@@ -236,6 +236,35 @@ const getSuperUserCompanies = async (userId) => {
   return companies;
 };
 
+const setSuperUserCompany = async (user, company) => {
+  const result = await axios({
+    method: "POST",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/`,
+    data: {
+      user,
+      companies: company,
+    },
+  }).catch((err) => {
+    console.error(err);
+    return err.response.data;
+  });
+  if (result.status === 201) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const deleteSuperUserCompany = async (data) => {
+  await axios({
+    method: "DELETE",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/${data}`,
+  }).catch((err) => {
+    console.log(err.response);
+  });
+  return true;
+};
+
 /* =================================   GET SERVICES   ===================================== */
 const getServices = async () => {
   const getInfo = async (url) => {
@@ -287,6 +316,72 @@ const getDocuments = async () => {
   return docs.data;
 };
 
+const createDocument = async (data, file) => {
+  const formData = new FormData();
+  if (file) {
+    formData.append("template", file);
+  }
+  formData.append("name", data.name);
+  formData.append("description", data.description ? data.description : "NA");
+  const result = await axios
+    .post(`${process.env.REACT_APP_API_URL}/api/v1/documents/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
+};
+
+const createSale = async (data) => {
+  const formData = new FormData();
+  if (data.file) {
+    formData.append("file", data.file);
+  }
+  formData.append("bill_id", data.bill_id);
+  formData.append("payment_method", data.payment_method);
+  formData.append("value", data.value);
+  formData.append("credits", data.credits);
+  formData.append("buyer", data.buyer);
+  formData.append("seller", data.seller);
+  formData.append("notes", data.notes);
+
+  const result = await axios
+    .post(`${process.env.REACT_APP_API_URL}/api/v1/sale_credits/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  let payload = {
+    newCredit: parseInt(data.user.credit) + parseInt(data.credits),
+    userId: data.user.id,
+    companyId: data.user.company.id,
+  };
+  let creditSetting = await setUserIdCredits(payload);
+  return { sale: result, creditsAssigned: creditSetting };
+};
+
+const setUserIdCredits = async (data) => {
+  const result = await axios({
+    method: "PATCH",
+    url: `${process.env.REACT_APP_API_URL}/api/v1/users/${data.userId}/`,
+    data: {
+      credit: data.newCredit,
+      company_id: data.companyId,
+    },
+  }).catch((err) => {
+    return err;
+  });
+  return result;
+};
+
 /* =================================   GET COMPANIES   ===================================== */
 const getCompanies = async () => {
   const getInfo = async (url) => {
@@ -302,6 +397,29 @@ const getCompanies = async () => {
     `${process.env.REACT_APP_API_URL}/api/v1/companies/`
   );
   return company.data;
+};
+const createCompany = async (data, logo) => {
+  const formData = new FormData();
+  if (logo) {
+    formData.append("logo", logo);
+  }
+  formData.append("name", data.name);
+  formData.append("address", data.address ? data.address : "NA");
+  formData.append("phone", data.phone ? data.phone : "NA");
+  formData.append("arl", data.arl ? data.arl : "NA");
+  formData.append("nit", data.nit ? data.nit : "NA");
+  formData.append("credit", 0);
+  const result = await axios
+    .post(`${process.env.REACT_APP_API_URL}/api/v1/companies/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
 };
 
 const editCompany = async (id, data) => {
@@ -686,6 +804,31 @@ const updateRequestProviders = async (data) => {
   return result;
 };
 
+const sendInvoice = async (data) => {
+  const formData = new FormData();
+  if (data.file) {
+    formData.append("file", data.file);
+  }
+  formData.append("description", data.description);
+  formData.append("seller", data.seller);
+  formData.append("buyer", data.buyer);
+  formData.append("payment_method", data.payment_method);
+  formData.append("value", data.value);
+  formData.append("notes", data.notes);
+  formData.append("bill_id", data.bill_id);
+  const result = await axios
+    .post(`${process.env.REACT_APP_API_URL}/api/v1/bills/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.response.data;
+    });
+  return result;
+};
+
 const updateProviderFares = async (data, id) => {
   const result = await axios({
     method: "PATCH",
@@ -1032,6 +1175,8 @@ const updateParticipantReport = async (data, requestId, file) => {
 // ================================================================================
 
 export {
+  deleteSuperUserCompany,
+  setSuperUserCompany,
   sendEmail,
   saveNewUser,
   getUsers,
@@ -1060,6 +1205,7 @@ export {
   getRequest,
   updateRequestDocuments,
   getRequestDocuments,
+  createDocument,
   updateRequestInstructors,
   updateInstructorFares,
   updateRequestProviders,
@@ -1085,4 +1231,7 @@ export {
   getUserReport,
   updateParticipantReport,
   getDocuments,
+  createCompany,
+  createSale,
+  sendInvoice,
 };
