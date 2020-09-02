@@ -411,7 +411,7 @@ const ModalOC: React.FC<ModalOCProps> = ({
                     await sendEmail(instructosPayload);
                   });
 
-                  // Send email to each instructor
+                  // Send email to each provider
                   providers.forEach(async (prov) => {
                     let providersPayload = {
                       id: requestId,
@@ -432,7 +432,7 @@ const ModalOC: React.FC<ModalOCProps> = ({
                     id: requestId,
                     emailType: "ocAdmin",
                     subject: `OC Servicio#${requestId} 📑`,
-                    email: ["sdelrio@ridepro.co", "aliados@ridepro.co"],
+                    email: ["aliados@ridepro.co"],
                     date: date,
                     track: track,
                     instructors: instructors,
