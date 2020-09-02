@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { Row, Col } from "react-bootstrap";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { AuthContext } from "../../../../contexts/AuthContext";
