@@ -14,7 +14,7 @@ const Companies: React.FC<CompaniesProps> = () => {
     let oldArr: any = [];
     const response = await getUsers(url);
     response.results.forEach((cpny: any) => oldArr.push(cpny));
-    setCompanies(oldArr);
+    setCompanies((x) => [...x, ...oldArr]);
     if (response.next) {
       return await fetchCompanies(response.next);
     }
@@ -23,6 +23,7 @@ const Companies: React.FC<CompaniesProps> = () => {
     fetchCompanies(`${process.env.REACT_APP_API_URL}/api/v1/companies/`);
     // eslint-disable-next-line
   }, []);
+
   const hanldeUpdate = () => {
     fetchCompanies(`${process.env.REACT_APP_API_URL}/api/v1/companies/`);
   };
