@@ -463,17 +463,18 @@ const SingleRequestClient = () => {
                       <td>{track ? track.name : data.optional_place1.name}</td>
                       <td>{dateFormatter(new Date(data.optional_date1))}</td>
                       <td>{formatAMPM(new Date(data.optional_date1))}</td>
+                      <td>
+                        <Form.Check
+                          type="radio"
+                          label="Opción 1"
+                          name="formHorizontalRadios"
+                          id="formHorizontalRadios1"
+                          onChange={() => setSelectedOption(1)}
+                        />
+                      </td>
                     </tr>
                   </tbody>
                 </Table>
-                <Form.Check
-                  type="radio"
-                  label="Opción 1"
-                  name="formHorizontalRadios"
-                  id="formHorizontalRadios1"
-                  style={{ width: "7rem" }}
-                  onChange={() => setSelectedOption(1)}
-                />
               </div>
             ) : (
               ""
@@ -500,17 +501,19 @@ const SingleRequestClient = () => {
                       <td>{track ? track.name : data.optional_place2.name}</td>
                       <td>{dateFormatter(new Date(data.optional_date2))}</td>
                       <td>{formatAMPM(new Date(data.optional_date2))}</td>
+                      <td>
+                        <Form.Check
+                          type="radio"
+                          label="Opción 2"
+                          name="formHorizontalRadios"
+                          id="formHorizontalRadios2"
+                          // style={{ width: "7rem" }}
+                          onChange={() => setSelectedOption(2)}
+                        />
+                      </td>
                     </tr>
                   </tbody>
                 </Table>
-                <Form.Check
-                  type="radio"
-                  label="Opción 2"
-                  name="formHorizontalRadios"
-                  id="formHorizontalRadios2"
-                  style={{ width: "7rem" }}
-                  onChange={() => setSelectedOption(2)}
-                />
               </div>
             ) : (
               ""
@@ -630,6 +633,7 @@ const SingleRequestClient = () => {
                           subject: "Servicio programado ✅",
                           email: userInfoContext.email,
                           name: userInfoContext.name,
+                          instructor: instructor,
                           date:
                             selectedOption === 1
                               ? payload1.start_time
@@ -649,6 +653,7 @@ const SingleRequestClient = () => {
                           subject: "Prueba programada ✅",
                           email: allDrivers.map((driver) => driver.email),
                           name: userInfoContext.name,
+                          instructor: instructor,
                           date:
                             selectedOption === 1
                               ? payload1.start_time
