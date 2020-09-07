@@ -30,7 +30,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   propsInstructors,
   onUpdate,
 }) => {
-  const [instructors, setInstructors] = useState([]);
+  const [instructors, setInstructors] = useState<any>([]);
   const [selectedInstructors, setSelectedInstructors] = useState<
     SelectedInstructors
   >([]);
@@ -74,7 +74,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
       item.fare = 0;
       tempArr.push(item);
     });
-    setInstructors(tempArr);
+    setInstructors((x) => [...x, ...tempArr]);
     if (response.next) {
       return await fetchInstructors(response.next);
     }

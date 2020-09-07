@@ -30,7 +30,7 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
   propsProviders,
   onUpdate,
 }) => {
-  const [providers, setProviders] = useState([]);
+  const [providers, setProviders] = useState<any>([]);
   const [selectedProviders, setSelectedProviders] = useState<SelectedProviders>(
     []
   );
@@ -75,7 +75,7 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({
       item.fare = 0;
       tempArr.push(item);
     });
-    setProviders(tempArr);
+    setProviders((x) => [...x, ...tempArr]);
     if (response.next) {
       return await fetchProviders(response.next);
     }
