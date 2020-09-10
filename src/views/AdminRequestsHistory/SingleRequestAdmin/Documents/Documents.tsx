@@ -11,7 +11,7 @@ const Documents: React.FC<DocumentsProps> = ({ requestId, documentsOk }) => {
   // ================================ FETCH REQUEST INSTRUCTORS ON LOAD =====================================================
   const fetchRequestInstructors = async (url) => {
     const response = await getRequestInstructors(url);
-    setRequestDocuments(response.results);
+    setRequestDocuments((oldArr) => [...oldArr, response.results]);
     if (response.next) {
       return await fetchRequestInstructors(response.next);
     }

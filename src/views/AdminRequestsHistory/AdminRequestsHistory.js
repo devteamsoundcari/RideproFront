@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { Container, Card, Spinner, Alert } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
-import filterFactory from "react-bootstrap-table2-filter";
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import SingleRequestAdmin from "./SingleRequestAdmin/SingleRequestAdmin";
@@ -97,11 +97,16 @@ const AdminRequestsHistory = () => {
       text: "Cód.",
       headerClasses: "small-column",
       sort: true,
+      filter: textFilter({
+        delay: 1000, // default is 500ms
+        placeholder: "#",
+      }),
     },
     {
       dataField: "customer.company.name",
       text: "Cliente",
       sort: true,
+      filter: textFilter(),
     },
     {
       dataField: "created_at",
