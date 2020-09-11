@@ -188,11 +188,12 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     });
     setTracks(tempTracks);
     if (response.next) {
-      return await getTracks(response.next);
+      return await fetchTracks(response.next);
     }
   };
   useEffect(() => {
     fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
+    // eslint-disable-next-line
   }, []);
   // =============================== FILTER TRACKS BY COMPANY AND CITY ====================================
 
