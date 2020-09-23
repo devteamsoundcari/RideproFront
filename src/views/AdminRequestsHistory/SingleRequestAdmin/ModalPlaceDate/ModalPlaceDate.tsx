@@ -186,7 +186,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     response.results.forEach(async (item: any) => {
       tempTracks.push(item);
     });
-    setTracks(tempTracks);
+    setTracks((oldArr) => oldArr.concat(tempTracks));
     if (response.next) {
       return await fetchTracks(response.next);
     }

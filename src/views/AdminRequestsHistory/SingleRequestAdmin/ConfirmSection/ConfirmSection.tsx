@@ -434,7 +434,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                         track: track,
                         participantes: participants,
                         documents: selectedDocuments,
-                        service: service?.name,
+                        service: service,
                       };
                       await sendEmail(instructorPayload);
                     });
