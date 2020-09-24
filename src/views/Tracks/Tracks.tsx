@@ -6,10 +6,7 @@ import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone,
 } from "react-bootstrap-table2-paginator";
-import filterFactory, {
-  textFilter,
-  selectFilter,
-} from "react-bootstrap-table2-filter";
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import ModalNewTrack from "./ModalNewTrack/ModalNewTrack";
 import { TrackEditModal } from "./TrackEditModal";
 import { getTracks } from "../../controllers/apiRequests";

@@ -57,6 +57,7 @@ const SetPlace = (props) => {
   };
   useEffect(() => {
     fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
+    //eslint-disable-next-line
   }, []);
 
   // =========================== FETCHING DEPARTMENTS ===================================
