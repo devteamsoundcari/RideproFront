@@ -50,9 +50,9 @@ const SetPlace = (props) => {
     response.results.forEach(async (item) => {
       tempTracks.push(item);
     });
-    setTracks(tempTracks);
+    setTracks((oldArr) => oldArr.concat(tempTracks));
     if (response.next) {
-      return await getTracks(response.next);
+      return await fetchTracks(response.next);
     }
   };
   useEffect(() => {

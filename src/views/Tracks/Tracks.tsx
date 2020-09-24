@@ -2,8 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { Row, Col, Container, Card, Spinner } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import BootstrapTable, { SelectRowProps } from "react-bootstrap-table-next";
-import filterFactory from "react-bootstrap-table2-filter";
-import paginationFactory from "react-bootstrap-table2-paginator";
+import paginationFactory, {
+  PaginationProvider,
+  PaginationListStandalone,
+} from "react-bootstrap-table2-paginator";
+import filterFactory, {
+  textFilter,
+  selectFilter,
+} from "react-bootstrap-table2-filter";
 import ModalNewTrack from "./ModalNewTrack/ModalNewTrack";
 import { TrackEditModal } from "./TrackEditModal";
 import { getTracks } from "../../controllers/apiRequests";
@@ -91,15 +97,18 @@ const Tracks: React.FC = () => {
     {
       dataField: "name",
       text: "Nombre",
+      filter: textFilter(),
     },
     {
       dataField: "municipality.department.name",
       text: "Departamento",
+      filter: textFilter(),
       sort: true,
     },
     {
       dataField: "municipality.name",
       text: "Ciudad",
+      filter: textFilter(),
       sort: true,
     },
     {
@@ -184,10 +193,40 @@ const Tracks: React.FC = () => {
 
   const handleFetch = () => {
     setFilteredTracks([]);
+    setTracks([]);
     fetchTracks(
       `${process.env.REACT_APP_API_URL}/api/v1/tracks/?company=${userInfoContext.company.id}`
     );
   };
+
+  const options = {
+    custom: true,
+    paginationSize: 4,
+    pageStartIndex: 1,
+    showTotal: true,
+    totalSize: tracks.length,
+  };
+  const contentTable = ({ paginationProps, paginationTableProps }) => (
+    <div>
+      <PaginationListStandalone {...paginationProps} />
+      <div>
+        <div>
+          <BootstrapTable
+            bootstrap4
+            keyField="id"
+            data={tracks}
+            columns={fields}
+            selectRow={selectRow}
+            filter={filterFactory()}
+            pagination={paginationFactory()}
+            rowClasses={"track-row"}
+            {...paginationTableProps}
+          />
+        </div>
+      </div>
+      <PaginationListStandalone {...paginationProps} />
+    </div>
+  );
 
   return (
     <Container fluid="md">
@@ -218,16 +257,9 @@ const Tracks: React.FC = () => {
                   pista.
                 </p>
               ) : (
-                <BootstrapTable
-                  bootstrap4
-                  keyField="id"
-                  data={tracks}
-                  columns={fields}
-                  selectRow={selectRow}
-                  filter={filterFactory()}
-                  pagination={paginationFactory()}
-                  rowClasses={"track-row"}
-                />
+                <PaginationProvider pagination={paginationFactory(options)}>
+                  {contentTable}
+                </PaginationProvider>
               )}
             </Card>
           </Row>

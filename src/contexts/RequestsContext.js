@@ -23,25 +23,27 @@ const RequestsContextProvider = (props) => {
     const fetchedRequests = [];
     const fetchedCancelledRequests = [];
     const response = await getUserRequests(url);
-    response.results.map(async (item) => {
-      let cancelDate = new Date(item.start_time);
-      cancelDate.setDate(cancelDate.getDate() - 1);
-      item.cancelDate = cancelDate;
+    if (response) {
+      response.results.map(async (item) => {
+        let cancelDate = new Date(item.start_time);
+        cancelDate.setDate(cancelDate.getDate() - 1);
+        item.cancelDate = cancelDate;
 
-      item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
-      item.start = new Date(item.start_time);
-      item.end = new Date(item.finish_time);
+        item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
+        item.start = new Date(item.start_time);
+        item.end = new Date(item.finish_time);
 
-      if (item.status.step === 0) {
-        fetchedCancelledRequests.push(item);
-      } else {
-        fetchedRequests.push(item);
-      }
-    });
+        if (item.status.step === 0) {
+          fetchedCancelledRequests.push(item);
+        } else {
+          fetchedRequests.push(item);
+        }
+      });
+    }
     setRequests((prev) => [...prev, ...fetchedRequests]);
     setCancelledRequests((prev) => [...prev, ...fetchedCancelledRequests]);
 
-    if (response.next !== null) {
+    if (response && response.next !== null) {
       setIsLoadingRequests(true);
       return await fetchRequests(response.next);
     } else {
@@ -69,7 +71,9 @@ const RequestsContextProvider = (props) => {
     setRequests([]);
     setCancelledRequests([]);
     setStatusNotifications([]);
-    requestsSocket.close();
+    if (requestsSocket) {
+      requestsSocket.close();
+    }
     setRequestsSocket(null);
   };
 
