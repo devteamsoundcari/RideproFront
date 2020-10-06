@@ -58,7 +58,7 @@ const ServiceLine = (props) => {
           <div
             className="card-img-top"
             style={{
-              background: `url(${image}) no-repeat center center`,
+              background: `url("${image}") no-repeat center center`,
             }}
           ></div>
           <div className="card-body">
