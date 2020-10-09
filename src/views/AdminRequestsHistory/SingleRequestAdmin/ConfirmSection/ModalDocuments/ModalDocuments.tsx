@@ -72,6 +72,7 @@ const ModalDocuments: React.FC<ModalDocumentsProps> = ({
   const selectRow: SelectRowProps<any> = {
     mode: "checkbox",
     clickToSelect: true,
+    // @ts-ignore
     bgColor: "lightgreen",
     selected: fuck(),
     onSelect: (row, isSelect, rowIndex, e) => {

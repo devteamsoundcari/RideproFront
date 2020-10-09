@@ -34,7 +34,7 @@ const ModalOC: React.FC<ModalOCProps> = ({
   const { updateRequests } = useContext(RequestsContext);
   const [instFares, setInstFares] = useState({});
   const [provsFares, setProvsFares] = useState({});
-  const [trackFare, setTrackFare] = useState(0);
+  const [trackFare, setTrackFare] = useState<any>(0);
 
   useEffect(() => {
     let insObj = {};

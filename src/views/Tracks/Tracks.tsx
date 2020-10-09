@@ -123,6 +123,7 @@ const Tracks: React.FC = () => {
     mode: "radio",
     clickToSelect: true,
     hideSelectColumn: true,
+    // @ts-ignore
     bgColor: "lightgreen",
     onSelect: (row) => {
       setSelectedTrack(row);
