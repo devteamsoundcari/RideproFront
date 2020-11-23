@@ -4,7 +4,6 @@ import ServiceLine from "./ServiceLine/ServiceLine";
 import { Container, Row } from "react-bootstrap";
 
 const SetServiceLines = (props) => {
-  //   const { userInfoContext } = useContext(AuthContext);
   const [lineServices, setLineServices] = useState([]);
   const [services, setServices] = useState([]);
 
@@ -16,12 +15,19 @@ const SetServiceLines = (props) => {
     fetchLineServices();
   }, []);
 
-  useEffect(() => {
-    async function fetchServices() {
-      const responseServices = await getServices();
-      setServices(responseServices);
+  const fetchServices = async (url) => {
+    const responseServices = await getServices(url);
+    responseServices.results.forEach((item) => {
+      setServices((oldArr) => [...oldArr, item]);
+    });
+    if (responseServices.next) {
+      return await fetchServices(responseServices.next);
     }
+  };
+
+  useEffect(() => {
     fetchServices();
+    //eslint-disable-next-line
   }, []);
 
   // =============================== SET SERVICE ==================================================

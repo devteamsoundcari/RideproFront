@@ -266,7 +266,9 @@ const deleteSuperUserCompany = async (data) => {
 };
 
 /* =================================   GET SERVICES   ===================================== */
-const getServices = async () => {
+const getServices = async (
+  url = `${process.env.REACT_APP_API_URL}/api/v1/services/`
+) => {
   const getInfo = async (url) => {
     const serviceData = await axios({
       method: "GET",
@@ -276,10 +278,8 @@ const getServices = async () => {
     });
     return serviceData;
   };
-  let services = await getInfo(
-    `${process.env.REACT_APP_API_URL}/api/v1/services/`
-  );
-  return services.data.results;
+  let services = await getInfo(url);
+  return services.data;
 };
 
 /* =================================   GET LINE SERVICES   ===================================== */
