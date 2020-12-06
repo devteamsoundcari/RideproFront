@@ -69,7 +69,7 @@ const Providers: React.FC<ProvidersProps> = ({ requestId, providers }) => {
   };
   useEffect(() => {
     fetchRequestProviders(
-      `${process.env.REACT_APP_API_URL}/api/v1/request_prov/`
+      `${process.env.REACT_APP_API_URL}/api/v1/request_prov/?request=${requestId}`
     );
     //eslint-disable-next-line
   }, [requestId]);

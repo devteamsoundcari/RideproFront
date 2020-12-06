@@ -148,6 +148,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                             variant="link"
                             size="sm"
                             onClick={async () => {
+                              await updateRequest({}, requestId);
                               let res = await updateInstructorFares(
                                 {
                                   first_payment:
@@ -208,6 +209,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                             variant="link"
                             size="sm"
                             onClick={async () => {
+                              await updateRequest({}, requestId);
                               let res = await updateProviderFares(
                                 {
                                   first_payment:

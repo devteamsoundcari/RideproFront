@@ -12,18 +12,26 @@ export const RequestsContext = createContext();
 
 const RequestsContextProvider = (props) => {
   const { userInfoContext, isLoggedInContext } = useContext(AuthContext);
-  const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0,-14))
-  const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0,-14))
-  const [isLoadingRequests, setIsLoadingRequests] = useState(true);
+  const [startDate, setStartDate] = useState(
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+      .toISOString()
+      .slice(0, -14)
+  );
+  const [endDate, setEndDate] = useState(
+    new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+      .toISOString()
+      .slice(0, -14)
+  );
+  const [isLoadingRequests, setIsLoadingRequests] = useState(false);
   const [requests, setRequests] = useState([]);
   const [cancelledRequests, setCancelledRequests] = useState([]);
   const [statusNotifications, setStatusNotifications] = useState([]);
   const [requestsSocket, setRequestsSocket] = useState(null);
   const requestsRef = React.useRef(requests);
 
-
   /// Here set month and year
   async function fetchRequests(url) {
+    setIsLoadingRequests(true);
     const fetchedRequests = [];
     const fetchedCancelledRequests = [];
     const response = await getUserRequests(url);
@@ -49,7 +57,7 @@ const RequestsContextProvider = (props) => {
 
     if (response && response.next !== null) {
       setIsLoadingRequests(true);
-      return await fetchRequests(response.next); 
+      return await fetchRequests(response.next);
     } else {
       setIsLoadingRequests(false);
     }
@@ -62,10 +70,9 @@ const RequestsContextProvider = (props) => {
   useEffect(() => {
     updateRequests();
     // eslint-disable-next-line
-  }, [startDate, endDate])
+  }, [startDate, endDate]);
 
   const updateRequests = () => {
-    console.log(startDate, endDate)
     let urlType =
       userInfoContext.profile === 2
         ? "user_requests"
@@ -74,7 +81,10 @@ const RequestsContextProvider = (props) => {
         : "requests";
     setRequests([]);
     setCancelledRequests([]);
-    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}?start_time__gte=${startDate}&start_time__lt=${endDate}`);
+    if (isLoggedInContext)
+      fetchRequests(
+        `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}`
+      );
   };
 
   const clear = () => {
@@ -191,11 +201,12 @@ const RequestsContextProvider = (props) => {
         setCancelledRequests,
         updateRequests,
         updateRequestInfo,
+        setIsLoadingRequests,
         isLoadingRequests,
         statusNotifications,
         clear,
         setEndDate,
-        setStartDate
+        setStartDate,
       }}
     >
       {props.children}

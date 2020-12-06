@@ -11,6 +11,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { RequestsContext } from "../../contexts/RequestsContext";
 import statusStepFormatter from "../../utils/statusStepFormatter";
 import CalendarConventions from "../../utils/CalendarConventions";
+import { monthNames } from "../../utils/monthNames";
 
 require("moment/locale/es.js");
 
@@ -19,12 +20,17 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = () => {
   const [displayedRequests, setDisplayedRequests] = useState([]);
   const history = useHistory();
-  const { requests, cancelledRequests, isLoadingRequests, setStartDate, setEndDate } = useContext(
-    RequestsContext
-  );
+  const {
+    requests,
+    cancelledRequests,
+    isLoadingRequests,
+    setStartDate,
+    setEndDate,
+  } = useContext(RequestsContext);
   const { userInfoContext } = useContext(AuthContext);
   const [seeCancelledEvents, setSeeCancelledEvents] = useState(false);
   const [withCanceledRequests, setWithCanceledRequests] = useState({});
+  const [componentDate, setComponentDate] = useState(new Date());
 
   // =============================== GETTING ALL THE EVENTS AND DISPLAYING THEM TO CALENDAR =============================================
 
@@ -118,7 +124,9 @@ const MyCalendar = () => {
           <Card.Body>
             {isLoadingRequests && (
               <div>
-                Cargando Eventos...
+                {`  Cargando eventos de ${
+                  monthNames[new Date(componentDate).getMonth()]
+                }...`}
                 <Spinner animation="border" size="sm" role="status">
                   <span className="sr-only">Loading...</span>
                 </Spinner>
@@ -140,9 +148,13 @@ const MyCalendar = () => {
                 event: eventFormatter,
               }}
               onNavigate={(date) => {
-                let start = new Date(date.getFullYear(), date.getMonth(), 1).toISOString().slice(0,-14)
-                let end = new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().slice(0,-14)
-                console.log({start, end})
+                setComponentDate(date);
+                let start = new Date(date.getFullYear(), date.getMonth(), 1)
+                  .toISOString()
+                  .slice(0, -14);
+                let end = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+                  .toISOString()
+                  .slice(0, -14);
                 setStartDate(start);
                 setEndDate(end);
               }}

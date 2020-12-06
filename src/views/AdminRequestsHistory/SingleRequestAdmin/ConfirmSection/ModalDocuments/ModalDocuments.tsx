@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BootstrapTable, { SelectRowProps } from "react-bootstrap-table-next";
+import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { Modal, Button } from "react-bootstrap";
 import {
   //   updateRequestDocuments,
@@ -9,6 +10,7 @@ import {
 import "./ModalDocuments.scss";
 
 type ModalDocumentsProps = any;
+const { SearchBar } = Search;
 
 const ModalDocuments: React.FC<ModalDocumentsProps> = ({
   handleClose,
@@ -114,16 +116,38 @@ const ModalDocuments: React.FC<ModalDocumentsProps> = ({
           <Modal.Title>Confirmar documentos</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <BootstrapTable
+          <ToolkitProvider
             keyField="id"
             data={dbDocuments}
             columns={columns}
             selectRow={selectRow}
             rowClasses="row-new-style"
-          />
+            search
+          >
+            {(props) => (
+              <div>
+                <h3>Input something at below input field:</h3>
+                <SearchBar {...props.searchProps} />
+                <hr />
+                <BootstrapTable
+                  {...props.baseProps}
+                  keyField="id"
+                  data={dbDocuments}
+                  columns={columns}
+                  selectRow={selectRow}
+                  rowClasses="row-new-style"
+                />
+              </div>
+            )}
+          </ToolkitProvider>
         </Modal.Body>
         <Modal.Footer>
-          <Button size="sm" variant="primary" onClick={() => handleClick()}>
+          <Button
+            size="sm"
+            variant="primary"
+            disabled={selectedDocuments.length === 0 ? true : false}
+            onClick={() => handleClick()}
+          >
             Guardar
           </Button>
         </Modal.Footer>

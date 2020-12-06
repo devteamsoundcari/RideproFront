@@ -159,9 +159,12 @@ const AdminRequestsHistory = () => {
   return (
     <Container fluid="md" id="client-requests-history">
       {isLoadingRequests ? (
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+        <>
+          <p>Cargando eventos... paciencia, son muchos.</p>
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </>
       ) : (
         <Switch>
           <Route exact path={path}>
