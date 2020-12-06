@@ -83,7 +83,7 @@ const RequestsContextProvider = (props) => {
     setCancelledRequests([]);
     if (isLoggedInContext)
       fetchRequests(
-        `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}`
+        `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
       );
   };
 
