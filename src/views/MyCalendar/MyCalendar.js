@@ -19,7 +19,7 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = () => {
   const [displayedRequests, setDisplayedRequests] = useState([]);
   const history = useHistory();
-  const { requests, cancelledRequests, isLoadingRequests } = useContext(
+  const { requests, cancelledRequests, isLoadingRequests, setStartDate, setEndDate } = useContext(
     RequestsContext
   );
   const { userInfoContext } = useContext(AuthContext);
@@ -138,6 +138,13 @@ const MyCalendar = () => {
               components={{
                 dateCellWrapper: ColoredDateCellWrapper,
                 event: eventFormatter,
+              }}
+              onNavigate={(date) => {
+                let start = new Date(date.getFullYear(), date.getMonth(), 1).toISOString().slice(0,-14)
+                let end = new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().slice(0,-14)
+                console.log({start, end})
+                setStartDate(start);
+                setEndDate(end);
               }}
               eventPropGetter={styleEvents}
               messages={{
