@@ -27,6 +27,7 @@ const RequestsContextProvider = (props) => {
   const [cancelledRequests, setCancelledRequests] = useState([]);
   const [statusNotifications, setStatusNotifications] = useState([]);
   const [requestsSocket, setRequestsSocket] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const requestsRef = React.useRef(requests);
 
   /// Here set month and year
@@ -207,6 +208,8 @@ const RequestsContextProvider = (props) => {
         clear,
         setEndDate,
         setStartDate,
+        currentMonth,
+        setCurrentMonth,
       }}
     >
       {props.children}

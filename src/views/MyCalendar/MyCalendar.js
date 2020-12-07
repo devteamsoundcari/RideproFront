@@ -26,11 +26,12 @@ const MyCalendar = () => {
     isLoadingRequests,
     setStartDate,
     setEndDate,
+    setCurrentMonth,
+    currentMonth,
   } = useContext(RequestsContext);
   const { userInfoContext } = useContext(AuthContext);
   const [seeCancelledEvents, setSeeCancelledEvents] = useState(false);
   const [withCanceledRequests, setWithCanceledRequests] = useState({});
-  const [componentDate, setComponentDate] = useState(new Date());
 
   // =============================== GETTING ALL THE EVENTS AND DISPLAYING THEM TO CALENDAR =============================================
 
@@ -125,7 +126,7 @@ const MyCalendar = () => {
             {isLoadingRequests && (
               <div>
                 {`  Cargando eventos de ${
-                  monthNames[new Date(componentDate).getMonth()]
+                  monthNames[new Date(currentMonth).getMonth()]
                 }...`}
                 <Spinner animation="border" size="sm" role="status">
                   <span className="sr-only">Loading...</span>
@@ -141,6 +142,7 @@ const MyCalendar = () => {
               events={
                 seeCancelledEvents ? withCanceledRequests : displayedRequests
               }
+              date={new Date(currentMonth)}
               style={{ height: "100vh" }}
               onSelectEvent={(event) => handleClick(event)}
               components={{
@@ -148,7 +150,6 @@ const MyCalendar = () => {
                 event: eventFormatter,
               }}
               onNavigate={(date) => {
-                setComponentDate(date);
                 let start = new Date(date.getFullYear(), date.getMonth(), 1)
                   .toISOString()
                   .slice(0, -14);
@@ -157,6 +158,7 @@ const MyCalendar = () => {
                   .slice(0, -14);
                 setStartDate(start);
                 setEndDate(end);
+                setCurrentMonth(date);
               }}
               eventPropGetter={styleEvents}
               messages={{
