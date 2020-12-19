@@ -62,7 +62,7 @@ const UploadExcelFile: React.FC<Props> = ({ addItem }) => {
     if (hasMissingProperties(participant)) {
       setIncompleteParticipants((prevArr) => [...prevArr, participant]);
     } else {
-      isInfoOk(participant) ? addItem(participant) : console.log("error");
+      isInfoOk(participant) ? addItem(participant) : console.error("error");
     }
   };
 

@@ -25,7 +25,6 @@ const ModalInvoice = ({ handleClose, requestInfo, onUpdate }) => {
       { status: process.env.REACT_APP_STATUS_STEP_7 },
       requestInfo.id
     );
-    console.log("response reuqest", responseRequest);
     if (response.status === 201 && responseRequest.status === 200) {
       swal("Perfecto", "El servicio fue actualizado correctamente", "success");
       setLoading(false);

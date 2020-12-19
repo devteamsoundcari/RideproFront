@@ -17,6 +17,7 @@ import SingleRequestClient from "./SingleRequestClient/SingleRequestClient";
 import "./ClientRequestsHistory.scss";
 import ClientStatus from "../../utils/ClientStatus";
 import { dateFormatter } from "../../utils/helpFunctions";
+import ToolkitProvider from "react-bootstrap-table2-toolkit";
 
 const ClientRequestsHistory = () => {
   const location = useLocation();
@@ -123,7 +124,7 @@ const ClientRequestsHistory = () => {
     },
   ];
 
-  const columnsSuperclient = [
+  const columnsSuperClient = [
     {
       dataField: "id",
       text: "Cód.",
@@ -190,6 +191,17 @@ const ClientRequestsHistory = () => {
     onSelect: handleOnSelect,
   };
 
+  const MyExportCSV = (props) => {
+    const handleClick = () => {
+      props.onExport();
+    };
+    return (
+      <button className="btn btn-success float-right m-3" onClick={handleClick}>
+        Exportar a CSV
+      </button>
+    );
+  };
+
   return (
     <Container fluid="md" id="client-requests-history">
       {isLoadingRequests ? (
@@ -206,19 +218,31 @@ const ClientRequestsHistory = () => {
                   <p>Para crear una solicitud, ingresa a "Solicitar".</p>
                 </Alert>
               ) : (
-                <BootstrapTable
+                <ToolkitProvider
                   bootstrap4
                   keyField="id"
                   data={displayedRequests}
                   columns={
                     userInfoContext.profile === 2
                       ? columnsClient
-                      : columnsSuperclient
+                      : columnsSuperClient
                   }
-                  selectRow={selectRow}
                   filter={filterFactory()}
                   pagination={paginationFactory()}
-                />
+                  exportCSV={{
+                    fileName: `ridepro-${dateFormatter(new Date())}.csv`,
+                  }}
+                >
+                  {(props) => (
+                    <div>
+                      <MyExportCSV {...props.csvProps} />
+                      <BootstrapTable
+                        {...props.baseProps}
+                        selectRow={selectRow}
+                      />
+                    </div>
+                  )}
+                </ToolkitProvider>
               )}
             </Card>
           </Route>

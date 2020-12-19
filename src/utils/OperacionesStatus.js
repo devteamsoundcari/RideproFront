@@ -3,11 +3,11 @@ import { FaCheckCircle } from "react-icons/fa";
 
 import { ProgressBar } from "react-bootstrap";
 
-function OperacionesStatus({ step }) {
+function OperacionesStatus({ step, width = "100%" }) {
   switch (step) {
     case 0:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Solicitud cancelada</small>
           <ProgressBar
             variant="event-canceled"
@@ -19,7 +19,7 @@ function OperacionesStatus({ step }) {
       );
     case 1:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Esperando confirmación</small>
           <ProgressBar
             variant="event-requested"
@@ -31,7 +31,7 @@ function OperacionesStatus({ step }) {
       );
     case 2:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Esperando confirmación cliente</small>
           <ProgressBar
             variant="confirm-event"
@@ -43,7 +43,7 @@ function OperacionesStatus({ step }) {
       );
     case 3:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Programación aceptada</small>
           <ProgressBar
             variant="event-confirmed"
@@ -55,7 +55,7 @@ function OperacionesStatus({ step }) {
       );
     case 4:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Confirmar recepción de documentos</small>
           <ProgressBar
             variant="confirm-docs"
@@ -67,7 +67,7 @@ function OperacionesStatus({ step }) {
       );
     case 5:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Confirmar recepción de documentos</small>
           <ProgressBar
             variant="confirm-docs"
@@ -79,7 +79,7 @@ function OperacionesStatus({ step }) {
       );
     default:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>
             Evento Finalizado <FaCheckCircle className="text-success" />
           </small>

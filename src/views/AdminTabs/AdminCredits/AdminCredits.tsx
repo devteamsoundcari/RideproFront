@@ -26,7 +26,6 @@ const AdminCredits: React.FC<AdminCreditsProps> = () => {
     setLoading(true);
     const response = await getUsers(url);
     setSales((oldArr) => [...oldArr, ...response.results]);
-    console.log(response);
     if (response.next) {
       return await fetchSales(response.next);
     }

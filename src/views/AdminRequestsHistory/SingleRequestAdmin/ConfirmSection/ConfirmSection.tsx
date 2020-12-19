@@ -57,7 +57,6 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
       })
     );
 
-    console.log("track", track);
     setTheTrack(track);
     setTrackFP(fisrt_payment);
     setTrackFare(fare_track);

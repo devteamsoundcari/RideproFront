@@ -8,7 +8,7 @@ const sendEmail = async (data) => {
     url: `${process.env.REACT_APP_MAILER_URL}/api/sendEmail`,
     data,
   }).catch((err) => {
-    console.log(err.response);
+    console.error(err.response);
   });
   return true;
 };
@@ -23,7 +23,7 @@ const passwordReset = async (data) => {
       email: data.email,
     },
   }).catch((err) => {
-    console.log(err.response);
+    console.error(err.response);
   });
   return true;
 };
@@ -260,7 +260,7 @@ const deleteSuperUserCompany = async (data) => {
     method: "DELETE",
     url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/${data}`,
   }).catch((err) => {
-    console.log(err.response);
+    console.error(err.response);
   });
   return true;
 };
@@ -563,7 +563,7 @@ const createRequest = async (data) => {
       fare_track,
     },
   }).catch((err) => {
-    console.log(`Request error at /api/v1/requests/: `, err.request.response);
+    console.error(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
   let payload = {
