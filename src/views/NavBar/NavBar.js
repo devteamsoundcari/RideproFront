@@ -1,15 +1,15 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import {
   FaPowerOff,
   FaUser,
   FaRegBuilding,
   FaSearch,
-  FaUserFriends,
-} from "react-icons/fa";
-import setAuthorizationToken from "../../controllers/setAuthorizationToken";
-import { AuthContext } from "../../contexts/AuthContext";
-import { RequestsContext } from "../../contexts/RequestsContext";
+  FaUserFriends
+} from 'react-icons/fa';
+import setAuthorizationToken from '../../controllers/setAuthorizationToken';
+import { AuthContext } from '../../contexts/AuthContext';
+import { RequestsContext } from '../../contexts/RequestsContext';
 import {
   Nav,
   Navbar,
@@ -18,16 +18,16 @@ import {
   InputGroup,
   FormControl,
   Button,
-  ListGroup,
-} from "react-bootstrap";
-import ProfileEditModal from "../Profile/ProfileEditModal";
-import PasswordChangeModal from "../Profile/Password/PasswordChangeModal";
-import CompanyEditModal from "../Company/CompanyEditModal";
-import { dateFormatter } from "../../utils/helpFunctions";
-import ClientStatus from "../../utils/ClientStatus";
+  ListGroup
+} from 'react-bootstrap';
+import ProfileEditModal from '../Profile/ProfileEditModal';
+import PasswordChangeModal from '../Profile/Password/PasswordChangeModal';
+import CompanyEditModal from '../Company/CompanyEditModal';
+import { dateFormatter } from '../../utils/helpFunctions';
+import ClientStatus from '../../utils/ClientStatus';
 
-import "./NavBar.scss";
-import OperacionesStatus from "../../utils/OperacionesStatus";
+import './NavBar.scss';
+import OperacionesStatus from '../../utils/OperacionesStatus';
 
 const NavBar = () => {
   const history = useHistory();
@@ -35,7 +35,7 @@ const NavBar = () => {
   const {
     userInfoContext,
     setUserInfoContext,
-    setIsLoggedInContext,
+    setIsLoggedInContext
   } = useContext(AuthContext);
   const { clear, requests, isLoadingRequests } = useContext(RequestsContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
@@ -53,9 +53,9 @@ const NavBar = () => {
         setFilteredRequests([]);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [wrapperRef]);
 
@@ -66,18 +66,18 @@ const NavBar = () => {
   }, [searchParams]);
 
   const logout = () => {
-    console.log("Bye bye");
+    console.log('Bye bye');
     setAuthorizationToken();
     setIsLoggedInContext(false);
     setUserInfoContext({});
     clear();
     history.push({
-      pathname: "/login",
+      pathname: '/login'
     });
   };
 
   useState(() => {
-    window.addEventListener("scroll", () => {
+    window.addEventListener('scroll', () => {
       if (window.scrollY < 30) {
         setFilled(false);
       } else {
@@ -146,25 +146,26 @@ const NavBar = () => {
   return (
     <>
       <Navbar
-        bg={filled ? "white" : ""}
-        className={filled ? "nav-scrolled" : ""}
+        bg={filled ? 'white' : ''}
+        className={filled ? 'nav-scrolled' : ''}
         sticky="top"
-        expand="lg"
-      >
+        expand="lg">
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <InputGroup className="w-50  rounded" value={searchParams}>
             <FormControl
               disabled={isLoadingRequests}
               className="border rounded"
-              placeholder={isLoadingRequests ? "Cargando eventos..." : "Buscar"}
+              placeholder={isLoadingRequests ? 'Cargando eventos...' : 'Buscar'}
               onChange={(e) => setSearchParams(e.target.value)}
             />
             <InputGroup.Append>
               <Button variant="outline-secondary">
                 {isLoadingRequests ? (
-                  <div class="spinner-border spinner-border-sm" role="status">
-                    <span class="sr-only">Loading...</span>
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status">
+                    <span className="sr-only">Loading...</span>
                   </div>
                 ) : (
                   <FaSearch />
@@ -177,8 +178,7 @@ const NavBar = () => {
               <NavDropdown
                 alignRight
                 title={`${userInfoContext.name} ${userInfoContext.lastName}`}
-                id="basic-nav-dropdown"
-              >
+                id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={() => setShowProfileEditModal(true)}>
                   <FaUser /> Perfil
                 </NavDropdown.Item>
@@ -207,21 +207,22 @@ const NavBar = () => {
                 className="border"
                 key={request.id}
                 onClick={() => {
-                  let newRoute = url.split("/");
-                  newRoute[newRoute.length] = "historial";
-                  newRoute = newRoute.join("/");
+                  let newRoute = url.split('/');
+                  newRoute[newRoute.length] = 'historial';
+                  newRoute = newRoute.join('/');
                   setFilteredRequests([]);
                   history.push({
-                    pathname: newRoute,
-                    state: { event: request },
+                    pathname: url.includes('historial')
+                      ? `/${request.id}`
+                      : newRoute,
+                    state: { event: request }
                   });
-                }}
-              >
+                }}>
                 <span>{dateFormatter(request.start)}</span>
                 <span className="font-weight-bold">#{request.id}</span>
                 {request.track && (
                   <span className="text-capitalize">
-                    {request.track.municipality.name.toLowerCase()},{" "}
+                    {request.track.municipality.name.toLowerCase()},{' '}
                     {request.track.municipality.department.name}
                   </span>
                 )}
