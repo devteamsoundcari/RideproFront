@@ -1,12 +1,12 @@
-import axios from "axios";
+import axios from 'axios';
 
 /* =================================     SEND EMAIL    ===================================== */
 
 const sendEmail = async (data) => {
   await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_MAILER_URL}/api/sendEmail`,
-    data,
+    data
   }).catch((err) => {
     console.error(err.response);
   });
@@ -17,11 +17,11 @@ const sendEmail = async (data) => {
 
 const passwordReset = async (data) => {
   await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/rest-auth/password/reset/`,
     data: {
-      email: data.email,
-    },
+      email: data.email
+    }
   }).catch((err) => {
     console.error(err.response);
   });
@@ -32,14 +32,14 @@ const passwordReset = async (data) => {
 
 const setNewPassword = async (data) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/rest-auth/password/reset/confirm/`,
     data: {
       new_password1: data.password,
       new_password2: data.passwordRepeat,
       uid: data.uid,
-      token: data.token,
-    },
+      token: data.token
+    }
   }).catch((err) => {
     return err.response.data;
   });
@@ -52,13 +52,13 @@ const setNewPassword = async (data) => {
 
 const changePassword = async (data) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/rest-auth/password/change/`,
     data: {
       new_password1: data.newPassword,
       new_password2: data.newPasswordConfirmation,
-      old_password: data.oldPassword,
-    },
+      old_password: data.oldPassword
+    }
   }).catch((err) => {
     return err.response.data;
   });
@@ -72,7 +72,7 @@ const changePassword = async (data) => {
 
 const saveNewUser = async (data) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/rest-auth/registration/`,
     data: {
       email: data.email,
@@ -84,9 +84,9 @@ const saveNewUser = async (data) => {
       profile: data.profileType,
       company: data.company,
       charge: data.charge,
-      picture: data.picture ? data.picture : "../assets/img/userdefault.png",
-      credit: data.credit,
-    },
+      picture: data.picture ? data.picture : '../assets/img/userdefault.png',
+      credit: data.credit
+    }
   }).catch((err) => {
     console.error(err);
     return err.response.data;
@@ -100,13 +100,13 @@ const saveNewUser = async (data) => {
 
 const setUserProfilePicture = async (user, picture) => {
   const formData = new FormData();
-  formData.append("picture", picture);
-  formData.append("company_id", user.company.id);
+  formData.append('picture', picture);
+  formData.append('company_id', user.company.id);
   const result = await axios
     .patch(`${process.env.REACT_APP_API_URL}/rest-auth/user/`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -117,17 +117,17 @@ const setUserProfilePicture = async (user, picture) => {
 
 const setRequestFile = async (requestId, id, docId, file) => {
   const formData = new FormData();
-  formData.append("file", file);
-  formData.append("request", requestId);
-  formData.append("document_id", docId);
+  formData.append('file', file);
+  formData.append('request', requestId);
+  formData.append('document_id', docId);
   const result = await axios
     .patch(
       `${process.env.REACT_APP_API_URL}/api/v1/request_doc/${id}/`,
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
-        },
+          'Content-Type': 'multipart/form-data'
+        }
       }
     )
     .catch((err) => {
@@ -139,7 +139,7 @@ const setRequestFile = async (requestId, id, docId, file) => {
 
 const editUser = async (data) => {
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       email: data.email,
@@ -151,8 +151,8 @@ const editUser = async (data) => {
       profile: data.profileType,
       company_id: data.company_id,
       charge: data.charge,
-      picture: data.picture,
-    },
+      picture: data.picture
+    }
   }).catch((err) => {
     console.error(err);
     return err.response.data;
@@ -168,31 +168,31 @@ const editUser = async (data) => {
 
 const getLoginToken = async (data) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/rest-auth/login/`,
     data: {
       email: data.email,
-      password: data.password,
-    },
+      password: data.password
+    }
   }).catch((err) => {
     console.error(err);
     return err;
   });
   if (result.status === 200) {
     return {
-      token: result.data.key,
+      token: result.data.key
     };
   }
   return {
-    error: "Clave o Usuario Invalidos",
+    error: 'Clave o Usuario Invalidos'
   };
 };
 /* =================================   GET USER'S INFO   ===================================== */
 const getUserInfo = async () => {
   const getInfo = async (url) => {
     const userData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -205,8 +205,8 @@ const getUserInfo = async () => {
 const getCompanyUsers = async (companyId) => {
   const getInfo = async (url) => {
     const userData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -223,8 +223,8 @@ const getCompanyUsers = async (companyId) => {
 const getSuperUserCompanies = async (userId) => {
   const getInfo = async (url) => {
     const userData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -238,12 +238,12 @@ const getSuperUserCompanies = async (userId) => {
 
 const setSuperUserCompany = async (user, company) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/`,
     data: {
       user,
-      companies: company,
-    },
+      companies: company
+    }
   }).catch((err) => {
     console.error(err);
     return err.response.data;
@@ -257,8 +257,8 @@ const setSuperUserCompany = async (user, company) => {
 
 const deleteSuperUserCompany = async (data) => {
   await axios({
-    method: "DELETE",
-    url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/${data}`,
+    method: 'DELETE',
+    url: `${process.env.REACT_APP_API_URL}/api/v1/user_companies/${data}`
   }).catch((err) => {
     console.error(err.response);
   });
@@ -271,8 +271,8 @@ const getServices = async (
 ) => {
   const getInfo = async (url) => {
     const serviceData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -287,8 +287,8 @@ const getServices = async (
 const getLineServices = async () => {
   const getInfo = async (url) => {
     const serviceData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -303,8 +303,8 @@ const getLineServices = async () => {
 const getDocuments = async () => {
   const getInfo = async (url) => {
     const docsData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -319,15 +319,15 @@ const getDocuments = async () => {
 const createDocument = async (data, file) => {
   const formData = new FormData();
   if (file) {
-    formData.append("template", file);
+    formData.append('template', file);
   }
-  formData.append("name", data.name);
-  formData.append("description", data.description ? data.description : "NA");
+  formData.append('name', data.name);
+  formData.append('description', data.description ? data.description : 'NA');
   const result = await axios
     .post(`${process.env.REACT_APP_API_URL}/api/v1/documents/`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -339,21 +339,21 @@ const createDocument = async (data, file) => {
 const createSale = async (data) => {
   const formData = new FormData();
   if (data.file) {
-    formData.append("file", data.file);
+    formData.append('file', data.file);
   }
-  formData.append("bill_id", data.bill_id);
-  formData.append("payment_method", data.payment_method);
-  formData.append("value", data.value);
-  formData.append("credits", data.credits);
-  formData.append("buyer", data.buyer);
-  formData.append("seller", data.seller);
-  formData.append("notes", data.notes);
+  formData.append('bill_id', data.bill_id);
+  formData.append('payment_method', data.payment_method);
+  formData.append('value', data.value);
+  formData.append('credits', data.credits);
+  formData.append('buyer', data.buyer);
+  formData.append('seller', data.seller);
+  formData.append('notes', data.notes);
 
   const result = await axios
     .post(`${process.env.REACT_APP_API_URL}/api/v1/sale_credits/`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -362,7 +362,7 @@ const createSale = async (data) => {
   let payload = {
     newCredit: parseInt(data.user.credit) + parseInt(data.credits),
     userId: data.user.id,
-    companyId: data.user.company.id,
+    companyId: data.user.company.id
   };
   let creditSetting = await setUserIdCredits(payload);
   return { sale: result, creditsAssigned: creditSetting };
@@ -370,12 +370,12 @@ const createSale = async (data) => {
 
 const setUserIdCredits = async (data) => {
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/api/v1/users/${data.userId}/`,
     data: {
       credit: data.newCredit,
-      company_id: data.companyId,
-    },
+      company_id: data.companyId
+    }
   }).catch((err) => {
     return err;
   });
@@ -386,8 +386,8 @@ const setUserIdCredits = async (data) => {
 const getCompanies = async () => {
   const getInfo = async (url) => {
     const compData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -401,19 +401,19 @@ const getCompanies = async () => {
 const createCompany = async (data, logo) => {
   const formData = new FormData();
   if (logo) {
-    formData.append("logo", logo);
+    formData.append('logo', logo);
   }
-  formData.append("name", data.name);
-  formData.append("address", data.address ? data.address : "NA");
-  formData.append("phone", data.phone ? data.phone : "NA");
-  formData.append("arl", data.arl ? data.arl : "NA");
-  formData.append("nit", data.nit ? data.nit : "NA");
-  formData.append("credit", 0);
+  formData.append('name', data.name);
+  formData.append('address', data.address ? data.address : 'NA');
+  formData.append('phone', data.phone ? data.phone : 'NA');
+  formData.append('arl', data.arl ? data.arl : 'NA');
+  formData.append('nit', data.nit ? data.nit : 'NA');
+  formData.append('credit', 0);
   const result = await axios
     .post(`${process.env.REACT_APP_API_URL}/api/v1/companies/`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -424,7 +424,7 @@ const createCompany = async (data, logo) => {
 
 const editCompany = async (id, data) => {
   const result = await axios({
-    method: "PUT",
+    method: 'PUT',
     url: `${process.env.REACT_APP_API_URL}/api/v1/companies/${id}/`,
     data: {
       name: data.name,
@@ -432,8 +432,8 @@ const editCompany = async (id, data) => {
       address: data.address,
       arl: data.arl,
       phone: data.phone,
-      credit: data.credit,
-    },
+      credit: data.credit
+    }
   }).catch((err) => {
     console.error(err);
     return err.response.data;
@@ -447,15 +447,15 @@ const editCompany = async (id, data) => {
 
 const setCompanyLogo = async (id, logo) => {
   const formData = new FormData();
-  formData.append("logo", logo);
+  formData.append('logo', logo);
   const result = await axios
     .put(
       `${process.env.REACT_APP_API_URL}/api/v1/companies/${id}/logo/`,
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
-        },
+          'Content-Type': 'multipart/form-data'
+        }
       }
     )
     .catch((err) => {
@@ -469,8 +469,8 @@ const setCompanyLogo = async (id, logo) => {
 const getDepartments = async (url) => {
   const getInfo = async () => {
     const departmentsData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -484,8 +484,8 @@ const getDepartments = async (url) => {
 const getUsers = async (url) => {
   const getInfo = async () => {
     const usersData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -498,8 +498,8 @@ const getUsers = async (url) => {
 const getUserReport = async (url) => {
   const getInfo = async () => {
     const usersData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -513,8 +513,8 @@ const getUserReport = async (url) => {
 const getMunicipalities = async (url) => {
   const getInfo = async () => {
     const citiesData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -538,18 +538,18 @@ const createRequest = async (data) => {
     track,
     new_request,
     accept_msg,
-    fare_track,
+    fare_track
   } = data;
 
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/`,
     data: {
       service,
       customer: customer.id,
       municipality,
       operator: null,
-      instructor: "na",
+      instructor: 'na',
       place,
       track,
       spent_credit,
@@ -558,17 +558,17 @@ const createRequest = async (data) => {
       status: `${process.env.REACT_APP_STATUS_CONFIRMATION_PROCESS}`, //"d02eaa22-8a5c-4904-b3c4-567782a53f51", // This is first step
       new_request: new_request,
       accept_msg: accept_msg,
-      reject_msg: "na",
+      reject_msg: 'na',
       drivers,
-      fare_track,
-    },
+      fare_track
+    }
   }).catch((err) => {
     console.error(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
   });
   let payload = {
     newCredit: parseInt(customer.credit) - parseInt(spent_credit),
-    companyId: data.company.id,
+    companyId: data.company.id
   };
   let creditDecreasing = await setUserCredits(payload); // Calling decrease
   return { response: result, creditDecreasingResponse: creditDecreasing };
@@ -587,18 +587,18 @@ const editRequest = async (id, data) => {
     track,
     new_request,
     accept_msg,
-    fare_track,
+    fare_track
   } = data;
 
   const result = await axios({
-    method: "PUT",
+    method: 'PUT',
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}/`,
     data: {
       service,
       customer,
       municipality,
       operator: null,
-      instructor: "na",
+      instructor: 'na',
       place,
       track,
       spent_credit,
@@ -607,10 +607,10 @@ const editRequest = async (id, data) => {
       status: `${process.env.REACT_APP_STATUS_CONFIRMATION_PROCESS}`,
       new_request: new_request,
       accept_msg: accept_msg,
-      reject_msg: "na",
+      reject_msg: 'na',
       drivers,
-      fare_track,
-    },
+      fare_track
+    }
   }).catch((err) => {
     console.error(`Request error at /api/v1/requests/: `, err.request.response);
     return err;
@@ -626,12 +626,12 @@ const editRequest = async (id, data) => {
 
 const cancelRequestId = async (data) => {
   const resCancel = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${data.id}/`,
     data: {
       status: `${process.env.REACT_APP_STATUS_CANCELED}`,
-      reject_msg: data.reject_msg,
-    },
+      reject_msg: data.reject_msg
+    }
   }).catch((err) => {
     console.error(err);
     return err;
@@ -647,7 +647,7 @@ const cancelRequestId = async (data) => {
 const createDriver = async (data) => {
   const { first_name, last_name, official_id, cellphone, email } = data;
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/api/v1/drivers/`,
     data: {
       first_name,
@@ -656,8 +656,8 @@ const createDriver = async (data) => {
       cellphone,
       email,
       requests: [],
-      report: "na",
-    },
+      report: 'na'
+    }
   }).catch((err) => {
     return err;
   });
@@ -668,8 +668,24 @@ const createDriver = async (data) => {
 const getAllDrivers = async (url) => {
   const getInfo = async () => {
     const driversData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
+    }).catch((err) => {
+      return err;
+    });
+    return driversData;
+  };
+  let drivers = await getInfo();
+  return drivers.data;
+};
+
+/* =================================   SEARCH FILTER IN DRIVERS ===================================== */
+
+const getFilteredDrivers = async (url) => {
+  const getInfo = async () => {
+    const driversData = await axios({
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -684,8 +700,8 @@ const getAllDrivers = async (url) => {
 const fetchDriver = async (id) => {
   const getInfo = async () => {
     const driverData = await axios({
-      method: "GET",
-      url: `${process.env.REACT_APP_API_URL}/api/v1/drivers/${id}/`,
+      method: 'GET',
+      url: `${process.env.REACT_APP_API_URL}/api/v1/drivers/${id}/`
     }).catch((err) => {
       return err;
     });
@@ -700,8 +716,8 @@ const fetchDriver = async (id) => {
 const fetchInstructor = async (id) => {
   const getInfo = async () => {
     const instructorData = await axios({
-      method: "GET",
-      url: `${process.env.REACT_APP_API_URL}/api/v1/instructors/${id}`,
+      method: 'GET',
+      url: `${process.env.REACT_APP_API_URL}/api/v1/instructors/${id}`
     }).catch((err) => {
       return err;
     });
@@ -715,9 +731,9 @@ const fetchInstructor = async (id) => {
 
 const updateDriver = async (data, id) => {
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/api/v1/drivers/${id}/`,
-    data,
+    data
   }).catch((err) => {
     return err;
   });
@@ -731,9 +747,9 @@ const updateRequest = async (data, id) => {
     data.finish_time = data.start_time;
   }
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}/`,
-    data,
+    data
   }).catch((err) => {
     return err;
   });
@@ -744,8 +760,8 @@ const updateRequest = async (data, id) => {
 const getRequest = async (id) => {
   const getInfo = async () => {
     const requestData = await axios({
-      method: "GET",
-      url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}/`,
+      method: 'GET',
+      url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}/`
     }).catch((err) => {
       return err;
     });
@@ -759,9 +775,9 @@ const getRequest = async (id) => {
 
 const updateRequestDocuments = async (data) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_documents/`,
-    data,
+    data
   }).catch((err) => {
     return err;
   });
@@ -772,9 +788,9 @@ const updateRequestDocuments = async (data) => {
 
 const updateRequestInstructors = async (data) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_instructors/`,
-    data,
+    data
   }).catch((err) => {
     return err;
   });
@@ -783,9 +799,9 @@ const updateRequestInstructors = async (data) => {
 
 const updateInstructorFares = async (data, id) => {
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_ins/${id}/`,
-    data,
+    data
   }).catch((err) => {
     return err;
   });
@@ -795,9 +811,9 @@ const updateInstructorFares = async (data, id) => {
 
 const updateRequestProviders = async (data) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_providers/`,
-    data,
+    data
   }).catch((err) => {
     return err;
   });
@@ -807,20 +823,20 @@ const updateRequestProviders = async (data) => {
 const sendInvoice = async (data) => {
   const formData = new FormData();
   if (data.file) {
-    formData.append("file", data.file);
+    formData.append('file', data.file);
   }
-  formData.append("description", data.description);
-  formData.append("seller", data.seller);
-  formData.append("buyer", data.buyer);
-  formData.append("payment_method", data.payment_method);
-  formData.append("value", data.value);
-  formData.append("notes", data.notes);
-  formData.append("bill_id", data.bill_id);
+  formData.append('description', data.description);
+  formData.append('seller', data.seller);
+  formData.append('buyer', data.buyer);
+  formData.append('payment_method', data.payment_method);
+  formData.append('value', data.value);
+  formData.append('notes', data.notes);
+  formData.append('bill_id', data.bill_id);
   const result = await axios
     .post(`${process.env.REACT_APP_API_URL}/api/v1/bills/`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -831,9 +847,9 @@ const sendInvoice = async (data) => {
 
 const updateProviderFares = async (data, id) => {
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_prov/${id}/`,
-    data,
+    data
   }).catch((err) => {
     return err;
   });
@@ -845,8 +861,8 @@ const updateProviderFares = async (data, id) => {
 const getRequestDocuments = async (url) => {
   const getInfo = async () => {
     const requestsData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -861,8 +877,8 @@ const getRequestDocuments = async (url) => {
 const getRequestInstructors = async (url) => {
   const getInfo = async () => {
     const requestsData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -877,8 +893,8 @@ const getRequestInstructors = async (url) => {
 const getRequestProviders = async (url) => {
   const getInfo = async () => {
     const requestsData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -893,12 +909,12 @@ const getRequestProviders = async (url) => {
 const decreaseUserCredits = async (user, credits) => {
   const newCredit = parseInt(user.credit) - parseInt(credits);
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       credit: newCredit,
-      company_id: user.company.id,
-    },
+      company_id: user.company.id
+    }
   }).catch((err) => {
     return err;
   });
@@ -909,12 +925,12 @@ const decreaseUserCredits = async (user, credits) => {
 
 const setUserCredits = async (data) => {
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/rest-auth/user/`,
     data: {
       credit: data.newCredit,
-      company_id: data.companyId,
-    },
+      company_id: data.companyId
+    }
   }).catch((err) => {
     return err;
   });
@@ -924,8 +940,8 @@ const setUserCredits = async (data) => {
 const getUserRequests = async (url) => {
   const getInfo = async () => {
     const requestsData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -940,8 +956,8 @@ const getUserRequests = async (url) => {
 const getGender = async (name) => {
   const getInfo = async () => {
     const requestsData = await axios({
-      method: "GET",
-      url: `https://api.genderize.io/?name=${name}`,
+      method: 'GET',
+      url: `https://api.genderize.io/?name=${name}`
     }).catch((err) => {
       return err;
     });
@@ -955,8 +971,8 @@ const getGender = async (name) => {
 const getTracks = async (url) => {
   const getInfo = async () => {
     const requestsData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -980,10 +996,10 @@ const createNewTrack = async (data) => {
     latitude,
     longitude,
     contact_email,
-    contact_name,
+    contact_name
   } = data;
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/api/v1/tracks/`,
     data: {
       company: companyId,
@@ -996,8 +1012,8 @@ const createNewTrack = async (data) => {
       latitude,
       longitude,
       contact_email,
-      contact_name,
-    },
+      contact_name
+    }
   }).catch((err) => {
     console.error(err);
     return err.response.data;
@@ -1011,7 +1027,7 @@ const createNewTrack = async (data) => {
 
 const editTrack = async (id, data) => {
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/api/v1/tracks/${id}/`,
     data: {
       company: data.companyId,
@@ -1024,8 +1040,8 @@ const editTrack = async (id, data) => {
       latitude: data.latitude,
       longitude: data.longitude,
       contact_email: data.contactEmail,
-      contact_name: data.contactName,
-    },
+      contact_name: data.contactName
+    }
   }).catch((err) => {
     console.error(err);
     return err.response.data;
@@ -1039,12 +1055,12 @@ const editTrack = async (id, data) => {
 
 const editTrackPicture = async (id, picture) => {
   const formData = new FormData();
-  formData.append("pictures", picture);
+  formData.append('pictures', picture);
   const result = await axios
     .patch(`${process.env.REACT_APP_API_URL}/api/v1/tracks/${id}/`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -1058,8 +1074,8 @@ const editTrackPicture = async (id, picture) => {
 const getInstructors = async (url) => {
   const getInfo = async () => {
     const requestsData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -1071,7 +1087,7 @@ const getInstructors = async (url) => {
 
 const createInstructor = async (data) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
     data: {
       official_id: data.official_id,
@@ -1080,9 +1096,9 @@ const createInstructor = async (data) => {
       email: data.email,
       cellphone: data.cellphone,
       municipality: data.municipality.id,
-      documents: "na",
-      picture: "na",
-    },
+      documents: 'na',
+      picture: 'na'
+    }
   }).catch((err) => {
     console.error(err);
     return err.response.data;
@@ -1099,8 +1115,8 @@ const createInstructor = async (data) => {
 const getProviders = async (url) => {
   const getInfo = async () => {
     const requestsData = await axios({
-      method: "GET",
-      url,
+      method: 'GET',
+      url
     }).catch((err) => {
       return err;
     });
@@ -1112,7 +1128,7 @@ const getProviders = async (url) => {
 
 const createProvider = async (data) => {
   const result = await axios({
-    method: "POST",
+    method: 'POST',
     url: `${process.env.REACT_APP_API_URL}/api/v1/providers/`,
     data: {
       official_id: data.official_id,
@@ -1121,8 +1137,8 @@ const createProvider = async (data) => {
       cellphone: data.cellphone,
       municipality: data.municipality.id,
       services: data.services,
-      documents: "na",
-    },
+      documents: 'na'
+    }
   }).catch((err) => {
     console.error(err);
     return err.response.data;
@@ -1137,15 +1153,15 @@ const createProvider = async (data) => {
 const updateParticipantReport = async (data, requestId, file) => {
   if (data.file && data.file.name) {
     const formData = new FormData();
-    formData.append("file", data.file);
+    formData.append('file', data.file);
     await axios
       .patch(
         `${process.env.REACT_APP_API_URL}/api/v1/request_drivers/${data.id}/`,
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-          },
+            'Content-Type': 'multipart/form-data'
+          }
         }
       )
       .catch((err) => {
@@ -1155,12 +1171,12 @@ const updateParticipantReport = async (data, requestId, file) => {
   }
 
   const result = await axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `${process.env.REACT_APP_API_URL}/api/v1/request_drivers/${data.id}/`,
     data: {
       description: data.description,
-      quialified: data.quialified,
-    },
+      quialified: data.quialified
+    }
   }).catch((err) => {
     console.error(err);
     return err.response.data;
@@ -1234,4 +1250,5 @@ export {
   createCompany,
   createSale,
   sendInvoice,
+  getFilteredDrivers
 };

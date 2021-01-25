@@ -4,7 +4,6 @@ import {
   FaPowerOff,
   FaUser,
   FaRegBuilding,
-  FaSearch,
   FaUserFriends
 } from 'react-icons/fa';
 import setAuthorizationToken from '../../controllers/setAuthorizationToken';
@@ -18,13 +17,16 @@ import {
   InputGroup,
   FormControl,
   Button,
-  ListGroup
+  ListGroup,
+  Form,
+  Spinner
 } from 'react-bootstrap';
 import ProfileEditModal from '../Profile/ProfileEditModal';
 import PasswordChangeModal from '../Profile/Password/PasswordChangeModal';
 import CompanyEditModal from '../Company/CompanyEditModal';
 import { dateFormatter } from '../../utils/helpFunctions';
 import ClientStatus from '../../utils/ClientStatus';
+import { getFilteredDrivers } from '../../controllers/apiRequests';
 
 import './NavBar.scss';
 import OperacionesStatus from '../../utils/OperacionesStatus';
@@ -37,12 +39,14 @@ const NavBar = () => {
     setUserInfoContext,
     setIsLoggedInContext
   } = useContext(AuthContext);
-  const { clear, requests, isLoadingRequests } = useContext(RequestsContext);
+  const { clear, isLoadingRequests } = useContext(RequestsContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [searchParams, setSearchParams] = useState(null);
+  const [filterOption, setFilterOption] = useState('official_id');
+  const [loading, setLoading] = useState(false);
   let { url } = useRouteMatch();
   const wrapperRef = useRef(null);
 
@@ -58,12 +62,6 @@ const NavBar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [wrapperRef]);
-
-  useEffect(() => {
-    if (searchParams) search(searchParams);
-    else setFilteredRequests([]);
-    // eslint-disable-next-line
-  }, [searchParams]);
 
   const logout = () => {
     console.log('Bye bye');
@@ -125,22 +123,23 @@ const NavBar = () => {
     );
   };
 
-  const search = (value) => {
-    const filteredId = requests.filter((o) => String(o.id).includes(value));
-    const filteredDate = requests.filter((o) =>
-      String(dateFormatter(o.start)).includes(value)
-    );
-    const filteredTrack = requests.filter((o) => {
-      if (o.track) {
-        return Object.keys(o.track).some((k) =>
-          String(o.track[k]).toLowerCase().includes(value.toLowerCase())
-        );
-      } else {
-        return o;
-      }
-    });
-    const filtered = filteredId.concat(filteredTrack, filteredDate);
-    setFilteredRequests([...new Set(filtered)]);
+  const fetchDrivers = async (url) => {
+    setLoading(true);
+    const response = await getFilteredDrivers(url);
+    setFilteredRequests(response.results);
+    setLoading(false);
+    if (response.next) {
+      return await fetchDrivers(response.next);
+    }
+  };
+
+  const search = (value, param) => {
+    const url = `https://app-db.ridepro.co/api/v1/drivers_entire_filter/?official_id=${
+      param === 'official_id' ? value : '!'
+    }&f_name=${param === 'f_name' ? value : '!'}&l_name=${
+      param === 'l_name' ? value : '!'
+    }&email=${param === 'email' ? value : '!'}`;
+    fetchDrivers(url);
   };
 
   return (
@@ -152,27 +151,78 @@ const NavBar = () => {
         expand="lg">
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <InputGroup className="w-50  rounded" value={searchParams}>
-            <FormControl
-              disabled={isLoadingRequests}
-              className="border rounded"
-              placeholder={isLoadingRequests ? 'Cargando eventos...' : 'Buscar'}
-              onChange={(e) => setSearchParams(e.target.value)}
-            />
-            <InputGroup.Append>
-              <Button variant="outline-secondary">
-                {isLoadingRequests ? (
-                  <div
-                    className="spinner-border spinner-border-sm"
-                    role="status">
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                ) : (
-                  <FaSearch />
-                )}
-              </Button>
-            </InputGroup.Append>
-          </InputGroup>
+          {(userInfoContext.profile === 2 || userInfoContext.profile === 7) && (
+            <InputGroup className="w-75 rounded" value={searchParams}>
+              <FormControl
+                disabled={isLoadingRequests || loading}
+                className="border rounded"
+                placeholder={
+                  isLoadingRequests ? 'Cargando eventos...' : 'Buscar'
+                }
+                value={searchParams}
+                onChange={(e) => setSearchParams(e.target.value)}
+              />
+              <InputGroup.Append>
+                <Button
+                  variant="outline-secondary"
+                  disabled={isLoadingRequests || loading}
+                  onClick={() => {
+                    if (searchParams !== null) {
+                      search(searchParams, filterOption);
+                    }
+                  }}>
+                  {isLoadingRequests || loading ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    'Buscar'
+                  )}
+                </Button>
+              </InputGroup.Append>
+              <InputGroup.Append className="ml-3">
+                <Form.Check
+                  inline
+                  onChange={(x) => setFilterOption(x.target.value)}
+                  as="input"
+                  label="POR Cedula"
+                  type="radio"
+                  value="official_id"
+                  id="search-official_id"
+                  checked={filterOption === 'official_id'}
+                />
+                <Form.Check
+                  as="input"
+                  onChange={(x) => setFilterOption(x.target.value)}
+                  inline
+                  label="POR Nombre"
+                  type="radio"
+                  value="f_name"
+                  id="search-f_name"
+                  checked={filterOption === 'f_name'}
+                />
+                <Form.Check
+                  as="input"
+                  onChange={(x) => setFilterOption(x.target.value)}
+                  inline
+                  label="POR Apellido"
+                  type="radio"
+                  value="l_name"
+                  checked={filterOption === 'l_name'}
+                  id="search-l_name"
+                />
+                <Form.Check
+                  as="input"
+                  onChange={(x) => setFilterOption(x.target.value)}
+                  inline
+                  label="POR EMAIL"
+                  type="radio"
+                  value="email"
+                  checked={filterOption === 'email'}
+                  id="search-email"
+                />
+              </InputGroup.Append>
+            </InputGroup>
+          )}
+
           <Nav className="ml-auto">
             <div className="userOptions">
               <NavDropdown
@@ -198,47 +248,51 @@ const NavBar = () => {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      {filteredRequests.length > 0 && (
-        <div className="w-50 ml-3 search-results shadow">
-          <ListGroup ref={wrapperRef}>
-            {filteredRequests.map((request) => (
-              <ListGroup.Item
-                as="li"
-                className="border"
-                key={request.id}
-                onClick={() => {
-                  let newRoute = url.split('/');
-                  newRoute[newRoute.length] = 'historial';
-                  newRoute = newRoute.join('/');
-                  setFilteredRequests([]);
-                  history.push({
-                    pathname: url.includes('historial')
-                      ? `/${request.id}`
-                      : newRoute,
-                    state: { event: request }
-                  });
-                }}>
-                <span>{dateFormatter(request.start)}</span>
-                <span className="font-weight-bold">#{request.id}</span>
-                {request.track && (
-                  <span className="text-capitalize">
-                    {request.track.municipality.name.toLowerCase()},{' '}
-                    {request.track.municipality.department.name}
+      {(userInfoContext.profile === 2 || userInfoContext.profile === 7) &&
+        filteredRequests.length > 0 && (
+          <div className="w-50 ml-3 search-results shadow">
+            <ListGroup ref={wrapperRef}>
+              {filteredRequests.map(({ request }) => (
+                <ListGroup.Item
+                  as="li"
+                  className="border"
+                  key={request.id}
+                  onClick={() => {
+                    let newRoute = url.split('/');
+                    newRoute[newRoute.length] = 'historial';
+                    newRoute = newRoute.join('/');
+                    setFilteredRequests([]);
+                    history.push({
+                      pathname: url.includes('historial')
+                        ? `/${request.id}`
+                        : newRoute,
+                      state: { event: request }
+                    });
+                  }}>
+                  <span>{dateFormatter(request.start_time)}</span>
+                  <span className="font-weight-bold">#{request.id}</span>
+                  {request.track && (
+                    <span className="text-capitalize">
+                      {request.track.municipality.name.toLowerCase()},{' '}
+                      {request.track.municipality.department.name}
+                    </span>
+                  )}
+                  <span className="font-weight-bold">
+                    {request.drivers.length} <FaUserFriends />
                   </span>
-                )}
-                <span className="font-weight-bold">
-                  {request.drivers.length} <FaUserFriends />
-                </span>
-                {userInfoContext.profile === 2 ? (
-                  <ClientStatus step={request.status.step} width="8rem" />
-                ) : (
-                  <OperacionesStatus step={request.status.step} width="8rem" />
-                )}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </div>
-      )}
+                  {userInfoContext.profile === 2 ? (
+                    <ClientStatus step={request.status.step} width="8rem" />
+                  ) : (
+                    <OperacionesStatus
+                      step={request.status.step}
+                      width="8rem"
+                    />
+                  )}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </div>
+        )}
       {showProfileEditModal && profileEditModal()}
       {showPasswordChangeModal && passwordChangeModal()}
       {showCompanyEditModal && (
