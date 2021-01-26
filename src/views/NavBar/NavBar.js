@@ -262,11 +262,7 @@ const NavBar = () => {
                     newRoute[newRoute.length] = 'historial';
                     newRoute = newRoute.join('/');
                     setFilteredRequests([]);
-                    console.log(
-                      url.includes('historial')
-                        ? `/${request.id}`
-                        : `${newRoute}/${request.id}`
-                    );
+
                     history.push({
                       pathname: url.includes('historial')
                         ? `/${request.id}`
