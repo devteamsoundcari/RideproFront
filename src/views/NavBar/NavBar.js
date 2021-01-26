@@ -44,7 +44,7 @@ const NavBar = () => {
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
   const [filteredRequests, setFilteredRequests] = useState([]);
-  const [searchParams, setSearchParams] = useState(null);
+  const [searchParams, setSearchParams] = useState(undefined);
   const [filterOption, setFilterOption] = useState('official_id');
   const [loading, setLoading] = useState(false);
   let { url } = useRouteMatch();
@@ -159,7 +159,7 @@ const NavBar = () => {
                 placeholder={
                   isLoadingRequests ? 'Cargando eventos...' : 'Buscar'
                 }
-                value={searchParams}
+                value={searchParams || ''}
                 onChange={(e) => setSearchParams(e.target.value)}
               />
               <InputGroup.Append>
@@ -252,20 +252,25 @@ const NavBar = () => {
         filteredRequests.length > 0 && (
           <div className="w-50 ml-3 search-results shadow">
             <ListGroup ref={wrapperRef}>
-              {filteredRequests.map(({ request }) => (
+              {filteredRequests.map(({ request }, idx) => (
                 <ListGroup.Item
                   as="li"
                   className="border"
-                  key={request.id}
+                  key={request.id + idx}
                   onClick={() => {
                     let newRoute = url.split('/');
                     newRoute[newRoute.length] = 'historial';
                     newRoute = newRoute.join('/');
                     setFilteredRequests([]);
+                    console.log(
+                      url.includes('historial')
+                        ? `/${request.id}`
+                        : `${newRoute}/${request.id}`
+                    );
                     history.push({
                       pathname: url.includes('historial')
                         ? `/${request.id}`
-                        : newRoute,
+                        : `${newRoute}/${request.id}`,
                       state: { event: request }
                     });
                   }}>

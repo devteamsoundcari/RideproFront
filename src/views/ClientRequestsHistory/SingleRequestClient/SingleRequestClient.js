@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import swal from "sweetalert";
+import React, { useState, useEffect, useContext } from 'react';
+import swal from 'sweetalert';
 import {
   Row,
   Spinner,
@@ -11,9 +11,9 @@ import {
   Button,
   Tooltip,
   OverlayTrigger,
-  Form,
-} from "react-bootstrap";
-import { useParams } from "react-router-dom";
+  Form
+} from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
 import {
   getRequest,
   fetchDriver,
@@ -21,27 +21,27 @@ import {
   cancelRequestId,
   sendEmail,
   updateRequest,
-  fetchInstructor,
-} from "../../../controllers/apiRequests";
-import { TiCogOutline } from "react-icons/ti";
-import { EditableTable } from "../../../utils/EditableTable";
+  fetchInstructor
+} from '../../../controllers/apiRequests';
+import { TiCogOutline } from 'react-icons/ti';
+import { EditableTable } from '../../../utils/EditableTable';
 import {
   MdHelpOutline,
   MdLocalPhone,
   MdPeople,
-  MdWarning,
-} from "react-icons/md";
-import { FaEnvelope, FaExternalLinkAlt } from "react-icons/fa";
-import { dateFormatter, formatAMPM } from "../../../utils/helpFunctions";
-import ClientStatus from "../../../utils/ClientStatus";
-import RegularExpressions from "../../../utils/RegularExpressions";
-import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
-import { AuthContext } from "../../../contexts/AuthContext";
-import { RequestsContext } from "../../../contexts/RequestsContext";
-import ServiceEditConfirmationModal from "./ServiceEditConfirmationModal";
-import NotEnoughCreditsModal from "./NotEnoughCreditsModal";
-import "./SingleRequestClient.scss";
-import SingleDriver from "../../AdminRequestsHistory/SingleRequestAdmin/Drivers/SingleDriver";
+  MdWarning
+} from 'react-icons/md';
+import { FaEnvelope, FaExternalLinkAlt } from 'react-icons/fa';
+import { dateFormatter, formatAMPM } from '../../../utils/helpFunctions';
+import ClientStatus from '../../../utils/ClientStatus';
+import RegularExpressions from '../../../utils/RegularExpressions';
+import { ParticipantsContext } from '../../../contexts/ParticipantsContext';
+import { AuthContext } from '../../../contexts/AuthContext';
+import { RequestsContext } from '../../../contexts/RequestsContext';
+import ServiceEditConfirmationModal from './ServiceEditConfirmationModal';
+import NotEnoughCreditsModal from './NotEnoughCreditsModal';
+import './SingleRequestClient.scss';
+import SingleDriver from '../../AdminRequestsHistory/SingleRequestAdmin/Drivers/SingleDriver';
 
 const SingleRequestClient = () => {
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
@@ -58,7 +58,7 @@ const SingleRequestClient = () => {
     setAllParticipantsInfoContext,
     setRegisteredParticipantsContext,
     setParticipantsToRegisterContext,
-    newParticipantsContext,
+    newParticipantsContext
     // setNewParticipantsContext,
   } = useContext(ParticipantsContext);
   const [showNotEnoughCreditsModal, setShowNotEnoughCreditsModal] = useState(
@@ -75,7 +75,7 @@ const SingleRequestClient = () => {
   //eslint-disable-next-line
   const [areDriversValid, setAreDriversValid] = useState(true);
   const [canSaveDrivers, setCanSaveDrivers] = useState(false);
-  const [defaultTab, setDefaultTab] = useState("participants");
+  const [defaultTab, setDefaultTab] = useState('participants');
   const [instructor, setInstructor] = useState(null);
   const [penaltyRides, setPenaltyRides] = useState(0);
 
@@ -112,23 +112,23 @@ const SingleRequestClient = () => {
   useEffect(() => {
     if (data) {
       if (data.status.step === 2) {
-        setDefaultTab("place");
+        setDefaultTab('place');
       } else {
-        setDefaultTab("participants");
+        setDefaultTab('participants');
       }
     }
   }, [data]);
 
   // ============ Listening Socket==================
   useEffect(() => {
-    let token = localStorage.getItem("token");
+    let token = localStorage.getItem('token');
     let requestsSocket = new WebSocket(
       `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
     );
-    requestsSocket.addEventListener("open", () => {
+    requestsSocket.addEventListener('open', () => {
       let payload = {
-        action: "subscribe_to_requests",
-        request_id: userInfoContext.id,
+        action: 'subscribe_to_requests',
+        request_id: userInfoContext.id
       };
       requestsSocket.send(JSON.stringify(payload));
     });
@@ -150,59 +150,60 @@ const SingleRequestClient = () => {
   }
 
   useEffect(() => {
+    setAllDrivers(null);
     fetchRequest(requestId);
     // eslint-disable-next-line
-  }, []);
+  }, [requestId]);
 
   const fields = {
     official_id: {
-      name: "Identificación",
-      format: "string",
+      name: 'Identificación',
+      format: 'string',
       regex: /^E?\d+$/,
       unique: true,
       errorMessages: {
-        regex: "Por favor, ingresa un número válido.",
-        unique: "Oops, este documento ya esta siendo usado por otra persona.",
-      },
+        regex: 'Por favor, ingresa un número válido.',
+        unique: 'Oops, este documento ya esta siendo usado por otra persona.'
+      }
     },
     first_name: {
-      name: "Nombre",
+      name: 'Nombre',
       regex: RegularExpressions.name,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un nombre válido.",
-      },
+        regex: 'Por favor, ingresa un nombre válido.'
+      }
     },
     last_name: {
-      name: "Apellido",
+      name: 'Apellido',
       regex: RegularExpressions.name,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un apellido válido.",
-      },
+        regex: 'Por favor, ingresa un apellido válido.'
+      }
     },
     email: {
-      name: "Email",
+      name: 'Email',
       regex: RegularExpressions.email,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un email válido.",
-      },
+        regex: 'Por favor, ingresa un email válido.'
+      }
     },
     cellphone: {
-      name: "Teléfono",
+      name: 'Teléfono',
       regex: /^\d{7,10}$/,
       unique: false,
       errorMessages: {
-        regex: "Por favor, ingresa un teléfono válido..",
-      },
+        regex: 'Por favor, ingresa un teléfono válido..'
+      }
     },
     isRegistered: {
-      name: "",
-      format: "boolean",
+      name: '',
+      format: 'boolean',
       hidden: true,
-      default: false,
-    },
+      default: false
+    }
   };
 
   useEffect(() => {
@@ -339,18 +340,18 @@ const SingleRequestClient = () => {
     if (penaltyRides > 0) {
       return `Cancelar este servicio te costara ${data.service.penalty_rides} rides`;
     } else {
-      return "Cancelar este servicio no genera costo alguno.";
+      return 'Cancelar este servicio no genera costo alguno.';
     }
   };
 
   const handleCancelEvent = async (z) => {
     // setShowCancellationModal(true);
     swal({
-      title: "Un momento!",
+      title: 'Un momento!',
       text: `${cancelMessage()} ¿Estas seguro que deseas cancelar esta solicitud?`,
-      icon: "warning",
-      buttons: ["No, volver", "Si, estoy seguro"],
-      dangerMode: true,
+      icon: 'warning',
+      buttons: ['No, volver', 'Si, estoy seguro'],
+      dangerMode: true
     }).then(async (willDelete) => {
       if (willDelete) {
         setLoading(true);
@@ -360,28 +361,28 @@ const SingleRequestClient = () => {
           user: userInfoContext,
           companyId: userInfoContext.company.id,
           reject_msg: `Cancelado por el usuario ${
-            penaltyRides ? `| Penalidad: $${penaltyRides} rides` : ""
+            penaltyRides ? `| Penalidad: $${penaltyRides} rides` : ''
           }`,
           newCredit:
             parseInt(userInfoContext.credit) +
             parseInt(data.spent_credit) -
-            parseInt(penaltyRides),
+            parseInt(penaltyRides)
         };
         const res = await cancelRequestId(payload);
         if (res.canceled.status === 200 && res.refund.status === 200) {
           setUserInfoContext({
             ...userInfoContext,
-            credit: res.refund.data.credit,
+            credit: res.refund.data.credit
           });
-          swal("Poof! Esta solicitud ha sido cancelada", {
-            icon: "success",
+          swal('Poof! Esta solicitud ha sido cancelada', {
+            icon: 'success'
           });
           setLoading(false);
 
           const payload = {
             id: res.canceled.data.id,
-            emailType: "canceledRequest",
-            subject: "Solicitud cancelada ❌",
+            emailType: 'canceledRequest',
+            subject: 'Solicitud cancelada ❌',
             email: userInfoContext.email,
             name: userInfoContext.name,
             date: res.canceled.data.start_time,
@@ -389,18 +390,18 @@ const SingleRequestClient = () => {
             service: res.canceled.data.service.name,
             municipality: {
               city: res.canceled.data.municipality.name,
-              department: res.canceled.data.municipality.department.name,
-            },
+              department: res.canceled.data.municipality.department.name
+            }
           };
           await sendEmail(payload); // SEND SERVICE CANCELED EMAIL TO USER
         } else {
           setLoading(false);
-          swal("Ooops! No pudimos cancelar la solicitud", {
-            icon: "error",
+          swal('Ooops! No pudimos cancelar la solicitud', {
+            icon: 'error'
           });
         }
       } else {
-        swal("Tranqui, no paso nada!");
+        swal('Tranqui, no paso nada!');
       }
     });
   };
@@ -439,8 +440,7 @@ const SingleRequestClient = () => {
             <span className="text-danger">
               <MdWarning /> Lugar y Fecha
             </span>
-          }
-        >
+          }>
           <div className="w-100 text-center">
             {data.optional_date1 && data.status.step < 3 ? (
               <div className="d-flex align-items-center justify-content-between">
@@ -477,7 +477,7 @@ const SingleRequestClient = () => {
                 </Table>
               </div>
             ) : (
-              ""
+              ''
             )}
 
             {data.optional_date2 && data.status.step < 3 ? (
@@ -516,7 +516,7 @@ const SingleRequestClient = () => {
                 </Table>
               </div>
             ) : (
-              ""
+              ''
             )}
 
             {data.track && data.status.step > 2 ? (
@@ -541,7 +541,7 @@ const SingleRequestClient = () => {
                 </Table>
               </div>
             ) : (
-              ""
+              ''
             )}
           </div>
 
@@ -553,13 +553,13 @@ const SingleRequestClient = () => {
                 disabled={selectedOption !== 0 ? false : true}
                 onClick={() => {
                   swal({
-                    title: "Confirmando programación",
+                    title: 'Confirmando programación',
                     text: `Tu solicitud se llevara acabo el ${
                       selectedOption === 1
                         ? dateFormatter(data.optional_date1)
                         : selectedOption === 2
                         ? dateFormatter(data.optional_date2)
-                        : ""
+                        : ''
                     } en ${
                       track
                         ? track.name
@@ -567,7 +567,7 @@ const SingleRequestClient = () => {
                         ? data.optional_place1.name
                         : selectedOption === 2
                         ? data.optional_place2.name
-                        : ""
+                        : ''
                     } - ${
                       track
                         ? track.municipality.name
@@ -575,7 +575,7 @@ const SingleRequestClient = () => {
                         ? data.optional_place1.municipality.name
                         : selectedOption === 2
                         ? data.optional_place2.municipality.name
-                        : ""
+                        : ''
                     } - ${
                       track
                         ? track.municipality.department.name
@@ -583,17 +583,17 @@ const SingleRequestClient = () => {
                         ? data.optional_place1.municipality.department.name
                         : selectedOption === 2
                         ? data.optional_place2.municipality.department.name
-                        : ""
+                        : ''
                     } a las ${
                       selectedOption === 1
                         ? formatAMPM(new Date(data.optional_date1))
                         : selectedOption === 2
                         ? formatAMPM(new Date(data.optional_date2))
-                        : ""
+                        : ''
                     }`,
-                    icon: "info",
-                    buttons: ["No, volver", "Si, confirmar servicio"],
-                    dangerMode: true,
+                    icon: 'info',
+                    buttons: ['No, volver', 'Si, confirmar servicio'],
+                    dangerMode: true
                   }).then(async (willUpdate) => {
                     if (willUpdate) {
                       let payload1 = {
@@ -602,9 +602,9 @@ const SingleRequestClient = () => {
                             ? track.id
                             : data.optional_place1
                             ? data.optional_place1.id
-                            : "",
+                            : '',
                         start_time: data.optional_date1,
-                        status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
+                        status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`
                       };
                       let payload2 = {
                         track:
@@ -612,9 +612,9 @@ const SingleRequestClient = () => {
                             ? track.id
                             : data.optional_place2
                             ? data.optional_place2.id
-                            : "",
+                            : '',
                         start_time: data.optional_date2,
-                        status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`,
+                        status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`
                       };
 
                       let res = await updateRequest(
@@ -623,14 +623,14 @@ const SingleRequestClient = () => {
                       );
                       if (res.status === 200) {
                         updateRequests();
-                        swal("Solicitud actualizada!", {
-                          icon: "success",
+                        swal('Solicitud actualizada!', {
+                          icon: 'success'
                         });
                         // SEND EMAIL
                         const payload = {
                           id: requestId,
-                          emailType: "requestConfirmed",
-                          subject: "Servicio programado ✅",
+                          emailType: 'requestConfirmed',
+                          subject: 'Servicio programado ✅',
                           email: userInfoContext.email,
                           name: userInfoContext.name,
                           instructor: instructor,
@@ -644,13 +644,13 @@ const SingleRequestClient = () => {
                               : selectedOption === 1
                               ? data.optional_place1
                               : data.optional_place2,
-                          service: data.service.name,
+                          service: data.service.name
                         };
                         await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
                         const payloadDrivers = {
                           id: requestId,
-                          emailType: "requestConfirmedDrivers",
-                          subject: "Prueba programada ✅",
+                          emailType: 'requestConfirmedDrivers',
+                          subject: 'Prueba programada ✅',
                           email: allDrivers.map((driver) => driver.email),
                           name: userInfoContext.name,
                           instructor: instructor,
@@ -664,18 +664,17 @@ const SingleRequestClient = () => {
                               : selectedOption === 1
                               ? data.optional_place1
                               : data.optional_place2,
-                          service: data.service.name,
+                          service: data.service.name
                         };
                         await sendEmail(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
                       } else {
-                        swal("Oops, no se pudo actualizar el servicio.", {
-                          icon: "error",
+                        swal('Oops, no se pudo actualizar el servicio.', {
+                          icon: 'error'
                         });
                       }
                     }
                   });
-                }}
-              >
+                }}>
                 Aceptar programación
               </Button>
               <Button
@@ -684,27 +683,27 @@ const SingleRequestClient = () => {
                 className="ml-2"
                 onClick={() => {
                   swal({
-                    title: "Rechazar programación",
+                    title: 'Rechazar programación',
                     text: `Estamos tristes de no poder cumplir con tus requerimientos. Si rechazas la programación la solicitud quedara cancelada. ¿Que deseas hacer?`,
-                    icon: "info",
-                    buttons: ["Volver", "Reachazar programación"],
-                    dangerMode: true,
+                    icon: 'info',
+                    buttons: ['Volver', 'Reachazar programación'],
+                    dangerMode: true
                   }).then(async (willUpdate) => {
                     if (willUpdate) {
                       swal({
-                        title: "¿Por qué cancelas?",
+                        title: '¿Por qué cancelas?',
                         content: {
-                          element: "input",
+                          element: 'input',
                           attributes: {
-                            placeholder: "Escribe el motivo de la cancelación",
-                            rows: "4",
-                            cols: "50",
-                          },
+                            placeholder: 'Escribe el motivo de la cancelación',
+                            rows: '4',
+                            cols: '50'
+                          }
                         },
                         buttons: {
-                          cancel: "Volver",
-                          confirm: "Continuar",
-                        },
+                          cancel: 'Volver',
+                          confirm: 'Continuar'
+                        }
                       }).then(async (msg) => {
                         if (msg !== null) {
                           // setLoading(true);
@@ -726,11 +725,11 @@ const SingleRequestClient = () => {
                               : `Cancelado por el usuario ${
                                   penaltyRides
                                     ? `| Penalidad: $${penaltyRides} rides`
-                                    : ""
+                                    : ''
                                 }`,
                             newCredit:
                               parseInt(userInfoContext.credit) +
-                              parseInt(data.spent_credit), // Removing penalty rides when rejecting a request
+                              parseInt(data.spent_credit) // Removing penalty rides when rejecting a request
                           };
                           const res = await cancelRequestId(payload);
                           if (
@@ -739,17 +738,17 @@ const SingleRequestClient = () => {
                           ) {
                             setUserInfoContext({
                               ...userInfoContext,
-                              credit: res.refund.data.credit,
+                              credit: res.refund.data.credit
                             });
-                            swal("Poof! Esta solicitud ha sido cancelada", {
-                              icon: "success",
+                            swal('Poof! Esta solicitud ha sido cancelada', {
+                              icon: 'success'
                             });
                             setLoading(false);
 
                             const payload = {
                               id: res.canceled.data.id,
-                              emailType: "canceledRequest",
-                              subject: "Solicitud cancelada ❌",
+                              emailType: 'canceledRequest',
+                              subject: 'Solicitud cancelada ❌',
                               email: userInfoContext.email,
                               name: userInfoContext.name,
                               date: res.canceled.data.start_time,
@@ -758,25 +757,23 @@ const SingleRequestClient = () => {
                               municipality: {
                                 city: res.canceled.data.municipality.name,
                                 department:
-                                  res.canceled.data.municipality.department
-                                    .name,
-                              },
+                                  res.canceled.data.municipality.department.name
+                              }
                             };
                             await sendEmail(payload); // SEND SERVICE CANCELED EMAIL TO USER
                           } else {
                             setLoading(false);
-                            swal("Ooops! No pudimos cancelar la solicitud", {
-                              icon: "error",
+                            swal('Ooops! No pudimos cancelar la solicitud', {
+                              icon: 'error'
                             });
                           }
                         } else {
-                          swal("Tranqui, no paso nada!");
+                          swal('Tranqui, no paso nada!');
                         }
                       });
                     }
                   });
-                }}
-              >
+                }}>
                 Rechazar
               </Button>
             </div>
@@ -822,12 +819,12 @@ const SingleRequestClient = () => {
                     <div className="d-flex align-items-center justify-content-xl-end flex-wrap">
                       <div className="mr-3">
                         <small className="text-muted">
-                          Fecha de creación:{" "}
+                          Fecha de creación:{' '}
                         </small>
                         <span>
                           {data?.created_at
                             ? dateFormatter(data.created_at)
-                            : ""}
+                            : ''}
                         </span>
                       </div>
                     </div>
@@ -840,30 +837,30 @@ const SingleRequestClient = () => {
                     <br />
                     <span>
                       {data?.municipality?.name}
-                      {" - "}
+                      {' - '}
                       {data?.municipality?.department?.name}
                     </span>
                   </div>
                   <div className="col-6 text-right pr-4 mt-4">
                     <span>
                       <strong>
-                        Creditos{" "}
-                        {data?.status.step === 0 ? "reembolsados" : "usados"}:
-                      </strong>{" "}
+                        Creditos{' '}
+                        {data?.status.step === 0 ? 'reembolsados' : 'usados'}:
+                      </strong>{' '}
                       ${data?.spent_credit}
                     </span>
                     <br />
                     {data && data.status.step > 2 ? (
                       <span>
-                        <strong>Encargado Ridepro:</strong>{" "}
+                        <strong>Encargado Ridepro:</strong>{' '}
                         {instructor ? (
                           <span>{`${instructor.first_name} ${instructor.last_name}`}</span>
                         ) : (
-                          "Cargando..."
+                          'Cargando...'
                         )}
                       </span>
                     ) : (
-                      ""
+                      ''
                     )}
                   </div>
                 </div>
@@ -873,23 +870,23 @@ const SingleRequestClient = () => {
                     <h6 className="invoice-from">Detalle</h6>
                     <div className="mb-1">
                       <span>
-                        Fecha:{" "}
-                        {data?.start_time ? dateFormatter(data.start_time) : ""}{" "}
+                        Fecha:{' '}
+                        {data?.start_time ? dateFormatter(data.start_time) : ''}{' '}
                         {data?.status.step < 3 ? (
                           <small>(Pendiente por confirmar)</small>
                         ) : (
-                          ""
+                          ''
                         )}
                       </span>
                     </div>
                     <div className="mb-1">
                       <span>
-                        Hora:{" "}
-                        {data?.start_time ? formatAMPM(data.start_time) : ""}{" "}
+                        Hora:{' '}
+                        {data?.start_time ? formatAMPM(data.start_time) : ''}{' '}
                         {data?.status.step < 3 ? (
                           <small>(Pendiente por confirmar)</small>
                         ) : (
-                          ""
+                          ''
                         )}
                       </span>
                     </div>
@@ -900,17 +897,15 @@ const SingleRequestClient = () => {
                           <OverlayTrigger
                             placement="right"
                             delay={{ show: 250, hide: 400 }}
-                            overlay={renderTooltipTrack(data.track)}
-                          >
+                            overlay={renderTooltipTrack(data.track)}>
                             {data.track.latitude &&
-                            data.track.latitude !== "na" &&
+                            data.track.latitude !== 'na' &&
                             data.track.longitude &&
-                            data.track.longitude !== "na" ? (
+                            data.track.longitude !== 'na' ? (
                               <a
                                 className="m-0 p-0 track-link"
                                 target="n_blank"
-                                href={`https://www.google.com/maps/search/?api=1&query=${data.track.latitude},${data.track.longitude}`}
-                              >
+                                href={`https://www.google.com/maps/search/?api=1&query=${data.track.latitude},${data.track.longitude}`}>
                                 {data.track.name} <FaExternalLinkAlt />
                               </a>
                             ) : (
@@ -923,7 +918,7 @@ const SingleRequestClient = () => {
                           <small>Pista Ridepro (Pendiente)</small>
                         )
                       ) : (
-                        ""
+                        ''
                       )}
                     </div>
                   </div>
@@ -933,11 +928,11 @@ const SingleRequestClient = () => {
                       <div className="user-message">
                         <div className="avatar">
                           <img
-                            src={data ? data.customer.picture : ""}
+                            src={data ? data.customer.picture : ''}
                             alt={
                               data
                                 ? data.customer.first_name
-                                : "customer-picture"
+                                : 'customer-picture'
                             }
                             width="32"
                             height="32"
@@ -945,11 +940,11 @@ const SingleRequestClient = () => {
                         </div>
                         <div className="d-inline-block mt-25">
                           <h6 className="mb-0 text-bold-500">
-                            {data ? data.customer.first_name : ""}{" "}
-                            {data ? data.customer.last_name : ""}
+                            {data ? data.customer.first_name : ''}{' '}
+                            {data ? data.customer.last_name : ''}
                           </h6>
                           <p className="text-muted mt-1">
-                            <small>{data ? data.accept_msg : ""}</small>
+                            <small>{data ? data.accept_msg : ''}</small>
                           </p>
                         </div>
                       </div>
@@ -957,11 +952,11 @@ const SingleRequestClient = () => {
                         <div className="user-message">
                           <div className="avatar">
                             <img
-                              src={data ? data.customer.picture : ""}
+                              src={data ? data.customer.picture : ''}
                               alt={
                                 data
                                   ? data.customer.first_name
-                                  : "customer-picture"
+                                  : 'customer-picture'
                               }
                               width="32"
                               height="32"
@@ -969,16 +964,16 @@ const SingleRequestClient = () => {
                           </div>
                           <div className="d-inline-block mt-25">
                             <h6 className="mb-0 text-bold-500">
-                              {data ? data.customer.first_name : ""}{" "}
-                              {data ? data.customer.last_name : ""}
+                              {data ? data.customer.first_name : ''}{' '}
+                              {data ? data.customer.last_name : ''}
                             </h6>
                             <p className="text-muted mt-1">
-                              <small>{data ? data.reject_msg : ""}</small>
+                              <small>{data ? data.reject_msg : ''}</small>
                             </p>
                           </div>
                         </div>
                       ) : (
-                        ""
+                        ''
                       )}
                     </div>
                   </div>
@@ -991,8 +986,7 @@ const SingleRequestClient = () => {
                     activeKey={defaultTab}
                     onSelect={(k) => setDefaultTab(k)}
                     id="uncontrolled-tab-request"
-                    className="uncontrolled-tab-request"
-                  >
+                    className="uncontrolled-tab-request">
                     {/* {renderPlaceDateOptions(data ? data.track : "")} */}
                     {data && renderPlaceDateOptions(data.track)}
 
@@ -1003,8 +997,7 @@ const SingleRequestClient = () => {
                           <MdPeople /> Participantes
                         </span>
                       }
-                      style={{ overflow: "auto" }}
-                    >
+                      style={{ overflow: 'auto' }}>
                       {data?.status?.step === 1 &&
                       userInfoContext.profile === 2 &&
                       allDrivers ? (
@@ -1023,9 +1016,10 @@ const SingleRequestClient = () => {
                             <Button
                               variant="dark"
                               onClick={saveDrivers}
-                              style={{ margin: "auto" }}
-                              {...(!canSaveDrivers ? { disabled: "true" } : {})}
-                            >
+                              style={{ margin: 'auto' }}
+                              {...(!canSaveDrivers
+                                ? { disabled: 'true' }
+                                : {})}>
                               Guardar
                             </Button>
                           )}
@@ -1049,28 +1043,28 @@ const SingleRequestClient = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {allDrivers.map((driver, idx) => {
-                              return (
-                                <SingleDriver
-                                  data={driver}
-                                  key={idx}
-                                  requestId={requestId}
-                                  status={data.status.step}
-                                />
-                              );
-                            })}
+                            {allDrivers.length &&
+                              allDrivers.map((driver, idx) => {
+                                return (
+                                  <SingleDriver
+                                    data={driver}
+                                    key={idx}
+                                    requestId={requestId}
+                                    status={data.status.step}
+                                  />
+                                );
+                              })}
                           </tbody>
                         </Table>
                       ) : (
-                        ""
+                        ''
                       )}
                     </Tab>
 
                     <Tab eventKey="options" title={<TiCogOutline />}>
                       <Tab.Container
                         id="left-tabs-example"
-                        defaultActiveKey="first"
-                      >
+                        defaultActiveKey="first">
                         <Row className="mt-2">
                           <Col sm={3}>
                             <Nav variant="pills" className="flex-column">
@@ -1092,24 +1086,24 @@ const SingleRequestClient = () => {
                                 <Row>
                                   <Col md={12}>
                                     <p>
-                                      Recuerda que puedes cancelar sin penalidad{" "}
+                                      Recuerda que puedes cancelar sin penalidad{' '}
                                       <strong>
-                                        hasta{" "}
+                                        hasta{' '}
                                         {cancelationPriority(
                                           data.municipality.service_priority
-                                        )}{" "}
+                                        )}{' '}
                                         horas antes
-                                      </strong>{" "}
+                                      </strong>{' '}
                                       del evento. Ten en cuenta que estos
                                       valores pueden cambiar dependiendo del
                                       lugar de la solicitud.
                                       <br />
                                       <br />
-                                      Luego de este plazo se te cargaran{" "}
+                                      Luego de este plazo se te cargaran{' '}
                                       <strong>
                                         {data.service.penalty_rides} rides de
                                         penalidad
-                                      </strong>{" "}
+                                      </strong>{' '}
                                       por este servicio.
                                       <br />
                                     </p>
@@ -1123,12 +1117,11 @@ const SingleRequestClient = () => {
                                         // }
                                         onClick={() =>
                                           handleCancelEvent(penaltyRides)
-                                        }
-                                      >
+                                        }>
                                         Cancelar solicitud
                                       </Button>
                                     ) : (
-                                      ""
+                                      ''
                                     )}
                                   </Col>
                                 </Row>
@@ -1151,7 +1144,7 @@ const SingleRequestClient = () => {
                                           </span>
                                           <h5>+ (319) 242 1712</h5>
                                           <p className="text-muted font-medium-1">
-                                            {" "}
+                                            {' '}
                                             Disponibles 24*7. Estaremos felices
                                             de ayudar
                                           </p>

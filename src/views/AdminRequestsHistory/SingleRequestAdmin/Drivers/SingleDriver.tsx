@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useContext } from "react";
-import { getUserReport } from "../../../../controllers/apiRequests";
-import { FaExternalLinkAlt, FaFilePdf } from "react-icons/fa";
-import { ReportsContext } from "../../../../contexts/ReportsContext";
+import React, { useEffect, useState, useContext } from 'react';
+import { getUserReport } from '../../../../controllers/apiRequests';
+import { FaExternalLinkAlt, FaFilePdf } from 'react-icons/fa';
+import { ReportsContext } from '../../../../contexts/ReportsContext';
 type SingleDriverProps = any;
 
 const SingleDriver: React.FC<SingleDriverProps> = ({
   data,
   requestId,
-  onUpdate,
+  onUpdate
 }) => {
   const [report, setReport] = useState<any>({});
   const { reportsInfoContext, setReportsInfoContext } = useContext(
@@ -41,11 +41,11 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
       {report.file && (
         <React.Fragment>
           <td>
-            {report.quialified === "" || report.quialified === null
-              ? "No asistio"
+            {report.quialified === '' || report.quialified === null
+              ? 'No asistio'
               : report.quialified
-              ? "Cumple"
-              : "No cumple"}
+              ? 'Cumple'
+              : 'No cumple'}
           </td>
           <td>
             <a href={report.description} target="n_blank">
