@@ -374,7 +374,7 @@ const SingleRequestClient = () => {
             ...userInfoContext,
             credit: res.refund.data.credit
           });
-          swal('Poof! Esta solicitud ha sido cancelada', {
+          swal('Listo! Esta solicitud ha sido cancelada', {
             icon: 'success'
           });
           setLoading(false);
@@ -740,7 +740,7 @@ const SingleRequestClient = () => {
                               ...userInfoContext,
                               credit: res.refund.data.credit
                             });
-                            swal('Poof! Esta solicitud ha sido cancelada', {
+                            swal('Listo! Esta solicitud ha sido cancelada', {
                               icon: 'success'
                             });
                             setLoading(false);
