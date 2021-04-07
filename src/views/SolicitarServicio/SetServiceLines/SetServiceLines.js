@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { getLineServices, getServices } from "../../../controllers/apiRequests";
-import ServiceLine from "./ServiceLine/ServiceLine";
-import { Container, Row } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { getLineServices, getServices } from '../../../controllers/apiRequests';
+import ServiceLine from './ServiceLine/ServiceLine';
+import { Container, Row } from 'react-bootstrap';
 
 const SetServiceLines = (props) => {
   const [lineServices, setLineServices] = useState([]);
   const [services, setServices] = useState([]);
 
   useEffect(() => {
-    async function fetchLineServices() {
-      const responseLine = await getLineServices();
-      setLineServices(responseLine);
+    async function fetchLineServices(url) {
+      const responseLine = await getLineServices(url);
+      setLineServices((oldArr) => oldArr.concat(responseLine.results));
+      if (responseLine.next) {
+        return await fetchLineServices(responseLine.next);
+      }
     }
     fetchLineServices();
   }, []);

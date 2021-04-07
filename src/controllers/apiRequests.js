@@ -284,7 +284,8 @@ const getServices = async (
 
 /* =================================   GET LINE SERVICES   ===================================== */
 
-const getLineServices = async () => {
+const getLineServices = async (url) => {
+  console.log('url' + url);
   const getInfo = async (url) => {
     const serviceData = await axios({
       method: 'GET',
@@ -295,9 +296,9 @@ const getLineServices = async () => {
     return serviceData;
   };
   let services = await getInfo(
-    `${process.env.REACT_APP_API_URL}/api/v1/service_lines/`
+    url ? url : `${process.env.REACT_APP_API_URL}/api/v1/service_lines/`
   );
-  return services.data.results;
+  return services.data;
 };
 
 const getDocuments = async () => {
