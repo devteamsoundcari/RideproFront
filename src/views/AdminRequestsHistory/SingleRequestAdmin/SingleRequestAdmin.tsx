@@ -115,8 +115,7 @@ const SingleRequestAdmin = () => {
 
   useEffect(() => {
     fetchRequest(requestId);
-    // eslint-disable-next-line
-  }, []);
+  }, [requestId]);
   // ============ Listening Socket==================
   useEffect(() => {
     let token = localStorage.getItem("token");

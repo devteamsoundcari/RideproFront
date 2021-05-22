@@ -10,12 +10,16 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
   onUpdate
 }) => {
   const [report, setReport] = useState<any>({});
+  const [loading, setLoading] = useState(false);
   const { reportsInfoContext, setReportsInfoContext } = useContext(
     ReportsContext
   );
   const fetchReport = async (url) => {
+    setLoading(true)
     const response = await getUserReport(url);
     setReport(response.results[0]);
+    setLoading(false)
+
   };
   useEffect(() => {
     setReportsInfoContext([]);
@@ -25,7 +29,7 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
   }, [requestId, data, setReportsInfoContext]);
 
   useEffect(() => {
-    if (report.file) {
+    if (!loading && report && report.file) {
       setReportsInfoContext([...reportsInfoContext, report]);
     }
     // eslint-disable-next-line
@@ -38,7 +42,7 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
       <td>{data?.last_name}</td>
       <td className="text-primary font-weight-bold">{data?.email}</td>
       <td>{data?.cellphone}</td>
-      {report.file && (
+      {!loading  && report && report.file && (
         <React.Fragment>
           <td>
             {report.quialified === '' || report.quialified === null

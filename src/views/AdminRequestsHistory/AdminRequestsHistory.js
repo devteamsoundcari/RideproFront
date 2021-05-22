@@ -164,6 +164,8 @@ const AdminRequestsHistory = () => {
 
   return (
     <Container fluid="md" id="client-requests-history">
+      <Switch>
+      <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />
       {isLoadingRequests ? (
         <>
           <p>Cargando eventos... paciencia, son muchos.</p>
@@ -171,8 +173,7 @@ const AdminRequestsHistory = () => {
             <span className="sr-only">Loading...</span>
           </Spinner>
         </>
-      ) : (
-        <Switch>
+        ) : (
           <Route exact path={path}>
             <Card>
               {displayedRequests.length === 0 ? (
@@ -193,9 +194,8 @@ const AdminRequestsHistory = () => {
               )}
             </Card>
           </Route>
-          <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />
-        </Switch>
-      )}
+        )}
+      </Switch>
     </Container>
   );
 };
