@@ -9,7 +9,6 @@ const Invoice: React.FC<InvoiceProps> = ({ data }) => {
     let oldArr: any = [];
     const response = await getUsers(url);
     response.results.forEach((cpny: any) => oldArr.push(cpny));
-    console.log(oldArr);
     setInvoices(oldArr);
     if (response.next) {
       return await fetchBills(response.next);

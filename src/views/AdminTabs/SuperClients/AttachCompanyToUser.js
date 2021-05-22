@@ -20,7 +20,7 @@ function AttachCompanyToUser({
       (item) => !settedCompanies.some((other) => item.id === other.company.id)
     );
     x.forEach((cpny) => oldArr.push(cpny));
-    setCompanies(oldArr);
+    setCompanies((old) => old.concat(oldArr));
     if (response.next) {
       return await fetchCompanies(response.next);
     }

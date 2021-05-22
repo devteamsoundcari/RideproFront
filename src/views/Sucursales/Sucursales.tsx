@@ -89,7 +89,6 @@ const Sucursales: React.FC<SucursalesProps> = () => {
   const expandRow = {
     onlyOneExpanding: true,
     renderer: (row) => {
-      console.log("row", users[row.company.id]);
       return (
         <div>
           <div className="w-100 text-center">

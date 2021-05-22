@@ -1,30 +1,30 @@
-import React, { useEffect, useContext } from "react";
-import NavBar from "../../views/NavBar/NavBar";
-import "./DashboardLayout.scss";
-import SideBar from "../../views/SideBar/SideBar";
-import Usuarios from "../../views/AdminTabs/Usuarios/Usuarios";
-import Companies from "../../views/AdminTabs/Companies/Companies";
-import AdminRequestsHistory from "../../views/AdminRequestsHistory/AdminRequestsHistory";
-import Dashboard from "../../views/Dashboard/Dashboard";
+import React, { useEffect, useContext } from 'react';
+import NavBar from '../../views/NavBar/NavBar';
+import './DashboardLayout.scss';
+import SideBar from '../../views/SideBar/SideBar';
+import Usuarios from '../../views/AdminTabs/Usuarios/Usuarios';
+import Companies from '../../views/AdminTabs/Companies/Companies';
+import AdminRequestsHistory from '../../views/AdminRequestsHistory/AdminRequestsHistory';
+import Dashboard from '../../views/Dashboard/Dashboard';
 import {
   Route,
   Switch,
   Redirect,
   useRouteMatch,
-  useHistory,
-} from "react-router-dom";
-import SolicitarServicio from "../../views/SolicitarServicio/SolicitarServicio";
-import Tracks from "../../views/Tracks/Tracks";
-import { Spinner, Container } from "react-bootstrap";
-import { AuthContext } from "../../contexts/AuthContext";
-import ClientRequestsHistory from "../../views/ClientRequestsHistory/ClientRequestsHistory";
-import Instructors from "../../views/Instructors/Instructors";
-import Providers from "../../views/Providers/Providers";
-import { RequestToastContainer } from "../../views/Notifications/RequestToast";
-import Sucursales from "../../views/Sucursales/Sucursales";
-import SuperClients from "../../views/AdminTabs/SuperClients/SuperClients";
-import RequiredDocuments from "../../views/AdminTabs/RequiredDocuments/RequiredDocuments";
-import AdminCredits from "../../views/AdminTabs/AdminCredits/AdminCredits";
+  useHistory
+} from 'react-router-dom';
+import SolicitarServicio from '../../views/SolicitarServicio/SolicitarServicio';
+import Tracks from '../../views/Tracks/Tracks';
+import { Spinner, Container } from 'react-bootstrap';
+import { AuthContext } from '../../contexts/AuthContext';
+import ClientRequestsHistory from '../../views/ClientRequestsHistory/ClientRequestsHistory';
+import Instructors from '../../views/Instructors/Instructors';
+import Providers from '../../views/Providers/Providers';
+import { RequestToastContainer } from '../../views/Notifications/RequestToast';
+import Sucursales from '../../views/Sucursales/Sucursales';
+import SuperClients from '../../views/AdminTabs/SuperClients/SuperClients';
+import RequiredDocuments from '../../views/AdminTabs/RequiredDocuments/RequiredDocuments';
+import AdminCredits from '../../views/AdminTabs/AdminCredits/AdminCredits';
 
 const DashboardLayout: React.FC = () => {
   const { isLoggedInContext, userInfoContext } = useContext(AuthContext);
@@ -33,14 +33,14 @@ const DashboardLayout: React.FC = () => {
 
   useEffect(() => {
     if (!isLoggedInContext) {
-      history.push("/login");
+      history.push('/login');
     }
     // eslint-disable-next-line
   }, []);
 
   if (isLoggedInContext) {
     return (
-      <div className="container-fluid" style={{ height: "100%" }}>
+      <div className="container-fluid" style={{ height: '100%' }}>
         <div className="row">
           <SideBar url={url} />
           <main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-0">
@@ -104,12 +104,11 @@ const DashboardLayout: React.FC = () => {
     return (
       <div
         style={{
-          display: "flex",
-          height: "100vh",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+          display: 'flex',
+          height: '100vh',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
         <Spinner animation="border" variant="danger" />
       </div>
     );

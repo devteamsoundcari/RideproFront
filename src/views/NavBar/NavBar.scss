@@ -36,6 +36,24 @@
     }
   }
 }
+.search-results {
+  position: fixed;
+  z-index: 3000;
+  top: 3.2rem;
+  max-height: calc(100vh - 8rem);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  li {
+    padding: 5px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      background-color: gainsboro;
+    }
+  }
+}
 .nav-scrolled {
   box-shadow: rgba(25, 42, 70, 0.13) -8px 12px 18px 0px;
   padding: 10px 15px !important;

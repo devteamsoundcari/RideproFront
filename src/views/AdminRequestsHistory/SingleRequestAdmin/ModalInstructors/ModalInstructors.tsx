@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
+import paginationFactory from "react-bootstrap-table2-paginator";
 import cellEditFactory from "react-bootstrap-table2-editor";
 import { Row, Col, ButtonGroup, Button, Modal, Image } from "react-bootstrap";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -30,10 +31,11 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   propsInstructors,
   onUpdate,
 }) => {
-  const [instructors, setInstructors] = useState([]);
-  const [selectedInstructors, setSelectedInstructors] = useState<
-    SelectedInstructors
-  >([]);
+  const [instructors, setInstructors] = useState<any>([]);
+  const [
+    selectedInstructors,
+    setSelectedInstructors,
+  ] = useState<SelectedInstructors>([]);
   const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
@@ -74,7 +76,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
       item.fare = 0;
       tempArr.push(item);
     });
-    setInstructors(tempArr);
+    setInstructors((x) => [...x, ...tempArr]);
     if (response.next) {
       return await fetchInstructors(response.next);
     }
@@ -296,6 +298,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                   {...props.baseProps}
                   expandRow={expandRow}
                   selectRow={selectRow}
+                  pagination={paginationFactory()}
                   rowClasses="row-new-style"
                   cellEdit={cellEditFactory({
                     mode: "click",

@@ -44,7 +44,6 @@ const ExpandSection = ({ row }) => {
                 dangerMode: true,
               }).then(async (willUpdate) => {
                 if (willUpdate) {
-                  console.log("delete", cmpny.id);
                   let res = await deleteSuperUserCompany(cmpny.id);
                   if (res) {
                     swal(

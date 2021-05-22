@@ -50,13 +50,14 @@ const SetPlace = (props) => {
     response.results.forEach(async (item) => {
       tempTracks.push(item);
     });
-    setTracks(tempTracks);
+    setTracks((oldArr) => oldArr.concat(tempTracks));
     if (response.next) {
-      return await getTracks(response.next);
+      return await fetchTracks(response.next);
     }
   };
   useEffect(() => {
     fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
+    //eslint-disable-next-line
   }, []);
 
   // =========================== FETCHING DEPARTMENTS ===================================

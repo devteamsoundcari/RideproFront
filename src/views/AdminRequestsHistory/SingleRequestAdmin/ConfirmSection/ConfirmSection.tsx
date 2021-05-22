@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
-import CryptoJS from "crypto-js";
-import { FaCheckCircle, FaTimes, FaSave } from "react-icons/fa";
-import { Table, Button, Modal, Form, Spinner } from "react-bootstrap";
-import { AuthContext } from "../../../../contexts/AuthContext";
+import React, { useState, useEffect, useContext } from 'react';
+import CryptoJS from 'crypto-js';
+import { FaCheckCircle, FaTimes, FaSave } from 'react-icons/fa';
+import { Table, Button, Modal, Form, Spinner } from 'react-bootstrap';
+import { AuthContext } from '../../../../contexts/AuthContext';
 import {
   updateInstructorFares,
   updateProviderFares,
   updateRequest,
   updateRequestDocuments,
-  sendEmail,
-} from "../../../../controllers/apiRequests";
-import swal from "sweetalert";
-import ModalDocuments from "./ModalDocuments/ModalDocuments";
+  sendEmail
+} from '../../../../controllers/apiRequests';
+import swal from 'sweetalert';
+import ModalDocuments from './ModalDocuments/ModalDocuments';
 
 type ConfirmSectionProps = any;
 
@@ -25,7 +25,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
   status,
   date,
   participants,
-  service,
+  service
 }) => {
   const [showModalProviders, setShowModalProviders] = useState(false);
   const [showModalDocuments, setShowModalDocuments] = useState(false);
@@ -35,8 +35,8 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
   const { userInfoContext } = useContext(AuthContext);
   const [instFares, setInstFares] = useState({});
   const [provsFares, setProvsFares] = useState({});
-  const [trackFP, setTrackFP] = useState(0);
-  const [trackFare, setTrackFare] = useState(0);
+  const [trackFP, setTrackFP] = useState<any>(0);
+  const [trackFare, setTrackFare] = useState<any>(0);
   const [selectedDocuments, setSelectedDocuments] = useState<any>([]);
   const [wasReviewed, setWasReviewed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,18 +46,17 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
     instructors.forEach((item) =>
       setInstFares({
         ...instFares,
-        [item.instructors.id]: item.first_payment,
+        [item.instructors.id]: item.first_payment
       })
     );
     setAllProviders(providers);
     providers.forEach((item) =>
       setProvsFares({
         ...provsFares,
-        [item.providers.id]: item.first_payment,
+        [item.providers.id]: item.first_payment
       })
     );
 
-    console.log("track", track);
     setTheTrack(track);
     setTrackFP(fisrt_payment);
     setTrackFare(fare_track);
@@ -65,14 +64,14 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
     // eslint-disable-next-line
   }, [instructors, providers, track, fisrt_payment, fare_track]);
 
-  let formatter = new Intl.NumberFormat("en-CO", {
-    style: "currency",
-    currency: "COP",
-    minimumFractionDigits: 0,
+  let formatter = new Intl.NumberFormat('en-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0
   });
 
   const hashCode = (id, requestId) => {
-    return CryptoJS.AES.encrypt(String(id + requestId), "fuckyoucode")
+    return CryptoJS.AES.encrypt(String(id + requestId), 'fuckyoucode')
       .toString()
       .substr(-7);
   };
@@ -85,20 +84,17 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
             variant="light"
             className="btn-block"
             disabled={status.step > 3 ? true : false}
-            onClick={() => setShowModalProviders(true)}
-          >
+            onClick={() => setShowModalProviders(true)}>
             <span>Confirmar proveedores *</span>
           </Button>
 
           <Modal
             show={showModalProviders}
             size="lg"
-            onHide={() => setShowModalProviders(false)}
-          >
+            onHide={() => setShowModalProviders(false)}>
             <Modal.Header
               className={`bg-${userInfoContext.perfil}`}
-              closeButton
-            >
+              closeButton>
               <Modal.Title className="text-white">
                 Confirmar proveedores
               </Modal.Title>
@@ -111,8 +107,8 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                     <th>Nombre de proveedor</th>
                     <th>Teléfono</th>
                     <th>Email</th>
-                    <th style={{ width: "50%" }}>Tarifa</th>
-                    <th style={{ width: "50%" }}>Primer pago</th>
+                    <th style={{ width: '50%' }}>Tarifa</th>
+                    <th style={{ width: '50%' }}>Primer pago</th>
                     {/* <th>Guardar</th> */}
                   </tr>
                 </thead>
@@ -122,7 +118,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                       <tr key={idx}>
                         <td>Instructor</td>
                         <td>
-                          {instructor.instructors.first_name}{" "}
+                          {instructor.instructors.first_name}{' '}
                           {instructor.instructors.last_name}
                         </td>
                         <td>{instructor.instructors.cellphone}</td>
@@ -138,7 +134,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                             onChange={(x) => {
                               setInstFares({
                                 ...instFares,
-                                [instructor.instructors.id]: x.target.value,
+                                [instructor.instructors.id]: x.target.value
                               });
                             }}
                           />
@@ -148,32 +144,32 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                             variant="link"
                             size="sm"
                             onClick={async () => {
+                              await updateRequest({}, requestId);
                               let res = await updateInstructorFares(
                                 {
                                   first_payment:
-                                    instFares[instructor.instructors.id],
+                                    instFares[instructor.instructors.id]
                                 },
                                 instructor.id
                               );
                               if (res.status === 200) {
                                 swal(
-                                  "Pago registado!",
+                                  'Pago registado!',
                                   `El pago de ${
                                     instructor.instructors.first_name
                                   } por ${formatter.format(
                                     instFares[instructor.instructors.id]
                                   )} fue registrado 👍`,
-                                  "success"
+                                  'success'
                                 );
                               } else {
                                 swal(
-                                  "Algo pasa!",
-                                  "No pudimos actualizar el pago 😢",
-                                  "error"
+                                  'Algo pasa!',
+                                  'No pudimos actualizar el pago 😢',
+                                  'error'
                                 );
                               }
-                            }}
-                          >
+                            }}>
                             <FaSave />
                           </Button>
                         </td>
@@ -198,7 +194,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                             onChange={(x) => {
                               setProvsFares({
                                 ...provsFares,
-                                [provider.providers.id]: x.target.value,
+                                [provider.providers.id]: x.target.value
                               });
                             }}
                           />
@@ -208,39 +204,39 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                             variant="link"
                             size="sm"
                             onClick={async () => {
+                              await updateRequest({}, requestId);
                               let res = await updateProviderFares(
                                 {
                                   first_payment:
-                                    provsFares[provider.providers.id],
+                                    provsFares[provider.providers.id]
                                 },
                                 provider.id
                               );
                               if (res.status === 200) {
                                 swal(
-                                  "Pago registado!",
+                                  'Pago registado!',
                                   `El pago de ${
                                     provider.providers.name
                                   } por ${formatter.format(
                                     provsFares[provider.providers.id]
                                   )} fue registrado 👍`,
-                                  "success"
+                                  'success'
                                 );
                               } else {
                                 swal(
-                                  "Algo pasa!",
-                                  "No pudimos actualizar el pago 😢",
-                                  "error"
+                                  'Algo pasa!',
+                                  'No pudimos actualizar el pago 😢',
+                                  'error'
                                 );
                               }
-                            }}
-                          >
+                            }}>
                             <FaSave />
                           </Button>
                         </td>
                       </tr>
                     );
                   })}
-                  {theTrack.company && theTrack.company.name === "Ridepro" && (
+                  {theTrack.company && theTrack.company.name === 'Ridepro' && (
                     <tr>
                       <td>Pista</td>
                       <td>{theTrack.contact_name}</td>
@@ -278,29 +274,28 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                             let res = await updateRequest(
                               {
                                 f_p_track: trackFP,
-                                fare_track: trackFare,
+                                fare_track: trackFare
                               },
                               requestId
                             );
                             if (res.status === 200) {
                               swal(
-                                "Pago registado!",
+                                'Pago registado!',
                                 `El pago de ${
                                   theTrack.contact_name
                                 } por ${formatter.format(
                                   trackFP
                                 )} fue registrado 👍`,
-                                "success"
+                                'success'
                               );
                             } else {
                               swal(
-                                "Algo pasa!",
-                                "No pudimos actualizar el pago 😢",
-                                "error"
+                                'Algo pasa!',
+                                'No pudimos actualizar el pago 😢',
+                                'error'
                               );
                             }
-                          }}
-                        >
+                          }}>
                           <FaSave />
                         </Button>
                       </td>
@@ -316,8 +311,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
             variant="light"
             className="btn-block"
             disabled={status.step > 3 ? true : false}
-            onClick={() => setShowModalDocuments(true)}
-          >
+            onClick={() => setShowModalDocuments(true)}>
             <span>Confirmar documentos </span>
             {wasReviewed || status.step > 3 ? (
               <FaCheckCircle className="text-success" />
@@ -347,15 +341,15 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
             disabled={!wasReviewed || status.step > 3 ? true : false}
             onClick={() => {
               swal({
-                title: "¿Estas seguro?",
+                title: '¿Estas seguro?',
                 text:
-                  "Confirmo que he llamado a cada proveedor para confirmar el evento. Tambien selecioné los documentos necesarios, compré tiquete, hoteles o demás gasto necesario",
-                icon: "warning",
+                  'Confirmo que he llamado a cada proveedor para confirmar el evento. Tambien selecioné los documentos necesarios, compré tiquete, hoteles o demás gasto necesario',
+                icon: 'warning',
                 buttons: [
-                  "No, dejame revisar",
-                  "Si, confirmar con proveedores",
+                  'No, dejame revisar',
+                  'Si, confirmar con proveedores'
                 ],
-                dangerMode: true,
+                dangerMode: true
               }).then(async (willUpdate) => {
                 if (willUpdate) {
                   let docsIds: any = [];
@@ -365,12 +359,12 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                   });
                   let payloadDocs = {
                     request: requestId,
-                    documents: docsIds,
+                    documents: docsIds
                   };
                   let payloadStatus = {
                     new_request: 0, // It wont be a new request anymore
                     operator: userInfoContext.id, // JUST IN CASE
-                    status: `${process.env.REACT_APP_STATUS_STEP_4}`,
+                    status: `${process.env.REACT_APP_STATUS_STEP_4}`
                   };
                   let resDocs = await updateRequestDocuments(payloadDocs);
                   let resStatus = await updateRequest(payloadStatus, requestId);
@@ -387,18 +381,18 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                     // Send track email if track is part of ridepro
                     if (
                       theTrack.company &&
-                      theTrack.company.name === "Ridepro"
+                      theTrack.company.name === 'Ridepro'
                     ) {
                       let trackPayload = {
                         id: requestId,
-                        emailType: "requestConfirmedTrack",
-                        subject: "Evento confirmado ✔️",
+                        emailType: 'requestConfirmedTrack',
+                        subject: 'Evento confirmado ✔️',
                         email: track.contact_email,
                         name: track.contact_name,
                         instructor: instructors[0].instructors,
                         hash: track.hash,
                         firstPayment: trackFP,
-                        date: date,
+                        date: date
                       };
                       await sendEmail(trackPayload);
                     }
@@ -407,15 +401,15 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                     providers.forEach(async (prov) => {
                       let providerPayload = {
                         id: requestId,
-                        emailType: "requestConfirmedProvider",
-                        subject: "Evento confirmado ✔️",
+                        emailType: 'requestConfirmedProvider',
+                        subject: 'Evento confirmado ✔️',
                         email: prov.providers.email,
                         name: prov.providers.name,
                         instructor: instructors[0].instructors,
                         hash: prov.hash,
                         firstPayment: prov.first_payment,
                         date: date,
-                        track: track,
+                        track: track
                       };
                       await sendEmail(providerPayload);
                     });
@@ -424,8 +418,8 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                     instructors.forEach(async (ins) => {
                       let instructorPayload = {
                         id: requestId,
-                        emailType: "requestConfirmedInstructor",
-                        subject: "Evento confirmado ✔️",
+                        emailType: 'requestConfirmedInstructor',
+                        subject: 'Evento confirmado ✔️',
                         email: ins.instructors.email,
                         name: ins.instructors.first_name,
                         hash: ins.hash,
@@ -434,7 +428,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                         track: track,
                         participantes: participants,
                         documents: selectedDocuments,
-                        service: service?.name,
+                        service: service
                       };
                       await sendEmail(instructorPayload);
                     });
@@ -442,31 +436,30 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                     // Send admin email
                     let adminPayload = {
                       id: requestId,
-                      emailType: "requestConfirmedAdmin",
-                      subject: "Proveedores confirmados ✔️",
-                      email: "aliados@ridepro.co",
+                      emailType: 'requestConfirmedAdmin',
+                      subject: 'Proveedores confirmados ✔️',
+                      email: 'soportealiados@ridepro.co',
                       date: date,
                       track: track,
                       trackFirstPayment: trackFP,
                       providers: providers,
-                      instructors: instructors,
+                      instructors: instructors
                     };
                     await sendEmail(adminPayload);
 
                     setLoading(false);
 
-                    swal("Solicitud actualizada!", {
-                      icon: "success",
+                    swal('Solicitud actualizada!', {
+                      icon: 'success'
                     });
                   } else {
-                    swal("Oops, no se pudo actualizar el servicio.", {
-                      icon: "error",
+                    swal('Oops, no se pudo actualizar el servicio.', {
+                      icon: 'error'
                     });
                   }
                 }
               });
-            }}
-          >
+            }}>
             Confirmar {loading && <Spinner animation="border" />}
           </Button>
         </div>

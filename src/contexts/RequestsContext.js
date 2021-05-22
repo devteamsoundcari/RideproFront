@@ -12,36 +12,51 @@ export const RequestsContext = createContext();
 
 const RequestsContextProvider = (props) => {
   const { userInfoContext, isLoggedInContext } = useContext(AuthContext);
-  const [isLoadingRequests, setIsLoadingRequests] = useState(true);
+  const [startDate, setStartDate] = useState(
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+      .toISOString()
+      .slice(0, -14)
+  );
+  const [endDate, setEndDate] = useState(
+    new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+      .toISOString()
+      .slice(0, -14)
+  );
+  const [isLoadingRequests, setIsLoadingRequests] = useState(false);
   const [requests, setRequests] = useState([]);
   const [cancelledRequests, setCancelledRequests] = useState([]);
   const [statusNotifications, setStatusNotifications] = useState([]);
   const [requestsSocket, setRequestsSocket] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const requestsRef = React.useRef(requests);
 
+  /// Here set month and year
   async function fetchRequests(url) {
+    setIsLoadingRequests(true);
     const fetchedRequests = [];
     const fetchedCancelledRequests = [];
     const response = await getUserRequests(url);
-    response.results.map(async (item) => {
-      let cancelDate = new Date(item.start_time);
-      cancelDate.setDate(cancelDate.getDate() - 1);
-      item.cancelDate = cancelDate;
+    if (response) {
+      response.results.map(async (item) => {
+        let cancelDate = new Date(item.start_time);
+        cancelDate.setDate(cancelDate.getDate() - 1);
+        item.cancelDate = cancelDate;
 
-      item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
-      item.start = new Date(item.start_time);
-      item.end = new Date(item.finish_time);
+        item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
+        item.start = new Date(item.start_time);
+        item.end = new Date(item.finish_time);
 
-      if (item.status.step === 0) {
-        fetchedCancelledRequests.push(item);
-      } else {
-        fetchedRequests.push(item);
-      }
-    });
+        if (item.status.step === 0) {
+          fetchedCancelledRequests.push(item);
+        } else {
+          fetchedRequests.push(item);
+        }
+      });
+    }
     setRequests((prev) => [...prev, ...fetchedRequests]);
     setCancelledRequests((prev) => [...prev, ...fetchedCancelledRequests]);
 
-    if (response.next !== null) {
+    if (response && response.next !== null) {
       setIsLoadingRequests(true);
       return await fetchRequests(response.next);
     } else {
@@ -53,6 +68,11 @@ const RequestsContextProvider = (props) => {
     requestsRef.current = requests;
   }, [requests]);
 
+  useEffect(() => {
+    updateRequests();
+    // eslint-disable-next-line
+  }, [startDate, endDate]);
+
   const updateRequests = () => {
     let urlType =
       userInfoContext.profile === 2
@@ -62,14 +82,19 @@ const RequestsContextProvider = (props) => {
         : "requests";
     setRequests([]);
     setCancelledRequests([]);
-    fetchRequests(`${process.env.REACT_APP_API_URL}/api/v1/${urlType}/`);
+    if (isLoggedInContext)
+      fetchRequests(
+        `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
+      );
   };
 
   const clear = () => {
     setRequests([]);
     setCancelledRequests([]);
     setStatusNotifications([]);
-    requestsSocket.close();
+    if (requestsSocket) {
+      requestsSocket.close();
+    }
     setRequestsSocket(null);
   };
 
@@ -177,9 +202,14 @@ const RequestsContextProvider = (props) => {
         setCancelledRequests,
         updateRequests,
         updateRequestInfo,
+        setIsLoadingRequests,
         isLoadingRequests,
         statusNotifications,
         clear,
+        setEndDate,
+        setStartDate,
+        currentMonth,
+        setCurrentMonth,
       }}
     >
       {props.children}

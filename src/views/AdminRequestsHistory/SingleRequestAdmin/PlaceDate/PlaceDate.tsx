@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Row, Col } from "react-bootstrap";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { AuthContext } from "../../../../contexts/AuthContext";
 
 interface PlaceProps {
   municipality: any;
@@ -15,6 +16,8 @@ const PlaceDate: React.FC<PlaceProps> = ({
   date,
   title,
 }) => {
+  const { userInfoContext } = useContext(AuthContext);
+
   const dateFormatter = (date: string) => {
     let d = new Date(date);
     const dateTimeFormat = new Intl.DateTimeFormat("es-CO", {
@@ -95,9 +98,15 @@ const PlaceDate: React.FC<PlaceProps> = ({
             </div>
             <div className="mb-1">
               <span>
-                {track?.fare === 0
-                  ? "Pista creada por el cliente"
-                  : track?.fare}
+                {track?.company.id !== userInfoContext.company.id ? (
+                  <small className="text-danger">
+                    (Pista creada por el cliente)
+                  </small>
+                ) : (
+                  <small>
+                    <strong>Tarifa: </strong>${track?.fare}
+                  </small>
+                )}
               </span>
             </div>
           </div>

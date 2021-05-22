@@ -1,22 +1,23 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from 'react';
 import {
   useLocation,
   Route,
   Switch,
   useRouteMatch,
-  useHistory,
-} from "react-router-dom";
-import { AiFillDollarCircle } from "react-icons/ai";
-import { Container, Card, Spinner, Alert } from "react-bootstrap";
-import BootstrapTable from "react-bootstrap-table-next";
-import filterFactory from "react-bootstrap-table2-filter";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import { RequestsContext } from "../../contexts/RequestsContext";
-import { AuthContext } from "../../contexts/AuthContext";
-import SingleRequestClient from "./SingleRequestClient/SingleRequestClient";
-import "./ClientRequestsHistory.scss";
-import ClientStatus from "../../utils/ClientStatus";
-import { dateFormatter } from "../../utils/helpFunctions";
+  useHistory
+} from 'react-router-dom';
+import { AiFillDollarCircle } from 'react-icons/ai';
+import { Container, Card, Spinner, Alert } from 'react-bootstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import { RequestsContext } from '../../contexts/RequestsContext';
+import { AuthContext } from '../../contexts/AuthContext';
+import SingleRequestClient from './SingleRequestClient/SingleRequestClient';
+import './ClientRequestsHistory.scss';
+import ClientStatus from '../../utils/ClientStatus';
+import { dateFormatter } from '../../utils/helpFunctions';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 const ClientRequestsHistory = () => {
   const location = useLocation();
@@ -80,103 +81,117 @@ const ClientRequestsHistory = () => {
 
   const columnsClient = [
     {
-      dataField: "id",
-      text: "Cód.",
-      headerClasses: "small-column",
+      dataField: 'id',
+      text: 'Cód.',
+      headerClasses: 'small-column',
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "created_at",
-      text: "Fecha de solicitud",
+      dataField: 'created_at',
+      text: 'Fecha de solicitud',
       formatter: formatDate,
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "municipality.name",
-      text: "Ciudad",
+      dataField: 'municipality.name',
+      text: 'Ciudad',
       formatter: cityFormatter,
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "service.name",
-      text: "Producto",
+      dataField: 'service.name',
+      text: 'Producto',
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "start_time",
-      text: "Fecha de Programación",
+      dataField: 'start_time',
+      text: 'Fecha de Programación',
       formatter: formatDate,
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "status.name",
-      text: "Estado",
+      dataField: 'status.name',
+      text: 'Estado',
       formatter: statusFormatter,
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "spent_credit",
-      text: "Rides",
-      headerClasses: "small-column",
+      dataField: 'spent_credit',
+      text: 'Rides',
+      headerClasses: 'small-column',
       formatter: creditFormatter,
-      headerFormatter: headerCreditFormatter,
-    },
+      headerFormatter: headerCreditFormatter
+    }
   ];
 
-  const columnsSuperclient = [
+  const columnsSuperClient = [
     {
-      dataField: "id",
-      text: "Cód.",
-      headerClasses: "small-column",
+      dataField: 'id',
+      text: 'Cód.',
+      headerClasses: 'small-column',
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "customer.company.name",
-      text: "Empresa",
+      dataField: 'customer.company.name',
+      text: 'Empresa',
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "customer",
-      text: "Solicitador por",
-      sort: true,
+      dataField: 'customer',
+      text: 'Solicitador por',
       formatter: formatName,
+      sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "created_at",
-      text: "Fecha de solicitud",
+      dataField: 'created_at',
+      text: 'Fecha de solicitud',
       formatter: formatDate,
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "municipality.name",
-      text: "Ciudad",
+      dataField: 'municipality.name',
+      text: 'Ciudad',
       formatter: cityFormatter,
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "service.name",
-      text: "Producto",
+      dataField: 'service.name',
+      text: 'Producto',
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "start_time",
-      text: "Fecha de Programación",
+      dataField: 'start_time',
+      text: 'Fecha de Programación',
       formatter: formatDate,
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "status.name",
-      text: "Estado",
+      dataField: 'status.name',
+      text: 'Estado',
       formatter: statusFormatter,
       sort: true,
+      filter: textFilter()
     },
     {
-      dataField: "spent_credit",
-      text: "Rides",
-      headerClasses: "small-column",
+      dataField: 'spent_credit',
+      text: 'Rides',
+      headerClasses: 'small-column',
       formatter: creditFormatter,
-      headerFormatter: headerCreditFormatter,
-    },
+      headerFormatter: headerCreditFormatter
+    }
   ];
 
   const handleOnSelect = (row) => {
@@ -184,10 +199,49 @@ const ClientRequestsHistory = () => {
   };
 
   const selectRow = {
-    mode: "radio",
+    mode: 'radio',
     clickToSelect: true,
     hideSelectColumn: true,
-    onSelect: handleOnSelect,
+    onSelect: handleOnSelect
+  };
+
+  const MyExportCSV = (props) => {
+    const handleClick = () => {
+      props.onExport();
+    };
+    return (
+      <button className="btn btn-success float-right m-3" onClick={handleClick}>
+        Exportar a CSV
+      </button>
+    );
+  };
+
+  const renderTable = () => {
+    return (
+      <ToolkitProvider
+        bootstrap4
+        keyField="id"
+        data={displayedRequests}
+        columns={
+          userInfoContext.profile === 2 ? columnsClient : columnsSuperClient
+        }
+        // filter={filterFactory()}
+        pagination={paginationFactory()}
+        exportCSV={{
+          fileName: `ridepro-${dateFormatter(new Date())}.csv`
+        }}>
+        {(props) => (
+          <div>
+            <MyExportCSV {...props.csvProps} />
+            <BootstrapTable
+              {...props.baseProps}
+              selectRow={selectRow}
+              filter={filterFactory()}
+            />
+          </div>
+        )}
+      </ToolkitProvider>
+    );
   };
 
   return (
@@ -206,19 +260,7 @@ const ClientRequestsHistory = () => {
                   <p>Para crear una solicitud, ingresa a "Solicitar".</p>
                 </Alert>
               ) : (
-                <BootstrapTable
-                  bootstrap4
-                  keyField="id"
-                  data={displayedRequests}
-                  columns={
-                    userInfoContext.profile === 2
-                      ? columnsClient
-                      : columnsSuperclient
-                  }
-                  selectRow={selectRow}
-                  filter={filterFactory()}
-                  pagination={paginationFactory()}
-                />
+                renderTable()
               )}
             </Card>
           </Route>

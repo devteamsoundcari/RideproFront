@@ -15,7 +15,7 @@ const RequiredDocuments: React.FC<RequiredDocumentsProps> = () => {
     if (res) {
       setDocuments(res.results);
     } else {
-      console.log("No hay empresas registradas");
+      console.error("No hay empresas registradas");
     }
   }
   useEffect(() => {

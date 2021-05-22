@@ -1,7 +1,11 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
-import paginationFactory from "react-bootstrap-table2-paginator";
+import paginationFactory, {
+  PaginationProvider,
+  PaginationListStandalone,
+} from "react-bootstrap-table2-paginator";
+
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import "./AllUsers.scss";
 
@@ -69,6 +73,8 @@ const AllUsers = (props) => {
     {
       dataField: "email",
       text: "Email",
+      classes: "lg-column",
+      headerClasses: "lg-column",
     },
     {
       dataField: "credit",
@@ -98,29 +104,46 @@ const AllUsers = (props) => {
     );
   };
 
+  const options = {
+    custom: true,
+    paginationSize: 4,
+    pageStartIndex: 1,
+    showTotal: true,
+    totalSize: props.users.length,
+  };
+  const contentTable = ({ paginationProps, paginationTableProps }) => (
+    <div>
+      <PaginationListStandalone {...paginationProps} />
+      <ToolkitProvider
+        keyField="id"
+        columns={columns}
+        data={props.users}
+        search
+      >
+        {(toolkitprops) => (
+          <div>
+            <MySearch {...toolkitprops.searchProps} />
+            <BootstrapTable
+              striped
+              hover
+              {...toolkitprops.baseProps}
+              {...paginationTableProps}
+            />
+          </div>
+        )}
+      </ToolkitProvider>
+      <PaginationListStandalone {...paginationProps} />
+    </div>
+  );
+
   return (
     <Card className="allUsers mt-3 mb-5">
       <Card.Body>
-        <Card.Title>Usuarios</Card.Title>
+        <Card.Title>{`Usuarios (${props.users.length})`}</Card.Title>
         <Card.Body>
-          <ToolkitProvider
-            bootstrap4
-            // defaultSorted={defaultSorted}
-            keyField="id"
-            data={props.users}
-            columns={columns}
-            pagination={paginationFactory()}
-            hover
-            search
-          >
-            {(props) => (
-              <div>
-                <MySearch {...props.searchProps} />
-                <hr />
-                <BootstrapTable {...props.baseProps} />
-              </div>
-            )}
-          </ToolkitProvider>
+          <PaginationProvider pagination={paginationFactory(options)}>
+            {contentTable}
+          </PaginationProvider>
         </Card.Body>
       </Card.Body>
     </Card>

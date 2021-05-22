@@ -2,11 +2,11 @@ import React from "react";
 
 import { ProgressBar } from "react-bootstrap";
 
-function ClientStatus({ step }) {
+function ClientStatus({ step, width = "100%" }) {
   switch (step) {
     case 0:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Solicitud cancelada</small>
           <ProgressBar
             variant="event-canceled"
@@ -18,7 +18,7 @@ function ClientStatus({ step }) {
       );
     case 1:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Esperando confirmación</small>
           <ProgressBar
             variant="event-requested"
@@ -30,7 +30,7 @@ function ClientStatus({ step }) {
       );
     case 2:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Confirmar programación</small>
           <ProgressBar
             variant="confirm-event"
@@ -42,7 +42,7 @@ function ClientStatus({ step }) {
       );
     case 3:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Servicio programado</small>
           <ProgressBar
             variant="event-confirmed"
@@ -54,7 +54,7 @@ function ClientStatus({ step }) {
       );
     case 4:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Servicio programado</small>
           <ProgressBar
             variant="event-confirmed"
@@ -67,7 +67,7 @@ function ClientStatus({ step }) {
 
     default:
       return (
-        <div className="text-center">
+        <div className="text-center" style={{ width: width }}>
           <small>Servicio Finalizado</small>
           <ProgressBar
             variant="event-finished"

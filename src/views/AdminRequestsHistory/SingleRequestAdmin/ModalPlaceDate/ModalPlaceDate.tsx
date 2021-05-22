@@ -186,13 +186,14 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     response.results.forEach(async (item: any) => {
       tempTracks.push(item);
     });
-    setTracks(tempTracks);
+    setTracks((oldArr) => oldArr.concat(tempTracks));
     if (response.next) {
-      return await getTracks(response.next);
+      return await fetchTracks(response.next);
     }
   };
   useEffect(() => {
     fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
+    // eslint-disable-next-line
   }, []);
   // =============================== FILTER TRACKS BY COMPANY AND CITY ====================================
 

@@ -9,18 +9,22 @@ phases:
       - echo Installing Node 12 and npm...
       - curl -sL https://deb.nodesource.com/setup_12.x | bash -
       - apt install -y nodejs
+      - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+      - apt update
+      - apt install yarn
   pre_build:
     commands:
       # install dependencies
       - echo Installing dependencies...
-      - npm install
+      - yarn
   build:
     commands:
       # tests
       - echo Testing...
       # build
       - echo Building...
-      - npm run build
+      - yarn run build
       # Listing files
       - ls build
       # Copy appscpec into the build folder

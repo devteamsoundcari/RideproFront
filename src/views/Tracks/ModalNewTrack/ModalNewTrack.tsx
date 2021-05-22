@@ -87,7 +87,7 @@ const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
           swal("Perfecto!", `Pista registrada existosamente`, "success");
           handleClose();
         } else {
-          console.log("Algo paso!, no fue posible crear la pista");
+          console.error("Algo paso!, no fue posible crear la pista");
         }
       } else {
         // setError(true);
