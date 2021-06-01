@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Table } from "react-bootstrap";
-import { fetchDriver } from "../../../../controllers/apiRequests";
-import "./Drivers.scss";
-import SingleDriver from "./SingleDriver";
-import { ReportsContext } from "../../../../contexts/ReportsContext";
+import React, { useState, useEffect, useContext } from 'react';
+import { Table } from 'react-bootstrap';
+import { fetchDriver } from '../../../../controllers/apiRequests';
+import './Drivers.scss';
+import SingleDriver from './SingleDriver';
+import { ReportsContext } from '../../../../contexts/ReportsContext';
 
 interface DriversProps {
   drivers: any;
@@ -28,23 +28,33 @@ const Drivers: React.FC<DriversProps> = ({
   status,
   requestId,
   onUpdate,
-  allReportsOk,
+  allReportsOk
 }) => {
   const [participants, setParticipants] = useState<ParticipantsData>([]);
   const { reportsInfoContext } = useContext(ReportsContext);
+  const [loading, setLoading] = useState(false);
 
   // ================================ FETCH REQUEST INSTRUCTORS ON LOAD =====================================================
 
   const getDrivers = async (driversIds: any) => {
-    return Promise.all(driversIds.map((id: string) => fetchDriver(id)));
+    return Promise.all(driversIds.map(fetchDriver));
+  };
+
+  const fetchDrivers = () => {
+    setLoading(true);
+    getDrivers(drivers).then((data: any) => {
+      if (drivers.length === data.length) {
+        setParticipants(data);
+        setLoading(false);
+      }
+    });
   };
 
   useEffect(() => {
     if (drivers && drivers.length > 0) {
-      getDrivers(drivers).then((data: any) => {
-        setParticipants(data);
-      });
+      fetchDrivers();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drivers]);
 
   useEffect(() => {
@@ -79,9 +89,11 @@ const Drivers: React.FC<DriversProps> = ({
         </tr>
       </thead>
       <tbody>
-        {participants?.map((participant, idx) => (
-          <SingleDriver data={participant} key={idx} requestId={requestId} />
-        ))}
+        {!loading &&
+          participants.length &&
+          participants.map((participant, idx) => (
+            <SingleDriver data={participant} key={idx} requestId={requestId} />
+          ))}
       </tbody>
     </Table>
   );

@@ -11,21 +11,25 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
 }) => {
   const [report, setReport] = useState<any>({});
   const [loading, setLoading] = useState(false);
-  const { reportsInfoContext, setReportsInfoContext } = useContext(
-    ReportsContext
-  );
+  const { reportsInfoContext, setReportsInfoContext } =
+    useContext(ReportsContext);
   const fetchReport = async (url) => {
-    setLoading(true)
+    setLoading(true);
     const response = await getUserReport(url);
     setReport(response.results[0]);
-    setLoading(false)
-
+    setLoading(false);
   };
-  useEffect(() => {
+
+  const callReport = async () => {
     setReportsInfoContext([]);
-    fetchReport(
+    await fetchReport(
       `${process.env.REACT_APP_API_URL}/api/v1/request_drivers/?request=${requestId}&driver=${data.id}`
     );
+  };
+
+  useEffect(() => {
+    callReport();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestId, data, setReportsInfoContext]);
 
   useEffect(() => {
@@ -33,7 +37,7 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
       setReportsInfoContext([...reportsInfoContext, report]);
     }
     // eslint-disable-next-line
-  }, [report]);
+  }, [report, loading]);
 
   return (
     <tr>
@@ -42,8 +46,8 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
       <td>{data?.last_name}</td>
       <td className="text-primary font-weight-bold">{data?.email}</td>
       <td>{data?.cellphone}</td>
-      {!loading  && report && report.file && (
-        <React.Fragment>
+      {!loading && report && report.file && (
+        <>
           <td>
             {report.quialified === '' || report.quialified === null
               ? 'No asistio'
@@ -61,7 +65,7 @@ const SingleDriver: React.FC<SingleDriverProps> = ({
               <FaFilePdf />
             </a>
           </td>
-        </React.Fragment>
+        </>
       )}
     </tr>
   );

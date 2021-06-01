@@ -1,31 +1,31 @@
-import React, { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
-import { Row, Button, Spinner } from "react-bootstrap";
-import { FaCheckCircle, FaTimes } from "react-icons/fa";
-import swal from "sweetalert";
+import React, { useEffect, useState, useContext } from 'react';
+import { useParams } from 'react-router-dom';
+import { Row, Button, Spinner } from 'react-bootstrap';
+import { FaCheckCircle, FaTimes } from 'react-icons/fa';
+import swal from 'sweetalert';
 import {
   getRequest,
   updateRequest,
-  sendEmail,
-} from "../../../controllers/apiRequests";
-import "./SingleRequestAdmin.scss";
-import Drivers from "./Drivers/Drivers";
-import Instructors from "./Instructors/Instructors";
-import Providers from "./Providers/Providers";
-import ModalInstructors from "./ModalInstructors/ModalInstructors";
-import ModalProviders from "./ModalProviders/ModalProviders";
-import ModalPlaceDate from "./ModalPlaceDate/ModalPlaceDate";
-import PlaceDate from "./PlaceDate/PlaceDate";
-import { AuthContext } from "../../../contexts/AuthContext";
-import ConfirmSection from "./ConfirmSection/ConfirmSection";
-import Documents from "./Documents/Documents";
-import ModalOC from "./ModalOC/ModalOC";
-import OperacionesStatus from "../../../utils/OperacionesStatus";
-import TecnicoStatus from "../../../utils/TecnicoStatus";
-import AdminStatus from "../../../utils/AdminStatus";
-import ModalUploadReports from "./ModalUploadReports/ModalUploadReports";
-import ModalInvoice from "./ModalInvoice/ModalInvoice";
-import Invoice from "./Invoice/Invoice";
+  sendEmail
+} from '../../../controllers/apiRequests';
+import './SingleRequestAdmin.scss';
+import Drivers from './Drivers/Drivers';
+import Instructors from './Instructors/Instructors';
+import Providers from './Providers/Providers';
+import ModalInstructors from './ModalInstructors/ModalInstructors';
+import ModalProviders from './ModalProviders/ModalProviders';
+import ModalPlaceDate from './ModalPlaceDate/ModalPlaceDate';
+import PlaceDate from './PlaceDate/PlaceDate';
+import { AuthContext } from '../../../contexts/AuthContext';
+import ConfirmSection from './ConfirmSection/ConfirmSection';
+import Documents from './Documents/Documents';
+import ModalOC from './ModalOC/ModalOC';
+import OperacionesStatus from '../../../utils/OperacionesStatus';
+import TecnicoStatus from '../../../utils/TecnicoStatus';
+import AdminStatus from '../../../utils/AdminStatus';
+import ModalUploadReports from './ModalUploadReports/ModalUploadReports';
+import ModalInvoice from './ModalInvoice/ModalInvoice';
+import Invoice from './Invoice/Invoice';
 
 interface Service {
   name: string;
@@ -118,14 +118,14 @@ const SingleRequestAdmin = () => {
   }, [requestId]);
   // ============ Listening Socket==================
   useEffect(() => {
-    let token = localStorage.getItem("token");
+    let token = localStorage.getItem('token');
     let requestsSocket = new WebSocket(
       `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
     );
-    requestsSocket.addEventListener("open", () => {
+    requestsSocket.addEventListener('open', () => {
       let payload = {
-        action: "subscribe_to_requests",
-        request_id: userInfoContext.id,
+        action: 'subscribe_to_requests',
+        request_id: userInfoContext.id
       };
       requestsSocket.send(JSON.stringify(payload));
     });
@@ -142,28 +142,23 @@ const SingleRequestAdmin = () => {
     let date = new Date(startDate);
     let hours = date.getHours();
     let minutes = date.getMinutes();
-    let ampm = hours >= 12 ? "pm" : "am";
+    let ampm = hours >= 12 ? 'pm' : 'am';
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
-    let minutes2 = minutes < 10 ? "0" + minutes : minutes;
-    const strTime = hours + ":" + minutes2 + " " + ampm;
+    let minutes2 = minutes < 10 ? '0' + minutes : minutes;
+    const strTime = hours + ':' + minutes2 + ' ' + ampm;
     return strTime;
   };
 
   const dateFormatter = (date: string) => {
     let d = new Date(date);
-    const dateTimeFormat = new Intl.DateTimeFormat("es-CO", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+    const dateTimeFormat = new Intl.DateTimeFormat('es-CO', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
     });
-    const [
-      { value: month },
-      ,
-      { value: day },
-      ,
-      { value: year },
-    ] = dateTimeFormat.formatToParts(d);
+    const [{ value: month }, , { value: day }, , { value: year }] =
+      dateTimeFormat.formatToParts(d);
     return `${month}/${day}/${year}`;
   };
 
@@ -208,12 +203,12 @@ const SingleRequestAdmin = () => {
                       <div className="d-flex align-items-center justify-content-xl-end flex-wrap">
                         <div className="mr-3">
                           <small className="text-muted">
-                            Fecha de creación:{" "}
+                            Fecha de creación:{' '}
                           </small>
                           <span>
                             {data?.created_at
                               ? dateFormatter(data.created_at)
-                              : ""}
+                              : ''}
                           </span>
                         </div>
                       </div>
@@ -225,15 +220,15 @@ const SingleRequestAdmin = () => {
                       <span>{data?.service?.name}</span>
                       <br />
                       <span>
-                        {data?.start_time ? dateFormatter(data.start_time) : ""}
+                        {data?.start_time ? dateFormatter(data.start_time) : ''}
                       </span>
                       <br />
                       <span>
-                        {data?.start_time ? formatAMPM(data.start_time) : ""}
+                        {data?.start_time ? formatAMPM(data.start_time) : ''}
                       </span>
                       <br />
                       <span>
-                        {data?.municipality?.name}{" "}
+                        {data?.municipality?.name}{' '}
                         {data?.municipality?.department?.name}
                       </span>
                     </div>
@@ -252,7 +247,7 @@ const SingleRequestAdmin = () => {
                       <h6 className="invoice-from">Solicitado por</h6>
                       <div className="mb-1">
                         <span>
-                          {data?.customer?.first_name}{" "}
+                          {data?.customer?.first_name}{' '}
                           {data?.customer?.last_name}
                         </span>
                       </div>
@@ -298,7 +293,7 @@ const SingleRequestAdmin = () => {
                           </div>
                           <div className="d-inline-block mt-25">
                             <h6 className="mb-0 text-bold-500">
-                              {data?.customer?.first_name}{" "}
+                              {data?.customer?.first_name}{' '}
                               {data?.customer?.last_name}
                             </h6>
                             <p className="text-muted mt-1">
@@ -318,7 +313,7 @@ const SingleRequestAdmin = () => {
                             </div>
                             <div className="d-inline-block mt-25">
                               <h6 className="mb-0 text-bold-500">
-                                {data?.customer?.first_name}{" "}
+                                {data?.customer?.first_name}{' '}
                                 {data?.customer?.last_name}
                               </h6>
                               <p className="text-muted mt-1">
@@ -327,7 +322,7 @@ const SingleRequestAdmin = () => {
                             </div>
                           </div>
                         ) : (
-                          ""
+                          ''
                         )}
                       </div>
                     </div>
@@ -411,10 +406,10 @@ const SingleRequestAdmin = () => {
                       />
                     </React.Fragment>
                   ) : (
-                    ""
+                    ''
                   )
                 ) : (
-                  ""
+                  ''
                 )}
                 {userInfoContext.profile === 1 &&
                 data?.status?.step &&
@@ -424,7 +419,7 @@ const SingleRequestAdmin = () => {
                     <Invoice data={data} />
                   </React.Fragment>
                 ) : (
-                  ""
+                  ''
                 )}
               </div>
             </div>
@@ -432,11 +427,10 @@ const SingleRequestAdmin = () => {
           <div
             className="col-xl-3 col-md-4 col-12"
             style={{
-              position: "fixed",
-              right: "1rem",
-              maxWidth: "17rem",
-            }}
-          >
+              position: 'fixed',
+              right: '1rem',
+              maxWidth: '17rem'
+            }}>
             <div className="mt-2 mb-3">{renderStatus()}</div>
             {userInfoContext.profile === 3 && (
               <React.Fragment>
@@ -453,8 +447,7 @@ const SingleRequestAdmin = () => {
                               ? true
                               : false
                             : false
-                        }
-                      >
+                        }>
                         <span>Lugar / Fecha / Hora </span>
                         {data?.optional_date1 ? (
                           <FaCheckCircle className="text-success" />
@@ -489,8 +482,7 @@ const SingleRequestAdmin = () => {
                               ? true
                               : false
                             : false
-                        }
-                      >
+                        }>
                         <span>Instructores </span>
                         {data?.instructors.length > 0 ? (
                           <FaCheckCircle className="text-success" />
@@ -519,8 +511,7 @@ const SingleRequestAdmin = () => {
                               ? true
                               : false
                             : false
-                        }
-                      >
+                        }>
                         <span>Proveedores </span>
                         {data?.providers.length > 0 ? (
                           <FaCheckCircle className="text-success" />
@@ -544,60 +535,58 @@ const SingleRequestAdmin = () => {
                         disabled={checkDisabled()}
                         onClick={() => {
                           swal({
-                            title: "¿Estas seguro?",
-                            text:
-                              "Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!",
-                            icon: "warning",
-                            buttons: ["No, volver", "Si, confirmar servicio"],
-                            dangerMode: true,
+                            title: '¿Estas seguro?',
+                            text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
+                            icon: 'warning',
+                            buttons: ['No, volver', 'Si, confirmar servicio'],
+                            dangerMode: true
                           }).then(async (willUpdate) => {
                             if (willUpdate) {
                               let payload = {
                                 new_request: 0, // It wont be a new request anymore
                                 operator: userInfoContext.id,
-                                status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`,
+                                status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`
                               };
 
                               let res = await updateRequest(payload, requestId);
                               if (res.status === 200) {
                                 // setDisabled(true);
-                                swal("Solicitud actualizada!", {
-                                  icon: "success",
+                                swal('Solicitud actualizada!', {
+                                  icon: 'success'
                                 });
                                 // SEND EMAIL
                                 const payload = {
                                   id: requestId,
-                                  emailType: "requestOptions",
-                                  subject: "Confirmar solicitud ⚠️",
+                                  emailType: 'requestOptions',
+                                  subject: 'Confirmar solicitud ⚠️',
                                   email: data?.customer?.email,
                                   name: data?.customer?.first_name,
                                   optional_place1: data?.optional_place1,
                                   optional_place2: data?.optional_place2,
                                   optional_date1: data?.optional_date1,
                                   optional_date2: data?.optional_date2,
-                                  service: data?.service,
+                                  service: data?.service
                                 };
                                 await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
                               } else {
                                 swal(
-                                  "Oops, no se pudo actualizar el servicio.",
+                                  'Oops, no se pudo actualizar el servicio.',
                                   {
-                                    icon: "error",
+                                    icon: 'error'
                                   }
                                 );
                               }
                             }
                           });
-                        }}
-                      >
+                        }}>
                         <span>
                           {data?.status?.step === 1
-                            ? "Confirmar solicitud"
+                            ? 'Confirmar solicitud'
                             : data?.status?.step === 2
-                            ? "Esperando cliente"
+                            ? 'Esperando cliente'
                             : data?.status?.step === 3
-                            ? "Servicio confirmado"
-                            : "Cancelado"}
+                            ? 'Servicio confirmado'
+                            : 'Cancelado'}
                         </span>
                       </Button>
                     </div>
@@ -618,7 +607,7 @@ const SingleRequestAdmin = () => {
                         service={data?.service}
                       />
                     )
-                  : ""}
+                  : ''}
 
                 {data?.status?.step
                   ? data?.status?.step > 3 && (
@@ -634,15 +623,14 @@ const SingleRequestAdmin = () => {
                                   ? false
                                   : true
                               }
-                              onClick={() => setShowModalOC(true)}
-                            >
+                              onClick={() => setShowModalOC(true)}>
                               <span>Enviar OC</span>
                             </Button>
                           </div>
                         </div>
                       </div>
                     )
-                  : ""}
+                  : ''}
 
                 {showModalOC && (
                   <ModalOC
@@ -671,8 +659,7 @@ const SingleRequestAdmin = () => {
                         variant="light"
                         className="btn-block"
                         disabled={data?.status?.step < 4 ? true : false}
-                        onClick={() => setShowModalUploadReports(true)}
-                      >
+                        onClick={() => setShowModalUploadReports(true)}>
                         <span>Generar Informes </span>
                       </Button>
                       {showModalUploadReports && (
@@ -690,40 +677,38 @@ const SingleRequestAdmin = () => {
                         disabled={data?.status?.step > 4 ? true : false}
                         onClick={() => {
                           swal({
-                            title: "¿Estas seguro?",
-                            text:
-                              "Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!",
-                            icon: "warning",
-                            buttons: ["No, volver", "Si, confirmar servicio"],
-                            dangerMode: true,
+                            title: '¿Estas seguro?',
+                            text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
+                            icon: 'warning',
+                            buttons: ['No, volver', 'Si, confirmar servicio'],
+                            dangerMode: true
                           }).then(async (willUpdate) => {
                             if (willUpdate) {
                               let payload = {
                                 new_request: 0, // It wont be a new request anymore
                                 operator: userInfoContext.id,
-                                status: `${process.env.REACT_APP_STATUS_STEP_5}`,
+                                status: `${process.env.REACT_APP_STATUS_STEP_5}`
                               };
 
                               let res = await updateRequest(payload, requestId);
                               if (res.status === 200) {
                                 // setDisabled(true);
-                                swal("Solicitud actualizada!", {
-                                  icon: "success",
+                                swal('Solicitud actualizada!', {
+                                  icon: 'success'
                                 });
                                 // SEND EMAIL TO CLIENT
                                 const payload = {
                                   id: requestId,
-                                  emailType: "requestFinished",
-                                  subject: "Servicio Finalizado ✔️",
+                                  emailType: 'requestFinished',
+                                  subject: 'Servicio Finalizado ✔️',
                                   email: data?.customer?.email,
-                                  name: data?.customer?.first_name,
+                                  name: data?.customer?.first_name
                                 };
                                 await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
                               }
                             }
                           });
-                        }}
-                      >
+                        }}>
                         <span>Confirmar Finalizado</span>
                       </Button>
                     </div>
@@ -731,7 +716,7 @@ const SingleRequestAdmin = () => {
                 </div>
               </React.Fragment>
             ) : (
-              ""
+              ''
             )}
             {userInfoContext.profile === 1 && data?.status?.step
               ? data?.status?.step > 5 && (
@@ -741,15 +726,14 @@ const SingleRequestAdmin = () => {
                         <Button
                           className="btn-block btn-success"
                           disabled={data?.status?.step > 6}
-                          onClick={() => setShowModalInvoice(true)}
-                        >
+                          onClick={() => setShowModalInvoice(true)}>
                           <span>Adjuntar factura</span>
                         </Button>
                       </div>
                     </div>
                   </div>
                 )
-              : ""}
+              : ''}
             {showModalInvoice && (
               <ModalInvoice
                 handleClose={() => setShowModalInvoice(false)}
