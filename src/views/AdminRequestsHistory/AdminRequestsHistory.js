@@ -8,15 +8,18 @@ import {
 } from 'react-router-dom';
 import { Container, Card, Spinner, Alert } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, {
+  textFilter,
+  dateFilter
+} from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RequestsContext } from '../../contexts/RequestsContext';
 import SingleRequestAdmin from './SingleRequestAdmin/SingleRequestAdmin';
-import './AdminRequestsHistory.scss';
 import { AuthContext } from '../../contexts/AuthContext';
 import OperacionesStatus from '../../utils/OperacionesStatus';
 import TecnicoStatus from '../../utils/TecnicoStatus';
 import AdminStatus from '../../utils/AdminStatus';
+import './AdminRequestsHistory.scss';
 
 const AdminRequestsHistory = () => {
   const location = useLocation();
@@ -61,13 +64,8 @@ const AdminRequestsHistory = () => {
       month: '2-digit',
       day: '2-digit'
     });
-    const [
-      { value: month },
-      ,
-      { value: day },
-      ,
-      { value: year }
-    ] = dateTimeFormat.formatToParts(d);
+    const [{ value: month }, , { value: day }, , { value: year }] =
+      dateTimeFormat.formatToParts(d);
     return `${month}/${day}/${year}`;
   };
   const waitingTimeFormatter = (cell, row) => {
@@ -91,6 +89,16 @@ const AdminRequestsHistory = () => {
       return <small>hace {Math.floor(hourDifference)} horas</small>;
     }
   };
+
+  const dateFilterProps = {
+    delay: 400,
+    withoutEmptyComparatorOption: true,
+    style: { display: 'inline-grid', width: '8em' },
+    dateStyle: {
+      width: '8em'
+    }
+  };
+
   const columns = [
     {
       dataField: 'id',
@@ -113,7 +121,7 @@ const AdminRequestsHistory = () => {
       text: 'Fecha de solicitud',
       formatter: dateFormatter,
       sort: true,
-      filter: textFilter()
+      filter: dateFilter(dateFilterProps)
     },
     {
       dataField: 'municipality.name',
@@ -133,7 +141,7 @@ const AdminRequestsHistory = () => {
       text: 'Fecha de Programación',
       formatter: dateFormatter,
       sort: true,
-      filter: textFilter()
+      filter: dateFilter(dateFilterProps)
     },
     {
       dataField: 'finish_time',
@@ -165,14 +173,14 @@ const AdminRequestsHistory = () => {
   return (
     <Container fluid="md" id="client-requests-history">
       <Switch>
-      <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />
-      {isLoadingRequests ? (
-        <>
-          <p>Cargando eventos... paciencia, son muchos.</p>
-          <Spinner animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </>
+        <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />
+        {isLoadingRequests ? (
+          <>
+            <p>Cargando eventos... paciencia, son muchos.</p>
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </>
         ) : (
           <Route exact path={path}>
             <Card>
