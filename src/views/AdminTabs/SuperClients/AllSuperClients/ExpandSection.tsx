@@ -10,21 +10,22 @@ import swal from "sweetalert";
 
 const ExpandSection = ({ row }) => {
   const [loading, setLoading] = useState(false);
-  const [companies, setCompanies] = useState([]);
+  const [companies, setCompanies] = useState<any>([]);
   const [showModal, setShowModal] = useState(false);
 
   //   ================================ FETCH COMPANIES ON LOAD=====================================================
-  const fetchCompanies = async () => {
+  const fetchCompanies = async (url) => {
     setLoading(true);
-    const response = await getSuperUserCompanies(row.id);
-    if (response.status === 200) {
-      setCompanies(response.data.results);
+    const response = await getSuperUserCompanies(url);
+    setCompanies((oldArr) => [...oldArr, ...response.data.results]);
+    if (response.data.next) {
+      return await fetchCompanies(response.data.next);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchCompanies();
+    fetchCompanies(`${process.env.REACT_APP_API_URL}/api/v1/user_companies/?user=${row.id}`);
     // eslint-disable-next-line
   }, [row]);
 
@@ -51,7 +52,8 @@ const ExpandSection = ({ row }) => {
                       `Empresa desvinculada existosamente`,
                       "success"
                     );
-                    fetchCompanies();
+                    fetchCompanies(`${process.env.REACT_APP_API_URL}/api/v1/user_companies/?user=${row.id}`);
+
                   } else {
                     console.error("Opps, no se pudo devincular la empresa");
                   }
@@ -81,7 +83,7 @@ const ExpandSection = ({ row }) => {
         <Table striped bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
-              <th>Empresa</th>
+              <th>Empresas ({companies.length})</th>
               <th style={{ width: "10%" }}>Descartar</th>
             </tr>
           </thead>
@@ -95,7 +97,7 @@ const ExpandSection = ({ row }) => {
       {showModal && (
         <AttachCompanyToUser
           handleClose={() => setShowModal(false)}
-          onUpdate={() => fetchCompanies()}
+          onUpdate={() => fetchCompanies(`${process.env.REACT_APP_API_URL}/api/v1/user_companies/?user=${row.id}`)}
           superuser={row}
           settedCompanies={companies}
         />

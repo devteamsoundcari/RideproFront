@@ -13,7 +13,7 @@ import {
 type SucursalesProps = any;
 
 const Sucursales: React.FC<SucursalesProps> = () => {
-  const [companies, setCompanies] = useState([]);
+  const [companies, setCompanies] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<any>({});
   const { userInfoContext } = useContext(AuthContext);
@@ -38,19 +38,21 @@ const Sucursales: React.FC<SucursalesProps> = () => {
   }, [companies]);
 
   // ================================ FETCH COMPANIES ON LOAD=====================================================
-  const fetchCompanies = async () => {
+  const fetchCompanies = async (url) => {
     setLoading(true);
-    const response = await getSuperUserCompanies(userInfoContext.id);
-    if (response.status === 200) {
-      setCompanies(response.data.results);
+    const response = await getSuperUserCompanies(url);
+    setCompanies((oldArr) => [...oldArr, ...response.data.results]);
+    if (response.data.next) {
+      return await fetchCompanies(response.data.next);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchCompanies();
+    fetchCompanies(`${process.env.REACT_APP_API_URL}/api/v1/user_companies/?user=${userInfoContext.id}`);
     // eslint-disable-next-line
   }, []);
+
 
   const columns = [
     {
@@ -61,7 +63,7 @@ const Sucursales: React.FC<SucursalesProps> = () => {
     },
     {
       dataField: "company.name",
-      text: "Nombe",
+      text: `NOMBRE (${companies.length})`,
       //   formatter: formatDate,
       sort: true,
     },
