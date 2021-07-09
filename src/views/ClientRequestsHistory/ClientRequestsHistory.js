@@ -52,6 +52,23 @@ const ClientRequestsHistory = () => {
     return <ClientStatus step={row.status.step} />;
   };
 
+  const csvStatusFormatter = (step) => {
+    switch (step) {
+      case 0:
+        return 'Solicitud cancelada';
+      case 1:
+        return 'Esperando confirmación';
+      case 2:
+        return 'Confirmar programación';
+      case 3:
+        return 'Servicio programado';
+      case 4:
+        return 'Servicio programado';
+      default:
+        return 'Servicio Finalizado';
+    }
+  };
+
   const cityFormatter = (cell) =>
     cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
 
@@ -183,7 +200,8 @@ const ClientRequestsHistory = () => {
       text: 'Estado',
       formatter: statusFormatter,
       sort: true,
-      filter: textFilter()
+      filter: textFilter(),
+      csvFormatter: (cell, row, rowIndex) => csvStatusFormatter(row.status.step)
     },
     {
       dataField: 'spent_credit',
