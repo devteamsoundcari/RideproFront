@@ -1,44 +1,36 @@
-import React, { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../../../contexts/AuthContext";
-// import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState, useContext } from 'react';
+import { AuthContext } from '../../../contexts/AuthContext';
+import { useForm } from 'react-hook-form';
 import {
   getDepartments,
   getMunicipalities,
-  getTracks,
-} from "../../../controllers/apiRequests";
-import { Container, Form, Col, Button, Card, Spinner } from "react-bootstrap";
-import "./SetPlace.scss";
-import useDropdown from "../../../utils/useDropdown";
-import ModalNewTrack from "../../Tracks/ModalNewTrack/ModalNewTrack";
+  getTracks
+} from '../../../controllers/apiRequests';
+import { Container, Form, Col, Button, Card, Spinner } from 'react-bootstrap';
+import './SetPlace.scss';
+import useDropdown from '../../../utils/useDropdown';
+import ModalNewTrack from '../../Tracks/ModalNewTrack/ModalNewTrack';
 
 const SetPlace = (props) => {
   const { userInfoContext } = useContext(AuthContext);
   // const history = useHistory();
   const { handleSubmit } = useForm();
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [noTrack, setNoTrack] = useState(false);
   const [tracks, setTracks] = useState([]);
   const [filteredTracks, setFilteredTracks] = useState([]);
   const [track, setTrack] = useState({});
   const [departments, setDepartments] = useState([]);
-  const [department, setDpto] = useState("");
+  const [department, setDpto] = useState('');
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState({});
   const [showModalTracks, setShowModalTracks] = useState(false);
-  const [selectedDepartment, DepartmentsDropdown] = useDropdown(
-    "Departamento",
-    "Seleccione...",
-    departments
-  );
-  const [selectedCity, CitiesDropdown] = useDropdown(
-    "Ciudad",
-    "Seleccione...",
-    cities
-  );
+  const [selectedDepartment, setSelectedDepartment] = useState('Seleccione...');
+  const [selectedCity, setSelectedCity] = useState('Seleccione...');
+
   const [selectedTrack, TracksDropdown, setTracksDropdown] = useDropdown(
-    "Tus pistas",
-    "Seleccione...",
+    'Tus pistas',
+    'Seleccione...',
     filteredTracks
   );
   const [loading, setLoading] = useState(true);
@@ -134,9 +126,9 @@ const SetPlace = (props) => {
   const handleCheckChange = () => {
     setNoTrack(!noTrack);
     if (!noTrack) {
-      setTracksDropdown("disabled");
+      setTracksDropdown('disabled');
     } else {
-      setTracksDropdown("Seleccione...");
+      setTracksDropdown('Seleccione...');
     }
   };
 
@@ -148,7 +140,7 @@ const SetPlace = (props) => {
         id: selectedDepartment,
         name: document.getElementById(
           `use-dropdown-option-${selectedDepartment}`
-        ).innerHTML,
+        ).innerHTML
       });
     }
   }, [selectedDepartment]);
@@ -162,7 +154,7 @@ const SetPlace = (props) => {
         id: selectedCity,
         name: document.getElementById(`use-dropdown-option-${selectedCity}`)
           .innerHTML,
-        service_priority: city.service_priority,
+        service_priority: city.service_priority
       });
     }
     // eslint-disable-next-line
@@ -171,11 +163,11 @@ const SetPlace = (props) => {
   // =============================== SET TRACK ==========================================
 
   useEffect(() => {
-    if (selectedTrack !== "Seleccione..." && selectedTrack !== "disabled") {
+    if (selectedTrack !== 'Seleccione...' && selectedTrack !== 'disabled') {
       setTrack({
         id: selectedTrack,
         name: document.getElementById(`use-dropdown-option-${selectedTrack}`)
-          .innerHTML,
+          .innerHTML
       });
     }
   }, [selectedTrack]);
@@ -193,32 +185,79 @@ const SetPlace = (props) => {
   // ==================================== SUBMIT THE FORM ========================================
 
   const onSubmit = (data) => {
-    setError("");
+    setError('');
     if (city.id && department.id) {
       if (noTrack || track.id) {
         data.city = city;
         data.department = department;
-        data.track = noTrack ? "na" : track;
+        data.track = noTrack ? 'na' : track;
         props.setPlace(data);
       } else {
-        setError("Por favor especifique el tipo de pista");
+        setError('Por favor especifique el tipo de pista');
       }
     } else {
-      setError("Por favor especifique departamento y ciudad");
+      setError('Por favor especifique departamento y ciudad');
     }
   };
 
   // ================================================================================================
+
+  const departmentsDropdown = () => (
+    <React.Fragment>
+      <Form.Label>Departamento:</Form.Label>
+      <Form.Control
+        as="select"
+        value={selectedDepartment}
+        onChange={(e) => setSelectedDepartment(e.target.value)}
+        onBlur={(e) => setSelectedDepartment(e.target.value)}
+        disabled={
+          departments.length === 0 || selectedDepartment === 'disabled'
+        }>
+        <option>Seleccione...</option>
+        {departments.map((item) => (
+          <option
+            key={item.id}
+            value={item.id}
+            id={`use-dropdown-option-${item.id}`}>
+            {item.name}
+          </option>
+        ))}
+      </Form.Control>
+    </React.Fragment>
+  );
+
+  const citiesDropdown = () => (
+    <React.Fragment>
+      <Form.Label>Ciudad:</Form.Label>
+      <Form.Control
+        as="select"
+        value={selectedCity}
+        onChange={(e) => setSelectedCity(e.target.value)}
+        onBlur={(e) => setSelectedCity(e.target.value)}
+        disabled={cities.length === 0 || selectedCity === 'disabled'}>
+        <option>Seleccione...</option>
+        {cities.map((item) => (
+          <option
+            key={item.id}
+            value={item.id}
+            id={`use-dropdown-option-${item.id}`}>
+            {item.name}
+          </option>
+        ))}
+      </Form.Control>
+    </React.Fragment>
+  );
+
   return (
     <Container className="setPlace">
       {error && <p className="text-danger">{error}</p>}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Row className="justify-content-md-center">
           <Form.Group as={Col} md="4">
-            <DepartmentsDropdown />
+            {departmentsDropdown()}
           </Form.Group>
           <Form.Group as={Col} md="4">
-            <CitiesDropdown />
+            {citiesDropdown()}
           </Form.Group>
         </Form.Row>
         {loading && <Spinner animation="border" size="sm" />}
@@ -229,7 +268,7 @@ const SetPlace = (props) => {
         </p>
         <Form.Row className="justify-content-md-center">
           <Form.Group as={Col} md="4">
-            <Card className={noTrack ? "bg-disabled" : ""}>
+            <Card className={noTrack ? 'bg-disabled' : ''}>
               <Card.Body>
                 <TracksDropdown />
                 {!filteredTracks.length && city.id ? (
@@ -239,14 +278,13 @@ const SetPlace = (props) => {
                     </small>
                   </div>
                 ) : (
-                  ""
+                  ''
                 )}
                 <Button
                   variant="info"
                   size="sm"
                   onClick={handleClick}
-                  className="mt-2"
-                >
+                  className="mt-2">
                   Agregar pista
                 </Button>
               </Card.Body>
