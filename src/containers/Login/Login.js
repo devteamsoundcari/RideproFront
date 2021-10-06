@@ -254,7 +254,7 @@ const Login = () => {
           <div className="container my-auto">
             <div className="copyright text-center my-auto">
               <span>
-                Copyright © Ridepro 2021 | - Desarrollado por{' '}
+                Copyright © Ridepro 2021 - Desarrollado por{' '}
                 <a href="https://soundlutions.com/en/">
                   <span className="text-danger"> soundlutions.com</span>
                 </a>
