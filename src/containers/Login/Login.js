@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState, useEffect, useContext } from 'react';
+import { useForm } from 'react-hook-form';
 // import { GoogleLogin } from "react-google-login";
-import { getLoginToken, getUserInfo } from "../../controllers/apiRequests";
-import setAuthorizationToken from "../../controllers/setAuthorizationToken";
-import { AuthContext } from "../../contexts/AuthContext";
-import { useHistory } from "react-router-dom";
-import "./Login.scss";
-import bgImage from "../../assets/img/loginImage.png";
+import { getLoginToken, getUserInfo } from '../../controllers/apiRequests';
+import setAuthorizationToken from '../../controllers/setAuthorizationToken';
+import { AuthContext } from '../../contexts/AuthContext';
+import { useHistory } from 'react-router-dom';
+import './Login.scss';
+import bgImage from '../../assets/img/loginImage.png';
 // import bgPage from "../../assets/img/bgLogin.jpg";
-import logo from "../../assets/img/logo.png";
+import logo from '../../assets/img/logo.png';
 import {
   Container,
   Col,
@@ -16,18 +16,18 @@ import {
   Row,
   Button,
   Form,
-  Spinner,
-} from "react-bootstrap";
-import PasswordRecover from "../../views/PasswordRecover/PasswordRecover";
+  Spinner
+} from 'react-bootstrap';
+import PasswordRecover from '../../views/PasswordRecover/PasswordRecover';
 // import NewPassword from "../../views/NewPassword/NewPassword";
 
 const Login = () => {
   const history = useHistory();
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPasswordReset, setShowPasswordReset] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    isSignedIn: false,
+    isSignedIn: false
   });
   const { register, handleSubmit, errors } = useForm();
   const { setIsLoggedInContext, setUserInfoContext } = useContext(AuthContext);
@@ -45,7 +45,7 @@ const Login = () => {
     } else {
       // Save token in LocalStorage
       await setAuthorizationToken(res.token);
-      setError("");
+      setError('');
       // Get the user info
       await SetUser();
       setLoading(false);
@@ -67,22 +67,22 @@ const Login = () => {
         profile: res.profile,
         perfil: `${
           res.profile === 1
-            ? "admin"
+            ? 'admin'
             : res.profile === 2
-            ? "cliente"
+            ? 'cliente'
             : res.profile === 3
-            ? "operario"
+            ? 'operario'
             : res.profile === 5
-            ? "tecnico"
+            ? 'tecnico'
             : res.profile === 7
-            ? "super-cliente"
-            : ""
+            ? 'super-cliente'
+            : ''
         }`,
         picture: res.picture,
         url: res.url,
         company: res.company,
         gender: res.gender,
-        credit: res.credit,
+        credit: res.credit
       });
     }
   };
@@ -116,7 +116,7 @@ const Login = () => {
         url: userInfo.url,
         company: userInfo.company,
         gender: userInfo.gender,
-        credit: userInfo.credit,
+        credit: userInfo.credit
       });
     }
     // eslint-disable-next-line
@@ -126,32 +126,32 @@ const Login = () => {
   useEffect(() => {
     if (userInfo.isSignedIn) {
       console.log(
-        "%c ✅ User info:",
-        "color: orange; font-weight: bold;",
+        '%c ✅ User info:',
+        'color: orange; font-weight: bold;',
         userInfo
       );
-      let path = "/";
+      let path = '/';
       switch (userInfo.profile) {
         case 1:
-          path = "/administrador";
+          path = '/administrador';
           break;
         case 2:
-          path = "/cliente";
+          path = '/cliente';
           break;
         case 3:
-          path = "/operario";
+          path = '/operario';
           break;
         case 5:
-          path = "/tecnico";
+          path = '/tecnico';
           break;
         case 7:
-          path = "/super-cliente";
+          path = '/super-cliente';
           break;
         default:
-          path = "/";
+          path = '/';
       }
       history.push({
-        pathname: path,
+        pathname: path
       });
     }
   }, [userInfo, history]);
@@ -166,88 +166,103 @@ const Login = () => {
     return <PasswordRecover comeBack={renderPasswordReset} />;
   } else {
     return (
-      <Container className="justify-content-md-center d-flex mt-5 mb-5 loginForm">
-        <Col md={8}>
-          <Card className="mb-0">
-            <Row className="m-0">
-              <Col md={6} sm={12}>
-                <Card.Body>
-                  <Card.Title className="text-center">
-                    <img src={logo} alt="RideproLogo" />
-                    <h1 className="h3 mb-2 mt-1 font-weight-normal">
-                      Iniciar sesión
-                    </h1>
-                  </Card.Title>
-                  <Card.Text className="text-center">
-                    Gracias por registrarte en RIDE PRO. Tu cuenta y perfil de
-                    usuario será validada por nuestro equipo.{" "}
-                    {/* <a href="#test">
+      <>
+        <Container className="justify-content-md-center d-flex mt-5 mb-5 loginForm">
+          <Col md={8}>
+            <Card className="mb-0">
+              <Row className="m-0">
+                <Col md={6} sm={12}>
+                  <Card.Body>
+                    <Card.Title className="text-center">
+                      <img src={logo} alt="RideproLogo" />
+                      <h1 className="h3 mb-2 mt-1 font-weight-normal">
+                        Iniciar sesión
+                      </h1>
+                    </Card.Title>
+                    <Card.Text className="text-center">
+                      Gracias por registrarte en RIDE PRO. Tu cuenta y perfil de
+                      usuario será validada por nuestro equipo.{' '}
+                      {/* <a href="#test">
                       <strong>¿Problemas para iniciar sesión?</strong>
                     </a> */}
-                  </Card.Text>
-                  <Card.Body>
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                      <Form.Group>
-                        <Form.Label>Tu email</Form.Label>
-                        <Form.Control
-                          name="email"
-                          type="email"
-                          placeholder="Tu email"
-                          autoComplete="off"
-                          ref={register({
-                            required: true,
-                            pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          })}
-                        />
-                        <Form.Text className="text-muted">
-                          {errors.email && (
-                            <span>Por favor, ingresa un email válido</span>
-                          )}
-                        </Form.Text>
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Label>Tu contraseña</Form.Label>
-                        <Form.Control
-                          name="password"
-                          type="password"
-                          placeholder="Tu contraseña"
-                          ref={register({ required: true })}
-                          autoComplete="off"
-                        />
-                        <Form.Text className="text-muted">
-                          {errors.password && <span>Contraseña inválida</span>}
-                        </Form.Text>
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Check type="checkbox" label="Recuérdame" />
-                      </Form.Group>
-                      <Button
-                        variant="primary"
-                        type="submit"
-                        className="m-auto"
-                      >
-                        Ingresar
-                        {loading && <Spinner animation="border" size="sm" />}
-                      </Button>
-                      <Button variant="link" onClick={renderPasswordReset}>
-                        <small>Olvidé mi contraseña</small>
-                      </Button>
-                      <p style={{ color: "red" }}>{error}</p>
-                    </Form>
+                    </Card.Text>
+                    <Card.Body>
+                      <Form onSubmit={handleSubmit(onSubmit)}>
+                        <Form.Group>
+                          <Form.Label>Tu email</Form.Label>
+                          <Form.Control
+                            name="email"
+                            type="email"
+                            placeholder="Tu email"
+                            autoComplete="off"
+                            ref={register({
+                              required: true,
+                              pattern:
+                                /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+                            })}
+                          />
+                          <Form.Text className="text-muted">
+                            {errors.email && (
+                              <span>Por favor, ingresa un email válido</span>
+                            )}
+                          </Form.Text>
+                        </Form.Group>
+                        <Form.Group>
+                          <Form.Label>Tu contraseña</Form.Label>
+                          <Form.Control
+                            name="password"
+                            type="password"
+                            placeholder="Tu contraseña"
+                            ref={register({ required: true })}
+                            autoComplete="off"
+                          />
+                          <Form.Text className="text-muted">
+                            {errors.password && (
+                              <span>Contraseña inválida</span>
+                            )}
+                          </Form.Text>
+                        </Form.Group>
+                        <Form.Group>
+                          <Form.Check type="checkbox" label="Recuérdame" />
+                        </Form.Group>
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          className="m-auto">
+                          Ingresar
+                          {loading && <Spinner animation="border" size="sm" />}
+                        </Button>
+                        <Button variant="link" onClick={renderPasswordReset}>
+                          <small>Olvidé mi contraseña</small>
+                        </Button>
+                        <p style={{ color: 'red' }}>{error}</p>
+                      </Form>
+                    </Card.Body>
                   </Card.Body>
-                </Card.Body>
-              </Col>
-              <Col
-                md={6}
-                className="bgImageLogin"
-                style={{
-                  background: `url(${bgImage}) no-repeat center center`,
-                }}
-              ></Col>
-            </Row>
-          </Card>
-        </Col>
-      </Container>
+                </Col>
+                <Col
+                  md={6}
+                  className="bgImageLogin"
+                  style={{
+                    background: `url(${bgImage}) no-repeat center center`
+                  }}></Col>
+              </Row>
+            </Card>
+          </Col>
+        </Container>
+        <footer className="sticky-footer">
+          <div className="container my-auto">
+            <div className="copyright text-center my-auto">
+              <span>
+                Copyright © Ridepro 2021 | - Desarrollado por{' '}
+                <a href="https://soundlutions.com/en/">
+                  <span className="text-danger"> soundlutions.com</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </footer>
+      </>
     );
   }
 };
