@@ -1,42 +1,40 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   AiFillDollarCircle,
   AiFillCalendar,
-  AiOutlineHistory,
+  AiOutlineHistory
   // AiOutlinePlus,
-} from "react-icons/ai";
+} from 'react-icons/ai';
 import {
   // GiFullMotorcycleHelmet,
   GiTireTracks,
-  GiThreeFriends,
-} from "react-icons/gi";
+  GiThreeFriends
+} from 'react-icons/gi';
 import {
   FaPeopleCarry,
   FaUserGraduate,
   FaRegBuilding,
   FaUserShield,
   FaPaperclip,
-  FaDollarSign,
-} from "react-icons/fa";
-import { Badge, Button } from "react-bootstrap";
-import { AuthContext } from "../../contexts/AuthContext";
-import { RequestsContext } from "../../contexts/RequestsContext";
-import Greeting from "../../utils/Greeting/Greeting";
-import defaultCompanyLogo from "../../assets/img/companydefault.png";
-import ModalContact from "../ModalContact/ModalContact";
-import logo from "../../assets/img/logo.png";
-import "./SideBar.scss";
+  FaDollarSign
+} from 'react-icons/fa';
+import { Badge, Button } from 'react-bootstrap';
+import { AuthContext } from '../../contexts/AuthContext';
+import Greeting from '../../utils/Greeting/Greeting';
+import defaultCompanyLogo from '../../assets/img/companydefault.png';
+import ModalContact from '../ModalContact/ModalContact';
+import logo from '../../assets/img/logo.png';
+import './SideBar.scss';
 
 const SideBar = (props) => {
   const { userInfoContext } = useContext(AuthContext);
-  const { updateRequests } = useContext(RequestsContext);
-  const [profile, setProfile] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
+  const [profile, setProfile] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
   const [showContactModal, setShowContactModal] = useState(false);
 
   useEffect(() => {
-    if (userInfoContext.company.logo !== "") {
+    if (userInfoContext.company.logo !== '') {
       setProfilePicture(userInfoContext.company.logo);
     } else {
       setProfilePicture(defaultCompanyLogo);
@@ -44,54 +42,45 @@ const SideBar = (props) => {
 
     switch (userInfoContext.profile) {
       case 1:
-        setProfile("Admin");
+        setProfile('Admin');
         break;
       case 2:
-        setProfile("Cliente");
+        setProfile('Cliente');
         break;
       case 3:
-        setProfile("Operaciones");
+        setProfile('Operaciones');
         break;
       case 5:
-        setProfile("Tecnico");
+        setProfile('Tecnico');
         break;
       case 7:
-        setProfile("Super-Cliente");
+        setProfile('Super-Cliente');
         break;
       default:
         break;
     }
   }, [userInfoContext]);
 
-  // ========================= SETTING REQUESTS CONTEXT ON LOAD =======================================
-
-  useEffect(() => {
-    updateRequests();
-    // eslint-disable-next-line
-  }, []);
-
   //========================================================================================================
 
   return (
     <nav
-      className={`col-md-2 d-md-block bg-dark bg-${profile.toLowerCase()} sidebar pr-0 pl-0`}
-    >
+      className={`col-md-2 d-md-block bg-dark bg-${profile.toLowerCase()} sidebar pr-0 pl-0`}>
       <div className="sidebar-sticky">
         <div
           className="sidebar-brand"
           // onClick={() => history.push("/login")}
         >
           <img alt="RideproLogo" src={logo} />
-          <small style={{ fontSize: "12px" }}>{profile}</small>
+          <small style={{ fontSize: '12px' }}>{profile}</small>
         </div>
         <ul className="nav flex-column">
           <li>
             <div
               className="company-logo"
               style={{
-                background: `url(${profilePicture})`,
-              }}
-            ></div>
+                background: `url(${profilePicture})`
+              }}></div>
             {/* <img alt="profileImg" className="shadow" src={profilePicture} /> */}
           </li>
           <li>
@@ -108,7 +97,7 @@ const SideBar = (props) => {
               {/* </Button> */}
             </div>
           </li>
-          {profile === "Cliente" ? (
+          {profile === 'Cliente' ? (
             <React.Fragment>
               <li>
                 <Badge>
@@ -119,8 +108,7 @@ const SideBar = (props) => {
               <Button
                 variant="link"
                 className="text-white pt-0"
-                onClick={() => setShowContactModal(true)}
-              >
+                onClick={() => setShowContactModal(true)}>
                 <small>¿Sin créditos?</small>
               </Button>
               {showContactModal && (
@@ -128,7 +116,7 @@ const SideBar = (props) => {
               )}
             </React.Fragment>
           ) : (
-            ""
+            ''
           )}
         </ul>
 
@@ -162,8 +150,7 @@ const SideBar = (props) => {
             to={`${props.url}/historial`}
             // activeClassName="active"
             // exact={true}
-            className="nav-link"
-          >
+            className="nav-link">
             <AiOutlineHistory className="mb-1 mr-2" />
             Historial
           </Link>
@@ -198,12 +185,12 @@ const SideBar = (props) => {
             <React.Fragment>
               <Link to={`${props.url}/pistas`} className="nav-link">
                 <GiTireTracks className="mb-1 mr-2" />
-                {userInfoContext.profile === 1 ? "Pistas" : "Ver pistas"}
+                {userInfoContext.profile === 1 ? 'Pistas' : 'Ver pistas'}
               </Link>
               <hr />
             </React.Fragment>
           ) : (
-            ""
+            ''
           )}
           {userInfoContext.profile === 7 && (
             <React.Fragment>
@@ -227,7 +214,7 @@ const SideBar = (props) => {
               {/* <li className="sidebar-nav-header">Instructores</li> */}
               <Link to={`${props.url}/instructores`} className="nav-link">
                 <FaUserGraduate className="mb-1 mr-2" />
-                Instructores{" "}
+                Instructores{' '}
               </Link>
               {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
@@ -241,7 +228,7 @@ const SideBar = (props) => {
               {/* <li className="sidebar-nav-header">Proveedores</li> */}
               <Link to={`${props.url}/proveedores`} className="nav-link">
                 <FaPeopleCarry className="mb-1 mr-2" />
-                Proveedores{" "}
+                Proveedores{' '}
               </Link>
               {/* <Link
                 to={{ pathname: `${props.url}/pistas`, state: { show: true } }}

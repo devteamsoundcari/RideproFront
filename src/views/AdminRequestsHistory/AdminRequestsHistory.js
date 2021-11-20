@@ -6,27 +6,28 @@ import {
   useRouteMatch,
   useHistory
 } from 'react-router-dom';
-import { Container, Card, Spinner, Alert } from 'react-bootstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, {
-  textFilter,
-  dateFilter
-} from 'react-bootstrap-table2-filter';
-import paginationFactory from 'react-bootstrap-table2-paginator';
+import { Container, Card, Alert } from 'react-bootstrap';
 import { RequestsContext } from '../../contexts/RequestsContext';
 import SingleRequestAdmin from './SingleRequestAdmin/SingleRequestAdmin';
-import { AuthContext } from '../../contexts/AuthContext';
-import OperacionesStatus from '../../utils/OperacionesStatus';
-import TecnicoStatus from '../../utils/TecnicoStatus';
-import AdminStatus from '../../utils/AdminStatus';
+import { TableWithPagination } from './TableWithPagination/TableWithPagination';
 import './AdminRequestsHistory.scss';
 
 const AdminRequestsHistory = () => {
   const location = useLocation();
   const history = useHistory();
   const [displayedRequests, setDisplayedRequests] = useState([]);
-  const { requests, isLoadingRequests } = useContext(RequestsContext);
-  const { userInfoContext } = useContext(AuthContext);
+  const {
+    getRequestsList,
+    requests,
+    isLoadingRequests,
+    count,
+    getNextPageOfRequests
+  } = useContext(RequestsContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  // eslint-disable-next-line no-unused-vars
+  const [sizePerPage, setSizePerPage] = useState(25);
+  const [loadedPages, setLoadedPages] = useState([1]);
+
   let { path, url } = useRouteMatch();
 
   useEffect(() => {
@@ -36,173 +37,86 @@ const AdminRequestsHistory = () => {
     // eslint-disable-next-line
   }, [location]);
 
+  // ========================= SETTING REQUESTS CONTEXT ON LOAD =======================================
+
   useEffect(() => {
-    if (requests.length >= 1) {
-      let requestsToSort = [...requests];
-      requestsToSort.sort((a, b) => {
-        return b.id - a.id;
-      });
-      setDisplayedRequests(requestsToSort);
-    }
-  }, [requests]);
+    getRequestsList();
+    // eslint-disable-next-line
+  }, []);
 
-  const statusFormatter = (cell, row) => {
-    if (userInfoContext.profile === 3) {
-      return <OperacionesStatus step={row.status.step} />;
-    } else if (userInfoContext.profile === 1) {
-      return <AdminStatus step={row.status.step} />;
-    } else {
-      return <TecnicoStatus step={row.status.step} />;
-    }
-  };
-  const cityFormatter = (cell) =>
-    cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
-  const dateFormatter = (cell) => {
-    let d = new Date(cell);
-    const dateTimeFormat = new Intl.DateTimeFormat('es-CO', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
+  const sortById = (data) =>
+    data.sort((a, b) => {
+      return b.id - a.id;
     });
-    const [{ value: month }, , { value: day }, , { value: year }] =
-      dateTimeFormat.formatToParts(d);
-    return `${month}/${day}/${year}`;
+
+  const findMissingNumbers = (arr) => {
+    // eslint-disable-next-line no-sequences
+    const sparse = arr.reduce((sparse, i) => ((sparse[i] = 1), sparse), []);
+    return [...sparse.keys()].filter((i) => i && !sparse[i]);
   };
-  const waitingTimeFormatter = (cell, row) => {
-    let created = new Date(row.updated_at);
-    let now = new Date();
-    let difference = Math.abs(now.getTime() - created.getTime());
-    let hourDifference = difference / 1000 / 3600;
-    let days = Math.floor(hourDifference / 24);
-    if (userInfoContext.profile === 3 && row.status.step > 5) {
-      return <small>Completado el {dateFormatter(created)}</small>;
-    } else if (userInfoContext.profile === 5 && row.status.step > 4) {
-      return <small>Completado el {dateFormatter(created)}</small>;
-    } else {
-      if (hourDifference > 24) {
-        return (
-          <small>
-            Hace {days} {days > 1 ? 'días' : 'día'}
-          </small>
+
+  useEffect(() => {
+    const totalOfRequests = requests.length;
+    const requestsToSort = sortById(requests);
+    if (totalOfRequests >= 1) {
+      if (currentPage === 1) {
+        setDisplayedRequests(requestsToSort);
+      } else {
+        const skippedPages = findMissingNumbers(loadedPages).length;
+        let currentIndex = (currentPage - 1) * sizePerPage;
+        currentIndex = currentIndex - skippedPages * sizePerPage;
+        const slicedRequests = requestsToSort.slice(
+          currentIndex,
+          currentIndex + sizePerPage
         );
+        setDisplayedRequests(slicedRequests);
       }
-      return <small>hace {Math.floor(hourDifference)} horas</small>;
     }
-  };
-
-  const dateFilterProps = {
-    delay: 400,
-    withoutEmptyComparatorOption: true,
-    style: { display: 'inline-grid', width: '8em' },
-    dateStyle: {
-      width: '8em'
-    }
-  };
-
-  const columns = [
-    {
-      dataField: 'id',
-      text: 'Cód.',
-      headerClasses: 'small-column',
-      sort: true,
-      filter: textFilter({
-        delay: 1000, // default is 500ms
-        placeholder: '#'
-      })
-    },
-    {
-      dataField: 'customer.company.name',
-      text: 'Cliente',
-      sort: true,
-      filter: textFilter()
-    },
-    {
-      dataField: 'created_at',
-      text: 'Fecha de solicitud',
-      formatter: dateFormatter,
-      sort: true,
-      filter: dateFilter(dateFilterProps)
-    },
-    {
-      dataField: 'municipality.name',
-      text: 'Ciudad',
-      formatter: cityFormatter,
-      sort: true,
-      filter: textFilter()
-    },
-    {
-      dataField: 'service.name',
-      text: 'Producto',
-      sort: true,
-      filter: textFilter()
-    },
-    {
-      dataField: 'start_time',
-      text: 'Fecha de Programación',
-      formatter: dateFormatter,
-      sort: true,
-      filter: dateFilter(dateFilterProps)
-    },
-    {
-      dataField: 'finish_time',
-      text: 'Última interacción',
-      formatter: waitingTimeFormatter,
-      sort: true,
-      filter: textFilter()
-    },
-    {
-      dataField: 'status.name',
-      text: 'Estado',
-      formatter: statusFormatter,
-      sort: true,
-      filter: textFilter()
-    }
-  ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requests]);
 
   const handleOnSelect = (row) => {
     history.push(`${url}/${row.id}`);
   };
 
-  const selectRow = {
-    mode: 'radio',
-    clickToSelect: true,
-    hideSelectColumn: true,
-    onSelect: handleOnSelect
+  const handleTableChange = (type, { page, sizePerPage }) => {
+    const currentIndex = (page - 1) * sizePerPage;
+    setCurrentPage(page);
+    if (!loadedPages.includes(page)) {
+      getNextPageOfRequests(page);
+      setLoadedPages(loadedPages.concat([page]));
+    } else {
+      const sortedRequests = sortById(requests).slice(
+        currentIndex,
+        currentIndex + sizePerPage
+      );
+      setDisplayedRequests(sortedRequests);
+    }
   };
 
   return (
-    <Container fluid="md" id="client-requests-history">
+    <Container fluid id="client-requests-history">
       <Switch>
         <Route path={`${path}/:requestId`} component={SingleRequestAdmin} />
-        {isLoadingRequests ? (
-          <>
-            <p>Cargando eventos... paciencia, son muchos.</p>
-            <Spinner animation="border" role="status">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-          </>
-        ) : (
-          <Route exact path={path}>
-            <Card>
-              {displayedRequests.length === 0 ? (
-                <Alert variant="light">
-                  <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
-                  <p>Para crear una solicitud, ingresa a "Solicitar".</p>
-                </Alert>
-              ) : (
-                <BootstrapTable
-                  bootstrap4
-                  keyField="id"
-                  data={displayedRequests}
-                  columns={columns}
-                  selectRow={selectRow}
-                  filter={filterFactory()}
-                  pagination={paginationFactory()}
-                />
-              )}
-            </Card>
-          </Route>
-        )}
+
+        <Route exact path={path}>
+          <Card>
+            {displayedRequests.length === 0 && !isLoadingRequests ? (
+              <Alert variant="light">
+                <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
+                <p>Para crear una solicitud, ingresa a "Solicitar".</p>
+              </Alert>
+            ) : (
+              <TableWithPagination
+                data={displayedRequests}
+                page={currentPage}
+                sizePerPage={sizePerPage}
+                totalSize={count}
+                onTableChange={handleTableChange}
+              />
+            )}
+          </Card>
+        </Route>
       </Switch>
     </Container>
   );

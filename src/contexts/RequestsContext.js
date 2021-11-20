@@ -3,10 +3,10 @@ import React, {
   useEffect,
   createContext,
   useState,
-  useContext,
-} from "react";
-import { AuthContext } from "./AuthContext";
-import { getUserRequests, getRequest } from "../controllers/apiRequests";
+  useContext
+} from 'react';
+import { AuthContext } from './AuthContext';
+import { getUserRequests, getRequest } from '../controllers/apiRequests';
 
 export const RequestsContext = createContext();
 
@@ -23,16 +23,45 @@ const RequestsContextProvider = (props) => {
       .slice(0, -14)
   );
   const [isLoadingRequests, setIsLoadingRequests] = useState(false);
+  const [isLoadingCalendarRequests, setIsLoadingCalendarRequests] =
+    useState(false);
+  const [, setPrevUrl] = useState(null);
+  const [nextUrl, setNextUrl] = useState(null);
   const [requests, setRequests] = useState([]);
+  const [calendarRequests, setCalendarRequests] = useState([]);
+  const [count, setCount] = useState(0);
   const [cancelledRequests, setCancelledRequests] = useState([]);
   const [statusNotifications, setStatusNotifications] = useState([]);
   const [requestsSocket, setRequestsSocket] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const requestsRef = React.useRef(requests);
 
-  /// Here set month and year
-  async function fetchRequests(url) {
+  async function fetchRequestsByPage(url) {
     setIsLoadingRequests(true);
+    const fetchedRequests = [];
+    const response = await getUserRequests(url);
+    if (response) {
+      response.results.map(async (item) => {
+        let cancelDate = new Date(item.start_time);
+        cancelDate.setDate(cancelDate.getDate() - 1);
+        item.cancelDate = cancelDate;
+        item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
+        item.start = new Date(item.start_time);
+        item.end = new Date(item.finish_time);
+        fetchedRequests.push(item);
+      });
+    }
+
+    setRequests((prev) => [...fetchedRequests, ...prev]);
+    setPrevUrl(response.previous);
+    setNextUrl(response.next);
+    setCount(response.count);
+    setIsLoadingRequests(false);
+  }
+
+  /// Here set month and year
+  async function fetchRequestsByMonth(url) {
+    setIsLoadingCalendarRequests(true);
     const fetchedRequests = [];
     const fetchedCancelledRequests = [];
     const response = await getUserRequests(url);
@@ -53,14 +82,13 @@ const RequestsContextProvider = (props) => {
         }
       });
     }
-    setRequests((prev) => [...prev, ...fetchedRequests]);
+    setCalendarRequests((prev) => [...prev, ...fetchedRequests]);
     setCancelledRequests((prev) => [...prev, ...fetchedCancelledRequests]);
-
     if (response && response.next !== null) {
-      setIsLoadingRequests(true);
-      return await fetchRequests(response.next);
+      setIsLoadingCalendarRequests(true);
+      return await fetchRequestsByMonth(response.next);
     } else {
-      setIsLoadingRequests(false);
+      setIsLoadingCalendarRequests(false);
     }
   }
 
@@ -68,22 +96,44 @@ const RequestsContextProvider = (props) => {
     requestsRef.current = requests;
   }, [requests]);
 
-  useEffect(() => {
-    updateRequests();
-    // eslint-disable-next-line
-  }, [startDate, endDate]);
+  // useEffect(() => {
+  //   getRequestsList();
+  //   // eslint-disable-next-line
+  // }, [startDate, endDate]);
 
-  const updateRequests = () => {
+  const getRequestsList = (page) => {
+    if (page === 1) {
+      setRequests([]);
+    }
     let urlType =
       userInfoContext.profile === 2
-        ? "user_requests"
+        ? 'user_requests'
         : userInfoContext.profile === 7
-        ? "request_superuser"
-        : "requests";
+        ? 'request_superuser'
+        : 'requests';
+    // setRequests([]);
+    // setCancelledRequests([]);
+    if (isLoggedInContext)
+      fetchRequestsByPage(
+        page && page !== 1
+          ? `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?page=${page}&start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
+          : `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
+      );
+  };
+
+  const getNextPageOfRequests = (page) => getRequestsList(page);
+
+  const getCalendarRequests = () => {
+    let urlType =
+      userInfoContext.profile === 2
+        ? 'user_requests'
+        : userInfoContext.profile === 7
+        ? 'request_superuser'
+        : 'requests';
     setRequests([]);
     setCancelledRequests([]);
     if (isLoggedInContext)
-      fetchRequests(
+      fetchRequestsByMonth(
         `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
       );
   };
@@ -133,13 +183,13 @@ const RequestsContextProvider = (props) => {
             previousStatus: {
               name: oldRequest.status.name,
               color: oldRequest.status.color_indicator,
-              step: oldRequest.status.step,
+              step: oldRequest.status.step
             },
             newStatus: {
               name: request.status.name,
               color: request.status.color_indicator,
-              step: request.status.step,
-            },
+              step: request.status.step
+            }
           });
           setStatusNotifications((previous) => [...previous, ...notifications]);
         }
@@ -149,28 +199,31 @@ const RequestsContextProvider = (props) => {
 
   useEffect(() => {
     if (requestsSocket === null) {
-      if (!isLoadingRequests && isLoggedInContext) {
-        let token = localStorage.getItem("token");
+      if (
+        !isLoadingCalendarRequests &&
+        !isLoadingRequests &&
+        isLoggedInContext
+      ) {
+        let token = localStorage.getItem('token');
         let requestsSocket = new WebSocket(
           `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
         );
-
-        requestsSocket.addEventListener("open", () => {
+        requestsSocket.addEventListener('open', () => {
           let payload;
           switch (userInfoContext.profile) {
             case 1:
             case 3:
               payload = {
-                action: "subscribe_to_requests",
-                request_id: userInfoContext.id,
+                action: 'subscribe_to_requests',
+                request_id: userInfoContext.id
               };
               requestsSocket.send(JSON.stringify(payload));
               break;
             default:
               payload = {
-                action: "subscribe_to_requests_from_customer",
+                action: 'subscribe_to_requests_from_customer',
                 customer: userInfoContext.id,
-                request_id: userInfoContext.id,
+                request_id: userInfoContext.id
               };
               requestsSocket.send(JSON.stringify(payload));
           }
@@ -185,12 +238,13 @@ const RequestsContextProvider = (props) => {
       }
     }
   }, [
+    isLoadingCalendarRequests,
     isLoadingRequests,
     userInfoContext.id,
     userInfoContext.profile,
     updateRequestInfo,
     isLoggedInContext,
-    requestsSocket,
+    requestsSocket
   ]);
 
   return (
@@ -200,7 +254,7 @@ const RequestsContextProvider = (props) => {
         setRequests,
         cancelledRequests,
         setCancelledRequests,
-        updateRequests,
+        getRequestsList,
         updateRequestInfo,
         setIsLoadingRequests,
         isLoadingRequests,
@@ -210,8 +264,14 @@ const RequestsContextProvider = (props) => {
         setStartDate,
         currentMonth,
         setCurrentMonth,
-      }}
-    >
+        count,
+        setCount,
+        nextUrl,
+        getNextPageOfRequests,
+        getCalendarRequests,
+        calendarRequests,
+        isLoadingCalendarRequests
+      }}>
       {props.children}
     </RequestsContext.Provider>
   );

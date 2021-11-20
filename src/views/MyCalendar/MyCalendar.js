@@ -1,19 +1,19 @@
-import React, { useState, useEffect, Children, useContext } from "react";
-import { Card, Spinner, Row, Col, ListGroup, Form } from "react-bootstrap";
-import { FaUsers } from "react-icons/fa";
-import { MdPlace } from "react-icons/md";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import { useHistory } from "react-router-dom";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import "./MyCalendar.scss";
-import { AuthContext } from "../../contexts/AuthContext";
-import { RequestsContext } from "../../contexts/RequestsContext";
-import statusStepFormatter from "../../utils/statusStepFormatter";
-import CalendarConventions from "../../utils/CalendarConventions";
-import { monthNames } from "../../utils/monthNames";
+import React, { useState, useEffect, Children, useContext } from 'react';
+import { Card, Spinner, Row, Col, ListGroup, Form } from 'react-bootstrap';
+import { FaUsers } from 'react-icons/fa';
+import { MdPlace } from 'react-icons/md';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { useHistory } from 'react-router-dom';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import './MyCalendar.scss';
+import { AuthContext } from '../../contexts/AuthContext';
+import { RequestsContext } from '../../contexts/RequestsContext';
+import statusStepFormatter from '../../utils/statusStepFormatter';
+import CalendarConventions from '../../utils/CalendarConventions';
+import { monthNames } from '../../utils/monthNames';
 
-require("moment/locale/es.js");
+require('moment/locale/es.js');
 
 const localizer = momentLocalizer(moment);
 
@@ -21,13 +21,13 @@ const MyCalendar = () => {
   const [displayedRequests, setDisplayedRequests] = useState([]);
   const history = useHistory();
   const {
-    requests,
+    calendarRequests,
     cancelledRequests,
-    isLoadingRequests,
+    isLoadingCalendarRequests,
     setStartDate,
     setEndDate,
     setCurrentMonth,
-    currentMonth,
+    currentMonth
   } = useContext(RequestsContext);
   const { userInfoContext } = useContext(AuthContext);
   const [seeCancelledEvents, setSeeCancelledEvents] = useState(false);
@@ -36,19 +36,19 @@ const MyCalendar = () => {
   // =============================== GETTING ALL THE EVENTS AND DISPLAYING THEM TO CALENDAR =============================================
 
   useEffect(() => {
-    setDisplayedRequests(requests);
-    setWithCanceledRequests(requests);
+    setDisplayedRequests(calendarRequests);
+    setWithCanceledRequests(calendarRequests);
     cancelledRequests.forEach((item) => {
       setWithCanceledRequests((prev) => [...prev, item]);
     });
-  }, [requests, cancelledRequests]);
+  }, [calendarRequests, cancelledRequests]);
 
   //============================================ HANDLING CLICKING ON EVENT ===========================================================
 
   const handleClick = (event) => {
     history.push({
-      pathname: "/cliente/historial",
-      state: { event: event },
+      pathname: '/cliente/historial',
+      state: { event: event }
     });
   };
 
@@ -60,8 +60,8 @@ const MyCalendar = () => {
     return React.cloneElement(Children.only(children), {
       style: {
         ...children.style,
-        backgroundColor: value < now ? "#adb5bd" : "",
-      },
+        backgroundColor: value < now ? '#adb5bd' : ''
+      }
     });
   };
 
@@ -72,12 +72,12 @@ const MyCalendar = () => {
     );
     let newStyle = {
       color: color,
-      borderRadius: "0px",
-      border: "none",
+      borderRadius: '0px',
+      border: 'none'
     };
     return {
       className: bgColor,
-      style: newStyle,
+      style: newStyle
     };
   };
 
@@ -123,7 +123,7 @@ const MyCalendar = () => {
       <Col md={10} className="eventsCalendar pl-0">
         <Card>
           <Card.Body>
-            {isLoadingRequests && (
+            {isLoadingCalendarRequests && (
               <div>
                 {`  Cargando eventos de ${
                   monthNames[new Date(currentMonth).getMonth()]
@@ -143,11 +143,11 @@ const MyCalendar = () => {
                 seeCancelledEvents ? withCanceledRequests : displayedRequests
               }
               date={new Date(currentMonth)}
-              style={{ height: "100vh" }}
+              style={{ height: '100vh' }}
               onSelectEvent={(event) => handleClick(event)}
               components={{
                 dateCellWrapper: ColoredDateCellWrapper,
-                event: eventFormatter,
+                event: eventFormatter
               }}
               onNavigate={(date) => {
                 let start = new Date(date.getFullYear(), date.getMonth(), 1)
@@ -162,12 +162,12 @@ const MyCalendar = () => {
               }}
               eventPropGetter={styleEvents}
               messages={{
-                next: "Siguiente >",
-                previous: "< Anterior",
-                today: "Hoy",
-                month: "Mes",
-                week: "Semana",
-                day: "Día",
+                next: 'Siguiente >',
+                previous: '< Anterior',
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día'
               }}
             />
           </Card.Body>

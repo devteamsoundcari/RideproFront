@@ -61,15 +61,13 @@ const SingleRequestClient = () => {
     newParticipantsContext
     // setNewParticipantsContext,
   } = useContext(ParticipantsContext);
-  const [showNotEnoughCreditsModal, setShowNotEnoughCreditsModal] = useState(
-    false
-  );
+  const [showNotEnoughCreditsModal, setShowNotEnoughCreditsModal] =
+    useState(false);
   const [additionalCredits, setAdditionalCredits] = useState(0);
   const [driversForReplacing, setDriversForReplacing] = useState([]);
   const [allDrivers, setAllDrivers] = useState(null);
-  const [initialRegisteredDrivers, setInitialRegisteredDrivers] = useState(
-    null
-  );
+  const [initialRegisteredDrivers, setInitialRegisteredDrivers] =
+    useState(null);
   const [registeredDrivers, setRegisteredDrivers] = useState(null);
   const [newDrivers, setNewDrivers] = useState([]);
   //eslint-disable-next-line
@@ -150,6 +148,7 @@ const SingleRequestClient = () => {
   }
 
   useEffect(() => {
+    console.log('llegooo');
     setAllDrivers(null);
     fetchRequest(requestId);
     // eslint-disable-next-line

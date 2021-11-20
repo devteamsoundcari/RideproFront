@@ -1,36 +1,28 @@
-import React, { useState } from "react";
-import MyCalendar from "../MyCalendar/MyCalendar";
+import React, { useContext, useEffect, useState } from 'react';
+import { RequestsContext } from '../../contexts/RequestsContext';
+import MyCalendar from '../MyCalendar/MyCalendar';
 
 const Dashboard = () => {
+  const { getCalendarRequests } = useContext(RequestsContext);
   const [showCalendar, setShowCalendar] = useState(true);
   const [setEventDate] = useState(null);
 
   const selectSlot = (data) => {
     setEventDate({
       start: data.start,
-      end: data.end,
+      end: data.end
     });
     setShowCalendar(!showCalendar);
-    // history.push({
-    //   pathname: "/solicitar",
-    // });
   };
+
+  useEffect(() => {
+    getCalendarRequests();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <React.Fragment>
-      {/* <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 className="h2">Calendario de programación</h1>
-        <div className="btn-toolbar mb-2 mb-md-0">
-          <div className="btn-group mr-2"></div>
-        </div>
-      </div> */}
-      {/* {showCalendar && <MyCalendar selectSlot={selectSlot} />} */}
-
       <MyCalendar selectSlot={selectSlot} />
-
-      {/* {!showCalendar && (
-        <SolicitarServicio selectSlot={selectSlot} eventDate={eventDate} />
-      )} */}
     </React.Fragment>
   );
 };

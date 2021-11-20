@@ -23,7 +23,8 @@ const ClientRequestsHistory = () => {
   const location = useLocation();
   const history = useHistory();
   const [displayedRequests, setDisplayedRequests] = useState([]);
-  const { requests, isLoadingRequests } = useContext(RequestsContext);
+  const { calendarRequests, isLoadingCalendarRequests } =
+    useContext(RequestsContext);
   const { userInfoContext } = useContext(AuthContext);
   let { path, url } = useRouteMatch();
 
@@ -37,14 +38,14 @@ const ClientRequestsHistory = () => {
   // ================================ FETCH REQUESTS ON LOAD =====================================================
 
   useEffect(() => {
-    if (requests.length >= 1) {
-      let requestsToSort = [...requests];
+    if (calendarRequests.length >= 1) {
+      let requestsToSort = [...calendarRequests];
       requestsToSort.sort((a, b) => {
         return b.id - a.id;
       });
       setDisplayedRequests(requestsToSort);
     }
-  }, [requests]);
+  }, [calendarRequests]);
 
   // ========================================= LOADING SPINNER =====================================
 
@@ -264,15 +265,15 @@ const ClientRequestsHistory = () => {
 
   return (
     <Container fluid="md" id="client-requests-history">
-      {isLoadingRequests ? (
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
-      ) : (
-        <Switch>
-          <Route exact path={path}>
+      <Switch>
+        <Route exact path={path}>
+          {isLoadingCalendarRequests ? (
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          ) : (
             <Card>
-              {requests.length === 0 ? (
+              {calendarRequests.length === 0 ? (
                 <Alert variant="light">
                   <Alert.Heading>¡Sin solicitudes!</Alert.Heading>
                   <p>Para crear una solicitud, ingresa a "Solicitar".</p>
@@ -281,10 +282,10 @@ const ClientRequestsHistory = () => {
                 renderTable()
               )}
             </Card>
-          </Route>
-          <Route path={`${path}/:requestId`} component={SingleRequestClient} />
-        </Switch>
-      )}
+          )}
+        </Route>
+        <Route path={`${path}/:requestId`} component={SingleRequestClient} />
+      </Switch>
     </Container>
   );
 };
