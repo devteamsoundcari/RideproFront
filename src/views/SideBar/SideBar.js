@@ -1,16 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   AiFillDollarCircle,
   AiFillCalendar,
   AiOutlineHistory
-  // AiOutlinePlus,
 } from 'react-icons/ai';
-import {
-  // GiFullMotorcycleHelmet,
-  GiTireTracks,
-  GiThreeFriends
-} from 'react-icons/gi';
+import { GiTireTracks, GiThreeFriends } from 'react-icons/gi';
 import {
   FaPeopleCarry,
   FaUserGraduate,
@@ -28,10 +23,15 @@ import logo from '../../assets/img/logo.png';
 import './SideBar.scss';
 
 const SideBar = (props) => {
+  const location = useLocation();
   const { userInfoContext } = useContext(AuthContext);
   const [profile, setProfile] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
   const [showContactModal, setShowContactModal] = useState(false);
+
+  useEffect(() => {
+    console.log({ location });
+  }, [location]);
 
   useEffect(() => {
     if (userInfoContext.company.logo !== '') {
@@ -67,10 +67,7 @@ const SideBar = (props) => {
     <nav
       className={`col-md-2 d-md-block bg-dark bg-${profile.toLowerCase()} sidebar pr-0 pl-0`}>
       <div className="sidebar-sticky">
-        <div
-          className="sidebar-brand"
-          // onClick={() => history.push("/login")}
-        >
+        <div className="sidebar-brand">
           <img alt="RideproLogo" src={logo} />
           <small style={{ fontSize: '12px' }}>{profile}</small>
         </div>
@@ -81,7 +78,6 @@ const SideBar = (props) => {
               style={{
                 background: `url(${profilePicture})`
               }}></div>
-            {/* <img alt="profileImg" className="shadow" src={profilePicture} /> */}
           </li>
           <li>
             <div className="greeting">
@@ -93,8 +89,6 @@ const SideBar = (props) => {
               <small>{userInfoContext.charge}</small>
               <br />
               <small>{userInfoContext.company.name}</small>
-              {/* <Button className="nav-company" variant="link" size="sm"> */}
-              {/* </Button> */}
             </div>
           </li>
           {profile === 'Cliente' ? (
@@ -124,10 +118,7 @@ const SideBar = (props) => {
         <ul className="nav flex-column align-items-start">
           {userInfoContext.profile === 2 && (
             <React.Fragment>
-              {/* <li className="sidebar-nav-header">Destacado</li> */}
-
               <Link to={`${props.url}/solicitar`} className="nav-link">
-                {/* <GiFullMotorcycleHelmet className="mb-1 mr-2" /> */}
                 <Badge pill variant="success">
                   Solicitar servicio
                 </Badge>
@@ -135,22 +126,19 @@ const SideBar = (props) => {
               <hr />
             </React.Fragment>
           )}
-          {/* <li className="sidebar-nav-header">Menú</li> */}
-
           <Link
             to={`${props.url}/dashboard`}
-            className="nav-link"
-            // activeClassName="active"
-            // exact={true}
-          >
+            className={`nav-link ${
+              location.pathname.includes('dashboard') ? 'active' : ''
+            }`}>
             <AiFillCalendar className="mb-1 mr-2" />
             Calendario
           </Link>
           <Link
             to={`${props.url}/historial`}
-            // activeClassName="active"
-            // exact={true}
-            className="nav-link">
+            className={`nav-link ${
+              location.pathname.includes('historial') ? 'active' : ''
+            }`}>
             <AiOutlineHistory className="mb-1 mr-2" />
             Historial
           </Link>
@@ -159,23 +147,43 @@ const SideBar = (props) => {
           {userInfoContext.profile === 1 && (
             <React.Fragment>
               <li className="sidebar-nav-header">Administrar</li>
-              <Link to={`${props.url}/usuarios`} className="nav-link">
+              <Link
+                to={`${props.url}/usuarios`}
+                className={`nav-link ${
+                  location.pathname.includes('usuarios') ? 'active' : ''
+                }`}>
                 <GiThreeFriends className="mb-1 mr-2" />
                 Usuarios
               </Link>
-              <Link to={`${props.url}/empresas`} className="nav-link">
+              <Link
+                to={`${props.url}/empresas`}
+                className={`nav-link ${
+                  location.pathname.includes('empresas') ? 'active' : ''
+                }`}>
                 <FaRegBuilding className="mb-1 mr-2" />
                 Empresas
               </Link>
-              <Link to={`${props.url}/superclientes`} className="nav-link">
+              <Link
+                to={`${props.url}/superclientes`}
+                className={`nav-link ${
+                  location.pathname.includes('superclientes') ? 'active' : ''
+                }`}>
                 <FaUserShield className="mb-1 mr-2" />
                 SuperClientes
               </Link>
-              <Link to={`${props.url}/documentos`} className="nav-link">
+              <Link
+                to={`${props.url}/documentos`}
+                className={`nav-link ${
+                  location.pathname.includes('documentos') ? 'active' : ''
+                }`}>
                 <FaPaperclip className="mb-1 mr-2" />
                 Documentos
               </Link>
-              <Link to={`${props.url}/creditos`} className="nav-link">
+              <Link
+                to={`${props.url}/creditos`}
+                className={`nav-link ${
+                  location.pathname.includes('creditos') ? 'active' : ''
+                }`}>
                 <FaDollarSign className="mb-1 mr-2" />
                 Créditos
               </Link>
@@ -183,7 +191,11 @@ const SideBar = (props) => {
           )}
           {userInfoContext.profile !== 5 && userInfoContext.profile !== 7 ? (
             <React.Fragment>
-              <Link to={`${props.url}/pistas`} className="nav-link">
+              <Link
+                to={`${props.url}/pistas`}
+                className={`nav-link ${
+                  location.pathname.includes('pistas') ? 'active' : ''
+                }`}>
                 <GiTireTracks className="mb-1 mr-2" />
                 {userInfoContext.profile === 1 ? 'Pistas' : 'Ver pistas'}
               </Link>
@@ -194,50 +206,36 @@ const SideBar = (props) => {
           )}
           {userInfoContext.profile === 7 && (
             <React.Fragment>
-              <Link to={`${props.url}/sucursales`} className="nav-link">
+              <Link
+                to={`${props.url}/sucursales`}
+                className={`nav-link ${
+                  location.pathname.includes('sucursales') ? 'active' : ''
+                }`}>
                 <GiThreeFriends className="mb-1 mr-2" />
                 Sucursales
               </Link>
               <hr />
             </React.Fragment>
           )}
-          {/* <Link
-            to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
-            className="nav-link"
-          >
-            <AiOutlinePlus className="mb-1 mr-2" />
-            Añadir pista{" "}
-          </Link> */}
-
           {userInfoContext.profile === 3 && (
             <React.Fragment>
-              {/* <li className="sidebar-nav-header">Instructores</li> */}
-              <Link to={`${props.url}/instructores`} className="nav-link">
+              <Link
+                to={`${props.url}/instructores`}
+                className={`nav-link ${
+                  location.pathname.includes('instructores') ? 'active' : ''
+                }`}>
                 <FaUserGraduate className="mb-1 mr-2" />
                 Instructores{' '}
               </Link>
-              {/* <Link
-                to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
-                className="nav-link"
-              >
-                <FaUserPlus className="mb-1 mr-2" />
-                Añadir instructor{" "}
-              </Link> */}
-
               <hr />
-              {/* <li className="sidebar-nav-header">Proveedores</li> */}
-              <Link to={`${props.url}/proveedores`} className="nav-link">
+              <Link
+                to={`${props.url}/proveedores`}
+                className={`nav-link ${
+                  location.pathname.includes('proveedores') ? 'active' : ''
+                }`}>
                 <FaPeopleCarry className="mb-1 mr-2" />
                 Proveedores{' '}
               </Link>
-              {/* <Link
-                to={{ pathname: `${props.url}/pistas`, state: { show: true } }}
-                className="nav-link"
-              >
-                <AiOutlinePlus className="mb-1 mr-2" />
-                Añadir proveedor{" "}
-              </Link> */}
-
               <hr />
             </React.Fragment>
           )}
