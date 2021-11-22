@@ -90,7 +90,7 @@ type Instructors = any[];
 type Providers = any[];
 
 const SingleRequestAdmin = () => {
-  let { requestId } = useParams();
+  const { requestId } = useParams() as any;
   const [data, setData] = useState<RequestData>();
   const [loading, setLoading] = useState<Boolean>(false);
   const [showModalInstructors, setShowModalInstructors] = useState(false);
@@ -334,35 +334,9 @@ const SingleRequestAdmin = () => {
                     date={data?.start_time}
                     title=""
                   />
-                  {/* {data?.optional_date1 && data?.optional_place1 ? (
-                    <React.Fragment>
-                      <hr />
-                      <PlaceDate
-                        municipality={data?.municipality}
-                        track={data?.optional_place1}
-                        date={data?.optional_date1}
-                        title="Opción 1"
-                      />
-                    </React.Fragment>
-                  ) : (
-                    ""
-                  )}
-                  {data?.optional_date2 && data?.optional_place2 ? (
-                    <React.Fragment>
-                      <hr />
-                      <PlaceDate
-                        municipality={data?.municipality}
-                        track={data?.optional_place2}
-                        date={data?.optional_date2}
-                        title="Opción 2"
-                      />
-                    </React.Fragment>
-                  ) : (
-                    ""
-                  )} */}
                 </div>
                 <hr />
-                <div className="mx-md-25 text-center pl-3 pr-3">
+                <div className="mx-md-25 text-center pl-3 pr-3 overflow-auto">
                   <h6>Instructores ({data?.instructors.length})</h6>
                   {data?.instructors.length > 0 ? (
                     <Instructors
@@ -374,7 +348,7 @@ const SingleRequestAdmin = () => {
                   )}
                 </div>
                 <hr />
-                <div className="mx-md-25 text-center pl-3 pr-3">
+                <div className="mx-md-25 text-center pl-3 pr-3 overflow-auto">
                   <h6>Proveedores ({data?.providers.length})</h6>
                   {data?.providers.length > 0 ? (
                     <Providers
@@ -386,7 +360,7 @@ const SingleRequestAdmin = () => {
                   )}
                 </div>
                 <hr />
-                <div className="mx-md-25 text-center pl-3 pr-3">
+                <div className="mx-md-25 text-center pl-3 pr-3 overflow-auto">
                   <h6>Participantes ({data?.drivers.length})</h6>
                   <Drivers
                     drivers={data?.drivers}
