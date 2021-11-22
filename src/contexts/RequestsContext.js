@@ -96,11 +96,6 @@ const RequestsContextProvider = (props) => {
     requestsRef.current = requests;
   }, [requests]);
 
-  // useEffect(() => {
-  //   getRequestsList();
-  //   // eslint-disable-next-line
-  // }, [startDate, endDate]);
-
   const getRequestsList = (page) => {
     if (page === 1) {
       setRequests([]);
@@ -111,8 +106,6 @@ const RequestsContextProvider = (props) => {
         : userInfoContext.profile === 7
         ? 'request_superuser'
         : 'requests';
-    // setRequests([]);
-    // setCancelledRequests([]);
     if (isLoggedInContext)
       fetchRequestsByPage(
         page && page !== 1
