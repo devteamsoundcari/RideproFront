@@ -3,7 +3,8 @@ import { RequestsContext } from '../../contexts/RequestsContext';
 import MyCalendar from '../MyCalendar/MyCalendar';
 
 const Dashboard = () => {
-  const { getCalendarRequests } = useContext(RequestsContext);
+  const { getCalendarRequests, isLoadingCalendarRequests } =
+    useContext(RequestsContext);
   const [showCalendar, setShowCalendar] = useState(true);
   const [setEventDate] = useState(null);
 
@@ -16,7 +17,9 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    getCalendarRequests();
+    if (!isLoadingCalendarRequests) {
+      getCalendarRequests();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

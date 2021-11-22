@@ -97,6 +97,7 @@ const RequestsContextProvider = (props) => {
   }, [requests]);
 
   const getRequestsList = (page) => {
+    if (!page) setRequests([]);
     if (page === 1) {
       setRequests([]);
     }
@@ -123,7 +124,7 @@ const RequestsContextProvider = (props) => {
         : userInfoContext.profile === 7
         ? 'request_superuser'
         : 'requests';
-    setRequests([]);
+    setCalendarRequests([]);
     setCancelledRequests([]);
     if (isLoggedInContext)
       fetchRequestsByMonth(
