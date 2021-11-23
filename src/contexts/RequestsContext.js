@@ -25,11 +25,12 @@ const RequestsContextProvider = (props) => {
   const [isLoadingRequests, setIsLoadingRequests] = useState(false);
   const [isLoadingCalendarRequests, setIsLoadingCalendarRequests] =
     useState(false);
+  const [nextUrlCalendar, setNextUrlCalendar] = useState('');
   const [, setPrevUrl] = useState(null);
   const [nextUrl, setNextUrl] = useState(null);
   const [requests, setRequests] = useState([]);
   const [calendarRequests, setCalendarRequests] = useState([]);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(null);
   const [cancelledRequests, setCancelledRequests] = useState([]);
   const [statusNotifications, setStatusNotifications] = useState([]);
   const [requestsSocket, setRequestsSocket] = useState(null);
@@ -82,8 +83,10 @@ const RequestsContextProvider = (props) => {
         }
       });
     }
+
     setCalendarRequests((prev) => [...prev, ...fetchedRequests]);
     setCancelledRequests((prev) => [...prev, ...fetchedCancelledRequests]);
+    setNextUrlCalendar(response.next);
     if (response && response.next !== null) {
       setIsLoadingCalendarRequests(true);
       return await fetchRequestsByMonth(response.next);
@@ -264,7 +267,8 @@ const RequestsContextProvider = (props) => {
         getNextPageOfRequests,
         getCalendarRequests,
         calendarRequests,
-        isLoadingCalendarRequests
+        isLoadingCalendarRequests,
+        nextUrlCalendar
       }}>
       {props.children}
     </RequestsContext.Provider>

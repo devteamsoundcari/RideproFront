@@ -250,8 +250,6 @@ const getSuperUserCompanies = async (url) => {
   return companies;
 };
 
-
-
 const setSuperUserCompany = async (user, company) => {
   const result = await axios({
     method: 'POST',
@@ -301,7 +299,6 @@ const getServices = async (
 /* =================================   GET LINE SERVICES   ===================================== */
 
 const getLineServices = async (url) => {
-  console.log('url' + url);
   const getInfo = async (url) => {
     const serviceData = await axios({
       method: 'GET',

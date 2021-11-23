@@ -34,11 +34,8 @@ import OperacionesStatus from '../../utils/OperacionesStatus';
 const NavBar = () => {
   const history = useHistory();
   const [filled, setFilled] = useState(false);
-  const {
-    userInfoContext,
-    setUserInfoContext,
-    setIsLoggedInContext
-  } = useContext(AuthContext);
+  const { userInfoContext, setUserInfoContext, setIsLoggedInContext } =
+    useContext(AuthContext);
   const { clear, isLoadingRequests } = useContext(RequestsContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
@@ -64,7 +61,6 @@ const NavBar = () => {
   }, [wrapperRef]);
 
   const logout = () => {
-    console.log('Bye bye');
     setAuthorizationToken();
     setIsLoggedInContext(false);
     setUserInfoContext({});

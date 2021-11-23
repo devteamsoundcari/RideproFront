@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
-// import { GoogleLogin } from "react-google-login";
 import { getLoginToken, getUserInfo } from '../../controllers/apiRequests';
 import setAuthorizationToken from '../../controllers/setAuthorizationToken';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useHistory } from 'react-router-dom';
 import './Login.scss';
 import bgImage from '../../assets/img/loginImage.png';
-// import bgPage from "../../assets/img/bgLogin.jpg";
 import logo from '../../assets/img/logo.png';
 import {
   Container,
@@ -19,7 +17,6 @@ import {
   Spinner
 } from 'react-bootstrap';
 import PasswordRecover from '../../views/PasswordRecover/PasswordRecover';
-// import NewPassword from "../../views/NewPassword/NewPassword";
 
 const Login = () => {
   const history = useHistory();
@@ -125,11 +122,6 @@ const Login = () => {
   // ====================== REDIRECT DEPENDING ON PROFILE ======================
   useEffect(() => {
     if (userInfo.isSignedIn) {
-      console.log(
-        '%c ✅ User info:',
-        'color: orange; font-weight: bold;',
-        userInfo
-      );
       let path = '/';
       switch (userInfo.profile) {
         case 1:
@@ -182,9 +174,6 @@ const Login = () => {
                     <Card.Text className="text-center">
                       Gracias por registrarte en RIDE PRO. Tu cuenta y perfil de
                       usuario será validada por nuestro equipo.{' '}
-                      {/* <a href="#test">
-                      <strong>¿Problemas para iniciar sesión?</strong>
-                    </a> */}
                     </Card.Text>
                     <Card.Body>
                       <Form onSubmit={handleSubmit(onSubmit)}>

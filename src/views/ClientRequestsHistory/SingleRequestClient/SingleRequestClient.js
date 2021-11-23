@@ -148,7 +148,6 @@ const SingleRequestClient = () => {
   }
 
   useEffect(() => {
-    console.log('llegooo');
     setAllDrivers(null);
     fetchRequest(requestId);
     // eslint-disable-next-line

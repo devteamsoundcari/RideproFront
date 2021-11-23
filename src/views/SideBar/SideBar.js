@@ -30,10 +30,6 @@ const SideBar = (props) => {
   const [showContactModal, setShowContactModal] = useState(false);
 
   useEffect(() => {
-    console.log({ location });
-  }, [location]);
-
-  useEffect(() => {
     if (userInfoContext.company.logo !== '') {
       setProfilePicture(userInfoContext.company.logo);
     } else {
