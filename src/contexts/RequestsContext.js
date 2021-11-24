@@ -10,8 +10,8 @@ import { getUserRequests, getRequest } from '../controllers/apiRequests';
 
 export const RequestsContext = createContext();
 
-const RequestsContextProvider = (props) => {
-  const { userInfoContext, isLoggedInContext } = useContext(AuthContext);
+export const RequestsContextProvider = (props) => {
+  const { userInfo, isLoggedInContext } = useContext(AuthContext);
   const [startDate, setStartDate] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1)
       .toISOString()
@@ -105,9 +105,9 @@ const RequestsContextProvider = (props) => {
       setRequests([]);
     }
     let urlType =
-      userInfoContext.profile === 2
+      userInfo.profile === 2
         ? 'user_requests'
-        : userInfoContext.profile === 7
+        : userInfo.profile === 7
         ? 'request_superuser'
         : 'requests';
     if (isLoggedInContext)
@@ -122,9 +122,9 @@ const RequestsContextProvider = (props) => {
 
   const getCalendarRequests = () => {
     let urlType =
-      userInfoContext.profile === 2
+      userInfo.profile === 2
         ? 'user_requests'
-        : userInfoContext.profile === 7
+        : userInfo.profile === 7
         ? 'request_superuser'
         : 'requests';
     setCalendarRequests([]);
@@ -207,20 +207,20 @@ const RequestsContextProvider = (props) => {
         );
         requestsSocket.addEventListener('open', () => {
           let payload;
-          switch (userInfoContext.profile) {
+          switch (userInfo.profile) {
             case 1:
             case 3:
               payload = {
                 action: 'subscribe_to_requests',
-                request_id: userInfoContext.id
+                request_id: userInfo.id
               };
               requestsSocket.send(JSON.stringify(payload));
               break;
             default:
               payload = {
                 action: 'subscribe_to_requests_from_customer',
-                customer: userInfoContext.id,
-                request_id: userInfoContext.id
+                customer: userInfo.id,
+                request_id: userInfo.id
               };
               requestsSocket.send(JSON.stringify(payload));
           }
@@ -237,8 +237,8 @@ const RequestsContextProvider = (props) => {
   }, [
     isLoadingCalendarRequests,
     isLoadingRequests,
-    userInfoContext.id,
-    userInfoContext.profile,
+    userInfo.id,
+    userInfo.profile,
     updateRequestInfo,
     isLoggedInContext,
     requestsSocket
@@ -274,5 +274,3 @@ const RequestsContextProvider = (props) => {
     </RequestsContext.Provider>
   );
 };
-
-export default RequestsContextProvider;

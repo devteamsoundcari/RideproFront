@@ -1,0 +1,15 @@
+// APP
+export const APP_LOGIN_URL = '/login';
+
+// API
+export const API_BASE_URL = process.env.REACT_APP_API_URL;
+
+// Auth
+export const API_LOGIN_URL = '/rest-auth/login/';
+export const API_LOGOUT_URL = '/rest-auth/logout/';
+export const API_USER_DATA = '/rest-auth/user/';
+export const API_REFRESH_TOKEN_URL = '/rest-auth/token/refresh/';
+export const API_REGISTRATION_URL = '/rest-auth/registration/';
+export const API_RESET_PASSWORD_URL = '/rest-auth/password/reset/';
+export const API_RESET_PASSWORD_CONFIRM_URL =
+  '/rest-auth/password/reset/confirm/';
