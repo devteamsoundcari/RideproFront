@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
-  AuthContextProvider
+  AuthContextProvider,
   // ServiceContextProvider,
   // ParticipantsContextProvider,
-  // RequestsContextProvider,
+  RequestsContextProvider
   // ReportsContextProvider
 } from './contexts';
 import App from './App';
@@ -14,15 +14,15 @@ import './custom.scss';
 
 ReactDOM.render(
   <AuthContextProvider>
-    {/* <ServiceContextProvider>
-      <RequestsContextProvider>
-        <ParticipantsContextProvider>
-          <ReportsContextProvider> */}
-    <App />
-    {/* </ReportsContextProvider>
-        </ParticipantsContextProvider>
-      </RequestsContextProvider>
-    </ServiceContextProvider> */}
+    {/* <ServiceContextProvider> */}
+    <RequestsContextProvider>
+      {/* <ParticipantsContextProvider> */}
+      {/* <ReportsContextProvider> */}
+      <App />
+      {/* </ReportsContextProvider> */}
+      {/* </ParticipantsContextProvider> */}
+    </RequestsContextProvider>
+    {/* </ServiceContextProvider> */}
   </AuthContextProvider>,
   document.getElementById('root')
 );

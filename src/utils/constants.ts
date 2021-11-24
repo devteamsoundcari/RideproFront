@@ -3,6 +3,7 @@ export const APP_LOGIN_URL = '/login';
 
 // API
 export const API_BASE_URL = process.env.REACT_APP_API_URL;
+export const API_DRIVERS_FILTER = 'api/v1/drivers_entire_filter/';
 
 // Auth
 export const API_LOGIN_URL = '/rest-auth/login/';

@@ -7,8 +7,11 @@ import React, {
 } from 'react';
 import { AuthContext } from './AuthContext';
 import { getUserRequests, getRequest } from '../controllers/apiRequests';
+import ApiClientSingleton from '../controllers/apiClient';
 
-export const RequestsContext = createContext();
+export const RequestsContext = createContext('');
+
+const apiClient = ApiClientSingleton.getApiInstance();
 
 export const RequestsContextProvider = (props) => {
   const { userInfo, isLoggedInContext } = useContext(AuthContext);
@@ -28,21 +31,35 @@ export const RequestsContextProvider = (props) => {
   const [nextUrlCalendar, setNextUrlCalendar] = useState('');
   const [, setPrevUrl] = useState(null);
   const [nextUrl, setNextUrl] = useState(null);
-  const [requests, setRequests] = useState([]);
-  const [calendarRequests, setCalendarRequests] = useState([]);
+  const [requests, setRequests]: any = useState([]);
+  const [calendarRequests, setCalendarRequests]: any = useState([]);
   const [count, setCount] = useState(null);
-  const [cancelledRequests, setCancelledRequests] = useState([]);
-  const [statusNotifications, setStatusNotifications] = useState([]);
-  const [requestsSocket, setRequestsSocket] = useState(null);
+  const [cancelledRequests, setCancelledRequests]: any = useState([]);
+  const [statusNotifications, setStatusNotifications]: any = useState([]);
+  const [requestsSocket, setRequestsSocket]: any = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const requestsRef = React.useRef(requests);
 
+  const searchRequests = async (value, param) => {
+    const url = `/drivers_entire_filter/?official_id=${
+      param === 'official_id' ? value : '!'
+    }&f_name=${param === 'f_name' ? value : '!'}&l_name=${
+      param === 'l_name' ? value : '!'
+    }&email=${param === 'email' ? value : '!'}`;
+    try {
+      const response = await apiClient.get(url);
+      return response.results;
+    } catch (error) {
+      return error;
+    }
+  };
+
   async function fetchRequestsByPage(url) {
     setIsLoadingRequests(true);
-    const fetchedRequests = [];
+    const fetchedRequests: any = [];
     const response = await getUserRequests(url);
     if (response) {
-      response.results.map(async (item) => {
+      response.results.map(async (item: any) => {
         let cancelDate = new Date(item.start_time);
         cancelDate.setDate(cancelDate.getDate() - 1);
         item.cancelDate = cancelDate;
@@ -53,7 +70,7 @@ export const RequestsContextProvider = (props) => {
       });
     }
 
-    setRequests((prev) => [...fetchedRequests, ...prev]);
+    setRequests((prev: any) => [...fetchedRequests, ...prev]);
     setPrevUrl(response.previous);
     setNextUrl(response.next);
     setCount(response.count);
@@ -63,8 +80,8 @@ export const RequestsContextProvider = (props) => {
   /// Here set month and year
   async function fetchRequestsByMonth(url) {
     setIsLoadingCalendarRequests(true);
-    const fetchedRequests = [];
-    const fetchedCancelledRequests = [];
+    const fetchedRequests: any = [];
+    const fetchedCancelledRequests: any = [];
     const response = await getUserRequests(url);
     if (response) {
       response.results.map(async (item) => {
@@ -169,7 +186,7 @@ export const RequestsContextProvider = (props) => {
   }, []);
 
   const checkRequestsStatus = (current, prev) => {
-    let notifications = [];
+    let notifications: any = [];
 
     for (const request of current) {
       const oldRequest = prev.find((r) => r.id === request.id);
@@ -202,7 +219,7 @@ export const RequestsContextProvider = (props) => {
         isLoggedInContext
       ) {
         let token = localStorage.getItem('token');
-        let requestsSocket = new WebSocket(
+        let requestsSocket: any = new WebSocket(
           `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
         );
         requestsSocket.addEventListener('open', () => {
@@ -237,8 +254,7 @@ export const RequestsContextProvider = (props) => {
   }, [
     isLoadingCalendarRequests,
     isLoadingRequests,
-    userInfo.id,
-    userInfo.profile,
+    userInfo,
     updateRequestInfo,
     isLoggedInContext,
     requestsSocket
@@ -246,30 +262,33 @@ export const RequestsContextProvider = (props) => {
 
   return (
     <RequestsContext.Provider
-      value={{
-        requests,
-        setRequests,
-        cancelledRequests,
-        setCancelledRequests,
-        getRequestsList,
-        updateRequestInfo,
-        setIsLoadingRequests,
-        isLoadingRequests,
-        statusNotifications,
-        clear,
-        setEndDate,
-        setStartDate,
-        currentMonth,
-        setCurrentMonth,
-        count,
-        setCount,
-        nextUrl,
-        getNextPageOfRequests,
-        getCalendarRequests,
-        calendarRequests,
-        isLoadingCalendarRequests,
-        nextUrlCalendar
-      }}>
+      value={
+        {
+          requests,
+          setRequests,
+          cancelledRequests,
+          setCancelledRequests,
+          getRequestsList,
+          updateRequestInfo,
+          setIsLoadingRequests,
+          isLoadingRequests,
+          statusNotifications,
+          clear,
+          setEndDate,
+          setStartDate,
+          currentMonth,
+          setCurrentMonth,
+          count,
+          setCount,
+          nextUrl,
+          getNextPageOfRequests,
+          getCalendarRequests,
+          calendarRequests,
+          isLoadingCalendarRequests,
+          nextUrlCalendar,
+          searchRequests
+        } as any
+      }>
       {props.children}
     </RequestsContext.Provider>
   );

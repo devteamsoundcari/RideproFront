@@ -1,53 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
+import { SearchFiltersContext } from '../../../contexts';
 import {
-  Nav,
-  Navbar,
-  NavDropdown,
-  Image,
   InputGroup,
   FormControl,
   Button,
-  ListGroup,
   Form,
   Spinner
 } from 'react-bootstrap';
 
-export interface IFiltersInputProps {
-  selectedFilter: (opt: string) => void;
-}
-
-export function FiltersInput({ selectedFilter }: IFiltersInputProps) {
-  const [filterBy, setFilterBy] = useState('official_id');
-
-  useEffect(() => {
-    selectedFilter(filterBy);
-  }, [filterBy, selectedFilter]);
+export function FiltersInput() {
+  const {
+    setSearchCriteria,
+    loadingSearch,
+    searchCriteria,
+    searchRequest,
+    setFilterBy,
+    filterBy
+  } = useContext(SearchFiltersContext);
 
   return (
     <InputGroup className="w-75 rounded">
       <FormControl
-        disabled={isLoadingRequests || loading}
+        disabled={loadingSearch}
         className="border rounded"
-        placeholder={isLoadingRequests ? 'Cargando eventos...' : 'Buscar'}
-        value={searchParams || ''}
-        onChange={(e) => setSearchParams(e.target.value)}
+        placeholder={loadingSearch ? 'Cargando eventos...' : 'Buscar'}
+        value={searchCriteria || ''}
+        onChange={(e) => setSearchCriteria(e.target.value)}
       />
-      {/* <InputGroup.Append>
-      <Button
-        variant="outline-secondary"
-        disabled={isLoadingRequests || loading}
-        onClick={() => {
-          if (searchParams !== null) {
-            search(searchParams, filterOption);
-          }
-        }}>
-        {isLoadingRequests || loading ? (
-          <Spinner animation="border" size="sm" />
-        ) : (
-          'Buscar'
-        )}
-      </Button>
-    </InputGroup.Append> */}
+      <InputGroup.Append>
+        <Button
+          variant="outline-secondary"
+          disabled={loadingSearch}
+          onClick={() => {
+            if (searchCriteria !== null) searchRequest();
+          }}>
+          {loadingSearch ? <Spinner animation="border" size="sm" /> : 'Buscar'}
+        </Button>
+      </InputGroup.Append>
       <InputGroup.Append className="ml-3">
         <Form.Check
           inline
