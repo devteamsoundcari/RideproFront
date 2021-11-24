@@ -6,6 +6,7 @@ import {
   FaRegBuilding,
   FaUserFriends
 } from 'react-icons/fa';
+import { PERFIL_CLIENTE, PERFIL_SUPERCLIENTE } from '../../../utils/constants';
 import setAuthorizationToken from '../../../controllers/setAuthorizationToken';
 import { AuthContext, RequestsContext } from '../../../contexts';
 import {
@@ -34,6 +35,7 @@ import {
 import './MyNavbar.scss';
 
 // import OperacionesStatus from '../../utils/OperacionesStatus';
+import { FiltersInput } from '../FiltersInput/FiltersInput';
 
 export const MyNavbar = () => {
   // const history = useHistory();
@@ -45,8 +47,8 @@ export const MyNavbar = () => {
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
   const [filteredRequests, setFilteredRequests] = useState([]);
-  const [searchParams, setSearchParams] = useState(undefined);
-  const [filterOption, setFilterOption] = useState('official_id');
+  const [searchParams, setSearchParams] = useState(null);
+  const [filterBy, setFilterBy] = useState('official_id');
   const [loading, setLoading] = useState(false);
   // let { url } = useRouteMatch();
   const wrapperRef = useRef(null);
@@ -134,6 +136,16 @@ export const MyNavbar = () => {
   //   fetchDrivers(url);
   // };
 
+  const shouldRenderFilters = () => {
+    if (
+      userInfo.profile === PERFIL_CLIENTE ||
+      userInfo.profile === PERFIL_SUPERCLIENTE
+    ) {
+      return <FiltersInput selectedFilter={(opt) => setFilterBy(opt)} />;
+    }
+    return '';
+  };
+
   return (
     <>
       <Navbar
@@ -143,78 +155,7 @@ export const MyNavbar = () => {
         expand="lg">
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          {/* {(userInfo.profile === 2 || userInfo.profile === 7) && (
-            <InputGroup className="w-75 rounded" value={searchParams}>
-              <FormControl
-                disabled={isLoadingRequests || loading}
-                className="border rounded"
-                placeholder={
-                  isLoadingRequests ? 'Cargando eventos...' : 'Buscar'
-                }
-                value={searchParams || ''}
-                onChange={(e) => setSearchParams(e.target.value)}
-              />
-              <InputGroup.Append>
-                <Button
-                  variant="outline-secondary"
-                  disabled={isLoadingRequests || loading}
-                  onClick={() => {
-                    if (searchParams !== null) {
-                      search(searchParams, filterOption);
-                    }
-                  }}>
-                  {isLoadingRequests || loading ? (
-                    <Spinner animation="border" size="sm" />
-                  ) : (
-                    'Buscar'
-                  )}
-                </Button>
-              </InputGroup.Append>
-              <InputGroup.Append className="ml-3">
-                <Form.Check
-                  inline
-                  onChange={(x) => setFilterOption(x.target.value)}
-                  as="input"
-                  label="POR Cedula"
-                  type="radio"
-                  value="official_id"
-                  id="search-official_id"
-                  checked={filterOption === 'official_id'}
-                />
-                <Form.Check
-                  as="input"
-                  onChange={(x) => setFilterOption(x.target.value)}
-                  inline
-                  label="POR Nombre"
-                  type="radio"
-                  value="f_name"
-                  id="search-f_name"
-                  checked={filterOption === 'f_name'}
-                />
-                <Form.Check
-                  as="input"
-                  onChange={(x) => setFilterOption(x.target.value)}
-                  inline
-                  label="POR Apellido"
-                  type="radio"
-                  value="l_name"
-                  checked={filterOption === 'l_name'}
-                  id="search-l_name"
-                />
-                <Form.Check
-                  as="input"
-                  onChange={(x) => setFilterOption(x.target.value)}
-                  inline
-                  label="POR EMAIL"
-                  type="radio"
-                  value="email"
-                  checked={filterOption === 'email'}
-                  id="search-email"
-                />
-              </InputGroup.Append>
-            </InputGroup>
-          )} */}
-
+          {shouldRenderFilters()}
           <Nav className="ml-auto">
             <div className="userOptions">
               <NavDropdown

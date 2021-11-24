@@ -13,3 +13,11 @@ export const API_REGISTRATION_URL = '/rest-auth/registration/';
 export const API_RESET_PASSWORD_URL = '/rest-auth/password/reset/';
 export const API_RESET_PASSWORD_CONFIRM_URL =
   '/rest-auth/password/reset/confirm/';
+
+// Perfiles
+export const PERFIL_ADMIN = 1;
+export const PERFIL_CLIENTE = 2;
+export const PERFIL_OPERACIONES = 3;
+export const PERFIL_EJECUTIVO = 4;
+export const PERFIL_TECNICO = 5;
+export const PERFIL_SUPERCLIENTE = 7;
