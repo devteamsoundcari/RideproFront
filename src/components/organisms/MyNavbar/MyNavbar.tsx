@@ -20,7 +20,11 @@ import {
   Form,
   Spinner
 } from 'react-bootstrap';
-import { ModalEditProfile } from '../../molecules';
+import {
+  ModalEditProfile,
+  ModalChangePassword,
+  ModalEditCompany
+} from '../../molecules';
 // import ProfileEditModal from '../Profile/ProfileEditModal';
 // import PasswordChangeModal from '../Profile/Password/PasswordChangeModal';
 // import CompanyEditModal from '../Company/CompanyEditModal';
@@ -289,13 +293,16 @@ export const MyNavbar = () => {
           onClickOnChangePassword={displayPasswordChangeModal}
         />
       )}
-      {/* {showPasswordChangeModal && passwordChangeModal()}
-      {showCompanyEditModal && (
-        <CompanyEditModal
-          show={true}
-          onHide={() => setShowCompanyEditModal(false)}
+      {showPasswordChangeModal && (
+        <ModalChangePassword
+          show
+          onHide={hideAll}
+          onExit={hidePasswordChangeModal}
         />
-      )}  */}
+      )}
+      {showCompanyEditModal && (
+        <ModalEditCompany show onHide={() => setShowCompanyEditModal(false)} />
+      )}
     </>
   );
 };

@@ -13,13 +13,13 @@ export const ModalEditProfile = (props: any) => {
   const [showUserProfileEditModal, setShowUserProfileEditModal] =
     useState(false);
   const [submittedData, setSubmittedData] = useState();
-  const { userInfoContext, updateUserInfo } = useContext(AuthContext);
+  const { userInfo, updateUserInfo } = useContext(AuthContext);
   const defaultValues = {
-    name: userInfoContext.name,
-    lastName: userInfoContext.lastName,
-    email: userInfoContext.email,
-    charge: userInfoContext.charge,
-    gender: userInfoContext.gender
+    name: userInfo.first_name,
+    lastName: userInfo.last_name,
+    email: userInfo.email,
+    charge: userInfo.charge,
+    gender: userInfo.gender
   };
   const form = useForm({ defaultValues: defaultValues });
   const { handleSubmit, errors, control, watch } = form;
@@ -28,7 +28,7 @@ export const ModalEditProfile = (props: any) => {
   const [profile, setProfile] = useState('');
 
   useEffect(() => {
-    switch (userInfoContext.profile) {
+    switch (userInfo.profile) {
       case 1:
         setProfile('Admin');
         break;
@@ -44,7 +44,7 @@ export const ModalEditProfile = (props: any) => {
       default:
         break;
     }
-  }, [userInfoContext]);
+  }, [userInfo]);
 
   const onSubmit = (data: any) => {
     setShowConfirmationModal(true);
@@ -60,10 +60,10 @@ export const ModalEditProfile = (props: any) => {
     setStage('loading');
     let data = Object.assign(submittedData!);
 
-    data.company_id = userInfoContext.company.id;
+    data.company_id = userInfo.company.id;
     data.first_name = data.name;
     data.last_name = data.lastName;
-    data.email = userInfoContext.email;
+    data.email = userInfo.email;
     // let result = await editUser(data);
     // if (result) {
     //   await updateUserInfo();
@@ -121,7 +121,7 @@ export const ModalEditProfile = (props: any) => {
           <h4>¿Estás seguro de cambiar tus datos?</h4>
         </Modal.Body>
         <Modal.Footer>
-          <Button className={`btn-${userInfoContext.perfil}`} onClick={save}>
+          <Button className={`btn-${userInfo.perfil}`} onClick={save}>
             Si
           </Button>
           <Button variant="secondary" onClick={hideConfirmationModal}>
@@ -151,9 +151,7 @@ export const ModalEditProfile = (props: any) => {
           <h4>Tus datos han sido modificados exitosamente.</h4>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            className={`btn-${userInfoContext.perfil}`}
-            onClick={handleAccept}>
+          <Button className={`btn-${userInfo.perfil}`} onClick={handleAccept}>
             Aceptar
           </Button>
         </Modal.Footer>
@@ -182,7 +180,7 @@ export const ModalEditProfile = (props: any) => {
   return (
     <>
       <Modal centered show={props.show} onHide={props.onHide} size="lg">
-        <Modal.Header closeButton className={`bg-${userInfoContext.perfil}`}>
+        <Modal.Header closeButton className={`bg-${userInfo.perfil}`}>
           <Modal.Title className="text-white">
             <h5>
               Perfil <small>| {profile}</small>
@@ -194,7 +192,7 @@ export const ModalEditProfile = (props: any) => {
             <Form.Row>
               <Col md={2}>
                 <Image
-                  src={userInfoContext.picture}
+                  src={userInfo.picture}
                   fluid
                   roundedCircle
                   className="shadow"
@@ -303,7 +301,7 @@ export const ModalEditProfile = (props: any) => {
                   }
                   name="gender"
                   control={control}
-                  defaultValue={userInfoContext.gender}
+                  defaultValue={userInfo.gender}
                 />
               </Form.Group>
               <Form.Group as={Col}>
@@ -317,7 +315,7 @@ export const ModalEditProfile = (props: any) => {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              className={`btn-${userInfoContext.perfil}`}
+              className={`btn-${userInfo.perfil}`}
               type="submit"
               disabled={!canSave}>
               Guardar
