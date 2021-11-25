@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   AiFillDollarCircle,
   AiFillCalendar,
@@ -15,17 +15,16 @@ import {
   FaDollarSign
 } from 'react-icons/fa';
 import { Badge, Button } from 'react-bootstrap';
-import { AuthContext } from '../../../contexts/AuthContext';
-// import { RequestsContext } from '../../contexts/RequestsContext';
+import { AuthContext } from '../../../contexts';
 import { Greeting } from '../../atoms';
-// import defaultCompanyLogo from '../../assets/img/companydefault.png';
-import ModalContact from '../../molecules/ModalContact/ModalContact';
-// import logo from '../../assets/img/logo.png';
+import { ModalContact } from '../../molecules';
+import { routes } from '../../../routes';
+import { PERFIL_CLIENTE } from '../../../utils/constants';
 import './Sidebar.scss';
 
 export const Sidebar = (props) => {
-  const { userInfo, loadingAuth } = useContext(AuthContext);
-  //   const { updateRequests } = useContext(RequestsContext);
+  const { pathname } = useLocation();
+  const { userInfo } = useContext(AuthContext);
   const [profile, setProfile] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
   const [showContactModal, setShowContactModal] = useState(false);
@@ -58,14 +57,42 @@ export const Sidebar = (props) => {
     }
   }, [userInfo]);
 
-  // ========================= SETTING REQUESTS CONTEXT ON LOAD =======================================
+  const Icon = (props) => {
+    const { name } = props;
+    switch (name) {
+      case 'AiFillCalendar':
+        return <AiFillCalendar {...props} />;
+      case 'FaPeopleCarry':
+        return <FaPeopleCarry {...props} />;
+      case 'FaUserGraduate':
+        return <FaUserGraduate {...props} />;
+      case 'FaRegBuilding':
+        return <FaRegBuilding {...props} />;
+      case 'FaUserShield':
+        return <FaUserShield {...props} />;
+      case 'FaPaperclip':
+        return <FaPaperclip {...props} />;
+      case 'FaDollarSign':
+        return <FaDollarSign {...props} />;
+      case 'AiOutlineHistory':
+        return <AiOutlineHistory {...props} />;
+      case 'GiTireTracks':
+        return <GiTireTracks {...props} />;
+      case 'GiThreeFriends':
+        return <GiThreeFriends {...props} />;
+      default:
+        return <AiFillCalendar {...props} />;
+    }
+  };
 
-  //   useEffect(() => {
-  //     updateRequests();
-  //     // eslint-disable-next-line
-  //   }, []);
+  const isLinkActive = (url: string) => {
+    if (pathname === '/historial' && url === '/') return true;
+    return pathname === url;
+  };
 
-  //========================================================================================================
+  const profilesContainsCurrentProfile = (arr: number[]) => {
+    return arr.find((pfile: number) => pfile === userInfo.profile);
+  };
 
   return (
     <nav
@@ -92,7 +119,7 @@ export const Sidebar = (props) => {
               <small>{userInfo?.company?.name}</small>
             </div>
           </li>
-          {profile === 'Cliente' ? (
+          {userInfo.profile === PERFIL_CLIENTE && (
             <React.Fragment>
               <li>
                 <Badge>
@@ -110,90 +137,26 @@ export const Sidebar = (props) => {
                 <ModalContact handleClose={() => setShowContactModal(false)} />
               )}
             </React.Fragment>
-          ) : (
-            ''
           )}
         </ul>
         <hr />
         <ul className="nav flex-column align-items-start">
-          {userInfo.profile === 2 && (
-            <React.Fragment>
-              <Link to={`${props.url}/solicitar`} className="nav-link">
-                <Badge pill variant="success">
-                  Solicitar servicio
-                </Badge>
-              </Link>
-              <hr />
-            </React.Fragment>
-          )}
-          <Link to={`${props.url}/dashboard`} className="nav-link">
-            <AiFillCalendar className="mb-1 mr-2" />
-            Calendario
-          </Link>
-          <Link to={`${props.url}/historial`} className="nav-link">
-            <AiOutlineHistory className="mb-1 mr-2" />
-            Historial
-          </Link>
-          <hr />
-          {userInfo.profile === 1 && (
-            <React.Fragment>
-              <li className="sidebar-nav-header">Administrar</li>
-              <Link to={`${props.url}/usuarios`} className="nav-link">
-                <GiThreeFriends className="mb-1 mr-2" />
-                Usuarios
-              </Link>
-              <Link to={`${props.url}/empresas`} className="nav-link">
-                <FaRegBuilding className="mb-1 mr-2" />
-                Empresas
-              </Link>
-              <Link to={`${props.url}/superclientes`} className="nav-link">
-                <FaUserShield className="mb-1 mr-2" />
-                SuperClientes
-              </Link>
-              <Link to={`${props.url}/documentos`} className="nav-link">
-                <FaPaperclip className="mb-1 mr-2" />
-                Documentos
-              </Link>
-              <Link to={`${props.url}/creditos`} className="nav-link">
-                <FaDollarSign className="mb-1 mr-2" />
-                Créditos
-              </Link>
-            </React.Fragment>
-          )}
-          {userInfo.profile !== 5 && userInfo.profile !== 7 ? (
-            <React.Fragment>
-              <Link to={`${props.url}/pistas`} className="nav-link">
-                <GiTireTracks className="mb-1 mr-2" />
-                {userInfo.profile === 1 ? 'Pistas' : 'Ver pistas'}
-              </Link>
-              <hr />
-            </React.Fragment>
-          ) : (
-            ''
-          )}
-          {userInfo.profile === 7 && (
-            <React.Fragment>
-              <Link to={`${props.url}/sucursales`} className="nav-link">
-                <GiThreeFriends className="mb-1 mr-2" />
-                Sucursales
-              </Link>
-              <hr />
-            </React.Fragment>
-          )}
-          {userInfo.profile === 3 && (
-            <React.Fragment>
-              <Link to={`${props.url}/instructores`} className="nav-link">
-                <FaUserGraduate className="mb-1 mr-2" />
-                Instructores{' '}
-              </Link>
-              <hr />
-              <Link to={`${props.url}/proveedores`} className="nav-link">
-                <FaPeopleCarry className="mb-1 mr-2" />
-                Proveedores{' '}
-              </Link>
-              <hr />
-            </React.Fragment>
-          )}
+          {routes.map(({ name, url, icon, profiles, visibleInSidebar }) => {
+            if (profilesContainsCurrentProfile(profiles) && visibleInSidebar) {
+              return (
+                <Link
+                  to={url}
+                  className={`nav-link text-capitalize ${
+                    isLinkActive(url) && 'active'
+                  }`}
+                  key={url}>
+                  <Icon name={icon} className="mb-1 mr-2" />
+                  {name}
+                </Link>
+              );
+            }
+            return '';
+          })}
         </ul>
       </div>
     </nav>

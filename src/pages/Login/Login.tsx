@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { getLoginToken, getUserInfo } from '../../controllers/apiRequests';
-import setAuthorizationToken from '../../controllers/setAuthorizationToken';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import './Login.scss';
@@ -17,129 +15,19 @@ import {
   Form,
   Spinner
 } from 'react-bootstrap';
-import { PasswordRecover } from '../PasswordRecover/PasswordRecover';
 
 export const Login = () => {
   let navigate = useNavigate();
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
   const { register, handleSubmit, errors } = useForm();
-  const {
-    setIsLoggedInContext,
-    setUserInfo,
-    loginUser,
-    loadingAuth,
-    authError
-  } = useContext(AuthContext);
+  const { loginUser, loadingAuth, authError } = useContext(AuthContext);
 
   // ====================== ON SUBMIT THE FORM ======================
   const onSubmit = async (data) => {
     const userData = await loginUser(data);
     if (userData.first_name) {
-      // successMessage(`Bienvenid@ ${userData.first_name} ${userData.last_name}`);
       navigate('/', { replace: true });
     }
   };
-
-  // ====================== GETTING USER'S INFO ======================
-  // const SetUser = async () => {
-  //   let res = await getUserInfo();
-  //   // let gender = await getGender(res.first_name);
-  //   if (res) {
-  //     setUserInfo({
-  //       isSignedIn: true,
-  //       name: res.first_name,
-  //       lastName: res.last_name,
-  //       id: res.id,
-  //       email: res.email,
-  //       charge: res.charge,
-  //       profile: res.profile,
-  //       perfil: `${
-  //         res.profile === 1
-  //           ? 'admin'
-  //           : res.profile === 2
-  //           ? 'cliente'
-  //           : res.profile === 3
-  //           ? 'operario'
-  //           : res.profile === 5
-  //           ? 'tecnico'
-  //           : res.profile === 7
-  //           ? 'super-cliente'
-  //           : ''
-  //       }`,
-  //       picture: res.picture,
-  //       url: res.url,
-  //       company: res.company,
-  //       gender: res.gender,
-  //       credit: res.credit
-  //     });
-  //   }
-  // };
-
-  // ====================== IF TOKEN IN STORAGE SET INFO ======================
-  // useEffect(() => {
-  //   if (localStorage.token) {
-  //     async function fetchData() {
-  //       await setAuthorizationToken(localStorage.token);
-  //       await SetUser();
-  //     }
-  //     fetchData();
-  //   }
-  //   // eslint-disable-next-line
-  // }, []);
-
-  // ====================== SETTING UP CONTEXT ======================
-  // useEffect(() => {
-  //   if (userInfo.isSignedIn) {
-  //     // Setting AuthContex
-  //     setIsLoggedInContext(true);
-  //     setUserInfo({
-  //       name: userInfo.name,
-  //       lastName: userInfo.lastName,
-  //       id: userInfo.id,
-  //       email: userInfo.email,
-  //       charge: userInfo.charge,
-  //       profile: userInfo.profile,
-  //       perfil: userInfo.perfil,
-  //       picture: userInfo.picture,
-  //       url: userInfo.url,
-  //       company: userInfo.company,
-  //       gender: userInfo.gender,
-  //       credit: userInfo.credit
-  //     });
-  //   }
-  //   // eslint-disable-next-line
-  // }, [userInfo.isSignedIn]);
-
-  // ====================== REDIRECT DEPENDING ON PROFILE ======================
-  // useEffect(() => {
-  //   if (userInfo.isSignedIn) {
-  //     let path = '/';
-  //     switch (userInfo.profile) {
-  //       case 1:
-  //         path = '/administrador';
-  //         break;
-  //       case 2:
-  //         path = '/cliente';
-  //         break;
-  //       case 3:
-  //         path = '/operario';
-  //         break;
-  //       case 5:
-  //         path = '/tecnico';
-  //         break;
-  //       case 7:
-  //         path = '/super-cliente';
-  //         break;
-  //       default:
-  //         path = '/';
-  //     }
-  //     history.push({
-  //       pathname: path
-  //     });
-  //   }
-  // }, [userInfo, history]);
 
   // ====================== RETURN ======================
 

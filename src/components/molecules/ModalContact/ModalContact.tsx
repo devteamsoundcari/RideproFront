@@ -6,8 +6,7 @@ import { sendEmail } from '../../../controllers/apiRequests';
 import swal from 'sweetalert';
 
 type ModalContactProps = any;
-
-const ModalContact: React.FC<ModalContactProps> = (props) => {
+export const ModalContact: React.FC<ModalContactProps> = (props) => {
   const [loading, setLoading] = useState(false);
   const { userInfoContext } = useContext(AuthContext);
 
@@ -68,4 +67,3 @@ const ModalContact: React.FC<ModalContactProps> = (props) => {
     </>
   );
 };
-export default ModalContact;

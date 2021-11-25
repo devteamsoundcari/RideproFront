@@ -1,58 +1,24 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext } from 'react';
 import { SearchFiltersContextProvider } from '../../../contexts';
-// import { useHistory, useRouteMatch } from 'react-router-dom';
-import {
-  FaPowerOff,
-  FaUser,
-  FaRegBuilding,
-  FaUserFriends
-} from 'react-icons/fa';
+import { FaPowerOff, FaUser, FaRegBuilding } from 'react-icons/fa';
 import { PERFIL_CLIENTE, PERFIL_SUPERCLIENTE } from '../../../utils/constants';
-import setAuthorizationToken from '../../../controllers/setAuthorizationToken';
-import { AuthContext, RequestsContext } from '../../../contexts';
-import {
-  Nav,
-  Navbar,
-  NavDropdown,
-  Image,
-  InputGroup,
-  FormControl,
-  Button,
-  ListGroup,
-  Form,
-  Spinner
-} from 'react-bootstrap';
+import { AuthContext } from '../../../contexts';
+import { Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
 import {
   ModalEditProfile,
   ModalChangePassword,
   ModalEditCompany
 } from '../../molecules';
-// import ProfileEditModal from '../Profile/ProfileEditModal';
-// import PasswordChangeModal from '../Profile/Password/PasswordChangeModal';
-// import CompanyEditModal from '../Company/CompanyEditModal';
-// import { dateFormatter } from '../../utils/helpFunctions';
-// import ClientStatus from '../../utils/ClientStatus';
-// import { getFilteredDrivers } from '../../controllers/apiRequests';
-import './MyNavbar.scss';
-
-// import OperacionesStatus from '../../utils/OperacionesStatus';
 import { FiltersInput } from '../FiltersInput/FiltersInput';
 import { SearchResults } from '../SearchResults/SearchResults';
+import './MyNavbar.scss';
 
 export const MyNavbar = () => {
-  // const history = useHistory();
   const [filled, setFilled] = useState(false);
-  const { userInfo, setUserInfoContext, setIsLoggedInContext, logOutUser } =
-    useContext(AuthContext);
-  // const { clear, isLoadingRequests } = useContext(RequestsContext);
+  const { userInfo, logOutUser } = useContext(AuthContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
-  const [filteredRequests, setFilteredRequests]: any = useState([]);
-  const [searchParams, setSearchParams] = useState(null);
-  const [filterBy, setFilterBy] = useState('official_id');
-  const [loading, setLoading] = useState(false);
-  // let { url } = useRouteMatch();
 
   const logOut = () => logOutUser();
 
@@ -70,16 +36,6 @@ export const MyNavbar = () => {
     setShowProfileEditModal(false);
   };
 
-  // const profileEditModal = () => {
-  //   return (
-  //     <ProfileEditModal
-  //       show={showProfileEditModal}
-  //       onHide={hideProfileEditModal}
-  //       onClickOnChangePassword={displayPasswordChangeModal}
-  //     />
-  //   );
-  // };
-
   const hideAll = () => {
     setShowProfileEditModal(false);
     setShowPasswordChangeModal(false);
@@ -95,54 +51,9 @@ export const MyNavbar = () => {
     setShowProfileEditModal(true);
   };
 
-  // const passwordChangeModal = () => {
-  //   return (
-  //     <PasswordChangeModal
-  //       show={showPasswordChangeModal}
-  //       onHide={hideAll}
-  //       onExit={hidePasswordChangeModal}
-  //     />
-  //   );
-  // };
-
-  // const fetchDrivers = async (url) => {
-  //   setLoading(true);
-  //   const response = await getFilteredDrivers(url);
-  //   setFilteredRequests(response.results);
-  //   setLoading(false);
-  //   if (response.next) {
-  //     return await fetchDrivers(response.next);
-  //   }
-  // };
-
-  // const search = (value, param) => {
-  //   const url = `https://app-db.ridepro.co/api/v1/drivers_entire_filter/?official_id=${
-  //     param === 'official_id' ? value : '!'
-  //   }&f_name=${param === 'f_name' ? value : '!'}&l_name=${
-  //     param === 'l_name' ? value : '!'
-  //   }&email=${param === 'email' ? value : '!'}`;
-  //   fetchDrivers(url);
-  // };
-
-  const shouldRenderFilters = () => {
-    if (
-      userInfo.profile === PERFIL_CLIENTE ||
-      userInfo.profile === PERFIL_SUPERCLIENTE
-    ) {
-      return <FiltersInput />;
-    }
-    return '';
-  };
-
-  const shouldRenderSearchResults = (data) => {
-    if (
-      userInfo.profile === PERFIL_CLIENTE ||
-      userInfo.profile === PERFIL_SUPERCLIENTE
-    ) {
-      return <SearchResults />;
-    }
-    return '';
-  };
+  const shouldRenderFilters =
+    userInfo.profile === PERFIL_CLIENTE ||
+    userInfo.profile === PERFIL_SUPERCLIENTE;
 
   return (
     <>
@@ -154,7 +65,7 @@ export const MyNavbar = () => {
           expand="lg">
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            {shouldRenderFilters()}
+            {shouldRenderFilters && <FiltersInput />}
             <Nav className="ml-auto">
               <div className="userOptions">
                 <NavDropdown
@@ -182,7 +93,7 @@ export const MyNavbar = () => {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        {shouldRenderSearchResults(filteredRequests)}
+        {shouldRenderFilters && <SearchResults />}
       </SearchFiltersContextProvider>
       {showProfileEditModal && (
         <ModalEditProfile
