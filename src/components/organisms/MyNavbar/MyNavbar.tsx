@@ -1,8 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { SearchFiltersContextProvider } from '../../../contexts';
 import { FaPowerOff, FaUser, FaRegBuilding } from 'react-icons/fa';
-import { PERFIL_CLIENTE, PERFIL_SUPERCLIENTE } from '../../../utils/constants';
-import { AuthContext } from '../../../contexts';
+import {
+  ALL_PROFILES,
+  PERFIL_CLIENTE,
+  PERFIL_SUPERCLIENTE
+} from '../../../utils/constants';
+import { AuthContext, RequestsContext } from '../../../contexts';
 import { Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
 import {
   ModalEditProfile,
@@ -15,7 +19,8 @@ import './MyNavbar.scss';
 
 export const MyNavbar = () => {
   const [filled, setFilled] = useState(false);
-  const { userInfo, logOutUser } = useContext(AuthContext);
+  const { userInfo, logOutUser, loadingAuth } = useContext(AuthContext);
+  const { isLoadingRequests } = useContext(RequestsContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
@@ -52,14 +57,17 @@ export const MyNavbar = () => {
   };
 
   const shouldRenderFilters =
-    userInfo.profile === PERFIL_CLIENTE ||
-    userInfo.profile === PERFIL_SUPERCLIENTE;
+    userInfo.profile === PERFIL_CLIENTE.profile ||
+    userInfo.profile === PERFIL_SUPERCLIENTE.profile;
+
+  const getProfile = () =>
+    ALL_PROFILES.find(({ profile }) => profile === userInfo.profile)?.name;
 
   return (
     <>
       <SearchFiltersContextProvider>
         <Navbar
-          bg={filled ? 'white' : ''}
+          bg={filled ? getProfile()?.toLowerCase() : ''}
           className={filled ? 'nav-scrolled' : ''}
           sticky="top"
           expand="lg">
@@ -87,12 +95,21 @@ export const MyNavbar = () => {
                 <Image
                   src={userInfo.picture}
                   roundedCircle
-                  className={`shadow-sm border border-${userInfo.profile}`}
+                  className={`shadow-sm border border-${getProfile()?.toLowerCase()}`}
                 />
               </div>
             </Nav>
           </Navbar.Collapse>
+          {loadingAuth ||
+            (isLoadingRequests && (
+              <div className="loader">
+                <div
+                  className={`loaderBar bg-${getProfile()?.toLowerCase()}`}
+                />
+              </div>
+            ))}
         </Navbar>
+
         {shouldRenderFilters && <SearchResults />}
       </SearchFiltersContextProvider>
       {showProfileEditModal && (

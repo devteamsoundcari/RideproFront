@@ -51,7 +51,11 @@ export const routes = [
     component: 'Historial',
     isProtected: true,
     icon: 'AiOutlineHistory',
-    profiles: ALL_PROFILES
+    profiles: ALL_PROFILES,
+    children: {
+      url: ':requestId',
+      component: 'SingleRequestAdmin'
+    }
   },
   {
     name: 'usuarios',

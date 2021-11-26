@@ -1,11 +1,11 @@
 import React, { useContext, useRef, useEffect } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { FaUserFriends } from 'react-icons/fa';
-import ClientStatus from '../../../utils/ClientStatus';
 import { dateFormatter } from '../../../utils/helpFunctions';
-import OperacionesStatus from '../../../utils/OperacionesStatus';
 import { AuthContext, SearchFiltersContext } from '../../../contexts';
 import { useNavigate } from 'react-router';
+import { allStatus } from '../../../allStatus';
+import { StatusRenderer } from '../../atoms';
 
 export function SearchResults() {
   let navigate = useNavigate();
@@ -24,6 +24,17 @@ export function SearchResults() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [setResults, wrapperRef]);
+
+  // STATUS FORMATTER
+  const statusFormatter = (requestStep: number) => {
+    const foundProfile = allStatus.find(
+      (user) => user.profile.profile === userInfo.profile
+    );
+    const foundStep = foundProfile?.steps.find(
+      ({ step }) => step === requestStep
+    );
+    return <StatusRenderer step={foundStep} />;
+  };
 
   return (
     <div className="w-50 ml-3 search-results shadow">
@@ -45,11 +56,12 @@ export function SearchResults() {
             <span className="font-weight-bold">
               {request.drivers.length} <FaUserFriends />
             </span>
-            {userInfo.profile === 2 ? (
+            {/* {userInfo.profile === 2 ? (
               <ClientStatus step={request.status.step} width="8rem" />
             ) : (
               <OperacionesStatus step={request.status.step} width="8rem" />
-            )}
+            )} */}
+            {statusFormatter(request.status.step)}
           </ListGroup.Item>
         ))}
       </ListGroup>

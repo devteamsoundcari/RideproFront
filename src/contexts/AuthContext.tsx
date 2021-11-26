@@ -33,7 +33,7 @@ export const AuthContextProvider = (props) => {
         : newUserInfo.profile === 2
         ? 'cliente'
         : newUserInfo.profile === 3
-        ? 'operario'
+        ? 'operaciones'
         : newUserInfo.profile === 5
         ? 'tecnico'
         : '';

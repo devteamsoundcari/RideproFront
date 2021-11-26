@@ -1,5 +1,12 @@
 import React, { useContext } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+  Outlet
+} from 'react-router-dom';
 import { AuthContext } from './contexts';
 import {
   Login,
@@ -8,12 +15,17 @@ import {
   Calendar,
   Pistas,
   Proveedores,
-  Instructores
+  Instructores,
+  SingleRequestAdmin
 } from './pages';
 import { routes } from './routes';
 
 function App() {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, userInfo } = useContext(AuthContext);
+
+  const profilesContainsCurrentProfile = (arr: any[]) => {
+    return arr.find(({ profile }: any) => profile === userInfo.profile);
+  };
 
   const getComponent = (component: string) => {
     switch (component) {
@@ -31,9 +43,24 @@ function App() {
         return <Proveedores />;
       case 'Instructores':
         return <Instructores />;
+      case 'SingleRequestAdmin':
+        return <SingleRequestAdmin />;
       default:
         return <Historial />;
     }
+  };
+
+  const renderNestedRoute = (url, children) => {
+    console.log(url, `${url}/${children.url}`);
+    return (
+      // <Route
+      //   path={`${url}/${children.url}`}
+      //   element={getComponent(children.component)}
+      // />
+      <>
+        <Route path=":requestId" element={<SingleRequestAdmin />} />
+      </>
+    );
   };
 
   return (
@@ -47,9 +74,28 @@ function App() {
             )
           }
         />
-        {routes.map(({ name, url, component, isProtected }) => {
-          if (isProtected) {
-            if (isAuthenticated) {
+        {routes.map(
+          ({
+            name,
+            url,
+            component,
+            isProtected,
+            profiles,
+            children = null
+          }) => {
+            if (isProtected) {
+              if (isAuthenticated && profilesContainsCurrentProfile(profiles)) {
+                return (
+                  <Route
+                    path={url}
+                    element={getComponent(component)}
+                    key={name}>
+                    {children && renderNestedRoute(url, children)}
+                  </Route>
+                );
+              }
+              return '';
+            } else {
               return (
                 <Route
                   path={url}
@@ -58,14 +104,8 @@ function App() {
                 />
               );
             }
-            return '';
-          } else {
-            return (
-              <Route path={url} element={getComponent(component)} key={name} />
-            );
           }
-        })}
-
+        )}
         <Route
           path="*"
           element={

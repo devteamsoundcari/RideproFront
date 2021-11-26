@@ -16,12 +16,12 @@ export const API_RESET_PASSWORD_CONFIRM_URL =
   '/rest-auth/password/reset/confirm/';
 
 // Perfiles
-export const PERFIL_ADMIN = 1;
-export const PERFIL_CLIENTE = 2;
-export const PERFIL_OPERACIONES = 3;
-export const PERFIL_EJECUTIVO = 4;
-export const PERFIL_TECNICO = 5;
-export const PERFIL_SUPERCLIENTE = 7;
+export const PERFIL_ADMIN = { profile: 1, name: 'administrador' };
+export const PERFIL_CLIENTE = { profile: 2, name: 'cliente' };
+export const PERFIL_OPERACIONES = { profile: 3, name: 'operaciones' };
+export const PERFIL_EJECUTIVO = { profile: 4, name: 'ejecutivo' };
+export const PERFIL_TECNICO = { profile: 5, name: 'tecnico' };
+export const PERFIL_SUPERCLIENTE = { profile: 7, name: 'super-cliente' };
 export const ALL_PROFILES = [
   PERFIL_ADMIN,
   PERFIL_CLIENTE,

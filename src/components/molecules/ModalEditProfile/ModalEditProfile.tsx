@@ -2,9 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Modal, Col, Form, Spinner, Button, Image } from 'react-bootstrap';
 import { AuthContext } from '../../../contexts';
-// import { editUser } from '../../../../controllers/apiRequests';
-// import RegularExpressions from '../../../../utils/RegularExpressions';
-// import ProfilePictureEditModal from '../../../ProfilePictureEditModal';
+import RegularExpressions from '../../../utils/RegularExpressions';
+import { ModalEditProfilePicture } from '../ModalEditProfilePicture/ModalEditProfilePicture';
+import { editUser } from '../../../controllers/apiRequests';
 import './ModalEditProfile.scss';
 
 export const ModalEditProfile = (props: any) => {
@@ -59,16 +59,15 @@ export const ModalEditProfile = (props: any) => {
   const save = async () => {
     setStage('loading');
     let data = Object.assign(submittedData!);
-
     data.company_id = userInfo.company.id;
     data.first_name = data.name;
     data.last_name = data.lastName;
     data.email = userInfo.email;
-    // let result = await editUser(data);
-    // if (result) {
-    //   await updateUserInfo();
-    //   setStage('success');
-    // }
+    let result = await editUser(data);
+    if (result) {
+      await updateUserInfo();
+      setStage('success');
+    }
   };
 
   const hideConfirmationModal = () => {
@@ -159,15 +158,15 @@ export const ModalEditProfile = (props: any) => {
     );
   };
 
-  //   const profilePictureEditModal = () => {
-  //     return (
-  //       <ProfilePictureEditModal
-  //         className="child-modal"
-  //         show={showUserProfileEditModal}
-  //         onHide={closeUserProfileEditModal}
-  //       />
-  //     );
-  //   };
+  const profilePictureEditModal = () => {
+    return (
+      <ModalEditProfilePicture
+        className="child-modal"
+        show={showUserProfileEditModal}
+        onHide={closeUserProfileEditModal}
+      />
+    );
+  };
 
   const handleUserProfilePictureEditModal = () => {
     setShowUserProfileEditModal(true);
@@ -223,8 +222,8 @@ export const ModalEditProfile = (props: any) => {
                   name="name"
                   control={control}
                   rules={{
-                    required: true
-                    // pattern: RegularExpressions.name
+                    required: true,
+                    pattern: RegularExpressions.name
                   }}
                 />
                 {errors.name?.type === 'required' && (
@@ -241,8 +240,8 @@ export const ModalEditProfile = (props: any) => {
                   name="lastName"
                   control={control}
                   rules={{
-                    required: 'El apellido no debe estar en blanco.'
-                    // pattern: RegularExpressions.name
+                    required: 'El apellido no debe estar en blanco.',
+                    pattern: RegularExpressions.name
                   }}
                 />
                 {errors.lastName?.type === 'required' && (
@@ -262,8 +261,8 @@ export const ModalEditProfile = (props: any) => {
                   control={control}
                   disabled={true}
                   rules={{
-                    required: 'El correo electrónico no debe estar en blanco.'
-                    // pattern: RegularExpressions.email
+                    required: 'El correo electrónico no debe estar en blanco.',
+                    pattern: RegularExpressions.email
                   }}
                 />
                 {errors.email?.type === 'required' && (
@@ -326,7 +325,7 @@ export const ModalEditProfile = (props: any) => {
           </Modal.Footer>
         </Form>
         {confirmationModal()}
-        {/* {profilePictureEditModal()} */}
+        {profilePictureEditModal()}
       </Modal>
     </>
   );

@@ -55,6 +55,64 @@
   }
 }
 .nav-scrolled {
-  box-shadow: rgba(25, 42, 70, 0.13) -8px 12px 18px 0px;
+  opacity: 0.96;
+  -webkit-box-shadow: 1px 5px 11px 0px rgba(0, 0, 0, 0.52);
+  box-shadow: 1px 5px 11px 0px rgba(0, 0, 0, 0.52);
   padding: 10px 15px !important;
+
+  #basic-nav-dropdown {
+    color: #fff;
+  }
+
+  #filters-input {
+    label {
+      opacity: 0.6;
+      color: #fff;
+    }
+  }
+}
+
+.loader {
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  position: absolute;
+  padding: 1.5px;
+  background: rgb(164, 164, 164);
+  &::before {
+    position: absolute;
+  }
+  .loaderBar {
+    position: absolute;
+    border-radius: 10px;
+    top: 0;
+    right: 100%;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    animation: borealisBar 1s linear infinite;
+  }
+}
+
+@keyframes borealisBar {
+  0% {
+    left: 0%;
+    right: 100%;
+    width: 0%;
+  }
+  20% {
+    left: 0%;
+    right: 65%;
+    width: 35%;
+  }
+  70% {
+    right: 0%;
+    left: 65%;
+    width: 35%;
+  }
+  100% {
+    left: 100%;
+    right: 0%;
+    width: 0%;
+  }
 }

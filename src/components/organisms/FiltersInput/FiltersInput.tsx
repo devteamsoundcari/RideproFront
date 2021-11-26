@@ -19,7 +19,7 @@ export function FiltersInput() {
   } = useContext(SearchFiltersContext);
 
   return (
-    <InputGroup className="w-75 rounded">
+    <InputGroup className="w-75 rounded" id="filters-input">
       <FormControl
         disabled={loadingSearch}
         className="border rounded"

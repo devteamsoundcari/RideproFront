@@ -1,21 +1,21 @@
 // Override default variables before the import
 $theme-colors: (
-  "primary": #333,
-  "danger": #e42526,
-  "dark": #0d2128,
-  "operario": #14524f,
-  "admin": #970c0f,
-  "cliente": #1d1d1b,
-  "tecnico": #14213d,
-  "super-cliente": #383d41,
-  "disabled": #e9ecef,
-  "event-requested": yellow,
-  "confirm-event": orange,
-  "event-confirmed": dodgerblue,
-  "confirm-docs": mediumslateblue,
-  "upload-reports": deeppink,
-  "event-finished": lightgreen,
-  "event-canceled": red,
+  'primary': #333,
+  'danger': #e42526,
+  'dark': #0d2128,
+  'operaciones': #0d2128,
+  'admin': #970c0f,
+  'cliente': #1d1d1b,
+  'tecnico': #14213d,
+  'super-cliente': #383d41,
+  'disabled': #e9ecef,
+  'event-requested': yellow,
+  'confirm-event': orange,
+  'event-confirmed': dodgerblue,
+  'confirm-docs': mediumslateblue,
+  'upload-reports': deeppink,
+  'event-finished': lightgreen,
+  'event-canceled': red
 );
 
 html {
@@ -82,45 +82,11 @@ html {
 }
 
 .swal-text {
-  // background-color: #fefae3;
-  // padding: 17px;
-  // border: 1px solid #f0e1a1;
   display: block;
   margin: 22px;
   text-align: center;
   color: #61534e;
 }
 
-// $border-radius: 2rem;
-
-// .btn-lg {
-//   border-radius: 2rem !important;
-// }
-
-// .jumbotron {
-//   background-color: #0d2128 !important;
-//   color: #fff;
-//   border-radius: 0px !important;
-//   a {
-//     font-size: 16px;
-
-//     padding-left: 20px;
-//     padding-right: 20px;
-//     font-weight: 600;
-//     i {
-//       margin-right: 5px;
-//     }
-//   }
-//   h1 {
-//     margin-bottom: 1.5rem;
-//     line-height: 1;
-//     font-size: 4.5rem;
-//     font-weight: 600;
-//   }
-// }
-
-// .display-4 {
-//   font-weight: 600 !important;
-// }
 // Import Bootstrap and its default variables
-@import "~bootstrap/scss/bootstrap.scss";
+@import '~bootstrap/scss/bootstrap.scss';

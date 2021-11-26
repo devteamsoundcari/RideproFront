@@ -19,13 +19,12 @@ import { AuthContext } from '../../../contexts';
 import { Greeting } from '../../atoms';
 import { ModalContact } from '../../molecules';
 import { routes } from '../../../routes';
-import { PERFIL_CLIENTE } from '../../../utils/constants';
+import { PERFIL_CLIENTE, ALL_PROFILES } from '../../../utils/constants';
 import './Sidebar.scss';
 
-export const Sidebar = (props) => {
+export const Sidebar = () => {
   const { pathname } = useLocation();
   const { userInfo } = useContext(AuthContext);
-  const [profile, setProfile] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
   const [showContactModal, setShowContactModal] = useState(false);
 
@@ -34,26 +33,6 @@ export const Sidebar = (props) => {
       setProfilePicture(userInfo?.company?.logo);
     } else {
       setProfilePicture('defaultCompanyLogo.png');
-    }
-
-    switch (userInfo?.profile) {
-      case 1:
-        setProfile('Admin');
-        break;
-      case 2:
-        setProfile('Cliente');
-        break;
-      case 3:
-        setProfile('Operaciones');
-        break;
-      case 5:
-        setProfile('Tecnico');
-        break;
-      case 7:
-        setProfile('Super-Cliente');
-        break;
-      default:
-        break;
     }
   }, [userInfo]);
 
@@ -90,17 +69,24 @@ export const Sidebar = (props) => {
     return pathname === url;
   };
 
-  const profilesContainsCurrentProfile = (arr: number[]) => {
-    return arr.find((pfile: number) => pfile === userInfo.profile);
+  const profilesContainsCurrentProfile = (arr: any[]) => {
+    return arr.find(({ profile }: any) => profile === userInfo.profile);
   };
+
+  const getProfile = () =>
+    ALL_PROFILES.find(({ profile }) => profile === userInfo.profile)?.name;
 
   return (
     <nav
-      className={`col-md-2 d-md-block bg-dark bg-${profile.toLowerCase()} sidebar pr-0 pl-0`}>
+      className={`col-md-2 d-md-block bg-dark bg-${
+        getProfile()?.toLowerCase() || 'primary'
+      } sidebar pr-0 pl-0`}>
       <div className="sidebar-sticky">
         <div className="sidebar-brand">
-          <img alt="RideproLogo" src="logo.png" />
-          <small style={{ fontSize: '12px' }}>{profile}</small>
+          <img alt="RideproLogo" src="logo.png" className="mb-3" />
+          <small style={{ fontSize: '12px' }} className="text-capitalize">
+            {getProfile() || 'desconocido'}
+          </small>
         </div>
         <ul className="nav flex-column">
           <li>
@@ -119,7 +105,7 @@ export const Sidebar = (props) => {
               <small>{userInfo?.company?.name}</small>
             </div>
           </li>
-          {userInfo.profile === PERFIL_CLIENTE && (
+          {userInfo.profile === PERFIL_CLIENTE.profile && (
             <React.Fragment>
               <li>
                 <Badge>
@@ -140,7 +126,7 @@ export const Sidebar = (props) => {
           )}
         </ul>
         <hr />
-        <ul className="nav flex-column align-items-start">
+        <ul className="nav flex-column align-items-start links-list">
           {routes.map(({ name, url, icon, profiles, visibleInSidebar }) => {
             if (profilesContainsCurrentProfile(profiles) && visibleInSidebar) {
               return (
