@@ -1,12 +1,5 @@
 import React, { useContext } from 'react';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  Link,
-  Outlet
-} from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AuthContext } from './contexts';
 import {
   Login,
@@ -51,15 +44,11 @@ function App() {
   };
 
   const renderNestedRoute = (url, children) => {
-    console.log(url, `${url}/${children.url}`);
     return (
-      // <Route
-      //   path={`${url}/${children.url}`}
-      //   element={getComponent(children.component)}
-      // />
-      <>
-        <Route path=":requestId" element={<SingleRequestAdmin />} />
-      </>
+      <Route
+        path={`${url}/${children.url}`}
+        element={getComponent(children.component)}
+      />
     );
   };
 

@@ -1,42 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
-import {
-  useLocation,
-  Route,
-  Outlet
-  //   Switch,
-  //   useRouteMatch,
-  //   useHistory
-} from 'react-router-dom';
-import { Container, Card, Alert } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { RequestsContext } from '../../../contexts';
-// import SingleRequestAdmin from './SingleRequestAdmin/SingleRequestAdmin';
 import { TableWithPagination } from '../../molecules';
 import './AdminRequestsHistory.scss';
 
 export const AdminRequestsHistory = () => {
-  const location = useLocation();
-  //   const history = useHistory();
   const [displayedRequests, setDisplayedRequests] = useState([]);
-  const {
-    getRequestsList,
-    requests,
-    isLoadingRequests,
-    count,
-    getNextPageOfRequests
-  } = useContext(RequestsContext);
+  const { requests, count, getNextPageOfRequests } =
+    useContext(RequestsContext);
   const [currentPage, setCurrentPage] = useState(1);
-  // eslint-disable-next-line no-unused-vars
-  const [sizePerPage, setSizePerPage] = useState(25);
+  const [sizePerPage] = useState(25);
   const [loadedPages, setLoadedPages] = useState([1]);
-
-  //   let { path, url } = useRouteMatch();
-
-  //   useEffect(() => {
-  //     if (location.state) {
-  //       handleOnSelect(location.state.event);
-  //     }
-  //     // eslint-disable-next-line
-  //   }, [location]);
 
   const sortById = (data) =>
     data.sort((a, b) => {
@@ -68,10 +42,6 @@ export const AdminRequestsHistory = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requests]);
-
-  //   const handleOnSelect = (row) => {
-  //     history.push(`${url}/${row.id}`);
-  //   };
 
   const handleTableChange = (type, { page, sizePerPage }) => {
     const currentIndex = (page - 1) * sizePerPage;

@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 import moment from 'moment';
 import 'moment/locale/es';
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory from 'react-bootstrap-table2-filter';
 import { AuthContext } from '../../../contexts';
 import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone
 } from 'react-bootstrap-table2-paginator';
+import filterFactory from 'react-bootstrap-table2-filter';
 import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../atoms';
 import './TableWithPagination.scss';
@@ -47,17 +47,19 @@ export function TableWithPagination({
   // CITY FORMATTER
   const cityFormatter = (cell) =>
     cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
+
   const dateFormatter = (cell) => {
-    let d = new Date(cell);
-    const dateTimeFormat = new Intl.DateTimeFormat('es-CO', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    });
-    const [{ value: month }, , { value: day }, , { value: year }] =
-      dateTimeFormat.formatToParts(d);
-    return `${month}/${day}/${year}`;
+    return (
+      <div>
+        <small>{moment(cell).format('DD/MM/YYYY')}</small>
+        <br />
+        <small className="text-capitalize-first">
+          {moment(cell).calendar()}
+        </small>
+      </div>
+    );
   };
+  //  moment(cell).format('DD/MM/YYYY');
 
   // WAITING TIME FORMATTER
   const waitingTimeFormatter = (cell, row) => {
@@ -81,7 +83,8 @@ export function TableWithPagination({
       dataField: 'id',
       text: 'Cód.',
       headerClasses: 'small-column',
-      formatter: linkCodeFormatter
+      formatter: linkCodeFormatter,
+      sort: true
     },
     {
       dataField: 'customer.company.name',

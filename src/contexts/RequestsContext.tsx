@@ -9,6 +9,7 @@ export const RequestsContext = createContext('' as any);
 const apiClient = ApiClientSingleton.getApiInstance();
 
 export const RequestsContextProvider = (props) => {
+  const [count, setCount] = useState(null);
   const { userInfo, isAuthenticated } = useContext(AuthContext);
   const [startDate, setStartDate] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -52,6 +53,7 @@ export const RequestsContextProvider = (props) => {
         return item;
       });
       setRequests((prev: any) => [...fetchedRequests, ...prev]);
+      setCount(response?.data?.count);
       setIsLoadingRequests(false);
     } catch (error) {
       return error;
@@ -82,6 +84,7 @@ export const RequestsContextProvider = (props) => {
         : `/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
     );
   };
+  const getNextPageOfRequests = (page) => getRequestsList(page);
 
   return (
     <RequestsContext.Provider
@@ -90,7 +93,9 @@ export const RequestsContextProvider = (props) => {
           requests,
           getRequestsList,
           isLoadingRequests,
-          searchRequests
+          searchRequests,
+          getNextPageOfRequests,
+          count
         } as any
       }>
       {props.children}

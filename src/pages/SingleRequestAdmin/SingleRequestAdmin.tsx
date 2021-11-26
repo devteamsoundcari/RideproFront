@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useParams } from 'react-router';
+import { useParams } from 'react-router';
 
 export interface ISingleRequestAdminProps {}
 

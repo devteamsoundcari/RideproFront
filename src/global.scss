@@ -87,6 +87,12 @@ html {
   text-align: center;
   color: #61534e;
 }
+.text-capitalize-first {
+  display: block;
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
 
 // Import Bootstrap and its default variables
 @import '~bootstrap/scss/bootstrap.scss';

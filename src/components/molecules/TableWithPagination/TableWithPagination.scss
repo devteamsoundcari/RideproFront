@@ -7,7 +7,7 @@
       vertical-align: middle;
       text-transform: uppercase;
       font-weight: 400;
-      font-size: 0.99rem;
+      font-size: clamp(0.1rem, 1vw, 1rem);
       color: #475f7b;
       letter-spacing: 1px;
       border-color: rgb(179, 179, 179);
