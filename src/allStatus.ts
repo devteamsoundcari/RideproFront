@@ -1,8 +1,4 @@
-import {
-  PERFIL_TECNICO,
-  PERFIL_OPERACIONES,
-  PERFIL_CLIENTE
-} from './utils/constants';
+import { PERFIL_TECNICO, PERFIL_OPERACIONES, PERFIL_CLIENTE } from './utils';
 
 export const allStatus = [
   {

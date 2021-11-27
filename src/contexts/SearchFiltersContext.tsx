@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 import ApiClientSingleton from '../controllers/apiClient';
-import { API_DRIVERS_FILTER } from '../utils/constants';
+import { API_DRIVERS_FILTER } from '../utils';
 
 const apiClient = ApiClientSingleton.getApiInstance();
 

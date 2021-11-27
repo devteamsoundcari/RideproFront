@@ -4,8 +4,8 @@ import { editCompany } from '../../../controllers/apiRequests';
 import { Modal, Col, Form, Spinner, Button, Image } from 'react-bootstrap';
 import { AuthContext } from '../../../contexts';
 import { ModalEditCompanyLogo } from '../ModalEditCompanyLogo/ModalEditCompanyLogo';
-// import CompanyLogoEditModal from "./CompanyLogoEditModal";
 import './ModalEditCompany.scss';
+import { getProfile } from '../../../utils';
 
 export const ModalEditCompany = (props: any) => {
   const { handleSubmit, control } = useForm();
@@ -75,7 +75,7 @@ export const ModalEditCompany = (props: any) => {
 
   return (
     <Modal show={props.show} onHide={props.onHide} size="lg">
-      <Modal.Header closeButton className={`bg-${profile}`}>
+      <Modal.Header closeButton className={`bg-${getProfile(profile)}`}>
         <Modal.Title className="text-white">Compañía</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit(onSubmit)} className="company-edit-modal">

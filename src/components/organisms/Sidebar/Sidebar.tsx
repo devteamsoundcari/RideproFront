@@ -19,7 +19,7 @@ import { AuthContext } from '../../../contexts';
 import { Greeting } from '../../atoms';
 import { ModalContact } from '../../molecules';
 import { routes } from '../../../routes';
-import { PERFIL_CLIENTE, ALL_PROFILES } from '../../../utils/constants';
+import { PERFIL_CLIENTE, getProfile } from '../../../utils';
 import defaultCompanyImg from '../../../assets/img/defaultCompanyImg.png';
 import logo from '../../../assets/img/logo.png';
 import './Sidebar.scss';
@@ -75,19 +75,16 @@ export const Sidebar = () => {
     return arr.find(({ profile }: any) => profile === userInfo.profile);
   };
 
-  const getProfile = () =>
-    ALL_PROFILES.find(({ profile }) => profile === userInfo.profile)?.name;
-
   return (
     <nav
       className={`col-md-2 d-md-block bg-dark bg-${
-        getProfile()?.toLowerCase() || 'primary'
+        getProfile(userInfo.profile) || 'primary'
       } sidebar pr-0 pl-0`}>
       <div className="sidebar-sticky">
         <div className="sidebar-brand">
           <img alt="RideproLogo" src={logo} className="mb-3" />
           <small style={{ fontSize: '12px' }} className="text-capitalize">
-            {getProfile() || 'desconocido'}
+            {getProfile(userInfo.profile) || 'desconocido'}
           </small>
         </div>
         <ul className="nav flex-column">

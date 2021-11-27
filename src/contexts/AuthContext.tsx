@@ -1,11 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { getUserInfo } from '../controllers/apiRequests';
 import ApiClientSingleton from '../controllers/apiClient';
-import {
-  API_LOGIN_URL,
-  API_USER_DATA,
-  API_LOGOUT_URL
-} from '../utils/constants';
+import { API_LOGIN_URL, API_USER_DATA, API_LOGOUT_URL } from '../utils';
 
 const apiClient = ApiClientSingleton.getApiInstance();
 

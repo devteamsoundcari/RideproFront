@@ -2,10 +2,10 @@ import React, { useState, useContext } from 'react';
 import { SearchFiltersContextProvider } from '../../../contexts';
 import { FaPowerOff, FaUser, FaRegBuilding } from 'react-icons/fa';
 import {
-  ALL_PROFILES,
+  getProfile,
   PERFIL_CLIENTE,
   PERFIL_SUPERCLIENTE
-} from '../../../utils/constants';
+} from '../../../utils';
 import { AuthContext, RequestsContext } from '../../../contexts';
 import { Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
 import {
@@ -60,14 +60,11 @@ export const MyNavbar = () => {
     userInfo.profile === PERFIL_CLIENTE.profile ||
     userInfo.profile === PERFIL_SUPERCLIENTE.profile;
 
-  const getProfile = () =>
-    ALL_PROFILES.find(({ profile }) => profile === userInfo.profile)?.name;
-
   return (
     <>
       <SearchFiltersContextProvider>
         <Navbar
-          bg={filled ? getProfile()?.toLowerCase() : ''}
+          bg={filled ? getProfile(userInfo.profile) : ''}
           className={filled ? 'nav-scrolled' : ''}
           sticky="top"
           expand="lg">
@@ -95,7 +92,9 @@ export const MyNavbar = () => {
                 <Image
                   src={userInfo.picture}
                   roundedCircle
-                  className={`shadow-sm border border-${getProfile()?.toLowerCase()}`}
+                  className={`shadow-sm border border-${getProfile(
+                    userInfo.profile
+                  )}`}
                 />
               </div>
             </Nav>
@@ -104,7 +103,7 @@ export const MyNavbar = () => {
             (isLoadingRequests && (
               <div className="loader">
                 <div
-                  className={`loaderBar bg-${getProfile()?.toLowerCase()}`}
+                  className={`loaderBar bg-${getProfile(userInfo.profile)}`}
                 />
               </div>
             ))}
