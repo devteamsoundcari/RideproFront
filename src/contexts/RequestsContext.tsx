@@ -3,6 +3,7 @@ import { AuthContext } from './AuthContext';
 import { getUserRequests } from '../controllers/apiRequests';
 import ApiClientSingleton from '../controllers/apiClient';
 import { PERFIL_CLIENTE, PERFIL_SUPERCLIENTE } from '../utils/constants';
+import moment from 'moment';
 
 export const RequestsContext = createContext('' as any);
 
@@ -39,6 +40,11 @@ export const RequestsContextProvider = (props) => {
     }
   };
 
+  const sortByStartTime = (req) =>
+    req.sort((a, b) => {
+      return moment(a.start_time).valueOf() - moment(b.start_time).valueOf();
+    });
+
   async function fetchRequestsByPage(url: string) {
     setIsLoadingRequests(true);
     try {
@@ -52,18 +58,16 @@ export const RequestsContextProvider = (props) => {
         item.end = new Date(item.finish_time);
         return item;
       });
-      setRequests((prev: any) => [...fetchedRequests, ...prev]);
+      const requestSortedByStartTime = sortByStartTime([
+        ...fetchedRequests,
+        ...requests
+      ]);
+      setRequests(requestSortedByStartTime);
       setCount(response?.data?.count);
       setIsLoadingRequests(false);
     } catch (error) {
       return error;
     }
-
-    // setRequests((prev: any) => [...fetchedRequests, ...prev]);
-    // setPrevUrl(response.previous);
-    // setNextUrl(response.next);
-    // setCount(response.count);
-    // setIsLoadingRequests(false);
   }
 
   useEffect(() => {

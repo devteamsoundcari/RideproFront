@@ -7,7 +7,7 @@ import {
 
 // Return session storage token
 const readAccessToken = (name) => {
-  let tempLocalToken = sessionStorage.getItem(name);
+  let tempLocalToken = localStorage.getItem(name);
   if (tempLocalToken) {
     return `Token ${tempLocalToken}`;
   } else {
@@ -15,9 +15,9 @@ const readAccessToken = (name) => {
   }
 };
 
-// // Get refresh token from sessionStorage
+// // Get refresh token from localStorage
 const getRefreshToken = (name) => {
-  let tempLocalToken = sessionStorage.getItem(name);
+  let tempLocalToken = localStorage.getItem(name);
   if (tempLocalToken) {
     let { refresh_token } = JSON.parse(tempLocalToken);
     return refresh_token;
@@ -28,13 +28,13 @@ const getRefreshToken = (name) => {
 
 // // Update session storage with new accessToken
 const updateSessionStorageToken = (name, newToken) => {
-  let tempLocalToken = sessionStorage.getItem(name);
+  let tempLocalToken = localStorage.getItem(name);
   const { refresh_token } = JSON.parse(tempLocalToken as string);
   let payload = {
     access_token: newToken,
     refresh_token
   };
-  sessionStorage.setItem(name, JSON.stringify(payload));
+  localStorage.setItem(name, JSON.stringify(payload));
 };
 
 const refreshAccessToken = async () => {

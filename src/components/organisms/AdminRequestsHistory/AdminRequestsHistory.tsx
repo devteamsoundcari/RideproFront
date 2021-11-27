@@ -6,16 +6,16 @@ import './AdminRequestsHistory.scss';
 
 export const AdminRequestsHistory = () => {
   const [displayedRequests, setDisplayedRequests] = useState([]);
-  const { requests, count, getNextPageOfRequests } =
+  const { requests, count, getNextPageOfRequests, getRequestsList } =
     useContext(RequestsContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [sizePerPage] = useState(25);
   const [loadedPages, setLoadedPages] = useState([1]);
 
-  const sortById = (data) =>
-    data.sort((a, b) => {
-      return b.id - a.id;
-    });
+  useEffect(() => {
+    getRequestsList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const findMissingNumbers = (arr) => {
     // eslint-disable-next-line no-sequences
@@ -25,15 +25,14 @@ export const AdminRequestsHistory = () => {
 
   useEffect(() => {
     const totalOfRequests = requests.length;
-    const requestsToSort = sortById(requests);
     if (totalOfRequests >= 1) {
       if (currentPage === 1) {
-        setDisplayedRequests(requestsToSort);
+        setDisplayedRequests(requests);
       } else {
         const skippedPages = findMissingNumbers(loadedPages).length;
         let currentIndex = (currentPage - 1) * sizePerPage;
         currentIndex = currentIndex - skippedPages * sizePerPage;
-        const slicedRequests = requestsToSort.slice(
+        const slicedRequests = requests.slice(
           currentIndex,
           currentIndex + sizePerPage
         );
@@ -50,11 +49,16 @@ export const AdminRequestsHistory = () => {
       getNextPageOfRequests(page);
       setLoadedPages(loadedPages.concat([page]));
     } else {
-      const sortedRequests = sortById(requests).slice(
+      console.log(
+        'slice',
         currentIndex,
-        currentIndex + sizePerPage
+        currentIndex ? currentIndex + sizePerPage : sizePerPage - 1
       );
-      setDisplayedRequests(sortedRequests);
+      const slicedRequests = requests.slice(
+        currentIndex,
+        currentIndex ? currentIndex + sizePerPage : sizePerPage - 1
+      );
+      setDisplayedRequests(slicedRequests);
     }
   };
 

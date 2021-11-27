@@ -20,6 +20,8 @@ import { Greeting } from '../../atoms';
 import { ModalContact } from '../../molecules';
 import { routes } from '../../../routes';
 import { PERFIL_CLIENTE, ALL_PROFILES } from '../../../utils/constants';
+import defaultCompanyImg from '../../../assets/img/defaultCompanyImg.png';
+import logo from '../../../assets/img/logo.png';
 import './Sidebar.scss';
 
 export const Sidebar = () => {
@@ -32,7 +34,7 @@ export const Sidebar = () => {
     if (userInfo?.company?.logo !== '') {
       setProfilePicture(userInfo?.company?.logo);
     } else {
-      setProfilePicture('defaultCompanyLogo.png');
+      setProfilePicture(defaultCompanyImg);
     }
   }, [userInfo]);
 
@@ -83,7 +85,7 @@ export const Sidebar = () => {
       } sidebar pr-0 pl-0`}>
       <div className="sidebar-sticky">
         <div className="sidebar-brand">
-          <img alt="RideproLogo" src="logo.png" className="mb-3" />
+          <img alt="RideproLogo" src={logo} className="mb-3" />
           <small style={{ fontSize: '12px' }} className="text-capitalize">
             {getProfile() || 'desconocido'}
           </small>

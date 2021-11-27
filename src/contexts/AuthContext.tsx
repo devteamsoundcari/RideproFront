@@ -42,10 +42,10 @@ export const AuthContextProvider = (props) => {
   };
 
   const checkLoggedInStatus = async () => {
-    const userData = sessionStorage.getItem('User');
+    const userData = localStorage.getItem('User');
     if (userData) {
       setUserInfo(JSON.parse(userData));
-      if (sessionStorage.getItem('Token')) {
+      if (localStorage.getItem('Token')) {
         setIsAuthenticated(true);
       }
     }
@@ -59,7 +59,7 @@ export const AuthContextProvider = (props) => {
   const getUserData = async () => {
     try {
       const response = await apiClient.get(API_USER_DATA);
-      sessionStorage.setItem('User', JSON.stringify(response.data));
+      localStorage.setItem('User', JSON.stringify(response.data));
       return response.data;
     } catch (error) {
       setAuthError(error);
@@ -74,7 +74,7 @@ export const AuthContextProvider = (props) => {
         email,
         password
       });
-      sessionStorage.setItem('Token', response.data.key);
+      localStorage.setItem('Token', response.data.key);
       const userData: any = await getUserData();
       setUserInfo(userData);
       setIsAuthenticated(true);
@@ -91,8 +91,8 @@ export const AuthContextProvider = (props) => {
     setLoadingAuth(true);
     try {
       await apiClient.post(API_LOGOUT_URL, {});
-      sessionStorage.removeItem('Token');
-      sessionStorage.removeItem('User');
+      localStorage.removeItem('Token');
+      localStorage.removeItem('User');
       window.open('/', '_self');
     } catch (error) {
       setAuthError(error);

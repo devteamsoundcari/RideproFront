@@ -2,10 +2,9 @@ import React, { useContext } from 'react';
 import moment from 'moment';
 import 'moment/locale/es';
 import BootstrapTable from 'react-bootstrap-table-next';
-import { AuthContext } from '../../../contexts';
+import { AuthContext, RequestsContext } from '../../../contexts';
 import paginationFactory, {
-  PaginationProvider,
-  PaginationListStandalone
+  PaginationProvider
 } from 'react-bootstrap-table2-paginator';
 import filterFactory from 'react-bootstrap-table2-filter';
 import { allStatus } from '../../../allStatus';
@@ -32,6 +31,7 @@ export function TableWithPagination({
 }: ITableWithPaginationProps) {
   const { pathname } = useLocation();
   const { userInfo } = useContext(AuthContext);
+  const { isLoadingRequests } = useContext(RequestsContext);
 
   // STATUS FORMATTER
   const statusFormatter = (cell, row) => {
@@ -49,17 +49,20 @@ export function TableWithPagination({
     cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
 
   const dateFormatter = (cell) => {
+    const top = moment(cell).format('DD/MM/YYYY');
+    const bottom = moment(cell).calendar();
     return (
       <div>
-        <small>{moment(cell).format('DD/MM/YYYY')}</small>
-        <br />
-        <small className="text-capitalize-first">
-          {moment(cell).calendar()}
-        </small>
+        <small>{top}</small>
+        {top !== bottom && (
+          <>
+            <br />
+            <small className="text-capitalize-first">{bottom}</small>
+          </>
+        )}
       </div>
     );
   };
-  //  moment(cell).format('DD/MM/YYYY');
 
   // WAITING TIME FORMATTER
   const waitingTimeFormatter = (cell, row) => {
@@ -83,8 +86,7 @@ export function TableWithPagination({
       dataField: 'id',
       text: 'Cód.',
       headerClasses: 'small-column',
-      formatter: linkCodeFormatter,
-      sort: true
+      formatter: linkCodeFormatter
     },
     {
       dataField: 'customer.company.name',
@@ -116,22 +118,38 @@ export function TableWithPagination({
       formatter: statusFormatter
     }
   ];
+  const handleNextPage = ({ page, onPageChange }) => {
+    console.log(page);
+    return onPageChange(page + 1);
+  };
+  const handlePrevPage = ({ page, onPageChange }) => onPageChange(page - 1);
 
   return (
     <div>
       <PaginationProvider
         pagination={paginationFactory({
           custom: true,
-          page,
-          sizePerPage,
-          totalSize
+          // showTotal: false,
+          sizePerPage
+          // totalSize
         })}>
         {({ paginationProps, paginationTableProps }) => (
           <div
-            className="d-flex align-center flex-column justify-content-center"
+            className="d-flex align-center align-items-center flex-column justify-content-center"
             id="table-pagination">
-            <div className="d-flex justify-content-end mt-3">
-              <PaginationListStandalone {...paginationProps} />
+            <div className="btn-group mb-3 mt-3" role="group">
+              <button
+                className="btn btn-primary"
+                disabled={isLoadingRequests || paginationProps.page === 1}
+                onClick={() => handlePrevPage(paginationProps)}>
+                Anterior
+              </button>
+              <button
+                disabled={isLoadingRequests}
+                className="btn btn-success"
+                onClick={() => handleNextPage(paginationProps)}>
+                Siguiente
+              </button>
             </div>
             <BootstrapTable
               remote
@@ -146,8 +164,19 @@ export function TableWithPagination({
               )}
               {...paginationTableProps}
             />
-            <div className="d-flex justify-content-end">
-              <PaginationListStandalone {...paginationProps} />
+            <div className="btn-group" role="group">
+              <button
+                className="btn btn-primary"
+                disabled={isLoadingRequests || paginationProps.page === 1}
+                onClick={() => handlePrevPage(paginationProps)}>
+                Anterior
+              </button>
+              <button
+                disabled={isLoadingRequests}
+                className="btn btn-success"
+                onClick={() => handleNextPage(paginationProps)}>
+                Siguiente
+              </button>
             </div>
           </div>
         )}
