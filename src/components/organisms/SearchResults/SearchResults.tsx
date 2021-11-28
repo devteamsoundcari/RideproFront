@@ -1,11 +1,11 @@
 import React, { useContext, useRef, useEffect } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { FaUserFriends } from 'react-icons/fa';
-import { dateFormatter } from '../../../utils/helpFunctions';
 import { AuthContext, SearchFiltersContext } from '../../../contexts';
 import { useNavigate } from 'react-router';
 import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../atoms';
+import { dateDDMMYYY } from '../../../utils';
 
 export function SearchResults() {
   let navigate = useNavigate();
@@ -45,7 +45,7 @@ export function SearchResults() {
             className="border"
             key={request.id + idx}
             onClick={() => navigate(`/historial/${request.id}`)}>
-            <span>{dateFormatter(request.start_time)}</span>
+            <span>{dateDDMMYYY(request.start_time)}</span>
             <span className="font-weight-bold">#{request.id}</span>
             {request.track && (
               <span className="text-capitalize">

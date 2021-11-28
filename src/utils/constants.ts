@@ -4,6 +4,13 @@ export const APP_LOGIN_URL = '/login';
 // API
 export const API_BASE_URL = process.env.REACT_APP_API_URL;
 export const API_DRIVERS_FILTER = 'api/v1/drivers_entire_filter/';
+export const API_SINGLE_REQUEST = '/api/v1/requests/';
+export const API_REQUEST_INSTRUCTORS = '/api/v1/request_ins/?request=';
+export const API_REQUEST_PROVIDERS = '/api/v1/request_prov/?request=';
+export const API_REQUEST_DRIVERS = '/api/v1/drivers/';
+export const API_REQUEST_DRIVER_REPORT = '/api/v1/request_drivers/?request=';
+export const API_REQUEST_DOCUMENTS = '/api/v1/request_doc/?request=';
+export const API_REQUEST_DOCUMENT_UPLOAD = '/api/v1/request_doc/';
 
 // Auth
 export const API_LOGIN_URL = '/rest-auth/login/';
@@ -14,6 +21,9 @@ export const API_REGISTRATION_URL = '/rest-auth/registration/';
 export const API_RESET_PASSWORD_URL = '/rest-auth/password/reset/';
 export const API_RESET_PASSWORD_CONFIRM_URL =
   '/rest-auth/password/reset/confirm/';
+
+export const GOOGLE_MAPS_SEARCH =
+  'https://www.google.com/maps/search/?api=1&query=';
 
 // Perfiles
 export const PERFIL_ADMIN = { profile: 1, name: 'administrador' };

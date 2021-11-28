@@ -54,7 +54,7 @@ export const routes = [
     profiles: ALL_PROFILES,
     children: {
       url: ':requestId',
-      component: 'SingleRequestAdmin'
+      component: 'AdminRequestId'
     }
   },
   {

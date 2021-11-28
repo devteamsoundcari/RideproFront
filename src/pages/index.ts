@@ -6,4 +6,4 @@ export * from './Calendar/Calendar';
 export * from './Pistas/Pistas';
 export * from './Instructores/Instructores';
 export * from './Proveedores/Proveedores';
-export * from './SingleRequestAdmin/SingleRequestAdmin';
+export * from './AdminRequestId/AdminRequestId';

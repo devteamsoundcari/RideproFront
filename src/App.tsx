@@ -9,7 +9,7 @@ import {
   Pistas,
   Proveedores,
   Instructores,
-  SingleRequestAdmin
+  AdminRequestId
 } from './pages';
 import { routes } from './routes';
 
@@ -36,8 +36,8 @@ function App() {
         return <Proveedores />;
       case 'Instructores':
         return <Instructores />;
-      case 'SingleRequestAdmin':
-        return <SingleRequestAdmin />;
+      case 'AdminRequestId':
+        return <AdminRequestId />;
       default:
         return <Historial />;
     }

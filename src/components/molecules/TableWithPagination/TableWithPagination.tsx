@@ -1,6 +1,4 @@
 import React, { useContext } from 'react';
-import moment from 'moment';
-import 'moment/locale/es';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { AuthContext, RequestsContext } from '../../../contexts';
 import paginationFactory, {
@@ -12,7 +10,11 @@ import { StatusRenderer } from '../../atoms';
 import './TableWithPagination.scss';
 import { Link, useLocation } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
-moment.locale('es');
+import {
+  dateToCalendar,
+  dateDDMMYYY,
+  dateFromNow
+} from '../../../utils/dateFormatter';
 
 export interface ITableWithPaginationProps {
   data: any;
@@ -49,8 +51,8 @@ export function TableWithPagination({
     cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
 
   const dateFormatter = (cell) => {
-    const top = moment(cell).format('DD/MM/YYYY');
-    const bottom = moment(cell).calendar();
+    const top = dateDDMMYYY(cell);
+    const bottom = dateToCalendar(cell);
     return (
       <div>
         <small>{top}</small>
@@ -66,7 +68,7 @@ export function TableWithPagination({
 
   // WAITING TIME FORMATTER
   const waitingTimeFormatter = (cell, row) => {
-    const lastInteraction = moment(moment(row.updated_at)).fromNow();
+    const lastInteraction = dateFromNow(row.updated_at);
     return <small>{lastInteraction}</small>;
   };
 
