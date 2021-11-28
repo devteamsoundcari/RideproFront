@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Modal, Col, Form, Spinner, Button } from 'react-bootstrap';
 import { changePassword } from '../../../controllers/apiRequests';
 import RegularExpressions from '../../../utils/RegularExpressions';
+import { getProfile } from '../../../utils';
+import { AuthContext } from '../../../contexts';
 
 export const ModalChangePassword = (props: any) => {
+  const { userInfo } = useContext(AuthContext);
   const [stage, setStage] = useState('waiting');
   const [submittedData, setSubmittedData] = useState();
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -124,8 +127,10 @@ export const ModalChangePassword = (props: any) => {
 
   return (
     <Modal centered show={props.show} onHide={props.onHide} size="sm">
-      <Modal.Header closeButton>
-        <Modal.Title>Cambiar contraseña</Modal.Title>
+      <Modal.Header
+        closeButton
+        className={`bg-${getProfile(userInfo.profile)}`}>
+        <Modal.Title className="text-white">Cambiar contraseña</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>

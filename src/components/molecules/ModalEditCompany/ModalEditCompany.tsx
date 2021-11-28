@@ -168,7 +168,7 @@ export const ModalEditCompany = (props: any) => {
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button type="submit" className={`btn-${profile}`}>
+          <Button type="submit" className={`btn-${getProfile(profile)}`}>
             Guardar
           </Button>
           <Button variant="secondary" onClick={props.onHide}>

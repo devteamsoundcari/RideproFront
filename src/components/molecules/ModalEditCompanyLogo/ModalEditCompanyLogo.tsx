@@ -13,6 +13,7 @@ import {
 import { FaCheckCircle } from 'react-icons/fa';
 import { setCompanyLogo } from '../../../controllers/apiRequests';
 import './ModalEditCompanyLogo.scss';
+import { getProfile } from '../../../utils';
 
 export const ModalEditCompanyLogo = (props: any) => {
   const {
@@ -115,7 +116,10 @@ export const ModalEditCompanyLogo = (props: any) => {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            <Button className={`btn-${profile}`} size="sm" type="submit">
+            <Button
+              className={`btn-${getProfile(profile)}`}
+              size="sm"
+              type="submit">
               Guardar
             </Button>
           </Modal.Footer>

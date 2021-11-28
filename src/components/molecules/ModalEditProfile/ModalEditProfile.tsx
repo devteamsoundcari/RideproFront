@@ -6,6 +6,7 @@ import RegularExpressions from '../../../utils/RegularExpressions';
 import { ModalEditProfilePicture } from '../ModalEditProfilePicture/ModalEditProfilePicture';
 import { editUser } from '../../../controllers/apiRequests';
 import './ModalEditProfile.scss';
+import { getProfile } from '../../../utils';
 
 export const ModalEditProfile = (props: any) => {
   const [stage, setStage] = useState('waiting');
@@ -25,26 +26,6 @@ export const ModalEditProfile = (props: any) => {
   const { handleSubmit, errors, control, watch } = form;
   const formValues = watch();
   const [canSave, setCanSave] = useState(false);
-  const [profile, setProfile] = useState('');
-
-  useEffect(() => {
-    switch (userInfo.profile) {
-      case 1:
-        setProfile('Admin');
-        break;
-      case 2:
-        setProfile('Cliente');
-        break;
-      case 3:
-        setProfile('Operaciones');
-        break;
-      case 7:
-        setProfile('Super-Cliente');
-        break;
-      default:
-        break;
-    }
-  }, [userInfo]);
 
   const onSubmit = (data: any) => {
     setShowConfirmationModal(true);
@@ -179,10 +160,15 @@ export const ModalEditProfile = (props: any) => {
   return (
     <>
       <Modal centered show={props.show} onHide={props.onHide} size="lg">
-        <Modal.Header closeButton className={`bg-${userInfo.perfil}`}>
+        <Modal.Header
+          closeButton
+          className={`bg-${getProfile(userInfo.profile)}`}>
           <Modal.Title className="text-white">
             <h5>
-              Perfil <small>| {profile}</small>
+              Perfil{' '}
+              <small className="text-capitalize">
+                | {getProfile(userInfo.profile)}
+              </small>
             </h5>
           </Modal.Title>
         </Modal.Header>
