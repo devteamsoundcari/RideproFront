@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch, useLocation } from 'react-router-dom';
 import {
   FaPowerOff,
   FaUser,
@@ -30,9 +30,11 @@ import { getFilteredDrivers } from '../../controllers/apiRequests';
 
 import './NavBar.scss';
 import OperacionesStatus from '../../utils/OperacionesStatus';
+import { SearchBar } from './SearchBar/SearchBar';
 
 const NavBar = () => {
   const history = useHistory();
+  const { pathname } = useLocation();
   const [filled, setFilled] = useState(false);
   const { userInfoContext, setUserInfoContext, setIsLoggedInContext } =
     useContext(AuthContext);
@@ -147,7 +149,7 @@ const NavBar = () => {
         expand="lg">
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          {(userInfoContext.profile === 2 || userInfoContext.profile === 7) && (
+          {userInfoContext.profile === 2 || userInfoContext.profile === 7 ? (
             <InputGroup className="w-75 rounded" value={searchParams}>
               <FormControl
                 disabled={isLoadingRequests || loading}
@@ -217,6 +219,10 @@ const NavBar = () => {
                 />
               </InputGroup.Append>
             </InputGroup>
+          ) : pathname.includes('historial') ? (
+            <SearchBar />
+          ) : (
+            ''
           )}
 
           <Nav className="ml-auto">

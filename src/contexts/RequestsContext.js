@@ -99,26 +99,25 @@ const RequestsContextProvider = (props) => {
     requestsRef.current = requests;
   }, [requests]);
 
-  const getRequestsList = (page) => {
+  const getRequestsList = (page, value = '') => {
     if (!page) setRequests([]);
     if (page === 1) {
       setRequests([]);
     }
-    let urlType =
-      userInfoContext.profile === 2
-        ? 'user_requests'
-        : userInfoContext.profile === 7
-        ? 'request_superuser'
-        : 'requests';
+    // let urlType =
+    //   userInfoContext.profile === 2
+    //     ? 'user_requests'
+    //     : userInfoContext.profile === 7
+    //     ? 'request_superuser'
+    //     : 'requests';
     if (isLoggedInContext)
       fetchRequestsByPage(
         page && page !== 1
-          ? `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?page=${page}&start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
-          : `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
+          ? `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?page=${page}&search=${value}&start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
+          : `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59&search=${value}`
       );
   };
-
-  const getNextPageOfRequests = (page) => getRequestsList(page);
+  const getNextPageOfRequests = (page, value) => getRequestsList(page, value);
 
   const getCalendarRequests = () => {
     let urlType =
@@ -258,6 +257,8 @@ const RequestsContextProvider = (props) => {
         statusNotifications,
         clear,
         setEndDate,
+        startDate,
+        endDate,
         setStartDate,
         currentMonth,
         setCurrentMonth,
