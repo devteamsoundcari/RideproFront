@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Spinner, Table } from 'react-bootstrap';
 import SingleDriver from './SingleDriver/SingleDriver';
-import { RequestsContext } from '../../../contexts';
+import { SingleRequestContext } from '../../../contexts';
 import './DriversSection.scss';
 
 interface DriversProps {
@@ -27,7 +27,8 @@ const DriversSection: React.FC<DriversProps> = ({
   requestId,
   onUpdate
 }) => {
-  const { getRequestDrivers, loadingDrivers } = useContext(RequestsContext);
+  const { getRequestDrivers, loadingDrivers } =
+    useContext(SingleRequestContext);
   const [participants, setParticipants] = useState<ParticipantsData>([]);
 
   const fetchDrivers = () => {

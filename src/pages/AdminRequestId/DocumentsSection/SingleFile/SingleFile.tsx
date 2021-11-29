@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import swal from 'sweetalert';
 import { Button, Card, Form, Spinner } from 'react-bootstrap';
 import { FaRegFilePdf, FaCheckCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { AuthContext, RequestsContext } from '../../../../contexts';
+import { AuthContext, SingleRequestContext } from '../../../../contexts';
 import { dateFromNow } from '../../../../utils';
 import './SingleFile.scss';
 
@@ -18,7 +18,7 @@ const SingleFile: React.FC<SingleFileProps> = ({
   const [loading, setLoading] = useState(false);
   const [truncate, setTruncate] = useState(true);
   const { userInfo } = useContext(AuthContext);
-  const { uploadDocument } = useContext(RequestsContext);
+  const { uploadDocument } = useContext(SingleRequestContext);
 
   useEffect(() => {
     setDoc(document);

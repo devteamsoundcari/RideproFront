@@ -1,0 +1,318 @@
+import React, { createContext, useState } from 'react';
+import ApiClientSingleton from '../controllers/apiClient';
+import {
+  API_SINGLE_REQUEST,
+  API_REQUEST_INSTRUCTORS,
+  API_REQUEST_PROVIDERS,
+  API_REQUEST_DRIVERS,
+  API_REQUEST_DRIVER_REPORT,
+  API_REQUEST_DOCUMENTS,
+  API_REQUEST_DOCUMENT_UPLOAD,
+  API_REQUEST_BILLS
+} from '../utils';
+
+export const SingleRequestContext = createContext('' as any);
+
+const apiClient = ApiClientSingleton.getApiInstance();
+
+export interface Service {
+  name: string;
+}
+
+export interface Company {
+  logo: string;
+  name: string;
+  nit: string;
+  arl: string;
+  phone: string;
+  address: string;
+}
+
+export interface Customer {
+  company?: Company;
+  first_name: string;
+  last_name: string;
+  charge: string;
+  email: string;
+  picture: string;
+}
+
+export interface Department {
+  name: string;
+}
+
+export interface Municipality {
+  name: string;
+  department: Department;
+}
+
+export interface Status {
+  name: string;
+  profile_action: number;
+  step: number;
+}
+
+type Instructors = any[];
+type Providers = any[];
+export interface ISingleRequest {
+  created_at: string;
+  start_time: string;
+  service?: Service;
+  customer?: Customer;
+  municipality?: Municipality;
+  track: any;
+  status?: Status;
+  drivers: any;
+  instructors: any;
+  providers: any;
+  optional_date1: any;
+  optional_place1: any;
+  optional_date2: any;
+  optional_place2: any;
+  operator: any;
+  fare_track: any;
+  f_p_track: any;
+  accept_msg: string;
+  reject_msg: string;
+}
+
+interface Instructor {
+  official_id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  cellphone: number;
+  municipality?: Municipality;
+}
+
+interface RequestInstructor {
+  fare: number;
+  first_payment: number;
+  instructors?: Instructor;
+}
+
+type IRequestInstructors = RequestInstructor[];
+type IRequestProviders = RequestInstructor[];
+
+export const SingleRequestContextProvider = (props) => {
+  const [loadingRequest, setLoadingRequest] = useState(false);
+  const [loadingProviders, setLoadingProviders] = useState(false);
+  const [loadingDrivers, setLoadingDrivers] = useState(false);
+  const [loadingReport, setLoadingReport] = useState(false);
+  const [loadingDocuments, setLoadingDocuments] = useState(false);
+  const [loadingBills, setLoadingBills] = useState(false);
+  const [loadingInstructors, setLoadingInstructors] = useState(false);
+  const [uploadingDocument, setUploadingDocument] = useState(false);
+  const [currentRequest, setCurrentRequest] = useState<ISingleRequest>();
+  const [requestDocuments, setRequestDocuments] = useState<any>([]);
+  const [requestBills, setRequestBills] = useState([]);
+  const [requestInstructors, setRequestInstructors] =
+    useState<IRequestInstructors>([]);
+  const [requestProviders, serRequestProviders] = useState<IRequestProviders>(
+    []
+  );
+
+  // ==================== SINGLE REQUEST  ======================
+  const getSingleRequest = async (id: number) => {
+    setLoadingRequest(true);
+    try {
+      const response = await apiClient.get(`${API_SINGLE_REQUEST}${id}`);
+      setCurrentRequest(response.data);
+      setLoadingRequest(false);
+    } catch (error) {
+      setCurrentRequest(error as any);
+      setLoadingRequest(false);
+    }
+  };
+
+  // ==================== REQUEST INSTRUCTORS ======================
+  const getRequestInstructors = async (id: number, page?: string) => {
+    setLoadingInstructors(true);
+    if (id && page) {
+      try {
+        const response = await apiClient.get(page);
+        setRequestInstructors((oldArr: any) => [
+          ...oldArr,
+          ...response.data.results
+        ]);
+        setLoadingInstructors(false);
+        if (response.next) {
+          return await getRequestInstructors(id, response.next);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const response = await apiClient.get(`${API_REQUEST_INSTRUCTORS}${id}`);
+        setRequestInstructors((oldArr: any) => [
+          ...oldArr,
+          ...response.data.results
+        ]);
+        setLoadingInstructors(false);
+        if (response.next) {
+          return await getRequestInstructors(id, response.next);
+        }
+      } catch (error) {
+        setRequestInstructors(error as any);
+        setLoadingInstructors(false);
+      }
+    }
+  };
+
+  // ==================== REQUEST PROVIDERS ======================
+  const getRequestProviders = async (id: number, page?: string) => {
+    setLoadingProviders(true);
+    if (id && page) {
+      try {
+        const response = await apiClient.get(page);
+        serRequestProviders((oldArr: any) => [
+          ...oldArr,
+          ...response.data.results
+        ]);
+        setLoadingProviders(false);
+        if (response.next) {
+          return await getRequestProviders(id, response.next);
+        }
+      } catch (error) {
+        console.log(error);
+        setLoadingProviders(false);
+      }
+    } else {
+      try {
+        const response = await apiClient.get(`${API_REQUEST_PROVIDERS}${id}`);
+        serRequestProviders((oldArr: any) => [
+          ...oldArr,
+          ...response.data.results
+        ]);
+        setLoadingProviders(false);
+        if (response.next) {
+          return await getRequestProviders(id, response.next);
+        }
+      } catch (error) {
+        serRequestProviders(error as any);
+        setLoadingProviders(false);
+      }
+    }
+  };
+
+  // ==================== GET A SINGLE DRIVER ======================
+  const fetchDriver = async (driverId: string) => {
+    setLoadingDrivers(true);
+    try {
+      const response = await apiClient.get(
+        `${API_REQUEST_DRIVERS}${driverId}/`
+      );
+      setLoadingDrivers(false);
+      return response.data;
+    } catch (error) {
+      setLoadingDrivers(false);
+      return error;
+    }
+  };
+
+  // ==================== GET MULTIPLE DRIVERS ======================
+  const getRequestDrivers = async (driversIds: string[]) => {
+    return Promise.all(driversIds.map(fetchDriver));
+  };
+
+  // ==================== GET DRIVER REPORT ====================
+  const getDriverReport = async (requestId: string, driverId: string) => {
+    setLoadingReport(true);
+    try {
+      const response = await apiClient.get(
+        `${API_REQUEST_DRIVER_REPORT}${requestId}&driver=${driverId}`
+      );
+      setLoadingReport(false);
+      return response.data.results[0];
+    } catch (error) {
+      setLoadingReport(false);
+      return error;
+    }
+  };
+
+  // ==================== GET REQUEST DOCUMENTS ====================
+  const getRequestDocuments = async (requestId: string) => {
+    setLoadingDocuments(true);
+    try {
+      const response = await apiClient.get(
+        `${API_REQUEST_DOCUMENTS}${requestId}`
+      );
+      setRequestDocuments(response.data.results);
+      setLoadingDocuments(false);
+    } catch (error) {
+      setRequestDocuments(error);
+      setLoadingDocuments(false);
+    }
+  };
+
+  // ==================== UPLOAD REQUEST FILE ====================
+  const uploadDocument = async (requestId, id, docId, file) => {
+    setUploadingDocument(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('request', requestId);
+    formData.append('document_id', docId);
+    try {
+      const result = await apiClient.patch(
+        `${API_REQUEST_DOCUMENT_UPLOAD}${id}/`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+      setUploadingDocument(false);
+      return result;
+    } catch (error) {
+      setUploadingDocument(false);
+
+      return console.error();
+    }
+  };
+
+  // ==================== GET REQUEST BILLS ====================
+  const getRequestBills = async () => {
+    setLoadingBills(true);
+    try {
+      const response = apiClient.get(`${API_REQUEST_BILLS}`);
+      setRequestBills(response.results);
+      setLoadingBills(false);
+    } catch (error) {
+      setRequestBills(error as any);
+      setLoadingBills(false);
+    }
+  };
+
+  return (
+    <SingleRequestContext.Provider
+      value={
+        {
+          loadingRequest,
+          getSingleRequest,
+          currentRequest,
+          getRequestInstructors,
+          loadingInstructors,
+          requestInstructors,
+          getRequestProviders,
+          loadingProviders,
+          requestProviders,
+          getRequestDrivers,
+          loadingDrivers,
+          loadingReport,
+          getDriverReport,
+          getRequestDocuments,
+          loadingDocuments,
+          requestDocuments,
+          uploadDocument,
+          uploadingDocument,
+          getRequestBills,
+          requestBills,
+          loadingBills
+        } as any
+      }>
+      {props.children}
+    </SingleRequestContext.Provider>
+  );
+};

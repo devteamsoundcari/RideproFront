@@ -1,11 +1,11 @@
 import React, { useEffect, useContext } from 'react';
 import { Table, Spinner } from 'react-bootstrap';
-import { RequestsContext } from '../../../contexts/RequestsContext';
+import { SingleRequestContext } from '../../../contexts/SingleRequestContext';
 import './ProvidersSection.scss';
 
 const ProvidersSection = ({ requestId }) => {
   const { requestProviders, getRequestProviders, loadingInstructors } =
-    useContext(RequestsContext);
+    useContext(SingleRequestContext);
 
   const fetchRequestProviders = async () =>
     await getRequestProviders(requestId);

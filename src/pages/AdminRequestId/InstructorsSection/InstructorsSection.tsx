@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { Spinner, Table } from 'react-bootstrap';
-import { RequestsContext } from '../../../contexts';
+import { SingleRequestContext } from '../../../contexts';
 import './InstructorsSection.scss';
 
 interface InstructorsProps {
@@ -9,7 +9,7 @@ interface InstructorsProps {
 
 const InstructorsSection: React.FC<InstructorsProps> = ({ requestId }) => {
   const { getRequestInstructors, requestInstructors, loadingInstructors } =
-    useContext(RequestsContext);
+    useContext(SingleRequestContext);
 
   const fetchRequestInstructors = async () =>
     await getRequestInstructors(requestId);

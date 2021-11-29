@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { FaExternalLinkAlt, FaFilePdf } from 'react-icons/fa';
-import { RequestsContext } from '../../../../contexts';
+import { SingleRequestContext } from '../../../../contexts';
 type SingleDriverProps = any;
 
 const SingleDriver: React.FC<SingleDriverProps> = ({ data, requestId }) => {
-  const { getDriverReport, loadingReport } = useContext(RequestsContext);
+  const { getDriverReport, loadingReport } = useContext(SingleRequestContext);
   const [report, setReport] = useState<any>({});
 
   const fetchReport = async () => {

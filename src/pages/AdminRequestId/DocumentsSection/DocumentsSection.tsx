@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { CardDeck, Row, Col } from 'react-bootstrap';
 import SingleFile from './SingleFile/SingleFile';
-import { RequestsContext } from '../../../contexts/';
+import { SingleRequestContext } from '../../../contexts/';
 import './DocumentsSection.scss';
 
 type DocumentsProps = any;
@@ -10,7 +10,8 @@ const DocumentsSection: React.FC<DocumentsProps> = ({
   requestId,
   setDocumentsOk
 }) => {
-  const { getRequestDocuments, requestDocuments } = useContext(RequestsContext);
+  const { getRequestDocuments, requestDocuments } =
+    useContext(SingleRequestContext);
 
   const fetchRequestDocuments = async () =>
     await getRequestDocuments(requestId);

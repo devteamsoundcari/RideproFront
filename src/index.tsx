@@ -4,6 +4,7 @@ import {
   AuthContextProvider,
   // ServiceContextProvider,
   // ParticipantsContextProvider,
+  SingleRequestContextProvider,
   RequestsContextProvider
   // ReportsContextProvider
 } from './contexts';
@@ -18,7 +19,9 @@ ReactDOM.render(
     <RequestsContextProvider>
       {/* <ParticipantsContextProvider> */}
       {/* <ReportsContextProvider> */}
-      <App />
+      <SingleRequestContextProvider>
+        <App />
+      </SingleRequestContextProvider>
       {/* </ReportsContextProvider> */}
       {/* </ParticipantsContextProvider> */}
     </RequestsContextProvider>
