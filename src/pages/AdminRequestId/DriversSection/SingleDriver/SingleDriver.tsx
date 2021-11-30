@@ -4,12 +4,18 @@ import { SingleRequestContext } from '../../../../contexts';
 type SingleDriverProps = any;
 
 const SingleDriver: React.FC<SingleDriverProps> = ({ data, requestId }) => {
-  const { getDriverReport, loadingReport } = useContext(SingleRequestContext);
+  const {
+    getDriverReport,
+    loadingReport,
+    setRequestDriversReports,
+    requestDriversReports
+  } = useContext(SingleRequestContext);
   const [report, setReport] = useState<any>({});
 
   const fetchReport = async () => {
     try {
       const driversReport = await getDriverReport(requestId, data.id);
+      setRequestDriversReports([...requestDriversReports, driversReport]);
       setReport(driversReport);
     } catch (error) {
       throw new Error('Error getting the report');

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Spinner, Table } from 'react-bootstrap';
 import SingleDriver from './SingleDriver/SingleDriver';
 import { SingleRequestContext } from '../../../contexts';
@@ -8,7 +8,6 @@ interface DriversProps {
   drivers: any;
   status: any;
   requestId: string;
-  onUpdate: (x) => void;
 }
 
 interface Participant {
@@ -24,20 +23,12 @@ type ParticipantsData = Participant[];
 const DriversSection: React.FC<DriversProps> = ({
   drivers,
   status,
-  requestId,
-  onUpdate
+  requestId
 }) => {
-  const { getRequestDrivers, loadingDrivers } =
+  const { getRequestDrivers, loadingDrivers, requestDrivers } =
     useContext(SingleRequestContext);
-  const [participants, setParticipants] = useState<ParticipantsData>([]);
 
-  const fetchDrivers = () => {
-    getRequestDrivers(drivers).then((data: any) => {
-      if (drivers.length === data.length) {
-        setParticipants(data);
-      }
-    });
-  };
+  const fetchDrivers = async () => await getRequestDrivers(drivers);
 
   useEffect(() => {
     if (drivers && drivers.length > 0) {
@@ -45,10 +36,6 @@ const DriversSection: React.FC<DriversProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drivers]);
-
-  useEffect(() => {
-    onUpdate(participants);
-  }, [onUpdate, participants]);
 
   if (loadingDrivers) {
     return <Spinner animation="border" />;
@@ -73,8 +60,8 @@ const DriversSection: React.FC<DriversProps> = ({
         </tr>
       </thead>
       <tbody>
-        {!loadingDrivers && participants.length ? (
-          participants.map((participant, idx) => (
+        {!loadingDrivers && requestDrivers.length ? (
+          requestDrivers.map((participant, idx) => (
             <SingleDriver data={participant} key={idx} requestId={requestId} />
           ))
         ) : (

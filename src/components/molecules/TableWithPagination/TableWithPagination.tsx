@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { AuthContext, RequestsContext } from '../../../contexts';
 import paginationFactory, {
@@ -18,7 +18,7 @@ import {
 
 export interface ITableWithPaginationProps {
   data: any;
-  page: number;
+  currentPage: number;
   sizePerPage: number;
   onTableChange: any;
   totalSize: number;
@@ -26,7 +26,7 @@ export interface ITableWithPaginationProps {
 
 export function TableWithPagination({
   data,
-  page,
+  currentPage,
   sizePerPage,
   onTableChange,
   totalSize
@@ -121,9 +121,9 @@ export function TableWithPagination({
     }
   ];
   const handleNextPage = ({ page, onPageChange }) => {
-    console.log(page);
     return onPageChange(page + 1);
   };
+
   const handlePrevPage = ({ page, onPageChange }) => onPageChange(page - 1);
 
   return (
@@ -142,12 +142,16 @@ export function TableWithPagination({
             <div className="btn-group mb-3 mt-3" role="group">
               <button
                 className="btn btn-primary"
-                disabled={isLoadingRequests || paginationProps.page === 1}
+                disabled={
+                  isLoadingRequests ||
+                  paginationProps.page === 1 ||
+                  currentPage === 1
+                }
                 onClick={() => handlePrevPage(paginationProps)}>
                 Anterior
               </button>
               <button
-                disabled={isLoadingRequests}
+                disabled={isLoadingRequests || data.length < sizePerPage}
                 className="btn btn-success"
                 onClick={() => handleNextPage(paginationProps)}>
                 Siguiente
@@ -166,15 +170,19 @@ export function TableWithPagination({
               )}
               {...paginationTableProps}
             />
-            <div className="btn-group" role="group">
+            <div className="btn-group mb-3 mt-3" role="group">
               <button
                 className="btn btn-primary"
-                disabled={isLoadingRequests || paginationProps.page === 1}
+                disabled={
+                  isLoadingRequests ||
+                  paginationProps.page === 1 ||
+                  currentPage === 1
+                }
                 onClick={() => handlePrevPage(paginationProps)}>
                 Anterior
               </button>
               <button
-                disabled={isLoadingRequests}
+                disabled={isLoadingRequests || data.length < sizePerPage}
                 className="btn btn-success"
                 onClick={() => handleNextPage(paginationProps)}>
                 Siguiente

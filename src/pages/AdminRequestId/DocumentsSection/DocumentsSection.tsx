@@ -6,10 +6,7 @@ import './DocumentsSection.scss';
 
 type DocumentsProps = any;
 
-const DocumentsSection: React.FC<DocumentsProps> = ({
-  requestId,
-  setDocumentsOk
-}) => {
+const DocumentsSection: React.FC<DocumentsProps> = ({ requestId }) => {
   const { getRequestDocuments, requestDocuments } =
     useContext(SingleRequestContext);
 
@@ -20,15 +17,6 @@ const DocumentsSection: React.FC<DocumentsProps> = ({
     fetchRequestDocuments();
     //eslint-disable-next-line
   }, [requestId]);
-
-  useEffect(() => {
-    let arr = requestDocuments.filter((item) => item.file === null);
-    if (arr.length === 0) {
-      setDocumentsOk(true);
-    } else {
-      setDocumentsOk(false);
-    }
-  }, [requestDocuments, setDocumentsOk]);
 
   return (
     <div className="card-body pt-0 mx-25 documents-section">

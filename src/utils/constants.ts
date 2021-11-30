@@ -12,6 +12,7 @@ export const API_REQUEST_DRIVER_REPORT = '/api/v1/request_drivers/?request=';
 export const API_REQUEST_DOCUMENTS = '/api/v1/request_doc/?request=';
 export const API_REQUEST_DOCUMENT_UPLOAD = '/api/v1/request_doc/';
 export const API_REQUEST_BILLS = '/api/v1/bills/';
+export const API_REQUEST_TRACKS = '/api/v1/tracks/';
 
 // Auth
 export const API_LOGIN_URL = '/rest-auth/login/';

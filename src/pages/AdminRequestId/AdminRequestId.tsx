@@ -1,35 +1,27 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { AuthContext, SingleRequestContext } from '../../contexts';
 import { useParams } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import DriversSection from './DriversSection/DriversSection';
 import InstructorsSection from './InstructorsSection/InstructorsSection';
 import ProvidersSection from './ProvidersSection/ProvidersSection';
-// import ModalInstructors from './ModalInstructors/ModalInstructors';
-// import ModalProviders from './ModalProviders/ModalProviders';
-// import ModalPlaceDate from './ModalPlaceDate/ModalPlaceDate';
 import PlaceDateSection from './PlaceDateSection/PlaceDateSection';
-// import ConfirmSection from './ConfirmSection/ConfirmSection';
 import DocumentsSection from './DocumentsSection/DocumentsSection';
-// import ModalOC from './ModalOC/ModalOC';
-// import ModalUploadReports from './ModalUploadReports/ModalUploadReports';
-// import ModalInvoice from './ModalInvoice/ModalInvoice';
-import RightSection from './RightSection/RightSection';
+import ControlsSection from './ControlsSection/ControlsSection';
 import InvoiceSection from './InvoiceSection/InvoiceSection';
-import { dateAMPM, dateDDMMYYY, PERFIL_ADMIN } from '../../utils';
+import {
+  dateAMPM,
+  dateDDMMYYY,
+  dateDDMMYYYnTime,
+  PERFIL_ADMIN
+} from '../../utils';
 import './AdminRequestId.scss';
 
 export const AdminRequestId = () => {
   const { requestId } = useParams() as any;
   const { getSingleRequest, currentRequest, loadingRequest } =
     useContext(SingleRequestContext);
-  const [loading, setLoading] = useState<Boolean>(false);
-
-  const [instructors, setInstructors] = useState([]);
   const { userInfo } = useContext(AuthContext);
-  const [documentsOk, setDocumentsOk] = useState(false);
-  const [participantsInfo, setParticipantsInfo] = useState([]);
-  const [allReportsOk, setAllReportsOk] = useState(false);
 
   const fetchRequest = async (id: string) => {
     try {
@@ -89,7 +81,7 @@ export const AdminRequestId = () => {
                           </small>
                           <span>
                             {currentRequest?.created_at &&
-                              dateDDMMYYY(currentRequest?.created_at)}
+                              dateDDMMYYYnTime(currentRequest?.created_at)}
                           </span>
                         </div>
                       </div>
@@ -243,16 +235,12 @@ export const AdminRequestId = () => {
                     drivers={currentRequest?.drivers}
                     status={currentRequest?.status?.step}
                     requestId={requestId}
-                    onUpdate={(data) => setParticipantsInfo(data)}
                   />
                 </div>
                 {currentRequest?.status.step && currentRequest.status.step > 3 && (
                   <>
                     <hr />
-                    <DocumentsSection
-                      requestId={requestId}
-                      setDocumentsOk={(data) => setDocumentsOk(data)}
-                    />
+                    <DocumentsSection requestId={requestId} />
                   </>
                 )}
 
@@ -267,7 +255,7 @@ export const AdminRequestId = () => {
               </div>
             </div>
           </div>
-          <RightSection allReportsOk={allReportsOk} documentsOk={documentsOk} />
+          <ControlsSection />
         </Row>
       </section>
     );

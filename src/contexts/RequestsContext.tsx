@@ -8,7 +8,6 @@ import React, {
 import { AuthContext } from './AuthContext';
 import ApiClientSingleton from '../controllers/apiClient';
 import { PERFIL_CLIENTE, PERFIL_SUPERCLIENTE } from '../utils';
-import moment from 'moment';
 
 export const RequestsContext = createContext('' as any);
 
@@ -16,6 +15,8 @@ const apiClient = ApiClientSingleton.getApiInstance();
 
 export const RequestsContextProvider = (props) => {
   const [isLoadingRequests, setIsLoadingRequests] = useState(false);
+  const [searchParams, setSearchParams] = useState(null as any);
+  const [resetPagination, setResetPagination] = useState(false);
   const [requests, setRequests]: any = useState([]);
   const [count, setCount] = useState(null);
   const { userInfo } = useContext(AuthContext);
@@ -36,11 +37,6 @@ export const RequestsContextProvider = (props) => {
   useEffect(() => {
     requestsRef.current = requests;
   }, [requests]);
-
-  const sortByStartTime = (req) =>
-    req.sort((a, b) => {
-      return moment(a.start_time).valueOf() - moment(b.start_time).valueOf();
-    });
 
   // ==================== SEARCH AND FIND A REQUEST ======================
   const searchRequests = async (value, param) => {
@@ -71,11 +67,7 @@ export const RequestsContextProvider = (props) => {
         item.end = new Date(item.finish_time);
         return item;
       });
-      const requestSortedByStartTime = sortByStartTime([
-        ...fetchedRequests,
-        ...requests
-      ]);
-      setRequests(requestSortedByStartTime);
+      setRequests((prev) => [...prev, ...fetchedRequests]);
       setCount(response?.data?.count);
       setIsLoadingRequests(false);
     } catch (error) {
@@ -83,33 +75,52 @@ export const RequestsContextProvider = (props) => {
     }
   };
 
-  const getRequestsList = (page: any) => {
-    if (!page || page === 1) setRequests([]);
-    let urlType =
-      userInfo.profile === PERFIL_CLIENTE.profile
-        ? 'user_requests'
-        : userInfo.profile === PERFIL_SUPERCLIENTE.profile
-        ? 'request_superuser'
-        : 'requests';
-    fetchRequestsByPage(
-      page && page !== 1
-        ? `/api/v1/${urlType}/?page=${page}&start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
-        : `/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
-    );
+  const getRequestsList = (page, value = '') => {
+    if (!page || page === 1) {
+      setRequests([]);
+    }
+    let urlType: string | null;
+    if (userInfo.profile === PERFIL_CLIENTE.profile) {
+      urlType = 'user_requests';
+    } else if (userInfo.profile === PERFIL_SUPERCLIENTE.profile) {
+      urlType = 'request_superuser';
+    } else {
+      urlType = null;
+    }
+    if (urlType) {
+      fetchRequestsByPage(
+        page && page !== 1
+          ? `/api/v1/${urlType}/?page=${page}&start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
+          : `/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
+      );
+    } else {
+      fetchRequestsByPage(
+        page && page !== 1
+          ? `/api/v1/requests_summary/?page=${page}&search=${value}&start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
+          : `/api/v1/requests_summary/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59&search=${value}`
+      );
+    }
   };
 
-  const getNextPageOfRequests = (page) => getRequestsList(page);
+  const getNextPageOfRequests = (page: any, value: any) =>
+    getRequestsList(page, value);
 
   return (
     <RequestsContext.Provider
       value={
         {
           requests,
+          startDate,
+          endDate,
           getRequestsList,
           isLoadingRequests,
           searchRequests,
           getNextPageOfRequests,
-          count
+          count,
+          searchParams,
+          setSearchParams,
+          resetPagination,
+          setResetPagination
         } as any
       }>
       {props.children}

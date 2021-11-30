@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { SearchFiltersContextProvider } from '../../../contexts';
 import { FaPowerOff, FaUser, FaRegBuilding } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 import {
   getProfile,
   PERFIL_CLIENTE,
@@ -16,8 +17,10 @@ import {
 import { FiltersInput } from '../FiltersInput/FiltersInput';
 import { SearchResults } from '../SearchResults/SearchResults';
 import './MyNavbar.scss';
+import { SearchBar } from './SearchBar/SearchBar';
 
 export const MyNavbar = () => {
+  const { pathname } = useLocation();
   const [filled, setFilled] = useState(false);
   const { userInfo, logOutUser, loadingAuth } = useContext(AuthContext);
   const { isLoadingRequests } = useContext(RequestsContext);
@@ -70,7 +73,13 @@ export const MyNavbar = () => {
           expand="lg">
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            {shouldRenderFilters && <FiltersInput />}
+            {shouldRenderFilters ? (
+              <FiltersInput />
+            ) : pathname.includes('historial') ? (
+              <SearchBar />
+            ) : (
+              ''
+            )}
             <Nav className="ml-auto">
               <div className="userOptions">
                 <NavDropdown

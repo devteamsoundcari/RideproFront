@@ -52,7 +52,7 @@ export interface Status {
   step: number;
 }
 
-type Instructors = any[];
+type Instructors = Instructor[];
 type Providers = any[];
 export interface ISingleRequest {
   created_at: string;
@@ -91,6 +91,21 @@ interface RequestInstructor {
   instructors?: Instructor;
 }
 
+interface Driver {
+  url: string;
+  id: string;
+  official_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  cellphone: string;
+  requests: string[];
+  created_at: any;
+  updated_at: any;
+  report: any;
+}
+
+type IRequestDrivers = Driver[];
 type IRequestInstructors = RequestInstructor[];
 type IRequestProviders = RequestInstructor[];
 
@@ -105,6 +120,8 @@ export const SingleRequestContextProvider = (props) => {
   const [uploadingDocument, setUploadingDocument] = useState(false);
   const [currentRequest, setCurrentRequest] = useState<ISingleRequest>();
   const [requestDocuments, setRequestDocuments] = useState<any>([]);
+  const [requestDrivers, setRequestDrivers] = useState<IRequestDrivers>([]);
+  const [requestDriversReports, setRequestDriversReports] = useState<any>([]);
   const [requestBills, setRequestBills] = useState([]);
   const [requestInstructors, setRequestInstructors] =
     useState<IRequestInstructors>([]);
@@ -198,22 +215,26 @@ export const SingleRequestContextProvider = (props) => {
 
   // ==================== GET A SINGLE DRIVER ======================
   const fetchDriver = async (driverId: string) => {
-    setLoadingDrivers(true);
     try {
       const response = await apiClient.get(
         `${API_REQUEST_DRIVERS}${driverId}/`
       );
-      setLoadingDrivers(false);
       return response.data;
     } catch (error) {
-      setLoadingDrivers(false);
       return error;
     }
   };
 
   // ==================== GET MULTIPLE DRIVERS ======================
   const getRequestDrivers = async (driversIds: string[]) => {
-    return Promise.all(driversIds.map(fetchDriver));
+    setLoadingDrivers(true);
+    try {
+      const response = await Promise.all(driversIds.map(fetchDriver));
+      setRequestDrivers(response);
+      setLoadingDrivers(false);
+    } catch (error) {
+      setLoadingDrivers(false);
+    }
   };
 
   // ==================== GET DRIVER REPORT ====================
@@ -300,8 +321,11 @@ export const SingleRequestContextProvider = (props) => {
           requestProviders,
           getRequestDrivers,
           loadingDrivers,
+          requestDrivers,
           loadingReport,
           getDriverReport,
+          requestDriversReports,
+          setRequestDriversReports,
           getRequestDocuments,
           loadingDocuments,
           requestDocuments,

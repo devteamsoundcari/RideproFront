@@ -6,21 +6,33 @@ import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../../components/atoms';
 import { SingleRequestContext, AuthContext } from '../../../contexts';
 import { PERFIL_OPERACIONES, PERFIL_TECNICO } from '../../../utils';
-import swal from 'sweetalert';
+import ModalPlaceDate from './ModalPlaceDate/ModalPlaceDate';
 import { useParams } from 'react-router-dom';
+import swal from 'sweetalert';
 
 export interface IRightSectionProps {}
 
-export default function RightSection({ documentsOk, allReportsOk }: any) {
+export default function RightSection(props: any) {
   const { requestId } = useParams() as any;
   const { userInfo } = useContext(AuthContext);
-  const { currentRequest } = useContext(SingleRequestContext);
+  const {
+    currentRequest,
+    requestDocuments,
+    requestDrivers,
+    requestDriversReports
+  } = useContext(SingleRequestContext);
+  const [showModalPlace, setShowModalPlace] = useState(true);
   const [showModalInstructors, setShowModalInstructors] = useState(false);
   const [showModalProviders, setShowModalProviders] = useState(false);
-  const [showModalPlace, setShowModalPlace] = useState(false);
   const [showModalOC, setShowModalOC] = useState(false);
   const [showModalUploadReports, setShowModalUploadReports] = useState(false);
   const [showModalInvoice, setShowModalInvoice] = useState(false);
+  const [areDocumentsOk] = useState(
+    requestDocuments.filter((item) => item.file === null).length ? false : true
+  );
+  const [areReportsOk] = useState(
+    requestDriversReports.length === requestDrivers.length
+  );
 
   const checkDisabled = () => {
     if (
@@ -79,21 +91,20 @@ export default function RightSection({ documentsOk, allReportsOk }: any) {
                     <FaTimes className="text-danger" />
                   )}
                 </Button>
-
-                {/* {showModalPlace && (
-                <ModalPlaceDate
-                  requestId={requestId}
-                  handleClose={() => setShowModalPlace(false)}
-                  propsTrack={currentRequest?.track}
-                  propsDate={currentRequest?.start_time}
-                  propsCity={currentRequest?.municipality}
-                  propsOptDate1={currentRequest?.optional_date1}
-                  propsOptPlace1={currentRequest?.optional_place1}
-                  propsOptDate2={currentRequest?.optional_date2}
-                  propsOptPlace2={currentRequest?.optional_place2}
-                  operator={currentRequest?.operator}
-                />
-              )} */}
+                {showModalPlace && (
+                  <ModalPlaceDate
+                    requestId={requestId}
+                    handleClose={() => setShowModalPlace(false)}
+                    propsTrack={currentRequest?.track}
+                    propsDate={currentRequest?.start_time}
+                    propsCity={currentRequest?.municipality}
+                    propsOptDate1={currentRequest?.optional_date1}
+                    propsOptPlace1={currentRequest?.optional_place1}
+                    propsOptDate2={currentRequest?.optional_date2}
+                    propsOptPlace2={currentRequest?.optional_place2}
+                    operator={currentRequest?.operator}
+                  />
+                )}
               </div>
               <div className="invoice-action-btn">
                 <Button
@@ -238,9 +249,9 @@ export default function RightSection({ documentsOk, allReportsOk }: any) {
                       <Button
                         className="btn-block btn-success"
                         disabled={
-                          documentsOk &&
+                          areDocumentsOk &&
                           currentRequest?.status?.step < 6 &&
-                          allReportsOk
+                          areReportsOk
                             ? false
                             : true
                         }

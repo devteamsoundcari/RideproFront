@@ -5,10 +5,12 @@ import {
   // ServiceContextProvider,
   // ParticipantsContextProvider,
   SingleRequestContextProvider,
-  RequestsContextProvider
+  RequestsContextProvider,
+  TracksContextProvider
   // ReportsContextProvider
 } from './contexts';
 import App from './App';
+import 'react-datepicker/dist/react-datepicker.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './global.scss';
@@ -19,9 +21,11 @@ ReactDOM.render(
     <RequestsContextProvider>
       {/* <ParticipantsContextProvider> */}
       {/* <ReportsContextProvider> */}
-      <SingleRequestContextProvider>
-        <App />
-      </SingleRequestContextProvider>
+      <TracksContextProvider>
+        <SingleRequestContextProvider>
+          <App />
+        </SingleRequestContextProvider>
+      </TracksContextProvider>
       {/* </ReportsContextProvider> */}
       {/* </ParticipantsContextProvider> */}
     </RequestsContextProvider>

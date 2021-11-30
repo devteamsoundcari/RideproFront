@@ -6,8 +6,15 @@ import './AdminRequestsHistory.scss';
 
 export const AdminRequestsHistory = () => {
   const [displayedRequests, setDisplayedRequests] = useState([]);
-  const { requests, count, getNextPageOfRequests, getRequestsList } =
-    useContext(RequestsContext);
+  const {
+    requests,
+    count,
+    getNextPageOfRequests,
+    getRequestsList,
+    searchParams,
+    setResetPagination,
+    resetPagination
+  } = useContext(RequestsContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [sizePerPage] = useState(25);
   const [loadedPages, setLoadedPages] = useState([1]);
@@ -16,6 +23,14 @@ export const AdminRequestsHistory = () => {
     getRequestsList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (resetPagination) {
+      setLoadedPages([1]);
+      setCurrentPage(1);
+      setResetPagination(!resetPagination);
+    }
+  }, [resetPagination, setResetPagination]);
 
   const findMissingNumbers = (arr) => {
     // eslint-disable-next-line no-sequences
@@ -46,14 +61,9 @@ export const AdminRequestsHistory = () => {
     const currentIndex = (page - 1) * sizePerPage;
     setCurrentPage(page);
     if (!loadedPages.includes(page)) {
-      getNextPageOfRequests(page);
+      getNextPageOfRequests(page, searchParams ? searchParams : '');
       setLoadedPages(loadedPages.concat([page]));
     } else {
-      console.log(
-        'slice',
-        currentIndex,
-        currentIndex ? currentIndex + sizePerPage : sizePerPage - 1
-      );
       const slicedRequests = requests.slice(
         currentIndex,
         currentIndex ? currentIndex + sizePerPage : sizePerPage - 1
@@ -66,7 +76,7 @@ export const AdminRequestsHistory = () => {
     <Container fluid id="#admin-requests-history">
       <TableWithPagination
         data={displayedRequests}
-        page={currentPage}
+        currentPage={currentPage}
         sizePerPage={sizePerPage}
         totalSize={count}
         onTableChange={handleTableChange}
