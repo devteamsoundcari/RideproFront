@@ -19,7 +19,7 @@ import { AuthContext } from '../../../contexts';
 import { Greeting } from '../../atoms';
 import { ModalContact } from '../../molecules';
 import { routes } from '../../../routes';
-import { PERFIL_CLIENTE, getProfile } from '../../../utils';
+import { PERFIL_CLIENTE, useProfile } from '../../../utils';
 import defaultCompanyImg from '../../../assets/img/defaultCompanyImg.png';
 import logo from '../../../assets/img/logo.png';
 import './Sidebar.scss';
@@ -27,6 +27,7 @@ import './Sidebar.scss';
 export const Sidebar = () => {
   const { pathname } = useLocation();
   const { userInfo } = useContext(AuthContext);
+  const [profile] = useProfile();
   const [profilePicture, setProfilePicture] = useState('');
   const [showContactModal, setShowContactModal] = useState(false);
 
@@ -78,13 +79,13 @@ export const Sidebar = () => {
   return (
     <nav
       className={`col-md-2 d-md-block bg-dark bg-${
-        getProfile(userInfo.profile) || 'primary'
+        profile || 'primary'
       } sidebar pr-0 pl-0`}>
       <div className="sidebar-sticky">
         <div className="sidebar-brand">
           <img alt="RideproLogo" src={logo} className="mb-3" />
           <small style={{ fontSize: '12px' }} className="text-capitalize">
-            {getProfile(userInfo.profile) || 'desconocido'}
+            {profile || 'desconocido'}
           </small>
         </div>
         <ul className="nav flex-column">

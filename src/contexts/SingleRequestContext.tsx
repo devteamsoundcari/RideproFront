@@ -128,6 +128,10 @@ export const SingleRequestContextProvider = (props) => {
   const [requestProviders, serRequestProviders] = useState<IRequestProviders>(
     []
   );
+  const [requestTrackOpt1, setRequestTrackOpt1] = useState(null);
+  const [requestDateOpt1, setRequestDateOpt1] = useState(null);
+  const [requestTrackOpt2, setRequestTrackOpt2] = useState(null);
+  const [requestDateOpt2, setRequestDateOpt2] = useState(null);
 
   // ==================== SINGLE REQUEST  ======================
   const getSingleRequest = async (id: number) => {
@@ -135,6 +139,10 @@ export const SingleRequestContextProvider = (props) => {
     try {
       const response = await apiClient.get(`${API_SINGLE_REQUEST}${id}`);
       setCurrentRequest(response.data);
+      setRequestTrackOpt1(response.data.optional_place1);
+      setRequestTrackOpt2(response.data.optional_place2);
+      setRequestDateOpt1(response.data.optional_date1);
+      setRequestDateOpt2(response.data.optional_date2);
       setLoadingRequest(false);
     } catch (error) {
       setCurrentRequest(error as any);
@@ -306,6 +314,22 @@ export const SingleRequestContextProvider = (props) => {
     }
   };
 
+  // ==================== UPDATE SINGLE REQUEST ====================
+  const updateRequestId = (requestId: string, payload = null) => {
+    setLoadingRequest(true);
+    try {
+      const response = apiClient.patch(
+        `${API_SINGLE_REQUEST}${requestId}/`,
+        payload
+      );
+      setLoadingRequest(false);
+      return response;
+    } catch (error) {
+      setLoadingRequest(false);
+      return error;
+    }
+  };
+
   return (
     <SingleRequestContext.Provider
       value={
@@ -333,7 +357,16 @@ export const SingleRequestContextProvider = (props) => {
           uploadingDocument,
           getRequestBills,
           requestBills,
-          loadingBills
+          loadingBills,
+          requestTrackOpt1,
+          setRequestTrackOpt1,
+          requestDateOpt1,
+          setRequestDateOpt1,
+          requestTrackOpt2,
+          setRequestTrackOpt2,
+          requestDateOpt2,
+          setRequestDateOpt2,
+          updateRequestId
         } as any
       }>
       {props.children}

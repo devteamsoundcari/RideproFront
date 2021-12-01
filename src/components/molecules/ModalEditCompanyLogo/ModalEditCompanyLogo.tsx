@@ -13,13 +13,14 @@ import {
 import { FaCheckCircle } from 'react-icons/fa';
 import { setCompanyLogo } from '../../../controllers/apiRequests';
 import './ModalEditCompanyLogo.scss';
-import { getProfile } from '../../../utils';
+import { useProfile } from '../../../utils';
 
 export const ModalEditCompanyLogo = (props: any) => {
   const {
-    userInfo: { company, profile },
+    userInfo: { company },
     updateUserInfo
   } = useContext(AuthContext);
+  const [profile] = useProfile();
   const [stage, setStage] = useState('waiting');
   const [imageName, setImageName] = useState('Importar imagen');
   const [imgSrc, setImgSrc] = useState<string | ArrayBuffer | null>();
@@ -116,10 +117,7 @@ export const ModalEditCompanyLogo = (props: any) => {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              className={`btn-${getProfile(profile)}`}
-              size="sm"
-              type="submit">
+            <Button className={`btn-${profile}`} size="sm" type="submit">
               Guardar
             </Button>
           </Modal.Footer>

@@ -6,7 +6,7 @@ import RegularExpressions from '../../../utils/RegularExpressions';
 import { ModalEditProfilePicture } from '../ModalEditProfilePicture/ModalEditProfilePicture';
 import { editUser } from '../../../controllers/apiRequests';
 import './ModalEditProfile.scss';
-import { getProfile } from '../../../utils';
+import { useProfile } from '../../../utils';
 
 export const ModalEditProfile = (props: any) => {
   const [stage, setStage] = useState('waiting');
@@ -15,6 +15,7 @@ export const ModalEditProfile = (props: any) => {
     useState(false);
   const [submittedData, setSubmittedData] = useState();
   const { userInfo, updateUserInfo } = useContext(AuthContext);
+  const [profile] = useProfile();
   const defaultValues = {
     name: userInfo.first_name,
     lastName: userInfo.last_name,
@@ -160,15 +161,10 @@ export const ModalEditProfile = (props: any) => {
   return (
     <>
       <Modal centered show={props.show} onHide={props.onHide} size="lg">
-        <Modal.Header
-          closeButton
-          className={`bg-${getProfile(userInfo.profile)}`}>
+        <Modal.Header closeButton className={`bg-${profile}`}>
           <Modal.Title className="text-white">
             <h5>
-              Perfil{' '}
-              <small className="text-capitalize">
-                | {getProfile(userInfo.profile)}
-              </small>
+              Perfil <small className="text-capitalize">| {profile}</small>
             </h5>
           </Modal.Title>
         </Modal.Header>

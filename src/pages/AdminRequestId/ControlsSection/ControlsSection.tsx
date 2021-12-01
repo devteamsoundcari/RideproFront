@@ -4,11 +4,16 @@ import { updateRequest, sendEmail } from '../../../controllers/apiRequests';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../../components/atoms';
-import { SingleRequestContext, AuthContext } from '../../../contexts';
+import {
+  SingleRequestContext,
+  AuthContext,
+  TracksContext
+} from '../../../contexts';
 import { PERFIL_OPERACIONES, PERFIL_TECNICO } from '../../../utils';
 import ModalPlaceDate from './ModalPlaceDate/ModalPlaceDate';
 import { useParams } from 'react-router-dom';
 import swal from 'sweetalert';
+import ModalInstructors from './ModalInstructors/ModalInstructors';
 
 export interface IRightSectionProps {}
 
@@ -21,7 +26,8 @@ export default function RightSection(props: any) {
     requestDrivers,
     requestDriversReports
   } = useContext(SingleRequestContext);
-  const [showModalPlace, setShowModalPlace] = useState(true);
+  const { setTracks } = useContext(TracksContext);
+  const [showModalPlace, setShowModalPlace] = useState(false);
   const [showModalInstructors, setShowModalInstructors] = useState(false);
   const [showModalProviders, setShowModalProviders] = useState(false);
   const [showModalOC, setShowModalOC] = useState(false);
@@ -91,18 +97,13 @@ export default function RightSection(props: any) {
                     <FaTimes className="text-danger" />
                   )}
                 </Button>
-                {showModalPlace && (
+                {showModalPlace && currentRequest && (
                   <ModalPlaceDate
                     requestId={requestId}
-                    handleClose={() => setShowModalPlace(false)}
-                    propsTrack={currentRequest?.track}
-                    propsDate={currentRequest?.start_time}
-                    propsCity={currentRequest?.municipality}
-                    propsOptDate1={currentRequest?.optional_date1}
-                    propsOptPlace1={currentRequest?.optional_place1}
-                    propsOptDate2={currentRequest?.optional_date2}
-                    propsOptPlace2={currentRequest?.optional_place2}
-                    operator={currentRequest?.operator}
+                    handleClose={() => {
+                      setTracks([]);
+                      setShowModalPlace(false);
+                    }}
                   />
                 )}
               </div>
@@ -126,14 +127,13 @@ export default function RightSection(props: any) {
                   )}
                 </Button>
 
-                {/* {showModalInstructors && (
-                <ModalInstructors
-                  requestId={requestId}
-                  handleClose={() => setShowModalInstructors(false)}
-                  onUpdate={() => fetchRequest(requestId)}
-                  propsInstructors={instructors}
-                />
-              )} */}
+                {showModalInstructors && (
+                  <ModalInstructors
+                    requestId={requestId}
+                    handleClose={() => setShowModalInstructors(false)}
+                    propsInstructors={currentRequest.instructors}
+                  />
+                )}
               </div>
               <div className="invoice-action-btn">
                 <Button

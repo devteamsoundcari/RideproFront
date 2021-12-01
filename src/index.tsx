@@ -6,7 +6,8 @@ import {
   // ParticipantsContextProvider,
   SingleRequestContextProvider,
   RequestsContextProvider,
-  TracksContextProvider
+  TracksContextProvider,
+  InstructorsContextProvider
   // ReportsContextProvider
 } from './contexts';
 import App from './App';
@@ -17,19 +18,15 @@ import './global.scss';
 
 ReactDOM.render(
   <AuthContextProvider>
-    {/* <ServiceContextProvider> */}
     <RequestsContextProvider>
-      {/* <ParticipantsContextProvider> */}
-      {/* <ReportsContextProvider> */}
-      <TracksContextProvider>
-        <SingleRequestContextProvider>
-          <App />
-        </SingleRequestContextProvider>
-      </TracksContextProvider>
-      {/* </ReportsContextProvider> */}
-      {/* </ParticipantsContextProvider> */}
+      <InstructorsContextProvider>
+        <TracksContextProvider>
+          <SingleRequestContextProvider>
+            <App />
+          </SingleRequestContextProvider>
+        </TracksContextProvider>
+      </InstructorsContextProvider>
     </RequestsContextProvider>
-    {/* </ServiceContextProvider> */}
   </AuthContextProvider>,
   document.getElementById('root')
 );

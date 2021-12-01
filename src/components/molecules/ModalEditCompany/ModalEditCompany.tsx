@@ -5,27 +5,26 @@ import { Modal, Col, Form, Spinner, Button, Image } from 'react-bootstrap';
 import { AuthContext } from '../../../contexts';
 import { ModalEditCompanyLogo } from '../ModalEditCompanyLogo/ModalEditCompanyLogo';
 import './ModalEditCompany.scss';
-import { getProfile } from '../../../utils';
+import { useProfile } from '../../../utils';
 
 export const ModalEditCompany = (props: any) => {
   const { handleSubmit, control } = useForm();
   const [loading, setLoading] = useState(false);
   const [showCompanyLogoEditModal, setShowCompanyEditModal] = useState(false);
-  const {
-    userInfo: { company, profile }
-  } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext);
+  const [profile] = useProfile();
   // eslint-disable-next-line
   const [data, setData] = useState({
-    name: company.name,
-    nit: company.nit,
-    address: company.address,
-    arl: company.arl,
-    phone: company.phone
+    name: userInfo.company.name,
+    nit: userInfo.company.nit,
+    address: userInfo.company.address,
+    arl: userInfo.company.arl,
+    phone: userInfo.company.phone
   });
 
   const onSubmit = async (data) => {
     setLoading(true);
-    const response = await editCompany(company.id, data);
+    const response = await editCompany(userInfo.company.id, data);
 
     if (response) {
       setLoading(false);
@@ -75,7 +74,7 @@ export const ModalEditCompany = (props: any) => {
 
   return (
     <Modal show={props.show} onHide={props.onHide} size="lg">
-      <Modal.Header closeButton className={`bg-${getProfile(profile)}`}>
+      <Modal.Header closeButton className={`bg-${profile}`}>
         <Modal.Title className="text-white">Compañía</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit(onSubmit)} className="company-edit-modal">
@@ -83,7 +82,7 @@ export const ModalEditCompany = (props: any) => {
           <Form.Row>
             <Col md={2}>
               <Image
-                src={company.logo}
+                src={userInfo.company.logo}
                 fluid
                 roundedCircle
                 className="shadow"
@@ -112,7 +111,7 @@ export const ModalEditCompany = (props: any) => {
                 as={<Form.Control disabled />}
                 name="name"
                 type="text"
-                defaultValue={company.name}
+                defaultValue={userInfo.company.name}
                 control={control}
                 onChange={updateData}
               />
@@ -123,7 +122,7 @@ export const ModalEditCompany = (props: any) => {
                 as={<Form.Control disabled />}
                 name="nit"
                 type="text"
-                defaultValue={company.nit}
+                defaultValue={userInfo.company.nit}
                 control={control}
                 onChange={updateData}
               />
@@ -136,7 +135,7 @@ export const ModalEditCompany = (props: any) => {
                 as={<Form.Control disabled />}
                 name="address"
                 type="text"
-                defaultValue={company.address}
+                defaultValue={userInfo.company.address}
                 control={control}
                 onChange={updateData}
               />
@@ -147,7 +146,7 @@ export const ModalEditCompany = (props: any) => {
                 as={<Form.Control disabled />}
                 name="arl"
                 type="text"
-                defaultValue={company.arl}
+                defaultValue={userInfo.company.arl}
                 control={control}
                 onChange={updateData}
               />
@@ -160,7 +159,7 @@ export const ModalEditCompany = (props: any) => {
                 as={<Form.Control disabled />}
                 name="phone"
                 type="text"
-                defaultValue={company.phone}
+                defaultValue={userInfo.company.phone}
                 control={control}
                 onChange={updateData}
               />
@@ -168,7 +167,7 @@ export const ModalEditCompany = (props: any) => {
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button type="submit" className={`btn-${getProfile(profile)}`}>
+          <Button type="submit" className={`btn-${profile}`}>
             Guardar
           </Button>
           <Button variant="secondary" onClick={props.onHide}>

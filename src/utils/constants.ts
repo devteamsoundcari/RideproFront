@@ -13,6 +13,7 @@ export const API_REQUEST_DOCUMENTS = '/api/v1/request_doc/?request=';
 export const API_REQUEST_DOCUMENT_UPLOAD = '/api/v1/request_doc/';
 export const API_REQUEST_BILLS = '/api/v1/bills/';
 export const API_REQUEST_TRACKS = '/api/v1/tracks/';
+export const API_REQUEST_TRACKS_SEARCH = 'api/v1/tracks?search=';
 
 // Auth
 export const API_LOGIN_URL = '/rest-auth/login/';
@@ -23,7 +24,11 @@ export const API_REGISTRATION_URL = '/rest-auth/registration/';
 export const API_RESET_PASSWORD_URL = '/rest-auth/password/reset/';
 export const API_RESET_PASSWORD_CONFIRM_URL =
   '/rest-auth/password/reset/confirm/';
+export const API_DEPARTMENTS = '/api/v1/departments/';
+export const API_CITIES_BY_DEPARTMENT = 'api/v1/municipalities/?department_id=';
+export const API_INSTRUCTORS_SEARCH = '/api/v1/instructors?search=';
 
+// GOOGLE API
 export const GOOGLE_MAPS_SEARCH =
   'https://www.google.com/maps/search/?api=1&query=';
 

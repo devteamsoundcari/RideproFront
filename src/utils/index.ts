@@ -1,3 +1,4 @@
 export * from './constants';
-export * from './getProfile';
+export * from './useProfile';
 export * from './dateFormatter';
+export * from './useDropdown';

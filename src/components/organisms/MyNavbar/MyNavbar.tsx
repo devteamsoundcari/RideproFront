@@ -3,7 +3,7 @@ import { SearchFiltersContextProvider } from '../../../contexts';
 import { FaPowerOff, FaUser, FaRegBuilding } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import {
-  getProfile,
+  useProfile,
   PERFIL_CLIENTE,
   PERFIL_SUPERCLIENTE
 } from '../../../utils';
@@ -23,6 +23,7 @@ export const MyNavbar = () => {
   const { pathname } = useLocation();
   const [filled, setFilled] = useState(false);
   const { userInfo, logOutUser, loadingAuth } = useContext(AuthContext);
+  const [profile] = useProfile();
   const { isLoadingRequests } = useContext(RequestsContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
@@ -67,7 +68,7 @@ export const MyNavbar = () => {
     <>
       <SearchFiltersContextProvider>
         <Navbar
-          bg={filled ? getProfile(userInfo.profile) : ''}
+          bg={filled ? `${profile as any}` : ''}
           className={filled ? 'nav-scrolled' : ''}
           sticky="top"
           expand="lg">
@@ -101,9 +102,7 @@ export const MyNavbar = () => {
                 <Image
                   src={userInfo.picture}
                   roundedCircle
-                  className={`shadow-sm border border-${getProfile(
-                    userInfo.profile
-                  )}`}
+                  className={`shadow-sm border border-${profile}`}
                 />
               </div>
             </Nav>
@@ -111,9 +110,7 @@ export const MyNavbar = () => {
           {loadingAuth ||
             (isLoadingRequests && (
               <div className="loader">
-                <div
-                  className={`loaderBar bg-${getProfile(userInfo.profile)}`}
-                />
+                <div className={`loaderBar bg-${profile}`} />
               </div>
             ))}
         </Navbar>
