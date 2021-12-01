@@ -137,7 +137,7 @@ const RequestsContextProvider = (props) => {
   useEffect(() => {
     getCalendarRequests();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startDate, endDate]);
+  }, [currentMonth]);
 
   const clear = () => {
     setRequests([]);
