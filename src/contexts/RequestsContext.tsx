@@ -38,6 +38,11 @@ export const RequestsContextProvider = (props) => {
     requestsRef.current = requests;
   }, [requests]);
 
+  useEffect(() => {
+    // getCalendarRequests();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startDate, endDate]);
+
   // ==================== SEARCH AND FIND A REQUEST ======================
   const searchRequests = async (value, param) => {
     const url = `/drivers_entire_filter/?official_id=${

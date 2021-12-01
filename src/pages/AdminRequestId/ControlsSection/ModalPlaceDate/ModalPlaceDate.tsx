@@ -47,7 +47,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     setRequestDateOpt2,
     updateRequestId
   } = useContext(SingleRequestContext);
-  const { getRequestsList } = useContext(RequestsContext);
+  const { getSingleRequest } = useContext(RequestsContext);
   const [continueDisabled, setContinueDisabled] = useState(true);
   const [showModalTracks, setShowModalTracks] = useState(false);
   const [showAlternative, setShowAlternative] = useState(false);
@@ -173,26 +173,23 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                 if (willUpdate) {
                   let payload = {
                     optional_place1: requestTrackOpt1.id,
-                    optional_date1: requestDateOpt1.id,
+                    optional_date1: requestDateOpt1,
                     operator: userInfo.id
                   };
                   let payload2 = {
-                    optional_place1: requestTrackOpt1.id,
+                    optional_place1: requestTrackOpt1?.id,
                     optional_date1: requestDateOpt1,
-                    optional_place2: requestTrackOpt2.id,
+                    optional_place2: requestTrackOpt2?.id,
                     optional_date2: requestDateOpt2,
                     operator: userInfo.id
                   };
 
-                  console.log(requestId, showAlternative ? payload2 : payload);
-                  // let res = await updateRequestId(
-                  //   requestId,
-                  //   showAlternative ? payload2 : payload
-                  // );
-                  // console.log('res');
-                  const res = { status: 200 };
+                  let res = await updateRequestId(
+                    requestId,
+                    showAlternative ? payload2 : payload
+                  );
                   if (res.status === 200) {
-                    // getRequestsList();
+                    getSingleRequest(requestId);
                     swal('Solicitud actualizada!', {
                       icon: 'success'
                     });
