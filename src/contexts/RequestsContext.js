@@ -35,6 +35,7 @@ const RequestsContextProvider = (props) => {
   const [statusNotifications, setStatusNotifications] = useState([]);
   const [requestsSocket, setRequestsSocket] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [fetchedMonths, setFetchedMonths] = useState([]);
   const requestsRef = React.useRef(requests);
 
   async function fetchRequestsByPage(url) {
@@ -88,7 +89,6 @@ const RequestsContextProvider = (props) => {
     setCancelledRequests((prev) => [...prev, ...fetchedCancelledRequests]);
     setNextUrlCalendar(response.next);
     if (response && response.next !== null) {
-      setIsLoadingCalendarRequests(true);
       return await fetchRequestsByMonth(response.next);
     } else {
       setIsLoadingCalendarRequests(false);
@@ -104,12 +104,6 @@ const RequestsContextProvider = (props) => {
     if (page === 1) {
       setRequests([]);
     }
-    // let urlType =
-    //   userInfoContext.profile === 2
-    //     ? 'user_requests'
-    //     : userInfoContext.profile === 7
-    //     ? 'request_superuser'
-    //     : 'requests';
     if (isLoggedInContext)
       fetchRequestsByPage(
         page && page !== 1
@@ -119,25 +113,40 @@ const RequestsContextProvider = (props) => {
   };
   const getNextPageOfRequests = (page, value) => getRequestsList(page, value);
 
-  const getCalendarRequests = () => {
+  const getCalendarRequests = (
+    start = startDate,
+    end = endDate,
+    clear = true
+  ) => {
     let urlType =
       userInfoContext.profile === 2
         ? 'user_requests'
         : userInfoContext.profile === 7
         ? 'request_superuser'
         : 'requests';
-    setCalendarRequests([]);
-    setCancelledRequests([]);
-    if (isLoggedInContext)
-      fetchRequestsByMonth(
-        `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
-      );
+    if (clear) {
+      setCalendarRequests([]);
+      setCancelledRequests([]);
+    }
+    if (isLoggedInContext) {
+      const theMonth = start;
+      if (!fetchedMonths.includes(theMonth)) {
+        setFetchedMonths((prev) => [...prev, theMonth]);
+        fetchRequestsByMonth(
+          `${process.env.REACT_APP_API_URL}/api/v1/${urlType}/?start_time__gte=${start}&start_time__lt=${end}+23:59`
+        );
+      }
+    }
   };
 
-  useEffect(() => {
-    getCalendarRequests();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentMonth]);
+  const updateCurrentMonth = (start, end, date) => {
+    const newDate = date.setHours(0, 0, 0, 0);
+    const comparedWith = currentMonth.setHours(0, 0, 0, 0);
+    if (newDate !== comparedWith) {
+      setCurrentMonth(date);
+      getCalendarRequests(start, end, false);
+    }
+  };
 
   const clear = () => {
     setRequests([]);
@@ -266,7 +275,7 @@ const RequestsContextProvider = (props) => {
         endDate,
         setStartDate,
         currentMonth,
-        setCurrentMonth,
+        updateCurrentMonth,
         count,
         setCount,
         nextUrl,

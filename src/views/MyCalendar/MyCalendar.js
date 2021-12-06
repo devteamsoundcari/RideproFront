@@ -26,7 +26,7 @@ const MyCalendar = () => {
     isLoadingCalendarRequests,
     setStartDate,
     setEndDate,
-    setCurrentMonth,
+    updateCurrentMonth,
     currentMonth
   } = useContext(RequestsContext);
   const { userInfoContext } = useContext(AuthContext);
@@ -158,7 +158,7 @@ const MyCalendar = () => {
                   .slice(0, -14);
                 setStartDate(start);
                 setEndDate(end);
-                setCurrentMonth(date);
+                updateCurrentMonth(start, end, date);
               }}
               eventPropGetter={styleEvents}
               messages={{
