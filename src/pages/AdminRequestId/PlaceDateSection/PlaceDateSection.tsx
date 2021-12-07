@@ -22,7 +22,7 @@ const PlaceDateSection: React.FC<PlaceProps> = ({
 
   const renderPlace = () => (
     <Row>
-      <div className="col-2 mt-1">
+      <div className="col-3 mt-1">
         <h6 className="invoice-from">Ciudad</h6>
         <div className="mb-1">
           <span>{municipality?.name}</span>
@@ -32,8 +32,8 @@ const PlaceDateSection: React.FC<PlaceProps> = ({
         </div>
       </div>
       {track ? (
-        <React.Fragment>
-          <div className="col-3 mt-1">
+        <>
+          <Col md={3} className="mt-1 ">
             {track?.latitude &&
             track?.latitude !== 'na' &&
             track?.longitude &&
@@ -56,16 +56,22 @@ const PlaceDateSection: React.FC<PlaceProps> = ({
             <div className="mb-1">
               <span>{track?.description}</span>
             </div>
-          </div>
-          <div className="col-3 mt-1">
+          </Col>
+          <Col md={3} className="mt-1">
             <h6 className="invoice-to">Contacto</h6>
             <div className="mb-1">
+              <small>Nombre:</small>
+              <br />
               <span>{track?.contact_name}</span>
             </div>
             <div className="mb-1">
+              <small>Email:</small>
+              <br />
               <span>{track?.contact_email}</span>
             </div>
             <div className="mb-1">
+              <small>Tel:</small>
+              <br />
               <span>{track?.cellphone}</span>
             </div>
             <div className="mb-1">
@@ -81,8 +87,8 @@ const PlaceDateSection: React.FC<PlaceProps> = ({
                 )}
               </span>
             </div>
-          </div>
-        </React.Fragment>
+          </Col>
+        </>
       ) : (
         <Col md={6} className="mt-1 text-center">
           <h6 className="invoice-from">Lugar</h6>
@@ -91,16 +97,14 @@ const PlaceDateSection: React.FC<PlaceProps> = ({
           </div>
         </Col>
       )}
-      <Col md={4} className="mt-1">
+      <Col md={3} className="mt-1">
         <Row>
-          <div className="col-6 mt-1">
+          <div className="col-12 mt-1">
             <h6 className="invoice-to">Fecha</h6>
             <div className="mb-1">
               <span>{date && dateDDMMYYY(date)}</span>
             </div>
-          </div>
-          <div className="col-6 mt-1">
-            <h6 className="invoice-to">Hora</h6>
+            <h6 className="invoice-to mt-3">Hora</h6>
             <div className="mb-1">
               <span>{date && dateAMPM(date)}</span>
             </div>

@@ -74,10 +74,7 @@ export function TableWithPagination({
 
   const linkCodeFormatter = (cell: number) => {
     return (
-      <Link
-        to={`${pathname}/${cell}`}
-        target="_blank"
-        className="font-weight-bold">
+      <Link to={`${pathname}/${cell}`} className="font-weight-bold">
         {cell}
       </Link>
     );

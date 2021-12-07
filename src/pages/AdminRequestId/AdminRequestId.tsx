@@ -1,4 +1,5 @@
 import React, { useEffect, useContext } from 'react';
+import { Col } from 'react-bootstrap';
 import { AuthContext, SingleRequestContext } from '../../contexts';
 import { useParams } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
@@ -118,45 +119,75 @@ export const AdminRequestId = () => {
                   </div>
                   <hr />
                   <div className="row invoice-info">
-                    <div className="col-4 mt-1">
+                    <div className="col-6 mt-1">
                       <h6 className="invoice-from">Solicitado por</h6>
                       <div className="mb-1">
+                        <small>Nombre:</small>
+                        <br />
                         <span>
                           {currentRequest?.customer?.first_name}{' '}
                           {currentRequest?.customer?.last_name}
                         </span>
                       </div>
                       <div className="mb-1">
-                        <span>{currentRequest?.customer?.email}</span>
-                      </div>
-                      <div className="mb-1">
+                        <small>Cargo:</small>
+                        <br />
                         <span>{currentRequest?.customer?.charge}</span>
                       </div>
                       <div className="mb-1">
-                        <span>601-678-8022</span>
+                        <small>Email:</small>
+                        <br />
+                        <span>{currentRequest?.customer?.email}</span>
                       </div>
                     </div>
-                    <div className="col-4 mt-1">
+                    <div className="col-6 mt-1">
                       <h6 className="invoice-to">Empresa</h6>
-                      <div className="mb-1">
-                        <span>{currentRequest?.customer?.company?.name}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>{currentRequest?.customer?.company?.nit}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>{currentRequest?.customer?.company?.arl}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>
-                          {currentRequest?.customer?.company?.address}
-                        </span>
-                      </div>
-                      <div className="mb-1">
-                        <span>{currentRequest?.customer?.company?.phone}</span>
-                      </div>
+                      <Row>
+                        <Col>
+                          <div className="mb-1">
+                            <small>Nombre:</small>
+                            <br />
+                            <span>
+                              {currentRequest?.customer?.company?.name}
+                            </span>
+                          </div>
+                          <div className="mb-1">
+                            <small>Nit:</small>
+                            <br />
+                            <span>
+                              {currentRequest?.customer?.company?.nit}
+                            </span>
+                          </div>
+                          <div className="mb-1">
+                            <small>Arl:</small>
+                            <br />
+                            <span>
+                              {currentRequest?.customer?.company?.arl}
+                            </span>
+                          </div>
+                        </Col>
+                        <Col>
+                          <div className="mb-1">
+                            <small>Dirección:</small>
+                            <br />
+                            <span>
+                              {currentRequest?.customer?.company?.address}
+                            </span>
+                          </div>
+                          <div className="mb-1">
+                            <small>Tel:</small>
+                            <br />
+                            <span>
+                              {currentRequest?.customer?.company?.phone}
+                            </span>
+                          </div>
+                        </Col>
+                      </Row>
                     </div>
-                    <div className="col-4 mt-1">
+                  </div>
+                  <hr />
+                  <div className="row invoice-info mt-3">
+                    <div className="col-12 mt-1">
                       <h6 className="invoice-to">Observaciones</h6>
                       <div className="comments">
                         <div className="user-message">

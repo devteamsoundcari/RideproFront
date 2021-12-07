@@ -29,7 +29,7 @@ const SingleFile: React.FC<SingleFileProps> = ({
     if (uploadedFile && uploadedFile.type === 'application/pdf') {
       setLoading(true);
       setFileName(uploadedFile.name);
-      uploadDocument(requestId, doc.id, doc.document.id, uploadedFile).then(
+      uploadDocument(requestId, doc?.id, doc?.document?.id, uploadedFile).then(
         async (result) => {
           if (result.status === 200) {
             setLoading(false);
@@ -44,7 +44,7 @@ const SingleFile: React.FC<SingleFileProps> = ({
   };
 
   const renderFileName = () => {
-    let name = doc.file.split('/');
+    let name = doc?.file.split('/');
     name = name[name.length - 1];
     return name;
   };
@@ -54,7 +54,7 @@ const SingleFile: React.FC<SingleFileProps> = ({
       <Card className="single-file mt-2">
         <Card.Body>
           <Card.Title>
-            {doc.document.name}{' '}
+            {doc?.document?.name}{' '}
             {loading && <Spinner animation="border" size="sm" />}
             <Button
               variant="link"
@@ -66,12 +66,12 @@ const SingleFile: React.FC<SingleFileProps> = ({
           </Card.Title>
           <Card.Text
             className={`${truncate ? 'col-12 text-truncate' : ''}  mb-0`}>
-            {doc.document.description}
+            {doc?.document?.description}
           </Card.Text>
         </Card.Body>
-        {doc.file && (
+        {doc?.file && (
           <div className="fileSection">
-            <a href={doc.file} target={'n_blank'} className="pdf-icon">
+            <a href={doc?.file} target={'n_blank'} className="pdf-icon">
               <FaRegFilePdf />
             </a>
             {loading ? (
@@ -85,8 +85,8 @@ const SingleFile: React.FC<SingleFileProps> = ({
         )}
         <Form className="m-2">
           <Form.File
-            id={`custom-file-${doc.id}`}
-            label={doc.file ? renderFileName() : fileName}
+            id={`custom-file-${doc?.id}`}
+            label={doc?.file ? renderFileName() : fileName}
             custom
             disabled={userInfo.profile !== 3 ? true : false}
             onChange={onFileUpload}
@@ -95,7 +95,7 @@ const SingleFile: React.FC<SingleFileProps> = ({
         <Card.Footer>
           Actualización:
           <small className="text-muted">
-            {dateFromNow(doc.document.updated_at)}
+            {dateFromNow(doc?.document?.updated_at)}
           </small>
         </Card.Footer>
       </Card>
