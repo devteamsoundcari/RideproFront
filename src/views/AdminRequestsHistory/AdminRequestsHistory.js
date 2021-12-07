@@ -31,6 +31,12 @@ const AdminRequestsHistory = () => {
   let { path, url } = useRouteMatch();
 
   useEffect(() => {
+    if (!requests.length) {
+      setCurrentPage(1);
+    }
+  }, [requests]);
+
+  useEffect(() => {
     if (location.state) {
       handleOnSelect(location.state.event);
     }
