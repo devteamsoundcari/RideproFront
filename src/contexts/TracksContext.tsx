@@ -86,6 +86,7 @@ export const TracksContextProvider = (props) => {
         setLoadingDepartments(false);
       }
     } else {
+      setDepartments([]);
       try {
         const response = await apiClient.get(API_DEPARTMENTS);
         setDepartments((oldArr: any) => [...oldArr, ...response.data.results]);
@@ -118,6 +119,7 @@ export const TracksContextProvider = (props) => {
         setLoadingCities(false);
       }
     } else {
+      setCities([]);
       try {
         const response = await apiClient.get(
           `${API_CITIES_BY_DEPARTMENT}${departmentId}`

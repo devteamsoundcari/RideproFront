@@ -7,3 +7,4 @@ export * from './ModalEditCompanyLogo/ModalEditCompanyLogo';
 export * from './ModalEditProfilePicture/ModalEditProfilePicture';
 export * from './TableWithPagination/TableWithPagination';
 export * from './ModalNewTrack/ModalNewTrack';
+export * from './ModalAddInstructor/ModalAddInstructor';

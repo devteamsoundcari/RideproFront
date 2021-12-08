@@ -1,10 +1,14 @@
 import React, { useContext } from 'react';
 import { Button, FormControl, InputGroup, Spinner } from 'react-bootstrap';
 import { RequestsContext } from '../../../../contexts';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export interface ISearchBarProps {}
 
 export function SearchBar(props: ISearchBarProps) {
+  const { requestId } = useParams();
+  let navigate = useNavigate();
+
   const {
     isLoadingRequests,
     getRequestsList,
@@ -17,6 +21,7 @@ export function SearchBar(props: ISearchBarProps) {
   const search = (value) => {
     getRequestsList(0, value ? value : '');
     setResetPagination(!resetPagination);
+    if (requestId) navigate('..', { replace: true });
   };
 
   const handleKeyDown = (e) => {

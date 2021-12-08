@@ -1,10 +1,18 @@
 import React, { createContext, useState } from 'react';
 import ApiClientSingleton from '../controllers/apiClient';
 import { API_INSTRUCTORS_SEARCH } from '../utils';
+import { API_ALL_INSTRUCTORS } from '../utils/constants';
 
 export const InstructorsContext = createContext('' as any);
 
 const apiClient = ApiClientSingleton.getApiInstance();
+interface INewInstructor {
+  name: string;
+  lastName: string;
+  email: string;
+  officialId: number;
+  cellPhone: number;
+}
 
 export const InstructorsContextProvider = (props) => {
   const [loadingInstructors, setLoadingInstructors] = useState(false);
@@ -40,12 +48,27 @@ export const InstructorsContextProvider = (props) => {
     }
   };
 
+  // ====================== CREATE AN INSTRUCTOR ========================
+  const addInstructor = async (payload: INewInstructor) => {
+    setLoadingInstructors(true);
+    try {
+      const response = apiClient.post(API_ALL_INSTRUCTORS, payload);
+      setLoadingInstructors(false);
+      return response;
+    } catch (error) {
+      setLoadingInstructors(false);
+      return error;
+    }
+  };
+
   return (
     <InstructorsContext.Provider
       value={{
         loadingInstructors,
         instructors,
-        getInstructorsByCity
+        getInstructorsByCity,
+        setInstructors,
+        addInstructor
       }}>
       {props.children}
     </InstructorsContext.Provider>

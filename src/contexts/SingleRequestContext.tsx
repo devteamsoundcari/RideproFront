@@ -8,7 +8,8 @@ import {
   API_REQUEST_DRIVER_REPORT,
   API_REQUEST_DOCUMENTS,
   API_REQUEST_DOCUMENT_UPLOAD,
-  API_REQUEST_BILLS
+  API_REQUEST_BILLS,
+  API_REQUEST_INSTRUCTORS_UPDATE
 } from '../utils';
 
 export const SingleRequestContext = createContext('' as any);
@@ -330,6 +331,19 @@ export const SingleRequestContextProvider = (props) => {
     }
   };
 
+  // ====================== UPDATE INSTRUCTORS OF REQUEST ================
+  const updateRequestInstructor = (payload) => {
+    setLoadingInstructors(true);
+    try {
+      const response = apiClient.post(API_REQUEST_INSTRUCTORS_UPDATE, payload);
+      setLoadingInstructors(false);
+      return response;
+    } catch (error) {
+      setLoadingInstructors(false);
+      return error;
+    }
+  };
+
   return (
     <SingleRequestContext.Provider
       value={
@@ -366,7 +380,8 @@ export const SingleRequestContextProvider = (props) => {
           setRequestTrackOpt2,
           requestDateOpt2,
           setRequestDateOpt2,
-          updateRequestId
+          updateRequestId,
+          updateRequestInstructor
         } as any
       }>
       {props.children}

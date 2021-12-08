@@ -12,7 +12,6 @@ import { useProfile } from '../../../../utils';
 import { FaPlus } from 'react-icons/fa';
 import { Alternative } from './Alternatve/Alternative';
 import { ModalNewTrack } from '../../../../components/molecules';
-import { Department } from '../../../../contexts/SingleRequestContext';
 
 interface ModalPlaceDateProps {
   requestId: number;

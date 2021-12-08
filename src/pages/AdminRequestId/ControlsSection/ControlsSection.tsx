@@ -74,88 +74,88 @@ export default function RightSection(props: any) {
       <div className="mt-2 mb-3">
         {statusFormatter(currentRequest?.status?.step)}
       </div>
-      {userInfo.profile === PERFIL_OPERACIONES.profile && (
-        <React.Fragment>
-          <div className="card invoice-action-wrapper shadow-none border">
-            <div className="card-body">
-              <div className="invoice-action-btn">
-                <Button
-                  variant="light"
-                  className="btn-block"
-                  onClick={() => setShowModalPlace(true)}
-                  disabled={
-                    currentRequest?.status?.step
-                      ? currentRequest?.status?.step >= 3
-                        ? true
+      {currentRequest?.status?.step !== 0 &&
+        userInfo.profile === PERFIL_OPERACIONES.profile && (
+          <React.Fragment>
+            <div className="card invoice-action-wrapper shadow-none border">
+              <div className="card-body">
+                <div className="invoice-action-btn">
+                  <Button
+                    variant="light"
+                    className="btn-block"
+                    onClick={() => setShowModalPlace(true)}
+                    disabled={
+                      currentRequest?.status?.step
+                        ? currentRequest?.status?.step >= 3
+                          ? true
+                          : false
                         : false
-                      : false
-                  }>
-                  <span>Lugar / Fecha / Hora </span>
-                  {currentRequest?.optional_date1 ? (
-                    <FaCheckCircle className="text-success" />
-                  ) : (
-                    <FaTimes className="text-danger" />
+                    }>
+                    <span>Lugar / Fecha / Hora </span>
+                    {currentRequest?.optional_date1 ? (
+                      <FaCheckCircle className="text-success" />
+                    ) : (
+                      <FaTimes className="text-danger" />
+                    )}
+                  </Button>
+                  {showModalPlace && currentRequest && (
+                    <ModalPlaceDate
+                      requestId={requestId}
+                      handleClose={() => {
+                        setTracks([]);
+                        setShowModalPlace(false);
+                      }}
+                    />
                   )}
-                </Button>
-                {showModalPlace && currentRequest && (
-                  <ModalPlaceDate
-                    requestId={requestId}
-                    handleClose={() => {
-                      setTracks([]);
-                      setShowModalPlace(false);
-                    }}
-                  />
-                )}
-              </div>
-              <div className="invoice-action-btn">
-                <Button
-                  variant="light"
-                  className="btn-block"
-                  onClick={() => setShowModalInstructors(true)}
-                  disabled={
-                    currentRequest?.status?.step
-                      ? currentRequest?.status?.step >= 3
-                        ? true
+                </div>
+                <div className="invoice-action-btn">
+                  <Button
+                    variant="light"
+                    className="btn-block"
+                    onClick={() => setShowModalInstructors(true)}
+                    disabled={
+                      currentRequest?.status?.step
+                        ? currentRequest?.status?.step >= 3
+                          ? true
+                          : false
                         : false
-                      : false
-                  }>
-                  <span>Instructores </span>
-                  {currentRequest?.instructors.length > 0 ? (
-                    <FaCheckCircle className="text-success" />
-                  ) : (
-                    <FaTimes className="text-danger" />
-                  )}
-                </Button>
+                    }>
+                    <span>Instructores </span>
+                    {currentRequest?.instructors.length > 0 ? (
+                      <FaCheckCircle className="text-success" />
+                    ) : (
+                      <FaTimes className="text-danger" />
+                    )}
+                  </Button>
 
-                {showModalInstructors && (
-                  <ModalInstructors
-                    requestId={requestId}
-                    handleClose={() => setShowModalInstructors(false)}
-                    propsInstructors={currentRequest.instructors}
-                  />
-                )}
-              </div>
-              <div className="invoice-action-btn">
-                <Button
-                  variant="light"
-                  className="btn-block"
-                  onClick={() => setShowModalProviders(true)}
-                  disabled={
-                    currentRequest?.status?.step
-                      ? currentRequest?.status?.step >= 3
-                        ? true
-                        : false
-                      : false
-                  }>
-                  <span>Proveedores </span>
-                  {currentRequest?.providers.length > 0 ? (
-                    <FaCheckCircle className="text-success" />
-                  ) : (
-                    <FaTimes className="text-danger" />
+                  {showModalInstructors && (
+                    <ModalInstructors
+                      requestId={requestId}
+                      handleClose={() => setShowModalInstructors(false)}
+                    />
                   )}
-                </Button>
+                </div>
+                <div className="invoice-action-btn">
+                  <Button
+                    variant="light"
+                    className="btn-block"
+                    onClick={() => setShowModalProviders(true)}
+                    disabled={
+                      currentRequest?.status?.step
+                        ? currentRequest?.status?.step >= 3
+                          ? true
+                          : false
+                        : false
+                    }>
+                    <span>Proveedores </span>
+                    {currentRequest?.providers.length > 0 ? (
+                      <FaCheckCircle className="text-success" />
+                    ) : (
+                      <FaTimes className="text-danger" />
+                    )}
+                  </Button>
 
-                {/* {showModalProviders && (
+                  {/* {showModalProviders && (
                 <ModalProviders
                   requestId={requestId}
                   handleClose={() => setShowModalProviders(false)}
@@ -163,68 +163,68 @@ export default function RightSection(props: any) {
                   propsProviders={providers}
                 />
               )} */}
-              </div>
-              <div className="invoice-action-btn">
-                <Button
-                  className="btn-block btn-success"
-                  disabled={checkDisabled()}
-                  onClick={() => {
-                    swal({
-                      title: '¿Estas seguro?',
-                      text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
-                      icon: 'warning',
-                      buttons: ['No, volver', 'Si, confirmar servicio'],
-                      dangerMode: true
-                    }).then(async (willUpdate) => {
-                      if (willUpdate) {
-                        let payload = {
-                          new_request: 0, // It wont be a new request anymore
-                          operator: userInfo.id,
-                          status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`
-                        };
-
-                        let res = await updateRequest(payload, requestId);
-                        if (res.status === 200) {
-                          // setDisabled(true);
-                          swal('Solicitud actualizada!', {
-                            icon: 'success'
-                          });
-                          // SEND EMAIL
-                          const payload = {
-                            id: requestId,
-                            emailType: 'requestOptions',
-                            subject: 'Confirmar solicitud ⚠️',
-                            email: currentRequest?.customer?.email,
-                            name: currentRequest?.customer?.first_name,
-                            optional_place1: currentRequest?.optional_place1,
-                            optional_place2: currentRequest?.optional_place2,
-                            optional_date1: currentRequest?.optional_date1,
-                            optional_date2: currentRequest?.optional_date2,
-                            service: currentRequest?.service
+                </div>
+                <div className="invoice-action-btn">
+                  <Button
+                    className="btn-block btn-success"
+                    disabled={checkDisabled()}
+                    onClick={() => {
+                      swal({
+                        title: '¿Estas seguro?',
+                        text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
+                        icon: 'warning',
+                        buttons: ['No, volver', 'Si, confirmar servicio'],
+                        dangerMode: true
+                      }).then(async (willUpdate) => {
+                        if (willUpdate) {
+                          let payload = {
+                            new_request: 0, // It wont be a new request anymore
+                            operator: userInfo.id,
+                            status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`
                           };
-                          await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
-                        } else {
-                          swal('Oops, no se pudo actualizar el servicio.', {
-                            icon: 'error'
-                          });
+
+                          let res = await updateRequest(payload, requestId);
+                          if (res.status === 200) {
+                            // setDisabled(true);
+                            swal('Solicitud actualizada!', {
+                              icon: 'success'
+                            });
+                            // SEND EMAIL
+                            const payload = {
+                              id: requestId,
+                              emailType: 'requestOptions',
+                              subject: 'Confirmar solicitud ⚠️',
+                              email: currentRequest?.customer?.email,
+                              name: currentRequest?.customer?.first_name,
+                              optional_place1: currentRequest?.optional_place1,
+                              optional_place2: currentRequest?.optional_place2,
+                              optional_date1: currentRequest?.optional_date1,
+                              optional_date2: currentRequest?.optional_date2,
+                              service: currentRequest?.service
+                            };
+                            await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
+                          } else {
+                            swal('Oops, no se pudo actualizar el servicio.', {
+                              icon: 'error'
+                            });
+                          }
                         }
-                      }
-                    });
-                  }}>
-                  <span>
-                    {currentRequest?.status?.step === 1
-                      ? 'Confirmar solicitud'
-                      : currentRequest?.status?.step === 2
-                      ? 'Esperando cliente'
-                      : currentRequest?.status?.step === 3
-                      ? 'Servicio confirmado'
-                      : 'Cancelado'}
-                  </span>
-                </Button>
+                      });
+                    }}>
+                    <span>
+                      {currentRequest?.status?.step === 1
+                        ? 'Confirmar solicitud'
+                        : currentRequest?.status?.step === 2
+                        ? 'Esperando cliente'
+                        : currentRequest?.status?.step === 3
+                        ? 'Servicio confirmado'
+                        : 'Cancelado'}
+                    </span>
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-          {/* {currentRequest?.status?.step
+            {/* {currentRequest?.status?.step
           ? currentRequest?.status?.step > 2 && (
               <ConfirmSection
                 instructors={instructors}
@@ -241,30 +241,30 @@ export default function RightSection(props: any) {
             )
           : ''} */}
 
-          {currentRequest?.status?.step
-            ? currentRequest?.status?.step > 3 && (
-                <div className="card invoice-action-wrapper mt-2 shadow-none border">
-                  <div className="card-body">
-                    <div className="invoice-action-btn">
-                      <Button
-                        className="btn-block btn-success"
-                        disabled={
-                          areDocumentsOk &&
-                          currentRequest?.status?.step < 6 &&
-                          areReportsOk
-                            ? false
-                            : true
-                        }
-                        onClick={() => setShowModalOC(true)}>
-                        <span>Enviar OC</span>
-                      </Button>
+            {currentRequest?.status?.step
+              ? currentRequest?.status?.step > 3 && (
+                  <div className="card invoice-action-wrapper mt-2 shadow-none border">
+                    <div className="card-body">
+                      <div className="invoice-action-btn">
+                        <Button
+                          className="btn-block btn-success"
+                          disabled={
+                            areDocumentsOk &&
+                            currentRequest?.status?.step < 6 &&
+                            areReportsOk
+                              ? false
+                              : true
+                          }
+                          onClick={() => setShowModalOC(true)}>
+                          <span>Enviar OC</span>
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            : ''}
+                )
+              : ''}
 
-          {/* {showModalOC && (
+            {/* {showModalOC && (
           <ModalOC
             handleClose={() => setShowModalOC(false)}
             instructors={instructors}
@@ -278,8 +278,8 @@ export default function RightSection(props: any) {
             service={currentRequest?.service}
           />
         )} */}
-        </React.Fragment>
-      )}
+          </React.Fragment>
+        )}
       {userInfo.profile === PERFIL_TECNICO.profile &&
       currentRequest?.status?.step &&
       currentRequest?.status?.step > 3 ? (

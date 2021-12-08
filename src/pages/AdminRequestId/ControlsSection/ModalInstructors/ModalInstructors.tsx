@@ -3,39 +3,45 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import cellEditFactory from 'react-bootstrap-table2-editor';
-import { Row, Col, ButtonGroup, Button, Modal, Image } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  ButtonGroup,
+  Button,
+  Modal,
+  Image,
+  Spinner
+} from 'react-bootstrap';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { MdRefresh } from 'react-icons/md';
 import swal from 'sweetalert';
-
-import {
-  getInstructors,
-  updateRequestInstructors
-} from '../../../../controllers/apiRequests';
-import { AuthContext, SingleRequestContext } from '../../../../contexts';
+import { useProfile } from '../../../../utils';
+import { SingleRequestContext, InstructorsContext } from '../../../../contexts';
+import { ModalAddInstructor } from '../../../../components/molecules';
 import './ModalInstructors.scss';
-// import RegisterNewInstructor from '../../../Instructors/Registration/RegisterNewInstructor';
-
 interface ModalInstructorsProps {
   requestId: number;
   handleClose: () => void;
-  propsInstructors: any[];
 }
 
 type SelectedInstructors = any;
 
 const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   requestId,
-  handleClose,
-  propsInstructors
+  handleClose
 }) => {
-  const { getSingleRequest } = useContext(SingleRequestContext);
-  const [instructors, setInstructors] = useState<any>([]);
+  const {
+    getSingleRequest,
+    currentRequest,
+    requestInstructors,
+    updateRequestInstructor
+  } = useContext(SingleRequestContext);
+  const { getInstructorsByCity, instructors, setInstructors } =
+    useContext(InstructorsContext);
   const [selectedInstructors, setSelectedInstructors] =
     useState<SelectedInstructors>([]);
-  const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
+  const [profile] = useProfile();
   const [disabled, setDisabled] = useState(true);
-  const { userInfo } = useContext(AuthContext);
   const { SearchBar } = Search;
   const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
   const [instructorsToShow, setInstructorsToShow] = useState([]);
@@ -43,45 +49,28 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   useEffect(() => {
     if (selectedInstructors.length > 0) {
       setDisabled(false);
+    } else {
+      setDisabled(true);
     }
   }, [selectedInstructors]);
 
   useEffect(() => {
-    let newArr: any = instructors;
-    for (let index = 0; index < newArr.length; index++) {
-      let item: any = newArr[index];
-      requestInstructors.forEach((ele: any) => {
-        if (item.id === ele.instructors.id) {
-          item.fare = ele.fare;
-        }
-      });
-    }
-    setInstructorsToShow(newArr);
-  }, [instructors, requestInstructors]);
-
-  useEffect(() => {
-    if (propsInstructors.length > 0) {
-      setRequestInstructors(propsInstructors);
-    }
-  }, [propsInstructors]);
+    const instructorsUpdated = instructors.map((ins) => {
+      const foundInstructor = requestInstructors.find(
+        (reqIns) => reqIns.instructors.id === ins.id
+      );
+      ins.fare = foundInstructor ? foundInstructor.fare : 0;
+      return ins;
+    });
+    setInstructorsToShow(instructorsUpdated);
+  }, [requestInstructors, instructors]);
 
   // ================================ FETCH INSTRUCTORS ON LOAD =====================================================
-  const fetchInstructors = async (url) => {
-    let tempArr: any = [];
-    const response = await getInstructors(url);
-    response.results.forEach(async (item: any) => {
-      item.fare = 0;
-      tempArr.push(item);
-    });
-    setInstructors((x) => [...x, ...tempArr]);
-    if (response.next) {
-      return await fetchInstructors(response.next);
-    }
-  };
   useEffect(() => {
-    fetchInstructors(`${process.env.REACT_APP_API_URL}/api/v1/instructors/`);
-    //eslint-disable-next-line
-  }, []);
+    if (currentRequest?.municipality)
+      getInstructorsByCity(currentRequest?.municipality.name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRequest]);
 
   const columns = [
     {
@@ -124,7 +113,10 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
       dataField: 'fare',
       text: 'Tarifa $',
       headerClasses: 'new-style',
-      editCellClasses: 'editing-cell'
+      editCellClasses: 'editing-cell',
+      classes: 'tarifa-cell',
+      formatter: (cell) => Number(cell).toLocaleString('es'),
+      sort: true
     }
   ];
 
@@ -190,9 +182,13 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     clickToSelect: false,
     hideSelectAll: true,
     selectColumnPosition: 'right',
-    onSelect: (row, isSelect, rowIndex, e) => {
+    onSelect: (row, isSelect) => {
       if (isSelect && row.fare === 0) {
-        alert('Por favor añade una tarifa');
+        swal(
+          'Ooops!',
+          'Por favor añade una tarifa para el instructor',
+          'warning'
+        );
         return false;
       }
       if (isSelect) {
@@ -200,11 +196,8 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
           setSelectedInstructors((oldArr: any) => [...oldArr, row]);
         }
       } else {
-        if (containsObject(row, selectedInstructors)) {
-          setSelectedInstructors(
-            selectedInstructors.filter((item) => item.id !== row.id)
-          );
-        }
+        const res = selectedInstructors.filter((item) => item.id !== row.id);
+        setSelectedInstructors(res);
       }
     }
   };
@@ -214,15 +207,17 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     selectedInstructors.forEach((inst) => {
       return (instructorsIds[inst.id] = { fare: inst.fare, f_p: 0 });
     });
-    let res = await updateRequestInstructors({
+    let res = await updateRequestInstructor({
       request: requestId,
       instructors: instructorsIds
     });
     if (res.status === 201) {
       setDisabled(true);
       getSingleRequest(requestId);
-      swal('Perfecto!', `Instructores actualizados exitosamente!`, 'success');
+      swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
       handleClose();
+    } else {
+      swal('Error!', 'Algo salio mal!', 'error');
     }
   };
 
@@ -231,14 +226,24 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     setShowAddInstructorsModal(true);
   };
 
+  const defaultSorted = [
+    {
+      dataField: 'fare',
+      order: 'desc'
+    }
+  ];
+
   return (
     <React.Fragment>
       <Modal
         size="lg"
         show={true}
-        onHide={handleClose}
+        onHide={() => {
+          setInstructors([]);
+          handleClose();
+        }}
         className="modal-admin-instructors">
-        <Modal.Header className={`bg-${userInfo.perfil}`} closeButton>
+        <Modal.Header className={`bg-${profile}`} closeButton>
           <Modal.Title className="text-white">Instructores</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -254,7 +259,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                     <SearchBar
                       {...props.searchProps}
                       className="custome-search-field"
-                      placeholder="Buscar Instructor"
+                      placeholder={`Buscar instructores en ${currentRequest?.municipality?.name}...`}
                     />
                   </div>
                   <div className="action-btns d-flex align-items-center">
@@ -262,18 +267,19 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                       <Button
                         variant="outline-secondary"
                         size="sm"
-                        onClick={() =>
-                          fetchInstructors(
-                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`
-                          )
-                        }>
+                        onClick={() => {
+                          setInstructors([]);
+                          getInstructorsByCity(
+                            currentRequest?.municipality.name
+                          );
+                        }}>
                         <MdRefresh />
                       </Button>
                       <Button
                         variant="outline-secondary"
                         size="sm"
                         onClick={handleClickAddInstructor}>
-                        Agregar Instructor
+                        Agregar instructor
                       </Button>
                       <Button
                         size="sm"
@@ -290,8 +296,12 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                   {...props.baseProps}
                   expandRow={expandRow}
                   selectRow={selectRow}
+                  defaultSorted={defaultSorted}
                   pagination={paginationFactory()}
                   rowClasses="row-new-style"
+                  noDataIndication={() => (
+                    <Spinner animation="border" role="status" />
+                  )}
                   cellEdit={cellEditFactory({
                     mode: 'click',
                     afterSaveCell: (oldValue, newValue, row, column) => {
@@ -312,18 +322,9 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
         </Modal.Body>
       </Modal>
       {showAddInstructorsModal && (
-        <Modal
-          size="lg"
-          show={true}
-          onHide={() => setShowAddInstructorsModal(false)}
-          className="modal-add-instructors">
-          <Modal.Header className={`bg-${userInfo.perfil}`} closeButton>
-            <Modal.Title className="text-white">
-              Registrar instructor
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{/* <RegisterNewInstructor /> */}</Modal.Body>
-        </Modal>
+        <ModalAddInstructor
+          handleClose={() => setShowAddInstructorsModal(false)}
+        />
       )}
     </React.Fragment>
   );
