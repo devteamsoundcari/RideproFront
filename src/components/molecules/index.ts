@@ -8,3 +8,4 @@ export * from './ModalEditProfilePicture/ModalEditProfilePicture';
 export * from './TableWithPagination/TableWithPagination';
 export * from './ModalNewTrack/ModalNewTrack';
 export * from './ModalAddInstructor/ModalAddInstructor';
+export * from './ModalAddProvider/ModalAddProvider';

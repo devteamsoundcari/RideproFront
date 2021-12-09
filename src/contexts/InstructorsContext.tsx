@@ -1,7 +1,6 @@
 import React, { createContext, useState } from 'react';
 import ApiClientSingleton from '../controllers/apiClient';
-import { API_INSTRUCTORS_SEARCH } from '../utils';
-import { API_ALL_INSTRUCTORS } from '../utils/constants';
+import { API_INSTRUCTORS_SEARCH, API_ALL_INSTRUCTORS } from '../utils';
 
 export const InstructorsContext = createContext('' as any);
 
@@ -26,21 +25,17 @@ export const InstructorsContextProvider = (props) => {
         const response = await apiClient.get(page);
         setInstructors((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingInstructors(false);
-        if (response.data.next)
-          return await getInstructorsByCity(cityName, response.data.next);
+        if (response.data.next) return await getInstructorsByCity(cityName, response.data.next);
       } catch (error) {
         setInstructors(error);
         setLoadingInstructors(false);
       }
     } else {
       try {
-        const response = await apiClient.get(
-          `${API_INSTRUCTORS_SEARCH}${cityName}`
-        );
+        const response = await apiClient.get(`${API_INSTRUCTORS_SEARCH}${cityName}`);
         setInstructors((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingInstructors(false);
-        if (response.data.next)
-          return await getInstructorsByCity(cityName, response.data.next);
+        if (response.data.next) return await getInstructorsByCity(cityName, response.data.next);
       } catch (error) {
         setInstructors(error);
         setLoadingInstructors(false);

@@ -1,20 +1,14 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { AuthContext, RequestsContext } from '../../../contexts';
-import paginationFactory, {
-  PaginationProvider
-} from 'react-bootstrap-table2-paginator';
+import paginationFactory, { PaginationProvider } from 'react-bootstrap-table2-paginator';
 import filterFactory from 'react-bootstrap-table2-filter';
 import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../atoms';
 import './TableWithPagination.scss';
 import { Link, useLocation } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
-import {
-  dateToCalendar,
-  dateDDMMYYY,
-  dateFromNow
-} from '../../../utils/dateFormatter';
+import { dateToCalendar, dateDDMMYYY, dateFromNow } from '../../../utils/dateFormatter';
 
 export interface ITableWithPaginationProps {
   data: any;
@@ -37,18 +31,13 @@ export function TableWithPagination({
 
   // STATUS FORMATTER
   const statusFormatter = (cell, row) => {
-    const foundProfile = allStatus.find(
-      (user) => user.profile.profile === userInfo.profile
-    );
-    const foundStep = foundProfile?.steps.find(
-      ({ step }) => step === row.status.step
-    );
+    const foundProfile = allStatus.find((user) => user.profile.profile === userInfo.profile);
+    const foundStep = foundProfile?.steps.find(({ step }) => step === row.status.step);
     return <StatusRenderer step={foundStep} />;
   };
 
   // CITY FORMATTER
-  const cityFormatter = (cell) =>
-    cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
+  const cityFormatter = (cell) => cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
 
   const dateFormatter = (cell) => {
     const top = dateDDMMYYY(cell);
@@ -139,11 +128,7 @@ export function TableWithPagination({
             <div className="btn-group mb-3 mt-3" role="group">
               <button
                 className="btn btn-primary"
-                disabled={
-                  isLoadingRequests ||
-                  paginationProps.page === 1 ||
-                  currentPage === 1
-                }
+                disabled={isLoadingRequests || paginationProps.page === 1 || currentPage === 1}
                 onClick={() => handlePrevPage(paginationProps)}>
                 Anterior
               </button>
@@ -162,19 +147,13 @@ export function TableWithPagination({
               columns={columns}
               onTableChange={onTableChange}
               filter={filterFactory()}
-              noDataIndication={() => (
-                <Spinner animation="border" role="status" />
-              )}
+              noDataIndication={() => <Spinner animation="border" role="status" />}
               {...paginationTableProps}
             />
             <div className="btn-group mb-3 mt-3" role="group">
               <button
                 className="btn btn-primary"
-                disabled={
-                  isLoadingRequests ||
-                  paginationProps.page === 1 ||
-                  currentPage === 1
-                }
+                disabled={isLoadingRequests || paginationProps.page === 1 || currentPage === 1}
                 onClick={() => handlePrevPage(paginationProps)}>
                 Anterior
               </button>

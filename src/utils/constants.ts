@@ -19,6 +19,8 @@ export const API_DEPARTMENTS = '/api/v1/departments/';
 export const API_CITIES_BY_DEPARTMENT = 'api/v1/municipalities/?department_id=';
 export const API_INSTRUCTORS_SEARCH = '/api/v1/instructors?search=';
 export const API_ALL_INSTRUCTORS = '/api/v1/instructors/';
+export const API_PROVIDERS_SEARCH = '/api/v1/providers?search=';
+export const API_ALL_PROVIDERS = '/api/v1/providers/';
 
 // Auth
 export const API_LOGIN_URL = '/rest-auth/login/';
@@ -27,20 +29,88 @@ export const API_USER_DATA = '/rest-auth/user/';
 export const API_REFRESH_TOKEN_URL = '/rest-auth/token/refresh/';
 export const API_REGISTRATION_URL = '/rest-auth/registration/';
 export const API_RESET_PASSWORD_URL = '/rest-auth/password/reset/';
-export const API_RESET_PASSWORD_CONFIRM_URL =
-  '/rest-auth/password/reset/confirm/';
+export const API_RESET_PASSWORD_CONFIRM_URL = '/rest-auth/password/reset/confirm/';
 
 // GOOGLE API
-export const GOOGLE_MAPS_SEARCH =
-  'https://www.google.com/maps/search/?api=1&query=';
+export const GOOGLE_MAPS_SEARCH = 'https://www.google.com/maps/search/?api=1&query=';
 
-// Perfiles
-export const PERFIL_ADMIN = { profile: 1, name: 'administrador' };
-export const PERFIL_CLIENTE = { profile: 2, name: 'cliente' };
-export const PERFIL_OPERACIONES = { profile: 3, name: 'operaciones' };
-export const PERFIL_EJECUTIVO = { profile: 4, name: 'ejecutivo' };
-export const PERFIL_TECNICO = { profile: 5, name: 'tecnico' };
-export const PERFIL_SUPERCLIENTE = { profile: 7, name: 'super-cliente' };
+// Profiles
+export const PERFIL_ADMIN = {
+  profile: 1,
+  name: 'administrador',
+  steps: {
+    STATUS_CANCELADO: 0,
+    STATUS_ESPERANDO_CONFIRMACION: 1,
+    STATUS_CONFIRMAR_PROGRAMACION: 2,
+    STATUS_SERVICIO_PROGRAMADO: 3,
+    STATUS_ESPERANDO_RECEPCION_DOCUMENTOS: 4,
+    STATUS_ASIGNAR_FACTURA: 6,
+    STATUS_SERVICIO_FINALIZADO: 7
+  }
+};
+
+export const PERFIL_CLIENTE = {
+  profile: 2,
+  name: 'cliente',
+  steps: {
+    STATUS_CANCELADO: 0,
+    STATUS_ESPERANDO_CONFIRMACION: 1,
+    STATUS_CONFIRMAR_PROGRAMACION: 2,
+    STATUS_SERVICIO_PROGRAMADO: 3,
+    STATUS_SERVICIO_FINALIZADO: 5
+  }
+};
+
+export const PERFIL_OPERACIONES = {
+  profile: 3,
+  name: 'operaciones',
+  steps: {
+    STATUS_CANCELADO: 0,
+    STATUS_ESPERANDO_CONFIRMACION: 1,
+    STATUS_ESPERANDO_AL_CLIENTE: 2,
+    STATUS_PROGRAMACION_ACEPTADA: 3,
+    STATUS_CONFIRMAR_DOCUMENTOS: 4,
+    STATUS_SERVICIO_FINALIZADO: 6
+  }
+};
+
+export const PERFIL_EJECUTIVO = {
+  profile: 4,
+  name: 'ejecutivo',
+  steps: {
+    STATUS_CANCELADO: 0,
+    STATUS_ESPERANDO_CONFIRMACION: 1,
+    STATUS_ESPERANDO_AL_CLIENTE: 2,
+    STATUS_PROGRAMACION_ACEPTADA: 3,
+    STATUS_GENERAR_INFORMES: 4,
+    STATUS_SERVICIO_FINALIZADO: 5
+  }
+};
+export const PERFIL_TECNICO = {
+  profile: 5,
+  name: 'tecnico',
+  steps: {
+    STATUS_CANCELADO: 0,
+    STATUS_ESPERANDO_CONFIRMACION: 1,
+    STATUS_ESPERANDO_AL_CLIENTE: 2,
+    STATUS_PROGRAMACION_ACEPTADA: 3,
+    STATUS_GENERAR_INFORMES: 4,
+    STATUS_SERVICIO_FINALIZADO: 5
+  }
+};
+
+export const PERFIL_SUPERCLIENTE = {
+  profile: 7,
+  name: 'super-cliente',
+  steps: {
+    STATUS_CANCELADO: 0,
+    STATUS_ESPERANDO_CONFIRMACION: 1,
+    STATUS_CONFIRMAR_PROGRAMACION: 2,
+    STATUS_SERVICIO_PROGRAMADO: 3,
+    STATUS_SERVICIO_FINALIZADO: 5
+  }
+};
+
 export const ALL_PROFILES = [
   PERFIL_ADMIN,
   PERFIL_CLIENTE,

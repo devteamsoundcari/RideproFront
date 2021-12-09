@@ -7,7 +7,8 @@ import {
   SingleRequestContextProvider,
   RequestsContextProvider,
   TracksContextProvider,
-  InstructorsContextProvider
+  InstructorsContextProvider,
+  ProvidersContextProvider
   // ReportsContextProvider
 } from './contexts';
 import App from './App';
@@ -20,11 +21,13 @@ ReactDOM.render(
   <AuthContextProvider>
     <RequestsContextProvider>
       <InstructorsContextProvider>
-        <TracksContextProvider>
-          <SingleRequestContextProvider>
-            <App />
-          </SingleRequestContextProvider>
-        </TracksContextProvider>
+        <ProvidersContextProvider>
+          <TracksContextProvider>
+            <SingleRequestContextProvider>
+              <App />
+            </SingleRequestContextProvider>
+          </TracksContextProvider>
+        </ProvidersContextProvider>
       </InstructorsContextProvider>
     </RequestsContextProvider>
   </AuthContextProvider>,

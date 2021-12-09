@@ -124,11 +124,8 @@ export const SingleRequestContextProvider = (props) => {
   const [requestDrivers, setRequestDrivers] = useState<IRequestDrivers>([]);
   const [requestDriversReports, setRequestDriversReports] = useState<any>([]);
   const [requestBills, setRequestBills] = useState([]);
-  const [requestInstructors, setRequestInstructors] =
-    useState<IRequestInstructors>([]);
-  const [requestProviders, serRequestProviders] = useState<IRequestProviders>(
-    []
-  );
+  const [requestInstructors, setRequestInstructors] = useState<IRequestInstructors>([]);
+  const [requestProviders, setRequestProviders] = useState<IRequestProviders>([]);
   const [requestTrackOpt1, setRequestTrackOpt1] = useState(null);
   const [requestDateOpt1, setRequestDateOpt1] = useState(null);
   const [requestTrackOpt2, setRequestTrackOpt2] = useState(null);
@@ -157,10 +154,7 @@ export const SingleRequestContextProvider = (props) => {
     if (id && page) {
       try {
         const response = await apiClient.get(page);
-        setRequestInstructors((oldArr: any) => [
-          ...oldArr,
-          ...response.data.results
-        ]);
+        setRequestInstructors((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingInstructors(false);
         if (response.next) {
           return await getRequestInstructors(id, response.next);
@@ -171,10 +165,7 @@ export const SingleRequestContextProvider = (props) => {
     } else {
       try {
         const response = await apiClient.get(`${API_REQUEST_INSTRUCTORS}${id}`);
-        setRequestInstructors((oldArr: any) => [
-          ...oldArr,
-          ...response.data.results
-        ]);
+        setRequestInstructors((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingInstructors(false);
         if (response.next) {
           return await getRequestInstructors(id, response.next);
@@ -192,10 +183,7 @@ export const SingleRequestContextProvider = (props) => {
     if (id && page) {
       try {
         const response = await apiClient.get(page);
-        serRequestProviders((oldArr: any) => [
-          ...oldArr,
-          ...response.data.results
-        ]);
+        setRequestProviders((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingProviders(false);
         if (response.next) {
           return await getRequestProviders(id, response.next);
@@ -207,16 +195,13 @@ export const SingleRequestContextProvider = (props) => {
     } else {
       try {
         const response = await apiClient.get(`${API_REQUEST_PROVIDERS}${id}`);
-        serRequestProviders((oldArr: any) => [
-          ...oldArr,
-          ...response.data.results
-        ]);
+        setRequestProviders((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingProviders(false);
         if (response.next) {
           return await getRequestProviders(id, response.next);
         }
       } catch (error) {
-        serRequestProviders(error as any);
+        setRequestProviders(error as any);
         setLoadingProviders(false);
       }
     }
@@ -225,9 +210,7 @@ export const SingleRequestContextProvider = (props) => {
   // ==================== GET A SINGLE DRIVER ======================
   const fetchDriver = async (driverId: string) => {
     try {
-      const response = await apiClient.get(
-        `${API_REQUEST_DRIVERS}${driverId}/`
-      );
+      const response = await apiClient.get(`${API_REQUEST_DRIVERS}${driverId}/`);
       return response.data;
     } catch (error) {
       return error;
@@ -265,9 +248,7 @@ export const SingleRequestContextProvider = (props) => {
   const getRequestDocuments = async (requestId: string) => {
     setLoadingDocuments(true);
     try {
-      const response = await apiClient.get(
-        `${API_REQUEST_DOCUMENTS}${requestId}`
-      );
+      const response = await apiClient.get(`${API_REQUEST_DOCUMENTS}${requestId}`);
       setRequestDocuments(response.data.results);
       setLoadingDocuments(false);
     } catch (error) {
@@ -284,15 +265,11 @@ export const SingleRequestContextProvider = (props) => {
     formData.append('request', requestId);
     formData.append('document_id', docId);
     try {
-      const result = await apiClient.patch(
-        `${API_REQUEST_DOCUMENT_UPLOAD}${id}/`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+      const result = await apiClient.patch(`${API_REQUEST_DOCUMENT_UPLOAD}${id}/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-      );
+      });
       setUploadingDocument(false);
       return result;
     } catch (error) {
@@ -319,10 +296,7 @@ export const SingleRequestContextProvider = (props) => {
   const updateRequestId = (requestId: string, payload = null) => {
     setLoadingRequest(true);
     try {
-      const response = apiClient.patch(
-        `${API_SINGLE_REQUEST}${requestId}/`,
-        payload
-      );
+      const response = apiClient.patch(`${API_SINGLE_REQUEST}${requestId}/`, payload);
       setLoadingRequest(false);
       return response;
     } catch (error) {

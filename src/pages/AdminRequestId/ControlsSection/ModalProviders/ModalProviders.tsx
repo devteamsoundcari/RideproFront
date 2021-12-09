@@ -1,55 +1,56 @@
 import React, { useEffect, useState, useContext } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import { Row, Col, ButtonGroup, Button, Modal, Image, Spinner } from 'react-bootstrap';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { MdRefresh } from 'react-icons/md';
-import swal from 'sweetalert';
+import { SingleRequestContext, ProvidersContext } from '../../../../contexts';
 import { useProfile } from '../../../../utils';
-import { SingleRequestContext, InstructorsContext } from '../../../../contexts';
-import { ModalAddInstructor } from '../../../../components/molecules';
-import './ModalInstructors.scss';
-interface ModalInstructorsProps {
+import { ModalAddProvider } from '../../../../components/molecules';
+import swal from 'sweetalert';
+import './ModalProviders.scss';
+
+interface ModalProvidersProps {
   requestId: number;
   handleClose: () => void;
 }
 
-type SelectedInstructors = any;
+type SelectedProviders = any;
 
-const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleClose }) => {
-  const { getSingleRequest, currentRequest, requestInstructors, updateRequestInstructor } =
-    useContext(SingleRequestContext);
-  const { getInstructorsByCity, instructors, setInstructors, loadingInstructors } =
-    useContext(InstructorsContext);
-  const [selectedInstructors, setSelectedInstructors] = useState<SelectedInstructors>([]);
+const ModalProviders: React.FC<ModalProvidersProps> = ({ requestId, handleClose }) => {
   const [profile] = useProfile();
+  const { currentRequest, getSingleRequest, requestProviders, updateRequestProviders } =
+    useContext(SingleRequestContext);
+  const { getProvidersByCity, providers, loadingProviders, setProviders } =
+    useContext(ProvidersContext);
+  const [selectedProviders, setSelectedProviders] = useState<SelectedProviders>([]);
   const [disabled, setDisabled] = useState(true);
   const { SearchBar } = Search;
-  const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
-  const [instructorsToShow, setInstructorsToShow] = useState([]);
+  const [showAddProvidersModal, setShowAddProvidersModal] = useState(false);
+  const [providersToShow, setProvidersToShow] = useState([]);
 
   useEffect(() => {
-    if (selectedInstructors.length > 0) {
+    if (selectedProviders.length > 0) {
       setDisabled(false);
     } else {
       setDisabled(true);
     }
-  }, [selectedInstructors]);
+  }, [selectedProviders]);
 
   useEffect(() => {
-    const instructorsUpdated = instructors.map((ins) => {
-      const foundInstructor = requestInstructors.find((reqIns) => reqIns.instructors.id === ins.id);
+    const providersUpdated = providers.map((ins) => {
+      const foundInstructor = requestProviders.find((reqIns) => reqIns.providers.id === ins.id);
       ins.fare = foundInstructor ? foundInstructor.fare : 0;
       return ins;
     });
-    setInstructorsToShow(instructorsUpdated);
-  }, [requestInstructors, instructors]);
+    setProvidersToShow(providersUpdated);
+  }, [providers, requestProviders]);
 
-  // ================================ FETCH INSTRUCTORS ON LOAD =====================================================
+  // ================================ FETCH PROVIDERS ON LOAD =====================================================
   useEffect(() => {
-    if (currentRequest?.municipality) getInstructorsByCity(currentRequest?.municipality.name);
+    if (currentRequest?.municipality) getProvidersByCity(currentRequest?.municipality.name);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRequest]);
 
@@ -64,14 +65,14 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
       }
     },
     {
-      dataField: 'first_name',
+      dataField: 'name',
       text: 'Nombre',
       editable: false,
       headerClasses: 'new-style'
     },
     {
-      dataField: 'last_name',
-      text: 'Apellido',
+      dataField: 'services',
+      text: 'Servicios',
       editable: false,
       headerClasses: 'new-style'
     },
@@ -83,7 +84,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
     },
     {
       dataField: 'municipality.department.name',
-      text: 'Departamento',
+      text: 'Dpto.',
       editable: false,
       headerClasses: 'new-style',
       headerStyle: {
@@ -120,10 +121,6 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
               <tr>
                 <td>Documentos:</td>
                 <td className="users-view-email"> {row.documents}</td>
-              </tr>
-              <tr>
-                <td>Foto:</td>
-                <td>{row.picture}</td>
               </tr>
             </tbody>
           </table>
@@ -165,33 +162,37 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
     selectColumnPosition: 'right',
     onSelect: (row, isSelect) => {
       if (isSelect && row.fare === 0) {
-        swal('Ooops!', 'Por favor añade una tarifa para el instructor', 'warning');
+        swal('Ooops!', 'Por favor añade una tarifa para el proveedor', 'warning');
+        return false;
+      }
+      if (isSelect && row.f_p === 0) {
+        swal('Ooops!', 'Por favor añade el pago de viaticos', 'warning');
         return false;
       }
       if (isSelect) {
-        if (!containsObject(row, selectedInstructors)) {
-          setSelectedInstructors((oldArr: any) => [...oldArr, row]);
+        if (!containsObject(row, selectedProviders)) {
+          setSelectedProviders((oldArr: any) => [...oldArr, row]);
         }
       } else {
-        const res = selectedInstructors.filter((item) => item.id !== row.id);
-        setSelectedInstructors(res);
+        const res = selectedProviders.filter((item) => item.id !== row.id);
+        setSelectedProviders(res);
       }
     }
   };
 
-  const handleUpdateInstructor = async () => {
-    let instructorsIds = {};
-    selectedInstructors.forEach((inst) => {
-      return (instructorsIds[inst.id] = { fare: inst.fare, f_p: 0 });
+  const handleUpdateProvider = async () => {
+    let providersIds = {};
+    selectedProviders.forEach((prov) => {
+      return (providersIds[prov.id] = { fare: prov.fare, f_p: 0 });
     });
-    let res = await updateRequestInstructor({
+    let res = await updateRequestProviders({
       request: requestId,
-      instructors: instructorsIds
+      providers: providersIds
     });
     if (res.status === 201) {
       setDisabled(true);
       getSingleRequest(requestId);
-      swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
+      swal('Perfecto!', `Proveedores actualizados exitosamente!`, 'success');
       handleClose();
     } else {
       swal('Error!', 'Algo salio mal!', 'error');
@@ -199,32 +200,18 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
   };
 
   // =============================== CLICK ON ADD INSTRUCTOR ====================================
-  const handleClickAddInstructor = () => {
-    setShowAddInstructorsModal(true);
+  const handleClickAddProvider = () => {
+    setShowAddProvidersModal(true);
   };
-
-  const defaultSorted = [
-    {
-      dataField: 'fare',
-      order: 'desc'
-    }
-  ];
 
   return (
     <React.Fragment>
-      <Modal
-        size="lg"
-        show={true}
-        onHide={() => {
-          setInstructors([]);
-          handleClose();
-        }}
-        className="modal-admin-instructors">
+      <Modal size="lg" show={true} onHide={handleClose} className="modal-admin-providers">
         <Modal.Header className={`bg-${profile}`} closeButton>
-          <Modal.Title className="text-white">Instructores</Modal.Title>
+          <Modal.Title className="text-white">Proveedores</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ToolkitProvider keyField="official_id" data={instructorsToShow} columns={columns} search>
+          <ToolkitProvider keyField="official_id" data={providersToShow} columns={columns} search>
             {(props) => (
               <React.Fragment>
                 <div className="top d-flex flex-wrap">
@@ -232,7 +219,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
                     <SearchBar
                       {...props.searchProps}
                       className="custome-search-field"
-                      placeholder={`Buscar instructores en ${currentRequest?.municipality?.name}...`}
+                      placeholder={`Buscar proveedores en ${currentRequest?.municipality?.name}...`}
                     />
                   </div>
                   <div className="action-btns d-flex align-items-center">
@@ -241,22 +228,22 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
                         variant="outline-secondary"
                         size="sm"
                         onClick={() => {
-                          setInstructors([]);
-                          getInstructorsByCity(currentRequest?.municipality.name);
+                          setProviders([]);
+                          getProvidersByCity(currentRequest?.municipality.name);
                         }}>
                         <MdRefresh />
                       </Button>
                       <Button
                         variant="outline-secondary"
                         size="sm"
-                        onClick={handleClickAddInstructor}>
-                        Agregar instructor
+                        onClick={handleClickAddProvider}>
+                        Agregar Proveedor
                       </Button>
                       <Button
                         size="sm"
                         variant={disabled ? 'outline-secondary' : 'info'}
                         disabled={disabled ? true : false}
-                        onClick={handleUpdateInstructor}>
+                        onClick={handleUpdateProvider}>
                         Guardar
                       </Button>
                     </ButtonGroup>
@@ -267,15 +254,14 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
                   {...props.baseProps}
                   expandRow={expandRow}
                   selectRow={selectRow}
-                  defaultSorted={defaultSorted}
                   pagination={paginationFactory()}
                   rowClasses="row-new-style"
                   noDataIndication={() =>
-                    loadingInstructors ? (
+                    loadingProviders ? (
                       <Spinner animation="border" role="status" />
                     ) : (
                       <p className="text-muted font-italic">
-                        No hay instructores registrados en {currentRequest?.municipality?.name}.
+                        No hay proveedores registrados en {currentRequest?.municipality?.name}.
                         <br />
                         Haz click en "Agregar instructor"
                       </p>
@@ -284,11 +270,11 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
                   cellEdit={cellEditFactory({
                     mode: 'click',
                     afterSaveCell: (oldValue, newValue, row, column) => {
-                      if (containsObject(row, selectedInstructors)) {
-                        setSelectedInstructors(
-                          selectedInstructors.filter((item) => item.id !== row.id)
+                      if (containsObject(row, selectedProviders)) {
+                        setSelectedProviders(
+                          selectedProviders.filter((item) => item.id !== row.id)
                         );
-                        setSelectedInstructors((oldArr) => [...oldArr, row]);
+                        setSelectedProviders((oldArr) => [...oldArr, row]);
                       }
                     }
                   })}
@@ -298,10 +284,10 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
           </ToolkitProvider>
         </Modal.Body>
       </Modal>
-      {showAddInstructorsModal && (
-        <ModalAddInstructor handleClose={() => setShowAddInstructorsModal(false)} />
+      {showAddProvidersModal && (
+        <ModalAddProvider handleClose={() => setShowAddProvidersModal(false)} />
       )}
     </React.Fragment>
   );
 };
-export default ModalInstructors;
+export default ModalProviders;

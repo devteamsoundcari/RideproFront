@@ -4,28 +4,21 @@ import { updateRequest, sendEmail } from '../../../controllers/apiRequests';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../../components/atoms';
-import {
-  SingleRequestContext,
-  AuthContext,
-  TracksContext
-} from '../../../contexts';
+import { SingleRequestContext, AuthContext, TracksContext } from '../../../contexts';
 import { PERFIL_OPERACIONES, PERFIL_TECNICO } from '../../../utils';
 import ModalPlaceDate from './ModalPlaceDate/ModalPlaceDate';
 import { useParams } from 'react-router-dom';
 import swal from 'sweetalert';
 import ModalInstructors from './ModalInstructors/ModalInstructors';
+import ModalProviders from './ModalProviders/ModalProviders';
 
 export interface IRightSectionProps {}
 
 export default function RightSection(props: any) {
   const { requestId } = useParams() as any;
   const { userInfo } = useContext(AuthContext);
-  const {
-    currentRequest,
-    requestDocuments,
-    requestDrivers,
-    requestDriversReports
-  } = useContext(SingleRequestContext);
+  const { currentRequest, requestDocuments, requestDrivers, requestDriversReports } =
+    useContext(SingleRequestContext);
   const { setTracks } = useContext(TracksContext);
   const [showModalPlace, setShowModalPlace] = useState(false);
   const [showModalInstructors, setShowModalInstructors] = useState(false);
@@ -36,9 +29,7 @@ export default function RightSection(props: any) {
   const [areDocumentsOk] = useState(
     requestDocuments.filter((item) => item.file === null).length ? false : true
   );
-  const [areReportsOk] = useState(
-    requestDriversReports.length === requestDrivers.length
-  );
+  const [areReportsOk] = useState(requestDriversReports.length === requestDrivers.length);
 
   const checkDisabled = () => {
     if (
@@ -54,12 +45,8 @@ export default function RightSection(props: any) {
 
   // STATUS FORMATTER
   const statusFormatter = (statusStep) => {
-    const foundProfile = allStatus.find(
-      (user) => user.profile.profile === userInfo.profile
-    );
-    const foundStep = foundProfile?.steps.find(
-      ({ step }) => step === statusStep
-    );
+    const foundProfile = allStatus.find((user) => user.profile.profile === userInfo.profile);
+    const foundStep = foundProfile?.steps.find(({ step }) => step === statusStep);
     return <StatusRenderer step={foundStep} />;
   };
 
@@ -71,11 +58,9 @@ export default function RightSection(props: any) {
         right: '1rem',
         maxWidth: '17rem'
       }}>
-      <div className="mt-2 mb-3">
-        {statusFormatter(currentRequest?.status?.step)}
-      </div>
-      {currentRequest?.status?.step !== 0 &&
-        userInfo.profile === PERFIL_OPERACIONES.profile && (
+      <div className="mt-2 mb-3">{statusFormatter(currentRequest?.status?.step)}</div>
+      {userInfo.profile === PERFIL_OPERACIONES.profile &&
+        currentRequest?.status?.step !== PERFIL_OPERACIONES.steps.STATUS_CANCELADO && (
           <React.Fragment>
             <div className="card invoice-action-wrapper shadow-none border">
               <div className="card-body">
@@ -85,11 +70,8 @@ export default function RightSection(props: any) {
                     className="btn-block"
                     onClick={() => setShowModalPlace(true)}
                     disabled={
-                      currentRequest?.status?.step
-                        ? currentRequest?.status?.step >= 3
-                          ? true
-                          : false
-                        : false
+                      currentRequest?.status?.step >=
+                      PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA
                     }>
                     <span>Lugar / Fecha / Hora </span>
                     {currentRequest?.optional_date1 ? (
@@ -114,11 +96,8 @@ export default function RightSection(props: any) {
                     className="btn-block"
                     onClick={() => setShowModalInstructors(true)}
                     disabled={
-                      currentRequest?.status?.step
-                        ? currentRequest?.status?.step >= 3
-                          ? true
-                          : false
-                        : false
+                      currentRequest?.status?.step >=
+                      PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA
                     }>
                     <span>Instructores </span>
                     {currentRequest?.instructors.length > 0 ? (
@@ -141,11 +120,8 @@ export default function RightSection(props: any) {
                     className="btn-block"
                     onClick={() => setShowModalProviders(true)}
                     disabled={
-                      currentRequest?.status?.step
-                        ? currentRequest?.status?.step >= 3
-                          ? true
-                          : false
-                        : false
+                      currentRequest?.status?.step >=
+                      PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA
                     }>
                     <span>Proveedores </span>
                     {currentRequest?.providers.length > 0 ? (
@@ -155,14 +131,12 @@ export default function RightSection(props: any) {
                     )}
                   </Button>
 
-                  {/* {showModalProviders && (
-                <ModalProviders
-                  requestId={requestId}
-                  handleClose={() => setShowModalProviders(false)}
-                  onUpdate={() => fetchRequest(requestId)}
-                  propsProviders={providers}
-                />
-              )} */}
+                  {showModalProviders && (
+                    <ModalProviders
+                      requestId={requestId}
+                      handleClose={() => setShowModalProviders(false)}
+                    />
+                  )}
                 </div>
                 <div className="invoice-action-btn">
                   <Button
@@ -212,11 +186,14 @@ export default function RightSection(props: any) {
                       });
                     }}>
                     <span>
-                      {currentRequest?.status?.step === 1
+                      {currentRequest?.status?.step ===
+                      PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_CONFIRMACION
                         ? 'Confirmar solicitud'
-                        : currentRequest?.status?.step === 2
+                        : currentRequest?.status?.step ===
+                          PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_AL_CLIENTE
                         ? 'Esperando cliente'
-                        : currentRequest?.status?.step === 3
+                        : currentRequest?.status?.step ===
+                          PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA
                         ? 'Servicio confirmado'
                         : 'Cancelado'}
                     </span>
@@ -249,9 +226,7 @@ export default function RightSection(props: any) {
                         <Button
                           className="btn-block btn-success"
                           disabled={
-                            areDocumentsOk &&
-                            currentRequest?.status?.step < 6 &&
-                            areReportsOk
+                            areDocumentsOk && currentRequest?.status?.step < 6 && areReportsOk
                               ? false
                               : true
                           }
