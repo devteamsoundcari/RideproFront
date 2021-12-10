@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import swal from 'sweetalert';
-import {
-  TracksContext,
-  SingleRequestContext,
-  AuthContext,
-  RequestsContext
-} from '../../../../contexts/';
+import { TracksContext, SingleRequestContext, AuthContext } from '../../../../contexts/';
 import { Modal, Button, Form } from 'react-bootstrap';
 import './ModalPlaceDate.scss';
 import { useProfile } from '../../../../utils';
@@ -27,12 +22,8 @@ interface Track {
 }
 type Tracks = Track[];
 
-const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
-  requestId,
-  handleClose
-}) => {
-  const { setTracks, getTracksByCity, loadingTracks } =
-    useContext(TracksContext);
+const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({ requestId, handleClose }) => {
+  const { setTracks, getTracksByCity, loadingTracks } = useContext(TracksContext);
   const { userInfo } = useContext(AuthContext);
   const {
     currentRequest,
@@ -46,7 +37,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     setRequestDateOpt2,
     updateRequestId
   } = useContext(SingleRequestContext);
-  const { getSingleRequest } = useContext(RequestsContext);
+  const { getSingleRequest } = useContext(SingleRequestContext);
   const [continueDisabled, setContinueDisabled] = useState(true);
   const [showModalTracks, setShowModalTracks] = useState(false);
   const [showAlternative, setShowAlternative] = useState(false);
@@ -95,11 +86,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   };
 
   return (
-    <Modal
-      size="lg"
-      show={true}
-      onHide={handleClose}
-      className="modal-admin-placedate">
+    <Modal size="lg" show={true} onHide={handleClose} className="modal-admin-placedate">
       <Modal.Header className={`bg-${profile}`} closeButton>
         <Modal.Title className="text-white">Lugar / Fecha & Hora</Modal.Title>
       </Modal.Header>
@@ -131,18 +118,16 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
         )}
       </Modal.Body>
       <Modal.Footer>
-        {!loadingTracks &&
-          !currentRequest.optional_date1 &&
-          !currentRequest.optional_date2 && (
-            <Button
-              className="position-absolute ml-3"
-              style={{ left: 0 }}
-              variant="link"
-              size="sm"
-              onClick={handleClickAddTrack}>
-              <FaPlus /> Agregar una pista
-            </Button>
-          )}
+        {!loadingTracks && !currentRequest.optional_date1 && !currentRequest.optional_date2 && (
+          <Button
+            className="position-absolute ml-3"
+            style={{ left: 0 }}
+            variant="link"
+            size="sm"
+            onClick={handleClickAddTrack}>
+            <FaPlus /> Agregar una pista
+          </Button>
+        )}
         {!currentRequest.optional_date1 && !currentRequest.optional_date2 && (
           <Form.Check
             type="checkbox"
@@ -183,10 +168,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                     operator: userInfo.id
                   };
 
-                  let res = await updateRequestId(
-                    requestId,
-                    showAlternative ? payload2 : payload
-                  );
+                  let res = await updateRequestId(requestId, showAlternative ? payload2 : payload);
                   if (res.status === 200) {
                     getSingleRequest(requestId);
                     swal('Solicitud actualizada!', {

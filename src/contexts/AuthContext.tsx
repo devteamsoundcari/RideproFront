@@ -16,6 +16,7 @@ export const AuthContextProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [authError, setAuthError] = useState(null as any);
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   const updateUserInfo = async () => {
     let newUserInfo = await getUserInfo();
@@ -97,6 +98,17 @@ export const AuthContextProvider = (props) => {
     }
   };
 
+  const sendEmail = async (payload: any) => {
+    setSendingEmail(true);
+    try {
+      const response = await apiClient(`${process.env.REACT_APP_MAILER_URL}/api/sendEmail`);
+      return response;
+    } catch (error) {
+      setSendingEmail(false);
+      return error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={
@@ -108,7 +120,8 @@ export const AuthContextProvider = (props) => {
           loadingAuth,
           loginUser,
           authError,
-          logOutUser
+          logOutUser,
+          sendEmail
         } as any
       }>
       {props.children}

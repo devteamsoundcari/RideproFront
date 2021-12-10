@@ -50,6 +50,50 @@ export default function RightSection(props: any) {
     return <StatusRenderer step={foundStep} />;
   };
 
+  const handleConfirmClick = () => {
+    swal({
+      title: '¿Estas segur@?',
+      text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
+      icon: 'warning',
+      buttons: ['No, volver', 'Si, confirmar servicio'],
+      dangerMode: true
+    }).then(async (willUpdate) => {
+      if (willUpdate) {
+        let payload = {
+          new_request: 0, // It wont be a new request anymore
+          operator: userInfo.id,
+          status: PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_AL_CLIENTE.id
+        };
+        console.log(payload);
+        // let res = await updateRequest(payload, requestId);
+        // if (res.status === 200) {
+        //   // setDisabled(true);
+        //   swal('Solicitud actualizada!', {
+        //     icon: 'success'
+        //   });
+        //   // SEND EMAIL
+        //   const payload = {
+        //     id: requestId,
+        //     emailType: 'requestOptions',
+        //     subject: 'Confirmar solicitud ⚠️',
+        //     email: currentRequest?.customer?.email,
+        //     name: currentRequest?.customer?.first_name,
+        //     optional_place1: currentRequest?.optional_place1,
+        //     optional_place2: currentRequest?.optional_place2,
+        //     optional_date1: currentRequest?.optional_date1,
+        //     optional_date2: currentRequest?.optional_date2,
+        //     service: currentRequest?.service
+        //   };
+        //   await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
+        // } else {
+        //   swal('Oops, no se pudo actualizar el servicio.', {
+        //     icon: 'error'
+        //   });
+        // }
+      }
+    });
+  };
+
   return (
     <div
       className="col-xl-3 col-md-4 col-12"
@@ -60,7 +104,7 @@ export default function RightSection(props: any) {
       }}>
       <div className="mt-2 mb-3">{statusFormatter(currentRequest?.status?.step)}</div>
       {userInfo.profile === PERFIL_OPERACIONES.profile &&
-        currentRequest?.status?.step !== PERFIL_OPERACIONES.steps.STATUS_CANCELADO && (
+        currentRequest?.status?.step !== PERFIL_OPERACIONES.steps.STATUS_CANCELADO.step && (
           <React.Fragment>
             <div className="card invoice-action-wrapper shadow-none border">
               <div className="card-body">
@@ -71,7 +115,7 @@ export default function RightSection(props: any) {
                     onClick={() => setShowModalPlace(true)}
                     disabled={
                       currentRequest?.status?.step >=
-                      PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA
+                      PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA.step
                     }>
                     <span>Lugar / Fecha / Hora </span>
                     {currentRequest?.optional_date1 ? (
@@ -97,7 +141,7 @@ export default function RightSection(props: any) {
                     onClick={() => setShowModalInstructors(true)}
                     disabled={
                       currentRequest?.status?.step >=
-                      PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA
+                      PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA.step
                     }>
                     <span>Instructores </span>
                     {currentRequest?.instructors.length > 0 ? (
@@ -106,7 +150,6 @@ export default function RightSection(props: any) {
                       <FaTimes className="text-danger" />
                     )}
                   </Button>
-
                   {showModalInstructors && (
                     <ModalInstructors
                       requestId={requestId}
@@ -121,7 +164,7 @@ export default function RightSection(props: any) {
                     onClick={() => setShowModalProviders(true)}
                     disabled={
                       currentRequest?.status?.step >=
-                      PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA
+                      PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA.step
                     }>
                     <span>Proveedores </span>
                     {currentRequest?.providers.length > 0 ? (
@@ -130,7 +173,6 @@ export default function RightSection(props: any) {
                       <FaTimes className="text-danger" />
                     )}
                   </Button>
-
                   {showModalProviders && (
                     <ModalProviders
                       requestId={requestId}
@@ -143,47 +185,7 @@ export default function RightSection(props: any) {
                     className="btn-block btn-success"
                     disabled={checkDisabled()}
                     onClick={() => {
-                      swal({
-                        title: '¿Estas seguro?',
-                        text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
-                        icon: 'warning',
-                        buttons: ['No, volver', 'Si, confirmar servicio'],
-                        dangerMode: true
-                      }).then(async (willUpdate) => {
-                        if (willUpdate) {
-                          let payload = {
-                            new_request: 0, // It wont be a new request anymore
-                            operator: userInfo.id,
-                            status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`
-                          };
-
-                          let res = await updateRequest(payload, requestId);
-                          if (res.status === 200) {
-                            // setDisabled(true);
-                            swal('Solicitud actualizada!', {
-                              icon: 'success'
-                            });
-                            // SEND EMAIL
-                            const payload = {
-                              id: requestId,
-                              emailType: 'requestOptions',
-                              subject: 'Confirmar solicitud ⚠️',
-                              email: currentRequest?.customer?.email,
-                              name: currentRequest?.customer?.first_name,
-                              optional_place1: currentRequest?.optional_place1,
-                              optional_place2: currentRequest?.optional_place2,
-                              optional_date1: currentRequest?.optional_date1,
-                              optional_date2: currentRequest?.optional_date2,
-                              service: currentRequest?.service
-                            };
-                            await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
-                          } else {
-                            swal('Oops, no se pudo actualizar el servicio.', {
-                              icon: 'error'
-                            });
-                          }
-                        }
-                      });
+                      handleConfirmClick();
                     }}>
                     <span>
                       {currentRequest?.status?.step ===

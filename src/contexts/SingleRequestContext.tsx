@@ -9,7 +9,8 @@ import {
   API_REQUEST_DOCUMENTS,
   API_REQUEST_DOCUMENT_UPLOAD,
   API_REQUEST_BILLS,
-  API_REQUEST_INSTRUCTORS_UPDATE
+  API_REQUEST_INSTRUCTORS_UPDATE,
+  API_REQUEST_PROVIDERS_UPDATE
 } from '../utils';
 
 export const SingleRequestContext = createContext('' as any);
@@ -318,6 +319,19 @@ export const SingleRequestContextProvider = (props) => {
     }
   };
 
+  // ====================== UPDATE PROVIDERS OF REQUEST ================
+  const updateRequestProviders = (payload) => {
+    setLoadingProviders(true);
+    try {
+      const response = apiClient.post(API_REQUEST_PROVIDERS_UPDATE, payload);
+      setLoadingProviders(false);
+      return response;
+    } catch (error) {
+      setLoadingProviders(false);
+      return error;
+    }
+  };
+
   return (
     <SingleRequestContext.Provider
       value={
@@ -355,7 +369,8 @@ export const SingleRequestContextProvider = (props) => {
           requestDateOpt2,
           setRequestDateOpt2,
           updateRequestId,
-          updateRequestInstructor
+          updateRequestInstructor,
+          updateRequestProviders
         } as any
       }>
       {props.children}
