@@ -1,15 +1,7 @@
 import React, { useState, useContext } from 'react';
 import moment from 'moment';
 import { FaSearch, FaCheckCircle } from 'react-icons/fa';
-import {
-  Col,
-  Form,
-  InputGroup,
-  Row,
-  Spinner,
-  Tab,
-  Tabs
-} from 'react-bootstrap';
+import { Col, Form, InputGroup, Row, Spinner, Tab, Tabs } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
@@ -102,18 +94,20 @@ export function Alternative({
               }
             }}
           />
-          <InputGroup.Text
-            id="inputGroupPrepend"
-            className="icon-search"
-            onClick={placeOpt ? handleClear : handleSearch}>
-            {loadingTracks ? (
-              <Spinner animation="border" size="sm" />
-            ) : placeOpt ? (
-              'Borrar'
-            ) : (
-              <FaSearch />
-            )}
-          </InputGroup.Text>
+          {(!placeOpt || !dateOpt) && (
+            <InputGroup.Text
+              id="inputGroupPrepend"
+              className="icon-search"
+              onClick={placeOpt ? handleClear : handleSearch}>
+              {loadingTracks ? (
+                <Spinner animation="border" size="sm" />
+              ) : placeOpt ? (
+                'Borrar'
+              ) : (
+                <FaSearch />
+              )}
+            </InputGroup.Text>
+          )}
         </InputGroup>
       </Form.Group>
     );
@@ -161,18 +155,10 @@ export function Alternative({
   };
 
   return (
-    <Tabs
-      activeKey={key}
-      onSelect={(k) => setKey(k as any)}
-      className="mb-3 alternative-tabs">
+    <Tabs activeKey={key} onSelect={(k) => setKey(k as any)} className="mb-3 alternative-tabs">
       <Tab eventKey={`Opción ${option}`} title={`Opción ${option}`} disabled />
       <Tab eventKey="place" title={getPlaceTitle()} className="tab ">
-        <ToolkitProvider
-          keyField="id"
-          search
-          data={tracks}
-          columns={columns}
-          bordered={false}>
+        <ToolkitProvider keyField="id" search data={tracks} columns={columns} bordered={false}>
           {(props) => (
             <>
               <Row>
@@ -198,37 +184,23 @@ export function Alternative({
       <Tab eventKey="date" title={getDateTitle()} className="tab">
         <Row className="mx-4">
           <Col className="text-center">
-            <Form.Group
-              as={Col}
-              controlId="formGridEmail"
-              className="w-75 m-auto">
+            <Form.Group as={Col} controlId="formGridEmail" className="w-75 m-auto">
               <Form.Label>Fecha del servicio</Form.Label>
               <DatePicker
-                className={`red-border text-center ${
-                  checkIfDateDisabled() ? 'disabled' : ''
-                }`}
+                className={`red-border text-center ${checkIfDateDisabled() ? 'disabled' : ''}`}
                 disabled={checkIfDateDisabled()}
-                selected={
-                  dateOpt ? moment(dateOpt).valueOf() : moment().valueOf()
-                }
+                selected={dateOpt ? moment(dateOpt).valueOf() : moment().valueOf()}
                 onChange={(date) => setDateOpt(date)}
               />
             </Form.Group>
           </Col>
           <Col className="text-center">
-            <Form.Group
-              as={Col}
-              controlId="formGridEmail"
-              className="w-75 m-auto">
+            <Form.Group as={Col} controlId="formGridEmail" className="w-75 m-auto">
               <Form.Label>Hora del servicio</Form.Label>
               <DatePicker
-                className={`red-border text-center ${
-                  checkIfDateDisabled() ? 'disabled' : ''
-                }`}
+                className={`red-border text-center ${checkIfDateDisabled() ? 'disabled' : ''}`}
                 disabled={checkIfDateDisabled()}
-                selected={
-                  dateOpt ? moment(dateOpt).valueOf() : moment().valueOf()
-                }
+                selected={dateOpt ? moment(dateOpt).valueOf() : moment().valueOf()}
                 onChange={(hour) => setDateOpt(hour)}
                 showTimeSelect
                 showTimeSelectOnly

@@ -31,6 +31,7 @@ export const InstructorsContextProvider = (props) => {
         setLoadingInstructors(false);
       }
     } else {
+      setInstructors([]);
       try {
         const response = await apiClient.get(`${API_INSTRUCTORS_SEARCH}${cityName}`);
         setInstructors((oldArr: any) => [...oldArr, ...response.data.results]);

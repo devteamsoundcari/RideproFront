@@ -9,5 +9,10 @@
   }
   tr {
     font-size: 0.8rem !important;
+    .tarifa-cell {
+      &:before {
+        content: '$';
+      }
+    }
   }
 }

@@ -11,6 +11,7 @@ import { useProfile } from '../../../../utils';
 import { SingleRequestContext, InstructorsContext } from '../../../../contexts';
 import { ModalAddInstructor } from '../../../../components/molecules';
 import './ModalInstructors.scss';
+
 interface ModalInstructorsProps {
   requestId: number;
   handleClose: () => void;
@@ -19,8 +20,14 @@ interface ModalInstructorsProps {
 type SelectedInstructors = any;
 
 const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleClose }) => {
-  const { getSingleRequest, currentRequest, requestInstructors, updateRequestInstructor } =
-    useContext(SingleRequestContext);
+  const {
+    getSingleRequest,
+    currentRequest,
+    requestInstructors,
+    setRequestInstructors,
+    addRequestInstructors,
+    updateRequestInstructors
+  } = useContext(SingleRequestContext);
   const { getInstructorsByCity, instructors, setInstructors, loadingInstructors } =
     useContext(InstructorsContext);
   const [selectedInstructors, setSelectedInstructors] = useState<SelectedInstructors>([]);
@@ -180,22 +187,79 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
   };
 
   const handleUpdateInstructor = async () => {
-    let instructorsIds = {};
-    selectedInstructors.forEach((inst) => {
-      return (instructorsIds[inst.id] = { fare: inst.fare, f_p: 0 });
+    // Fares to update
+    const instructorsToUpdate = requestInstructors.filter(({ instructors }) =>
+      selectedInstructors.some((selInst) => instructors.id === selInst.id)
+    );
+
+    // New instructors to add to the request
+    let newInstructorsToAdd: any = selectedInstructors.filter(
+      (selInst) => !requestInstructors.some(({ instructors }) => instructors.id === selInst.id)
+    );
+
+    // ==== MAKE AN OBJECT WITH THE NEW INSTRUCTORS ====
+    let tempObjNewInstructorsToAdd = {};
+    newInstructorsToAdd.forEach((inst) => {
+      return (tempObjNewInstructorsToAdd[inst.id] = { fare: inst.fare, f_p: 0 });
     });
-    let res = await updateRequestInstructor({
-      request: requestId,
-      instructors: instructorsIds
-    });
-    if (res.status === 201) {
-      setDisabled(true);
-      getSingleRequest(requestId);
-      swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
-      handleClose();
-    } else {
-      swal('Error!', 'Algo salio mal!', 'error');
+    newInstructorsToAdd = { ...tempObjNewInstructorsToAdd };
+
+    // console.log(duplicatedInstructors, newInstructorsToAdd);
+
+    // const resToUpdate = await updateRequestInstructors();
+    let resToAdd;
+    let resToUpdate;
+    // if (newInstructorsToAdd.length)
+    //   resToAdd = await addRequestInstructors({
+    //     request: requestId,
+    //     instructors: newInstructorsToAdd
+    //   });
+
+    // if (duplicatedInstructors.length)
+    //   resToUpdate = await updateRequestInstructors(duplicatedInstructors);
+
+    if (Object.keys(newInstructorsToAdd).length && instructorsToUpdate.length) {
+      console.log('add and update');
+    } else if (Object.keys(newInstructorsToAdd).length && !instructorsToUpdate.length) {
+      resToAdd = await addRequestInstructors({
+        request: requestId,
+        instructors: newInstructorsToAdd
+      });
+      if (resToAdd.status === 201) {
+        setDisabled(true);
+        getSingleRequest(requestId);
+        swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
+        setInstructors([]);
+        setRequestInstructors([]);
+        handleClose();
+      } else {
+        swal('Error!', 'Algo salio mal!', 'error');
+      }
+    } else if (!Object.keys(newInstructorsToAdd).length && instructorsToUpdate.length) {
+      console.log('only update');
+      resToUpdate = await updateRequestInstructors(instructorsToUpdate);
+      if (resToUpdate.status === 201) {
+        setDisabled(true);
+        getSingleRequest(requestId);
+        swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
+        setInstructors([]);
+        setRequestInstructors([]);
+        handleClose();
+      } else {
+        swal('Error!', 'Algo salio mal!', 'error');
+      }
     }
+
+    // if (resToAdd.status === 201) {
+    //   setDisabled(true);
+    //   getSingleRequest(requestId);
+    // swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
+    //   setInstructors([]);
+    //   setRequestInstructors([]);
+    //   handleClose();
+    // } else {
+    //   swal('Error!', 'Algo salio mal!', 'error');
+    // }
   };
 
   // =============================== CLICK ON ADD INSTRUCTOR ====================================
@@ -232,7 +296,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
                     <SearchBar
                       {...props.searchProps}
                       className="custome-search-field"
-                      placeholder={`Buscar instructores en ${currentRequest?.municipality?.name}...`}
+                      placeholder={`Buscar instructores en ${currentRequest?.municipality?.name} - ${currentRequest?.municipality?.department?.name}...`}
                     />
                   </div>
                   <div className="action-btns d-flex align-items-center">

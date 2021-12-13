@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { createContext, useState } from 'react';
 import ApiClientSingleton from '../controllers/apiClient';
 import {
@@ -306,11 +307,39 @@ export const SingleRequestContextProvider = (props) => {
     }
   };
 
-  // ====================== UPDATE INSTRUCTORS OF REQUEST ================
-  const updateRequestInstructor = (payload) => {
+  // ====================== ADD INSTRUCTORS TO REQUEST ================
+  const addRequestInstructors = (payload) => {
     setLoadingInstructors(true);
     try {
       const response = apiClient.post(API_REQUEST_INSTRUCTORS_UPDATE, payload);
+      setLoadingInstructors(false);
+      return response;
+    } catch (error) {
+      setLoadingInstructors(false);
+      return error;
+    }
+  };
+
+  // ====================== UPDATE REQUEST INSTRUCTORS ================
+  const updateRequestInstructor = async ({ id, fare, first_payment, instructors }) => {
+    // console.log('ADSADAS', instructorData);
+    try {
+      const response = await apiClient.put(`${API_REQUEST_INSTRUCTORS_UPDATE}${id}/`, {
+        fare,
+        first_payment,
+        id: `${id}`,
+        instructors: { id: instructors.id }
+      });
+      return response.data;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const updateRequestInstructors = async (requestInstructorsToUpdate) => {
+    setLoadingInstructors(true);
+    try {
+      const response = await Promise.all(requestInstructorsToUpdate.map(updateRequestInstructor));
       setLoadingInstructors(false);
       return response;
     } catch (error) {
@@ -342,6 +371,7 @@ export const SingleRequestContextProvider = (props) => {
           getRequestInstructors,
           loadingInstructors,
           requestInstructors,
+          setRequestInstructors,
           getRequestProviders,
           loadingProviders,
           requestProviders,
@@ -369,7 +399,8 @@ export const SingleRequestContextProvider = (props) => {
           requestDateOpt2,
           setRequestDateOpt2,
           updateRequestId,
-          updateRequestInstructor,
+          addRequestInstructors,
+          updateRequestInstructors,
           updateRequestProviders
         } as any
       }>

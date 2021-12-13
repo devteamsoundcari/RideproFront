@@ -11,8 +11,7 @@ const InstructorsSection: React.FC<InstructorsProps> = ({ requestId }) => {
   const { getRequestInstructors, requestInstructors, loadingInstructors } =
     useContext(SingleRequestContext);
 
-  const fetchRequestInstructors = async () =>
-    await getRequestInstructors(requestId);
+  const fetchRequestInstructors = async () => await getRequestInstructors(requestId);
 
   useEffect(() => {
     fetchRequestInstructors();
@@ -40,15 +39,13 @@ const InstructorsSection: React.FC<InstructorsProps> = ({ requestId }) => {
         {requestInstructors.map((item, idx) => (
           <tr key={idx}>
             <td>{item?.instructors?.official_id}</td>
-            <td>{item?.instructors?.first_name}</td>
-            <td>{item?.instructors?.last_name}</td>
-            <td className="text-primary font-weight-bold">
-              {item?.instructors?.email}
-            </td>
+            <td className="text-capitalize">{item?.instructors?.first_name}</td>
+            <td className="text-capitalize">{item?.instructors?.last_name}</td>
+            <td className="text-primary font-weight-bold">{item?.instructors?.email}</td>
             <td>{item?.instructors?.cellphone}</td>
-            <td>{item?.instructors?.municipality?.name}</td>
-            <td>{item?.fare}</td>
-            <td>{item?.first_payment}</td>
+            <td className="text-capitalize">{item?.instructors?.municipality?.name}</td>
+            <td className="tarifa-cell">{Number(item?.fare).toLocaleString('es')}</td>
+            <td className="tarifa-cell">{Number(item?.first_payment).toLocaleString('es')}</td>
           </tr>
         ))}
       </tbody>

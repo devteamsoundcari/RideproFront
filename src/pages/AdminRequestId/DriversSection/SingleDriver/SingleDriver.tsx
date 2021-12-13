@@ -4,12 +4,8 @@ import { SingleRequestContext } from '../../../../contexts';
 type SingleDriverProps = any;
 
 const SingleDriver: React.FC<SingleDriverProps> = ({ data, requestId }) => {
-  const {
-    getDriverReport,
-    loadingReport,
-    setRequestDriversReports,
-    requestDriversReports
-  } = useContext(SingleRequestContext);
+  const { getDriverReport, loadingReport, setRequestDriversReports, requestDriversReports } =
+    useContext(SingleRequestContext);
   const [report, setReport] = useState<any>({});
 
   const fetchReport = async () => {
@@ -30,8 +26,8 @@ const SingleDriver: React.FC<SingleDriverProps> = ({ data, requestId }) => {
   return (
     <tr>
       <td>{data?.official_id}</td>
-      <td>{data?.first_name}</td>
-      <td>{data?.last_name}</td>
+      <td className="text-capitalize">{data?.first_name}</td>
+      <td className="text-capitalize">{data?.last_name}</td>
       <td className="text-primary font-weight-bold">{data?.email}</td>
       <td>{data?.cellphone}</td>
       {!loadingReport && report && report.file && (

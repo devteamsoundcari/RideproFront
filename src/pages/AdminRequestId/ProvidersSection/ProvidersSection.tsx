@@ -7,8 +7,7 @@ const ProvidersSection = ({ requestId }) => {
   const { requestProviders, getRequestProviders, loadingInstructors } =
     useContext(SingleRequestContext);
 
-  const fetchRequestProviders = async () =>
-    await getRequestProviders(requestId);
+  const fetchRequestProviders = async () => await getRequestProviders(requestId);
 
   useEffect(() => {
     fetchRequestProviders();
@@ -35,14 +34,12 @@ const ProvidersSection = ({ requestId }) => {
         {requestProviders.map((item, idx) => (
           <tr key={idx}>
             <td>{item?.providers?.official_id}</td>
-            <td>{item?.providers?.name}</td>
-            <td className="text-primary font-weight-bold">
-              {item?.providers?.email}
-            </td>
+            <td className="text-capitalize">{item?.providers?.name}</td>
+            <td className="text-primary font-weight-bold">{item?.providers?.email}</td>
             <td>{item?.providers?.cellphone}</td>
-            <td>{item?.providers?.municipality?.name}</td>
-            <td>{item?.fare}</td>
-            <td>{item?.first_payment}</td>
+            <td className="text-capitalize">{item?.providers?.municipality?.name}</td>
+            <td className="tarifa-cell">{Number(item?.fare).toLocaleString('es')}</td>
+            <td className="tarifa-cell">{Number(item?.first_payment).toLocaleString('es')}</td>
           </tr>
         ))}
       </tbody>
