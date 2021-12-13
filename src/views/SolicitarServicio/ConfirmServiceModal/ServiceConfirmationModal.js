@@ -18,7 +18,7 @@ import { formatAMPM, dateFormatter } from "../../../utils/helpFunctions";
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
   const { userInfoContext, setUserInfoContext } = useContext(AuthContext);
-  const { updateRequests } = useContext(RequestsContext);
+  const { getRequestsList } = useContext(RequestsContext);
 
   const {
     participantsToRegisterContext,
@@ -157,7 +157,7 @@ const ConfirmServiceModal = (props) => {
       ) {
         setShowSpinner(false);
         setShowSuccessPrompt(true);
-        updateRequests();
+        getRequestsList();
         setUserInfoContext({
           ...userInfoContext,
           credit: res.creditDecreasingResponse.data.credit,
@@ -182,6 +182,7 @@ const ConfirmServiceModal = (props) => {
             department: props.place.department.name,
           },
         };
+        console.log('payload', payload)
         await sendEmail(payload); // SEND SERVICE REQUESTED EMAIL TO USER
       }
     });
