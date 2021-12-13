@@ -207,8 +207,8 @@ const SingleRequestAdmin = () => {
                           </small>
                           <span>
                             {data?.created_at
-                              ? dateFormatter(data.created_at)
-                              : ''}
+                              ? `${dateFormatter(data.created_at)} | ${formatAMPM(data.created_at)}`
+                              : ''} 
                           </span>
                         </div>
                       </div>

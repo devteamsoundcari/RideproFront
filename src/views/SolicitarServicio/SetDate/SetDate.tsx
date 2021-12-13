@@ -15,6 +15,8 @@ const useSingleton = (initializer) => {
   React.useState(initializer);
 };
 
+const HORA_MINIMA_SOLICITUD = 15;
+
 const SetDate = (props) => {
   const [minDate, setMinDate] = useState<Date | null>(null);
   const [minHour, setMinHour] = useState<number[] | null>(null);
@@ -52,22 +54,21 @@ const SetDate = (props) => {
 
   const getMinDays = (priority) => {
     const today = new Date();
-
     switch (priority) {
       case 0:
-        if (today.getHours() < 16) {
+        if (today.getHours() < HORA_MINIMA_SOLICITUD) {
           return 2;
         } else {
           return 3;
         }
       case 1:
-        if (today.getHours() < 16) {
+        if (today.getHours() < HORA_MINIMA_SOLICITUD) {
           return 1;
         } else {
           return 2;
         }
       default:
-        if (today.getHours() < 16) {
+        if (today.getHours() < HORA_MINIMA_SOLICITUD) {
           return 2;
         } else {
           return 3;
