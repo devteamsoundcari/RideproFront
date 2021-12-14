@@ -101,11 +101,14 @@ export const AuthContextProvider = (props) => {
   const sendEmail = async (payload: any) => {
     setSendingEmail(true);
     try {
-      const response = await apiClient(`${process.env.REACT_APP_MAILER_URL}/api/sendEmail`);
+      const response = await apiClient.post(
+        `${process.env.REACT_APP_MAILER_URL}/api/newEmail`,
+        payload
+      );
       return response;
     } catch (error) {
       setSendingEmail(false);
-      return error;
+      throw new Error('No se pudo enviar el email');
     }
   };
 
@@ -121,7 +124,8 @@ export const AuthContextProvider = (props) => {
           loginUser,
           authError,
           logOutUser,
-          sendEmail
+          sendEmail,
+          sendingEmail
         } as any
       }>
       {props.children}

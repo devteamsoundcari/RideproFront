@@ -40,10 +40,13 @@ const ModalProviders: React.FC<ModalProvidersProps> = ({ requestId, handleClose 
   }, [selectedProviders]);
 
   useEffect(() => {
-    const providersUpdated = providers.map((ins) => {
+    // eslint-disable-next-line array-callback-return
+    const providersUpdated = providers.filter((ins) => {
       const foundInstructor = requestProviders.find((reqIns) => reqIns.providers.id === ins.id);
-      ins.fare = foundInstructor ? foundInstructor.fare : 0;
-      return ins;
+      if (!foundInstructor) {
+        ins.fare = 0;
+        return ins;
+      }
     });
     setProvidersToShow(providersUpdated);
   }, [providers, requestProviders]);

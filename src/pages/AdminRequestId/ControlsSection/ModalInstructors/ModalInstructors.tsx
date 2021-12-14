@@ -46,10 +46,13 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
   }, [selectedInstructors]);
 
   useEffect(() => {
-    const instructorsUpdated = instructors.map((ins) => {
+    // eslint-disable-next-line array-callback-return
+    const instructorsUpdated = instructors.filter((ins) => {
       const foundInstructor = requestInstructors.find((reqIns) => reqIns.instructors.id === ins.id);
-      ins.fare = foundInstructor ? foundInstructor.fare : 0;
-      return ins;
+      if (!foundInstructor) {
+        ins.fare = 0;
+        return ins;
+      }
     });
     setInstructorsToShow(instructorsUpdated);
   }, [requestInstructors, instructors]);
@@ -74,13 +77,15 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
       dataField: 'first_name',
       text: 'Nombre',
       editable: false,
-      headerClasses: 'new-style'
+      headerClasses: 'new-style',
+      formatter: (cell) => <span className="text-capitalize">{cell}</span>
     },
     {
       dataField: 'last_name',
       text: 'Apellido',
       editable: false,
-      headerClasses: 'new-style'
+      headerClasses: 'new-style',
+      formatter: (cell) => <span className="text-capitalize">{cell}</span>
     },
     {
       dataField: 'municipality.name',
@@ -187,79 +192,22 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
   };
 
   const handleUpdateInstructor = async () => {
-    // Fares to update
-    const instructorsToUpdate = requestInstructors.filter(({ instructors }) =>
-      selectedInstructors.some((selInst) => instructors.id === selInst.id)
-    );
-
-    // New instructors to add to the request
-    let newInstructorsToAdd: any = selectedInstructors.filter(
-      (selInst) => !requestInstructors.some(({ instructors }) => instructors.id === selInst.id)
-    );
-
-    // ==== MAKE AN OBJECT WITH THE NEW INSTRUCTORS ====
-    let tempObjNewInstructorsToAdd = {};
-    newInstructorsToAdd.forEach((inst) => {
-      return (tempObjNewInstructorsToAdd[inst.id] = { fare: inst.fare, f_p: 0 });
+    let instructorsIds = {};
+    selectedInstructors.forEach((inst) => {
+      return (instructorsIds[inst.id] = { fare: inst.fare, f_p: 0 });
     });
-    newInstructorsToAdd = { ...tempObjNewInstructorsToAdd };
-
-    // console.log(duplicatedInstructors, newInstructorsToAdd);
-
-    // const resToUpdate = await updateRequestInstructors();
-    let resToAdd;
-    let resToUpdate;
-    // if (newInstructorsToAdd.length)
-    //   resToAdd = await addRequestInstructors({
-    //     request: requestId,
-    //     instructors: newInstructorsToAdd
-    //   });
-
-    // if (duplicatedInstructors.length)
-    //   resToUpdate = await updateRequestInstructors(duplicatedInstructors);
-
-    if (Object.keys(newInstructorsToAdd).length && instructorsToUpdate.length) {
-      console.log('add and update');
-    } else if (Object.keys(newInstructorsToAdd).length && !instructorsToUpdate.length) {
-      resToAdd = await addRequestInstructors({
-        request: requestId,
-        instructors: newInstructorsToAdd
-      });
-      if (resToAdd.status === 201) {
-        setDisabled(true);
-        getSingleRequest(requestId);
-        swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
-        setInstructors([]);
-        setRequestInstructors([]);
-        handleClose();
-      } else {
-        swal('Error!', 'Algo salio mal!', 'error');
-      }
-    } else if (!Object.keys(newInstructorsToAdd).length && instructorsToUpdate.length) {
-      console.log('only update');
-      resToUpdate = await updateRequestInstructors(instructorsToUpdate);
-      if (resToUpdate.status === 201) {
-        setDisabled(true);
-        getSingleRequest(requestId);
-        swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
-        setInstructors([]);
-        setRequestInstructors([]);
-        handleClose();
-      } else {
-        swal('Error!', 'Algo salio mal!', 'error');
-      }
+    let res = await addRequestInstructors({
+      request: requestId,
+      instructors: instructorsIds
+    });
+    if (res.status === 201) {
+      setDisabled(true);
+      getSingleRequest(requestId);
+      swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
+      setInstructors([]);
+      setRequestInstructors([]);
+      handleClose();
     }
-
-    // if (resToAdd.status === 201) {
-    //   setDisabled(true);
-    //   getSingleRequest(requestId);
-    // swal('Perfecto!', 'Instructores actualizados exitosamente!', 'success');
-    //   setInstructors([]);
-    //   setRequestInstructors([]);
-    //   handleClose();
-    // } else {
-    //   swal('Error!', 'Algo salio mal!', 'error');
-    // }
   };
 
   // =============================== CLICK ON ADD INSTRUCTOR ====================================

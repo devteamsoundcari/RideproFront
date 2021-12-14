@@ -165,6 +165,7 @@ export const SingleRequestContextProvider = (props) => {
         console.log(error);
       }
     } else {
+      setRequestInstructors([]);
       try {
         const response = await apiClient.get(`${API_REQUEST_INSTRUCTORS}${id}`);
         setRequestInstructors((oldArr: any) => [...oldArr, ...response.data.results]);
@@ -195,6 +196,7 @@ export const SingleRequestContextProvider = (props) => {
         setLoadingProviders(false);
       }
     } else {
+      setRequestProviders([]);
       try {
         const response = await apiClient.get(`${API_REQUEST_PROVIDERS}${id}`);
         setRequestProviders((oldArr: any) => [...oldArr, ...response.data.results]);
@@ -222,6 +224,7 @@ export const SingleRequestContextProvider = (props) => {
   // ==================== GET MULTIPLE DRIVERS ======================
   const getRequestDrivers = async (driversIds: string[]) => {
     setLoadingDrivers(true);
+    setRequestDrivers([]);
     try {
       const response = await Promise.all(driversIds.map(fetchDriver));
       setRequestDrivers(response);
@@ -295,11 +298,12 @@ export const SingleRequestContextProvider = (props) => {
   };
 
   // ==================== UPDATE SINGLE REQUEST ====================
-  const updateRequestId = (requestId: string, payload = null) => {
+  const updateRequestId = async (requestId: any, payload = null) => {
     setLoadingRequest(true);
     try {
       const response = apiClient.patch(`${API_SINGLE_REQUEST}${requestId}/`, payload);
       setLoadingRequest(false);
+      await getSingleRequest(requestId);
       return response;
     } catch (error) {
       setLoadingRequest(false);
@@ -322,7 +326,6 @@ export const SingleRequestContextProvider = (props) => {
 
   // ====================== UPDATE REQUEST INSTRUCTORS ================
   const updateRequestInstructor = async ({ id, fare, first_payment, instructors }) => {
-    // console.log('ADSADAS', instructorData);
     try {
       const response = await apiClient.put(`${API_REQUEST_INSTRUCTORS_UPDATE}${id}/`, {
         fare,
@@ -355,6 +358,36 @@ export const SingleRequestContextProvider = (props) => {
       const response = apiClient.post(API_REQUEST_PROVIDERS_UPDATE, payload);
       setLoadingProviders(false);
       return response;
+    } catch (error) {
+      setLoadingProviders(false);
+      return error;
+    }
+  };
+
+  // ====================== DELETE REQUEST INSTRUCTOR ================
+  const deleteRequestInstructor = async (id, requestId) => {
+    setLoadingInstructors(true);
+    try {
+      const response = await apiClient.delete(`${API_REQUEST_INSTRUCTORS_UPDATE}${id}/`);
+      setLoadingInstructors(false);
+      setRequestInstructors([]);
+      await getSingleRequest(requestId);
+      return response.data;
+    } catch (error) {
+      setLoadingInstructors(false);
+      return error;
+    }
+  };
+
+  // ====================== DELETE REQUEST PROVIDER ================
+  const deleteRequestProvider = async (id, requestId) => {
+    setLoadingProviders(true);
+    try {
+      const response = await apiClient.delete(`${API_REQUEST_PROVIDERS_UPDATE}${id}/`);
+      setLoadingProviders(false);
+      setRequestProviders([]);
+      await getSingleRequest(requestId);
+      return response.data;
     } catch (error) {
       setLoadingProviders(false);
       return error;
@@ -401,7 +434,9 @@ export const SingleRequestContextProvider = (props) => {
           updateRequestId,
           addRequestInstructors,
           updateRequestInstructors,
-          updateRequestProviders
+          updateRequestProviders,
+          deleteRequestInstructor,
+          deleteRequestProvider
         } as any
       }>
       {props.children}

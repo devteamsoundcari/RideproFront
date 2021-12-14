@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { updateRequest, sendEmail } from '../../../controllers/apiRequests';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../../components/atoms';
@@ -16,9 +15,14 @@ export interface IRightSectionProps {}
 
 export default function RightSection(props: any) {
   const { requestId } = useParams() as any;
-  const { userInfo } = useContext(AuthContext);
-  const { currentRequest, requestDocuments, requestDrivers, requestDriversReports } =
-    useContext(SingleRequestContext);
+  const { userInfo, sendEmail } = useContext(AuthContext);
+  const {
+    currentRequest,
+    requestDocuments,
+    requestDrivers,
+    requestDriversReports,
+    updateRequestId
+  } = useContext(SingleRequestContext);
   const { setTracks } = useContext(TracksContext);
   const [showModalPlace, setShowModalPlace] = useState(false);
   const [showModalInstructors, setShowModalInstructors] = useState(false);
@@ -37,7 +41,9 @@ export default function RightSection(props: any) {
       currentRequest?.providers.length > 0 &&
       currentRequest?.optional_date1
     ) {
-      if (currentRequest?.status?.step === 1) {
+      if (
+        currentRequest?.status?.step === PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_CONFIRMACION.step
+      ) {
         return false;
       } else return true;
     } else return true;
@@ -64,28 +70,31 @@ export default function RightSection(props: any) {
           operator: userInfo.id,
           status: PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_AL_CLIENTE.id
         };
-        console.log(payload);
-        // let res = await updateRequest(payload, requestId);
-        // if (res.status === 200) {
-        //   // setDisabled(true);
-        //   swal('Solicitud actualizada!', {
-        //     icon: 'success'
-        //   });
-        //   // SEND EMAIL
-        //   const payload = {
-            // "id": requestId,
-            // "template": 'requestOptions',
-            // "subject": 'Confirmar solicitud ⚠️',
-            // "to": currentRequest?.customer?.email,
-            // "name": currentRequest?.customer?.first_name,
-
-        //   };
-        //   await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
-        // } else {
-        //   swal('Oops, no se pudo actualizar el servicio.', {
-        //     icon: 'error'
-        //   });
-        // }
+        let res = await updateRequestId(requestId, payload);
+        if (res.status === 200) {
+          //   // SEND EMAIL
+          const payload = {
+            id: requestId,
+            template: 'request_options',
+            subject: 'Confirmar solicitud ⚠️',
+            to: currentRequest?.customer?.email,
+            name: currentRequest?.customer?.first_name
+          };
+          try {
+            await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
+            swal('Solicitud actualizada!', {
+              icon: 'success'
+            });
+          } catch (error) {
+            swal('Actualizado. Pero no pudimos notificar al cliente!', {
+              icon: 'error'
+            });
+          }
+        } else {
+          swal('No pudimos actualizar la solicitud!', {
+            icon: 'error'
+          });
+        }
       }
     });
   };
@@ -185,13 +194,13 @@ export default function RightSection(props: any) {
                     }}>
                     <span>
                       {currentRequest?.status?.step ===
-                      PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_CONFIRMACION
+                      PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_CONFIRMACION.step
                         ? 'Confirmar solicitud'
                         : currentRequest?.status?.step ===
-                          PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_AL_CLIENTE
+                          PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_AL_CLIENTE.step
                         ? 'Esperando cliente'
                         : currentRequest?.status?.step ===
-                          PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA
+                          PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA.step
                         ? 'Servicio confirmado'
                         : 'Cancelado'}
                     </span>
@@ -295,7 +304,7 @@ export default function RightSection(props: any) {
                           status: `${process.env.REACT_APP_STATUS_STEP_5}`
                         };
 
-                        let res = await updateRequest(payload, requestId);
+                        let res = await updateRequestId(payload, requestId);
                         if (res.status === 200) {
                           // setDisabled(true);
                           swal('Solicitud actualizada!', {
