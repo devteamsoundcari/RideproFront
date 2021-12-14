@@ -73,16 +73,12 @@ export default function RightSection(props: any) {
         //   });
         //   // SEND EMAIL
         //   const payload = {
-        //     id: requestId,
-        //     emailType: 'requestOptions',
-        //     subject: 'Confirmar solicitud ⚠️',
-        //     email: currentRequest?.customer?.email,
-        //     name: currentRequest?.customer?.first_name,
-        //     optional_place1: currentRequest?.optional_place1,
-        //     optional_place2: currentRequest?.optional_place2,
-        //     optional_date1: currentRequest?.optional_date1,
-        //     optional_date2: currentRequest?.optional_date2,
-        //     service: currentRequest?.service
+            // "id": requestId,
+            // "template": 'requestOptions',
+            // "subject": 'Confirmar solicitud ⚠️',
+            // "to": currentRequest?.customer?.email,
+            // "name": currentRequest?.customer?.first_name,
+
         //   };
         //   await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
         // } else {
