@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import swal from 'sweetalert';
 import ModalInstructors from './ModalInstructors/ModalInstructors';
 import ModalProviders from './ModalProviders/ModalProviders';
+import ConfirmSection from './ConfirmSection/ConfirmSection';
 
 export interface IRightSectionProps {}
 
@@ -208,22 +209,19 @@ export default function RightSection(props: any) {
                 </div>
               </div>
             </div>
-            {/* {currentRequest?.status?.step
-          ? currentRequest?.status?.step > 2 && (
+            {currentRequest?.status?.step >=
+              PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA.step && (
               <ConfirmSection
-                instructors={instructors}
-                providers={providers}
+                participants={[]}
                 track={currentRequest?.track}
                 fare_track={currentRequest?.fare_track}
                 fisrt_payment={currentRequest?.f_p_track}
                 requestId={requestId}
                 status={currentRequest?.status}
                 date={currentRequest?.start_time}
-                participants={participantsInfo}
                 service={currentRequest?.service}
               />
-            )
-          : ''} */}
+            )}
 
             {currentRequest?.status?.step
               ? currentRequest?.status?.step > 3 && (

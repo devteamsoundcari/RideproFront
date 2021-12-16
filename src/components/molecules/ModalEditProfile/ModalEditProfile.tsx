@@ -2,17 +2,15 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Modal, Col, Form, Spinner, Button, Image } from 'react-bootstrap';
 import { AuthContext } from '../../../contexts';
-import RegularExpressions from '../../../utils/RegularExpressions';
 import { ModalEditProfilePicture } from '../ModalEditProfilePicture/ModalEditProfilePicture';
 import { editUser } from '../../../controllers/apiRequests';
 import './ModalEditProfile.scss';
-import { useProfile } from '../../../utils';
+import { useProfile, regularExpressions } from '../../../utils';
 
 export const ModalEditProfile = (props: any) => {
   const [stage, setStage] = useState('waiting');
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [showUserProfileEditModal, setShowUserProfileEditModal] =
-    useState(false);
+  const [showUserProfileEditModal, setShowUserProfileEditModal] = useState(false);
   const [submittedData, setSubmittedData] = useState();
   const { userInfo, updateUserInfo } = useContext(AuthContext);
   const [profile] = useProfile();
@@ -172,19 +170,14 @@ export const ModalEditProfile = (props: any) => {
           <Modal.Body>
             <Form.Row>
               <Col md={2}>
-                <Image
-                  src={userInfo.picture}
-                  fluid
-                  roundedCircle
-                  className="shadow"
-                />
+                <Image src={userInfo.picture} fluid roundedCircle className="shadow" />
               </Col>
               <Col md={10} className="pl-3">
                 <h6 className="mt-2">FOTO DE PERFIL</h6>
                 <div className="w-50 recommendation">
                   <small>
-                    Para una correcta visualización el aspecto de la imagen debe
-                    ser lo mas cuadrado posible.
+                    Para una correcta visualización el aspecto de la imagen debe ser lo mas cuadrado
+                    posible.
                   </small>
                 </div>
                 <Button
@@ -205,15 +198,11 @@ export const ModalEditProfile = (props: any) => {
                   control={control}
                   rules={{
                     required: true,
-                    pattern: RegularExpressions.name
+                    pattern: regularExpressions.name
                   }}
                 />
-                {errors.name?.type === 'required' && (
-                  <small>El nombre no debe estar vacío.</small>
-                )}
-                {errors.name?.type === 'pattern' && (
-                  <small>Este nombre es inválido.</small>
-                )}
+                {errors.name?.type === 'required' && <small>El nombre no debe estar vacío.</small>}
+                {errors.name?.type === 'pattern' && <small>Este nombre es inválido.</small>}
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>Apellido</Form.Label>
@@ -223,15 +212,13 @@ export const ModalEditProfile = (props: any) => {
                   control={control}
                   rules={{
                     required: 'El apellido no debe estar en blanco.',
-                    pattern: RegularExpressions.name
+                    pattern: regularExpressions.name
                   }}
                 />
                 {errors.lastName?.type === 'required' && (
                   <small>El apellido no debe estar vacío.</small>
                 )}
-                {errors.lastName?.type === 'pattern' && (
-                  <small>Este apellido es inválido.</small>
-                )}
+                {errors.lastName?.type === 'pattern' && <small>Este apellido es inválido.</small>}
               </Form.Group>
             </Form.Row>
             <Form.Row>
@@ -244,15 +231,13 @@ export const ModalEditProfile = (props: any) => {
                   disabled={true}
                   rules={{
                     required: 'El correo electrónico no debe estar en blanco.',
-                    pattern: RegularExpressions.email
+                    pattern: regularExpressions.email
                   }}
                 />
                 {errors.email?.type === 'required' && (
                   <p>El correo electrónico no debe estar vacío.</p>
                 )}
-                {errors.email?.type === 'pattern' && (
-                  <p>Este correo electrónico es inválido.</p>
-                )}
+                {errors.email?.type === 'pattern' && <p>Este correo electrónico es inválido.</p>}
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>Cargo</Form.Label>
@@ -264,9 +249,7 @@ export const ModalEditProfile = (props: any) => {
                     required: 'El cargo no debe estar en blanco.'
                   }}
                 />
-                {errors.charge?.type === 'required' && (
-                  <small>El cargo no debe estar vacío.</small>
-                )}
+                {errors.charge?.type === 'required' && <small>El cargo no debe estar vacío.</small>}
               </Form.Group>
             </Form.Row>
             <Form.Row>
@@ -295,10 +278,7 @@ export const ModalEditProfile = (props: any) => {
             </Form.Row>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              className={`btn-${userInfo.perfil}`}
-              type="submit"
-              disabled={!canSave}>
+            <Button className={`btn-${userInfo.perfil}`} type="submit" disabled={!canSave}>
               Guardar
             </Button>
             <Button variant="secondary" onClick={exit}>

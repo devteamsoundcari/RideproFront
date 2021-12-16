@@ -11,7 +11,9 @@ import {
   API_REQUEST_DOCUMENT_UPLOAD,
   API_REQUEST_BILLS,
   API_REQUEST_INSTRUCTORS_UPDATE,
-  API_REQUEST_PROVIDERS_UPDATE
+  API_REQUEST_PROVIDERS_UPDATE,
+  API_REQUEST_INSTRUCTOR_UPDATE,
+  API_REQUEST_PROVIDER_UPDATE
 } from '../utils';
 
 export const SingleRequestContext = createContext('' as any);
@@ -133,11 +135,25 @@ export const SingleRequestContextProvider = (props) => {
   const [requestTrackOpt2, setRequestTrackOpt2] = useState(null);
   const [requestDateOpt2, setRequestDateOpt2] = useState(null);
 
+  const resetState = () => {
+    setRequestDocuments([]);
+    setRequestDrivers([]);
+    setRequestDriversReports([]);
+    setRequestBills([]);
+    setRequestInstructors([]);
+    setRequestProviders([]);
+    setRequestTrackOpt1(null);
+    setRequestDateOpt1(null);
+    setRequestTrackOpt2(null);
+    setRequestDateOpt2(null);
+  };
+
   // ==================== SINGLE REQUEST  ======================
   const getSingleRequest = async (id: number) => {
     setLoadingRequest(true);
     try {
       const response = await apiClient.get(`${API_SINGLE_REQUEST}${id}`);
+      resetState();
       setCurrentRequest(response.data);
       setRequestTrackOpt1(response.data.optional_place1);
       setRequestTrackOpt2(response.data.optional_place2);
@@ -351,6 +367,21 @@ export const SingleRequestContextProvider = (props) => {
     }
   };
 
+  const updateRequestInstructorFares = async (data, instructorId) => {
+    setLoadingInstructors(true);
+    try {
+      const response = await apiClient.patch(
+        `${API_REQUEST_INSTRUCTOR_UPDATE}${instructorId}/`,
+        data
+      );
+      setLoadingInstructors(false);
+      return response;
+    } catch (error) {
+      setLoadingInstructors(false);
+      return error;
+    }
+  };
+
   // ====================== UPDATE PROVIDERS OF REQUEST ================
   const updateRequestProviders = (payload) => {
     setLoadingProviders(true);
@@ -388,6 +419,18 @@ export const SingleRequestContextProvider = (props) => {
       setRequestProviders([]);
       await getSingleRequest(requestId);
       return response.data;
+    } catch (error) {
+      setLoadingProviders(false);
+      return error;
+    }
+  };
+
+  const updateRequestProvidersFares = async (data, providerId) => {
+    setLoadingProviders(true);
+    try {
+      const response = await apiClient.patch(`${API_REQUEST_PROVIDER_UPDATE}${providerId}/`, data);
+      setLoadingProviders(false);
+      return response;
     } catch (error) {
       setLoadingProviders(false);
       return error;
@@ -436,7 +479,9 @@ export const SingleRequestContextProvider = (props) => {
           updateRequestInstructors,
           updateRequestProviders,
           deleteRequestInstructor,
-          deleteRequestProvider
+          deleteRequestProvider,
+          updateRequestInstructorFares,
+          updateRequestProvidersFares
         } as any
       }>
       {props.children}

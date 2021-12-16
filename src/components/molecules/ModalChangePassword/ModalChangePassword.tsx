@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Modal, Col, Form, Spinner, Button } from 'react-bootstrap';
 import { changePassword } from '../../../controllers/apiRequests';
-import RegularExpressions from '../../../utils/RegularExpressions';
-import { useProfile } from '../../../utils';
+import { useProfile, regularExpressions } from '../../../utils';
 
 export const ModalChangePassword = (props: any) => {
   const [profile] = useProfile();
@@ -111,9 +110,7 @@ export const ModalChangePassword = (props: any) => {
       <>
         <Modal.Header>Error</Modal.Header>
         <Modal.Body>
-          <h4>
-            Tu contraseña actual introducida es incorrecta. Intenta nuevamente.
-          </h4>
+          <h4>Tu contraseña actual introducida es incorrecta. Intenta nuevamente.</h4>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="success" onClick={hideConfirmationModal}>
@@ -156,7 +153,7 @@ export const ModalChangePassword = (props: any) => {
                 control={control}
                 rules={{
                   required: true,
-                  pattern: RegularExpressions.password
+                  pattern: regularExpressions.password
                 }}
               />
               {errors.newPassword?.type === 'required' && (
@@ -164,8 +161,8 @@ export const ModalChangePassword = (props: any) => {
               )}
               {errors.newPassword?.type === 'pattern' && (
                 <small>
-                  La contraseña debe tener ocho caracteres como mínimo y debe
-                  incluir un número y un caracter especial (@$!%*?&).
+                  La contraseña debe tener ocho caracteres como mínimo y debe incluir un número y un
+                  caracter especial (@$!%*?&).
                 </small>
               )}
             </Form.Group>
