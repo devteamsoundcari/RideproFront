@@ -13,6 +13,17 @@ const sendEmail = async (data) => {
   return true;
 };
 
+const sendEmailMG = async (data) => {
+  await axios({
+    method: 'POST',
+    url: `${process.env.REACT_APP_MAILER_URL}/api/newEmail`,
+    data
+  }).catch((err) => {
+    console.error(err.response);
+  });
+  return true;
+};
+
 /* =================================  PASSWORD RESET  ===================================== */
 
 const passwordReset = async (data) => {
@@ -1264,5 +1275,6 @@ export {
   createCompany,
   createSale,
   sendInvoice,
-  getFilteredDrivers
+  getFilteredDrivers,
+  sendEmailMG
 };

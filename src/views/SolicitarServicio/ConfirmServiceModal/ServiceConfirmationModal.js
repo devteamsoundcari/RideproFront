@@ -1,19 +1,19 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Modal, Button, Spinner, Table } from "react-bootstrap";
-import { FaCheckCircle } from "react-icons/fa";
-import { AiOutlineWarning } from "react-icons/ai";
-import { Form } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
-import { AuthContext } from "../../../contexts/AuthContext";
-import { RequestsContext } from "../../../contexts/RequestsContext";
-import { ParticipantsContext } from "../../../contexts/ParticipantsContext";
+import React, { useState, useContext, useEffect } from 'react';
+import { Modal, Button, Spinner, Table } from 'react-bootstrap';
+import { FaCheckCircle } from 'react-icons/fa';
+import { AiOutlineWarning } from 'react-icons/ai';
+import { Form } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import { AuthContext } from '../../../contexts/AuthContext';
+import { RequestsContext } from '../../../contexts/RequestsContext';
+import { ParticipantsContext } from '../../../contexts/ParticipantsContext';
 import {
   createRequest,
   createDriver,
-  sendEmail,
-} from "../../../controllers/apiRequests";
-import "./ServiceConfirmationModal.scss";
-import { formatAMPM, dateFormatter } from "../../../utils/helpFunctions";
+  sendEmailMG
+} from '../../../controllers/apiRequests';
+import './ServiceConfirmationModal.scss';
+import { formatAMPM, dateFormatter } from '../../../utils/helpFunctions';
 
 const ConfirmServiceModal = (props) => {
   const history = useHistory();
@@ -27,22 +27,20 @@ const ConfirmServiceModal = (props) => {
     setRegisteredParticipantsContext,
     unregisteredParticipantsContext,
     setUnregisteredParticipantsContext,
-    allParticipantsInfoContext,
+    allParticipantsInfoContext
   } = useContext(ParticipantsContext);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSuccessPropmt, setShowSuccessPrompt] = useState(false);
   const [registeredParticipants, setRegisteredParticipants] = useState([]);
-  const [
-    alreadyRegisteredParticipants,
-    setAlreadyRegisteredParticipants,
-  ] = useState([]);
+  const [alreadyRegisteredParticipants, setAlreadyRegisteredParticipants] =
+    useState([]);
   const [unregisteredParticipants, setUnregisteredParticipants] = useState([]);
   const [displayData, setDisplayData] = useState(false);
   const [newToRegister, setNewToRegister] = useState(
     participantsToRegisterContext
   );
   const [rides, setRides] = useState(props.rides);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
 
   const isParticipantRegistered = (participant) => {
     const registeredIDs = allParticipantsInfoContext.map((p) => {
@@ -66,14 +64,14 @@ const ConfirmServiceModal = (props) => {
           if (!participant.isRegistered) {
             setAlreadyRegisteredParticipants((current) => [
               ...current,
-              participant,
+              participant
             ]);
           }
           setRegisteredParticipants((current) => [
             ...current,
             allParticipantsInfoContext.find(
               (p) => p.official_id === participant.official_id
-            ),
+            )
           ]);
         } else {
           setUnregisteredParticipants((current) => [...current, participant]);
@@ -137,16 +135,16 @@ const ConfirmServiceModal = (props) => {
         service: props.service.id,
         customer: userInfoContext,
         municipality: props.place.city.id,
-        place: "na",
+        place: 'na',
         track: props.place.track.id,
         start_time: props.date.date,
         finish_time: props.date.date,
         company: userInfoContext.company,
         spent_credit: rides,
         drivers: driversIDs,
-        accept_msg: comment !== "" ? comment : "na",
+        accept_msg: comment !== '' ? comment : 'na',
         new_request: 1,
-        fare_track: 0.0,
+        fare_track: 0.0
       };
       // THEN CREATE THE SERVICE
       let res = await createRequest(data);
@@ -160,7 +158,7 @@ const ConfirmServiceModal = (props) => {
         getRequestsList();
         setUserInfoContext({
           ...userInfoContext,
-          credit: res.creditDecreasingResponse.data.credit,
+          credit: res.creditDecreasingResponse.data.credit
         });
 
         let emailParticipants = unregisteredParticipantsContext.concat(
@@ -169,9 +167,9 @@ const ConfirmServiceModal = (props) => {
 
         const payload = {
           id: res.response.data.id,
-          emailType: "newRequest",
-          subject: "Solicitud exitosa ⌛",
-          email: userInfoContext.email,
+          template: 'new_request',
+          subject: 'Solicitud exitosa ⌛',
+          to: userInfoContext.email,
           name: userInfoContext.name,
           date: data.start_time,
           spent_credits: data.spent_credit,
@@ -179,11 +177,11 @@ const ConfirmServiceModal = (props) => {
           service: props.service.name,
           municipality: {
             city: props.place.city.name,
-            department: props.place.department.name,
-          },
+            department: props.place.department.name
+          }
         };
-        console.log('payload', payload)
-        await sendEmail(payload); // SEND SERVICE REQUESTED EMAIL TO USER
+
+        await sendEmailMG(payload); // SEND SERVICE REQUESTED EMAIL TO USER
       }
     });
   };
@@ -191,7 +189,7 @@ const ConfirmServiceModal = (props) => {
   const handleOK = () => {
     props.setShow(false);
     history.push({
-      pathname: "/cliente/historial",
+      pathname: '/cliente/historial'
     });
   };
 
@@ -231,7 +229,7 @@ const ConfirmServiceModal = (props) => {
   };
 
   useEffect(() => {
-    if (props.service.service_type === "Persona") {
+    if (props.service.service_type === 'Persona') {
       setRides(props.service.ride_value * newToRegister.length);
     } else {
       setRides(props.service.ride_value);
@@ -259,31 +257,31 @@ const ConfirmServiceModal = (props) => {
               <strong>Fecha: </strong>
               {props.date && props.date.date
                 ? dateFormatter(props.date.date)
-                : "None"}
+                : 'None'}
             </li>
             <li>
               <strong>Hora: </strong>
               {props.date && props.date.date
                 ? formatAMPM(props.date.date)
-                : "None"}
+                : 'None'}
             </li>
             <li>
               <strong>Ciudad: </strong>
               {props.place.place && `"${props.place.place}" - `}
               {props.place.city && props.place.city.name
                 ? props.place.city.name
-                : "None"}{" "}
+                : 'None'}{' '}
               (
               {props.place.department && props.place.department.name
                 ? props.place.department.name
-                : "None"}
+                : 'None'}
               )
             </li>
             <li>
               <strong>Lugar: </strong>
               {props.place.track.name
                 ? `Mi pista (${props.place.track.name})`
-                : "Pista ridepro"}
+                : 'Pista ridepro'}
             </li>
             <li>
               <strong>Rides utilizados: </strong>
@@ -293,7 +291,7 @@ const ConfirmServiceModal = (props) => {
           <hr />
           <strong>
             Participantes ({newToRegister.length}
-            ):{" "}
+            ):{' '}
           </strong>
           <Table striped bordered hover size="sm">
             <thead>
@@ -360,7 +358,7 @@ const ConfirmServiceModal = (props) => {
             {alreadyRegisteredParticipants.map((participant, idx) => {
               return (
                 <li key={idx}>
-                  {participant.official_id} {participant.first_name}{" "}
+                  {participant.official_id} {participant.first_name}{' '}
                   {participant.last_name} ({participant.email})
                 </li>
               );
@@ -388,8 +386,7 @@ const ConfirmServiceModal = (props) => {
     <Modal
       show={props.show}
       onHide={showSuccessPropmt ? handleOK : () => props.setShow(false)}
-      className="modal-confirm-service"
-    >
+      className="modal-confirm-service">
       {showSpinner && loader()}
       {alreadyRegisteredParticipants.length > 0 && displayErrorParticipants()}
       {displayData && requestResume()}
