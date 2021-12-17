@@ -402,51 +402,51 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                     providers.forEach(async (prov) => {
                       let providerPayload = {
                         id: requestId,
-                        emailType: 'requestConfirmedProvider',
+                        template: 'request_confirmed_provider',
                         subject: 'Evento confirmado ✔️',
-                        email: prov.providers.email,
+                        to: prov.providers.email,
                         name: prov.providers.name,
                         instructor: instructors[0].instructors,
                         hash: prov.hash,
                         firstPayment: prov.first_payment,
-                        date: date,
+                        date: `${dateFormatter(date)}, ${formatAMPM(date)}`,
                         track: track
                       };
-                      await sendEmail(providerPayload);
+                      await sendEmailMG(providerPayload);
                     });
 
                     // Send instructors email
                     instructors.forEach(async (ins) => {
                       let instructorPayload = {
                         id: requestId,
-                        emailType: 'requestConfirmedInstructor',
+                        template: 'request_confirmed_instructor',
                         subject: 'Evento confirmado ✔️',
-                        email: ins.instructors.email,
+                        to: ins.instructors.email,
                         name: ins.instructors.first_name,
                         hash: ins.hash,
                         firstPayment: ins.first_payment,
-                        date: date,
+                        date: `${dateFormatter(date)}, ${formatAMPM(date)}`,
                         track: track,
                         participantes: participants,
                         documents: selectedDocuments,
                         service: service
                       };
-                      await sendEmail(instructorPayload);
+                      await sendEmailMG(instructorPayload);
                     });
 
                     // Send admin email
                     let adminPayload = {
                       id: requestId,
-                      emailType: 'requestConfirmedAdmin',
+                      template: 'request_confirmed_admin',
                       subject: 'Proveedores confirmados ✔️',
-                      email: 'soportealiados@ridepro.co',
-                      date: date,
+                      to: 'soportealiados@ridepro.co',
+                      date: `${dateFormatter(date)}, ${formatAMPM(date)}`,
                       track: track,
                       trackFirstPayment: trackFP,
                       providers: providers,
                       instructors: instructors
                     };
-                    await sendEmail(adminPayload);
+                    await sendEmailMG(adminPayload);
 
                     setLoading(false);
 
