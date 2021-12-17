@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { CardDeck, Row, Col } from 'react-bootstrap';
 import SingleFile from './SingleFile/SingleFile';
 import { SingleRequestContext } from '../../../contexts/';
@@ -7,16 +7,7 @@ import './DocumentsSection.scss';
 type DocumentsProps = any;
 
 const DocumentsSection: React.FC<DocumentsProps> = ({ requestId }) => {
-  const { getRequestDocuments, requestDocuments } =
-    useContext(SingleRequestContext);
-
-  const fetchRequestDocuments = async () =>
-    await getRequestDocuments(requestId);
-
-  useEffect(() => {
-    fetchRequestDocuments();
-    //eslint-disable-next-line
-  }, [requestId]);
+  const { getRequestDocuments, requestDocuments } = useContext(SingleRequestContext);
 
   return (
     <div className="card-body pt-0 mx-25 documents-section">
@@ -34,7 +25,7 @@ const DocumentsSection: React.FC<DocumentsProps> = ({ requestId }) => {
                   document={document}
                   key={idx}
                   requestId={requestId}
-                  onUpdate={() => fetchRequestDocuments()}
+                  onUpdate={() => getRequestDocuments(requestId)}
                 />
               );
             })}

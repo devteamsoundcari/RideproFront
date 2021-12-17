@@ -10,23 +10,19 @@ import PlaceDateSection from './PlaceDateSection/PlaceDateSection';
 import DocumentsSection from './DocumentsSection/DocumentsSection';
 import ControlsSection from './ControlsSection/ControlsSection';
 import InvoiceSection from './InvoiceSection/InvoiceSection';
-import {
-  dateAMPM,
-  dateDDMMYYY,
-  dateDDMMYYYnTime,
-  PERFIL_ADMIN
-} from '../../utils';
+import { dateAMPM, dateDDMMYYY, dateDDMMYYYnTime, PERFIL_ADMIN } from '../../utils';
 import './AdminRequestId.scss';
 
 export const AdminRequestId = () => {
   const { requestId } = useParams() as any;
-  const { getSingleRequest, currentRequest, loadingRequest } =
+  const { getSingleRequest, currentRequest, loadingRequest, getRequestDocuments } =
     useContext(SingleRequestContext);
   const { userInfo } = useContext(AuthContext);
 
   const fetchRequest = async (id: string) => {
     try {
       await getSingleRequest(id);
+      await getRequestDocuments(id); // Load documents to have them ready
     } catch (error) {
       throw new Error('Error getting the request');
     }
@@ -40,9 +36,7 @@ export const AdminRequestId = () => {
   // ============ Listening Socket==================
   useEffect(() => {
     let token = localStorage.getItem('token');
-    let requestsSocket = new WebSocket(
-      `${process.env.REACT_APP_SOCKET_URL}?token=${token}`
-    );
+    let requestsSocket = new WebSocket(`${process.env.REACT_APP_SOCKET_URL}?token=${token}`);
     requestsSocket.addEventListener('open', () => {
       let payload = {
         action: 'subscribe_to_requests',
@@ -77,9 +71,7 @@ export const AdminRequestId = () => {
                     <div className="col-xl-8 col-md-12">
                       <div className="d-flex align-items-center justify-content-xl-end flex-wrap">
                         <div className="mr-3">
-                          <small className="text-muted">
-                            Fecha de creación:{' '}
-                          </small>
+                          <small className="text-muted">Fecha de creación: </small>
                           <span>
                             {currentRequest?.created_at &&
                               dateDDMMYYYnTime(currentRequest?.created_at)}
@@ -94,13 +86,11 @@ export const AdminRequestId = () => {
                       <span>{currentRequest?.service?.name}</span>
                       <br />
                       <span>
-                        {currentRequest?.start_time &&
-                          dateDDMMYYY(currentRequest?.start_time)}
+                        {currentRequest?.start_time && dateDDMMYYY(currentRequest?.start_time)}
                       </span>
                       <br />
                       <span>
-                        {currentRequest?.start_time &&
-                          dateAMPM(currentRequest?.start_time)}
+                        {currentRequest?.start_time && dateAMPM(currentRequest?.start_time)}
                       </span>
                       <br />
                       <span>
@@ -147,39 +137,29 @@ export const AdminRequestId = () => {
                           <div className="mb-1">
                             <small>Nombre:</small>
                             <br />
-                            <span>
-                              {currentRequest?.customer?.company?.name}
-                            </span>
+                            <span>{currentRequest?.customer?.company?.name}</span>
                           </div>
                           <div className="mb-1">
                             <small>Nit:</small>
                             <br />
-                            <span>
-                              {currentRequest?.customer?.company?.nit}
-                            </span>
+                            <span>{currentRequest?.customer?.company?.nit}</span>
                           </div>
                           <div className="mb-1">
                             <small>Arl:</small>
                             <br />
-                            <span>
-                              {currentRequest?.customer?.company?.arl}
-                            </span>
+                            <span>{currentRequest?.customer?.company?.arl}</span>
                           </div>
                         </Col>
                         <Col>
                           <div className="mb-1">
                             <small>Dirección:</small>
                             <br />
-                            <span>
-                              {currentRequest?.customer?.company?.address}
-                            </span>
+                            <span>{currentRequest?.customer?.company?.address}</span>
                           </div>
                           <div className="mb-1">
                             <small>Tel:</small>
                             <br />
-                            <span>
-                              {currentRequest?.customer?.company?.phone}
-                            </span>
+                            <span>{currentRequest?.customer?.company?.phone}</span>
                           </div>
                         </Col>
                       </Row>

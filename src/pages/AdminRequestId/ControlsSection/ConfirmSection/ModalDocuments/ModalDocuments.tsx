@@ -22,6 +22,7 @@ const ModalDocuments: React.FC<ModalDocumentsProps> = ({ handleClose, requestId 
   } = useContext(SingleRequestContext);
   const [profile] = useProfile();
   const [selectedDocuments, setSelectedDocuments] = useState<any>([]);
+  const [newSelectedDocuments, setNewSelectedDocuments] = useState<any>([]);
 
   useEffect(() => {
     getAllDocuments();
@@ -71,13 +72,16 @@ const ModalDocuments: React.FC<ModalDocumentsProps> = ({ handleClose, requestId 
   const selectRow: SelectRowProps<any> = {
     mode: 'checkbox',
     clickToSelect: true,
-    bgColor: 'lightgreen' as any,
-    selected: selectDoc(),
+    hideSelectAll: true,
+    nonSelectable: selectDoc(),
+    nonSelectableStyle: { backgroundColor: 'palegreen' },
+    bgColor: 'springgreen' as any,
+    // selected: newSelectedDocuments,
     onSelect: (row, isSelect) => {
       if (isSelect) {
-        setSelectedDocuments((oldArr) => [...oldArr, row]);
+        setNewSelectedDocuments((oldArr) => [...oldArr, row]);
       } else {
-        setSelectedDocuments(selectedDocuments.filter((item) => item.id !== row.id));
+        setNewSelectedDocuments(selectedDocuments.filter((item) => item.id !== row.id));
       }
     }
   };
@@ -94,7 +98,7 @@ const ModalDocuments: React.FC<ModalDocumentsProps> = ({ handleClose, requestId 
         try {
           const res = await attachRequestDocuments({
             request: requestId,
-            documents: selectedDocuments.map((doc) => doc.id)
+            documents: newSelectedDocuments.map((doc) => doc.id)
           });
           if (res.status === 201) {
             swal('Perfecto!', 'Documentos adjuntados correctamente!', 'success');
@@ -159,7 +163,7 @@ const ModalDocuments: React.FC<ModalDocumentsProps> = ({ handleClose, requestId 
                   <Button
                     size="sm"
                     variant="primary"
-                    disabled={!selectedDocuments.length || loadingDocuments}
+                    disabled={!newSelectedDocuments.length || loadingDocuments}
                     onClick={() => handleSaveDocs()}>
                     {loadingDocuments ? (
                       <>

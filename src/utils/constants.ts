@@ -1,5 +1,6 @@
 // APP
 export const COMPANY_NAME = 'ridepro';
+export const COMPANY_EMAIL = 'soportealiados@ridepro.co';
 export const HASH_KEYWORD = 'motorRidepro';
 export const APP_LOGIN_URL = '/login';
 
