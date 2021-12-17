@@ -8,10 +8,12 @@ import {
   updateProviderFares,
   updateRequest,
   updateRequestDocuments,
-  sendEmail
+  sendEmail,
+  sendEmailMG
 } from '../../../../controllers/apiRequests';
 import swal from 'sweetalert';
 import ModalDocuments from './ModalDocuments/ModalDocuments';
+import { dateFormatter, formatAMPM } from '../../../../utils/helpFunctions';
 
 type ConfirmSectionProps = any;
 
@@ -342,8 +344,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
             onClick={() => {
               swal({
                 title: '¿Estas seguro?',
-                text:
-                  'Confirmo que he llamado a cada proveedor para confirmar el evento. Tambien selecioné los documentos necesarios, compré tiquete, hoteles o demás gasto necesario',
+                text: 'Confirmo que he llamado a cada proveedor para confirmar el evento. Tambien selecioné los documentos necesarios, compré tiquete, hoteles o demás gasto necesario',
                 icon: 'warning',
                 buttons: [
                   'No, dejame revisar',
@@ -385,16 +386,16 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                     ) {
                       let trackPayload = {
                         id: requestId,
-                        emailType: 'requestConfirmedTrack',
+                        template: 'request_confirmed_track',
                         subject: 'Evento confirmado ✔️',
-                        email: track.contact_email,
+                        to: track.contact_email,
                         name: track.contact_name,
                         instructor: instructors[0].instructors,
                         hash: track.hash,
                         firstPayment: trackFP,
-                        date: date
+                        date: `${dateFormatter(date)}, ${formatAMPM(date)}`
                       };
-                      await sendEmail(trackPayload);
+                      await sendEmailMG(trackPayload);
                     }
 
                     // Send providers email
