@@ -1,4 +1,6 @@
 // APP
+export const COMPANY_NAME = 'ridepro';
+export const HASH_KEYWORD = 'motorRidepro';
 export const APP_LOGIN_URL = '/login';
 
 // API
@@ -24,6 +26,8 @@ export const API_INSTRUCTORS_SEARCH = '/api/v1/instructors?search=';
 export const API_ALL_INSTRUCTORS = '/api/v1/instructors/';
 export const API_PROVIDERS_SEARCH = '/api/v1/providers?search=';
 export const API_ALL_PROVIDERS = '/api/v1/providers/';
+export const API_ALL_DOCUMENTS = '/api/v1/documents/';
+export const API_UPDATE_REQUEST_DOCUMENTS = '/api/v1/request_documents/';
 
 // Auth
 export const API_LOGIN_URL = '/rest-auth/login/';

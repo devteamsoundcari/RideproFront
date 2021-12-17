@@ -25,8 +25,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({ requestId, handleCl
     currentRequest,
     requestInstructors,
     setRequestInstructors,
-    addRequestInstructors,
-    updateRequestInstructors
+    addRequestInstructors
   } = useContext(SingleRequestContext);
   const { getInstructorsByCity, instructors, setInstructors, loadingInstructors } =
     useContext(InstructorsContext);

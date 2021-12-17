@@ -1,19 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { SearchFiltersContextProvider } from '../../../contexts';
 import { FaPowerOff, FaUser, FaRegBuilding } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
-import {
-  useProfile,
-  PERFIL_CLIENTE,
-  PERFIL_SUPERCLIENTE
-} from '../../../utils';
-import { AuthContext, RequestsContext } from '../../../contexts';
+import { useProfile, PERFIL_CLIENTE, PERFIL_SUPERCLIENTE } from '../../../utils';
+import { AuthContext, RequestsContext, SingleRequestContext } from '../../../contexts';
 import { Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
-import {
-  ModalEditProfile,
-  ModalChangePassword,
-  ModalEditCompany
-} from '../../molecules';
+import { ModalEditProfile, ModalChangePassword, ModalEditCompany } from '../../molecules';
 import { FiltersInput } from '../FiltersInput/FiltersInput';
 import { SearchResults } from '../SearchResults/SearchResults';
 import './MyNavbar.scss';
@@ -25,9 +17,20 @@ export const MyNavbar = () => {
   const { userInfo, logOutUser, loadingAuth } = useContext(AuthContext);
   const [profile] = useProfile();
   const { isLoadingRequests } = useContext(RequestsContext);
+  const {
+    loadingRequest,
+    loadingProviders,
+    loadingDrivers,
+    loadingReport,
+    loadingDocuments,
+    loadingBills,
+    loadingInstructors,
+    uploadingDocument
+  } = useContext(SingleRequestContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
 
   const logOut = () => logOutUser();
 
@@ -40,6 +43,32 @@ export const MyNavbar = () => {
       }
     });
   });
+
+  useEffect(() => {
+    setLocalLoading(
+      loadingAuth ||
+        isLoadingRequests ||
+        loadingRequest ||
+        loadingProviders ||
+        loadingDrivers ||
+        loadingReport ||
+        loadingDocuments ||
+        loadingBills ||
+        loadingInstructors ||
+        uploadingDocument
+    );
+  }, [
+    loadingRequest,
+    loadingProviders,
+    loadingDrivers,
+    loadingReport,
+    loadingDocuments,
+    loadingBills,
+    loadingInstructors,
+    uploadingDocument,
+    loadingAuth,
+    isLoadingRequests
+  ]);
 
   const hideProfileEditModal = () => {
     setShowProfileEditModal(false);
@@ -61,8 +90,7 @@ export const MyNavbar = () => {
   };
 
   const shouldRenderFilters =
-    userInfo.profile === PERFIL_CLIENTE.profile ||
-    userInfo.profile === PERFIL_SUPERCLIENTE.profile;
+    userInfo.profile === PERFIL_CLIENTE.profile || userInfo.profile === PERFIL_SUPERCLIENTE.profile;
 
   return (
     <>
@@ -87,12 +115,10 @@ export const MyNavbar = () => {
                   alignRight
                   title={`${userInfo.first_name} ${userInfo.last_name}`}
                   id="basic-nav-dropdown">
-                  <NavDropdown.Item
-                    onClick={() => setShowProfileEditModal(true)}>
+                  <NavDropdown.Item onClick={() => setShowProfileEditModal(true)}>
                     <FaUser /> Perfil
                   </NavDropdown.Item>
-                  <NavDropdown.Item
-                    onClick={() => setShowCompanyEditModal(true)}>
+                  <NavDropdown.Item onClick={() => setShowCompanyEditModal(true)}>
                     <FaRegBuilding /> Compañia
                   </NavDropdown.Item>
                   <NavDropdown.Item onClick={logOut}>
@@ -107,12 +133,11 @@ export const MyNavbar = () => {
               </div>
             </Nav>
           </Navbar.Collapse>
-          {loadingAuth ||
-            (isLoadingRequests && (
-              <div className="loader">
-                <div className={`loaderBar bg-${profile}`} />
-              </div>
-            ))}
+          {localLoading && (
+            <div className="loader">
+              <div className={`loaderBar bg-${profile}`} />
+            </div>
+          )}
         </Navbar>
 
         {shouldRenderFilters && <SearchResults />}
@@ -125,11 +150,7 @@ export const MyNavbar = () => {
         />
       )}
       {showPasswordChangeModal && (
-        <ModalChangePassword
-          show
-          onHide={hideAll}
-          onExit={hidePasswordChangeModal}
-        />
+        <ModalChangePassword show onHide={hideAll} onExit={hidePasswordChangeModal} />
       )}
       {showCompanyEditModal && (
         <ModalEditCompany show onHide={() => setShowCompanyEditModal(false)} />

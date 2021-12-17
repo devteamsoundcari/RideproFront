@@ -211,16 +211,7 @@ export default function RightSection(props: any) {
             </div>
             {currentRequest?.status?.step >=
               PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA.step && (
-              <ConfirmSection
-                participants={[]}
-                track={currentRequest?.track}
-                fare_track={currentRequest?.fare_track}
-                fisrt_payment={currentRequest?.f_p_track}
-                requestId={requestId}
-                status={currentRequest?.status}
-                date={currentRequest?.start_time}
-                service={currentRequest?.service}
-              />
+              <ConfirmSection requestId={requestId} />
             )}
 
             {currentRequest?.status?.step

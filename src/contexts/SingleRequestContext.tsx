@@ -13,7 +13,9 @@ import {
   API_REQUEST_INSTRUCTORS_UPDATE,
   API_REQUEST_PROVIDERS_UPDATE,
   API_REQUEST_INSTRUCTOR_UPDATE,
-  API_REQUEST_PROVIDER_UPDATE
+  API_REQUEST_PROVIDER_UPDATE,
+  API_ALL_DOCUMENTS,
+  API_UPDATE_REQUEST_DOCUMENTS
 } from '../utils';
 
 export const SingleRequestContext = createContext('' as any);
@@ -134,6 +136,7 @@ export const SingleRequestContextProvider = (props) => {
   const [requestDateOpt1, setRequestDateOpt1] = useState(null);
   const [requestTrackOpt2, setRequestTrackOpt2] = useState(null);
   const [requestDateOpt2, setRequestDateOpt2] = useState(null);
+  const [allDocuments, setAllDocuments] = useState<any>([]);
 
   const resetState = () => {
     setRequestDocuments([]);
@@ -437,6 +440,52 @@ export const SingleRequestContextProvider = (props) => {
     }
   };
 
+  // ===================== GET ALL DOCUMENTS AVAILABLE ============
+
+  const getAllDocuments = async (page?: string) => {
+    setLoadingDocuments(true);
+    if (page) {
+      try {
+        const response = await apiClient.get(page);
+        setAllDocuments((oldArr: any) => [...oldArr, ...response.data.results]);
+        setLoadingDocuments(false);
+        if (response.data.next) {
+          return await getAllDocuments(response.data.next);
+        }
+      } catch (error) {
+        setLoadingDocuments(false);
+        throw new Error(error as string);
+      }
+    } else {
+      setAllDocuments([]);
+      try {
+        const response = await apiClient.get(API_ALL_DOCUMENTS);
+        setAllDocuments((oldArr: any) => [...oldArr, ...response.data.results]);
+        if (response.data.next) {
+          return await getAllDocuments(response.data.next);
+        }
+        setLoadingDocuments(false);
+      } catch (error) {
+        setLoadingDocuments(false);
+        throw new Error(error as string);
+      }
+    }
+  };
+
+  // =================  ATTACH REQUEST DOCUMENTS ====================
+  const attachRequestDocuments = async (data) => {
+    setLoadingDocuments(true);
+    try {
+      const response = await apiClient.post(API_UPDATE_REQUEST_DOCUMENTS, data);
+      setLoadingDocuments(false);
+      await getSingleRequest(data.request);
+      return response;
+    } catch (error) {
+      setLoadingDocuments(false);
+      throw new Error('No se pudieron adjuntar los documentos al servicio');
+    }
+  };
+
   return (
     <SingleRequestContext.Provider
       value={
@@ -481,7 +530,10 @@ export const SingleRequestContextProvider = (props) => {
           deleteRequestInstructor,
           deleteRequestProvider,
           updateRequestInstructorFares,
-          updateRequestProvidersFares
+          updateRequestProvidersFares,
+          getAllDocuments,
+          allDocuments,
+          attachRequestDocuments
         } as any
       }>
       {props.children}
