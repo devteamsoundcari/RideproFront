@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 import { allStatus } from '../../../allStatus';
@@ -8,9 +8,11 @@ import { PERFIL_OPERACIONES, PERFIL_TECNICO } from '../../../utils';
 import ModalPlaceDate from './ModalPlaceDate/ModalPlaceDate';
 import { useParams } from 'react-router-dom';
 import swal from 'sweetalert';
+import ModalOC from './ModalOC/ModalOC';
 import ModalInstructors from './ModalInstructors/ModalInstructors';
 import ModalProviders from './ModalProviders/ModalProviders';
 import ConfirmSection from './ConfirmSection/ConfirmSection';
+import { PERFIL_ADMIN } from '../../../utils/constants';
 
 export interface IRightSectionProps {}
 
@@ -31,10 +33,13 @@ export default function RightSection(props: any) {
   const [showModalOC, setShowModalOC] = useState(false);
   const [showModalUploadReports, setShowModalUploadReports] = useState(false);
   const [showModalInvoice, setShowModalInvoice] = useState(false);
-  const [areDocumentsOk] = useState(
-    requestDocuments.filter((item) => item.file === null).length ? false : true
-  );
-  const [areReportsOk] = useState(requestDriversReports.length === requestDrivers.length);
+  const [areDocumentsOk, setAreDocumentsOk] = useState(false);
+  const [areReportsOk, setAreReportsOk] = useState(false);
+
+  useEffect(() => {
+    setAreDocumentsOk(requestDocuments.filter((item) => item.file === null).length);
+    setAreReportsOk(requestDriversReports.length !== requestDrivers.length);
+  }, [requestDocuments, requestDrivers, requestDriversReports]);
 
   const checkDisabled = () => {
     if (
@@ -214,46 +219,45 @@ export default function RightSection(props: any) {
               <ConfirmSection requestId={requestId} />
             )}
 
-            {currentRequest?.status?.step
-              ? currentRequest?.status?.step > 3 && (
-                  <div className="card invoice-action-wrapper mt-2 shadow-none border">
-                    <div className="card-body">
-                      <div className="invoice-action-btn">
-                        <Button
-                          className="btn-block btn-success"
-                          disabled={
-                            areDocumentsOk && currentRequest?.status?.step < 6 && areReportsOk
-                              ? false
-                              : true
-                          }
-                          onClick={() => setShowModalOC(true)}>
-                          <span>Enviar OC</span>
-                        </Button>
-                      </div>
-                    </div>
+            {currentRequest?.status?.step >
+              PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA.step && (
+              <div className="card invoice-action-wrapper mt-2 shadow-none border">
+                <div className="card-body">
+                  <div className="invoice-action-btn">
+                    <Button
+                      className="btn-block btn-success"
+                      disabled={
+                        areDocumentsOk &&
+                        areReportsOk &&
+                        currentRequest?.status?.step <
+                          PERFIL_OPERACIONES.steps.STATUS_SERVICIO_FINALIZADO.step
+                      }
+                      onClick={() => setShowModalOC(true)}>
+                      <span>Enviar OC</span>
+                    </Button>
                   </div>
-                )
-              : ''}
+                </div>
+              </div>
+            )}
 
-            {/* {showModalOC && (
-          <ModalOC
-            handleClose={() => setShowModalOC(false)}
-            instructors={instructors}
-            providers={providers}
-            date={currentRequest?.start_time}
-            track={currentRequest?.track}
-            fare_track={currentRequest?.fare_track}
-            fisrt_payment={currentRequest?.f_p_track}
-            requestId={requestId}
-            status={currentRequest?.status}
-            service={currentRequest?.service}
-          />
-        )} */}
+            {showModalOC && (
+              <ModalOC
+                handleClose={() => setShowModalOC(false)}
+                // instructors={instructors}
+                // providers={providers}
+                date={currentRequest?.start_time}
+                track={currentRequest?.track}
+                fare_track={currentRequest?.fare_track}
+                fisrt_payment={currentRequest?.f_p_track}
+                requestId={requestId}
+                status={currentRequest?.status}
+                service={currentRequest?.service}
+              />
+            )}
           </React.Fragment>
         )}
       {userInfo.profile === PERFIL_TECNICO.profile &&
-      currentRequest?.status?.step &&
-      currentRequest?.status?.step > 3 ? (
+      currentRequest?.status?.step > PERFIL_TECNICO.steps.STATUS_PROGRAMACION_ACEPTADA.step ? (
         <React.Fragment>
           <div className="card invoice-action-wrapper mt-2 shadow-none border">
             <div className="card-body">
@@ -261,7 +265,9 @@ export default function RightSection(props: any) {
                 <Button
                   variant="light"
                   className="btn-block"
-                  disabled={currentRequest?.status?.step < 4 ? true : false}
+                  disabled={
+                    currentRequest?.status?.step < PERFIL_TECNICO.steps.STATUS_GENERAR_INFORMES.step
+                  }
                   onClick={() => setShowModalUploadReports(true)}>
                   <span>Generar Informes </span>
                 </Button>
@@ -321,8 +327,9 @@ export default function RightSection(props: any) {
       ) : (
         ''
       )}
-      {userInfo.profile === 1 && currentRequest?.status?.step
-        ? currentRequest?.status?.step > 5 && (
+      {userInfo.profile === PERFIL_ADMIN.profile && currentRequest?.status?.step
+        ? currentRequest?.status?.step >
+            PERFIL_ADMIN.steps.STATUS_ESPERANDO_RECEPCION_DOCUMENTOS.step && (
             <div className="card invoice-action-wrapper mt-2 shadow-none border">
               <div className="card-body">
                 <div className="invoice-action-btn">
