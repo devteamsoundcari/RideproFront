@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Card, ListGroup } from 'react-bootstrap';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../../components/atoms';
 import { SingleRequestContext, AuthContext, TracksContext } from '../../../contexts';
-import { PERFIL_OPERACIONES, PERFIL_TECNICO } from '../../../utils';
+import { PERFIL_OPERACIONES, PERFIL_TECNICO, PERFIL_ADMIN } from '../../../utils';
 import ModalPlaceDate from './ModalPlaceDate/ModalPlaceDate';
 import { useParams } from 'react-router-dom';
 import swal from 'sweetalert';
@@ -12,7 +12,6 @@ import ModalOC from './ModalOC/ModalOC';
 import ModalInstructors from './ModalInstructors/ModalInstructors';
 import ModalProviders from './ModalProviders/ModalProviders';
 import ConfirmSection from './ConfirmSection/ConfirmSection';
-import { PERFIL_ADMIN } from '../../../utils/constants';
 
 export interface IRightSectionProps {}
 
@@ -33,12 +32,14 @@ export default function RightSection(props: any) {
   const [showModalOC, setShowModalOC] = useState(false);
   const [showModalUploadReports, setShowModalUploadReports] = useState(false);
   const [showModalInvoice, setShowModalInvoice] = useState(false);
-  const [areDocumentsOk, setAreDocumentsOk] = useState(false);
-  const [areReportsOk, setAreReportsOk] = useState(false);
+  const [documentsOk, setDocumentsOk] = useState(false);
+  const [reportsOk, setReportsOk] = useState(false);
 
   useEffect(() => {
-    setAreDocumentsOk(requestDocuments.filter((item) => item.file === null).length);
-    setAreReportsOk(requestDriversReports.length !== requestDrivers.length);
+    setDocumentsOk(requestDocuments.filter((item) => item?.file === null).length ? false : true);
+    setReportsOk(
+      requestDriversReports.filter((item) => item?.file !== null).length === requestDrivers.length
+    );
   }, [requestDocuments, requestDrivers, requestDriversReports]);
 
   const checkDisabled = () => {
@@ -223,13 +224,31 @@ export default function RightSection(props: any) {
               PERFIL_OPERACIONES.steps.STATUS_PROGRAMACION_ACEPTADA.step && (
               <div className="card invoice-action-wrapper mt-2 shadow-none border">
                 <div className="card-body">
+                  <ListGroup className="text-center">
+                    <ListGroup.Item className="py-1 text-sm">
+                      <small>Reportes</small>{' '}
+                      {reportsOk ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimes className="text-danger" />
+                      )}
+                    </ListGroup.Item>
+                    <ListGroup.Item className="py-1">
+                      <small>Documentos</small>{' '}
+                      {documentsOk ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimes className="text-danger" />
+                      )}
+                    </ListGroup.Item>
+                  </ListGroup>
                   <div className="invoice-action-btn">
                     <Button
                       className="btn-block btn-success"
                       disabled={
-                        areDocumentsOk &&
-                        areReportsOk &&
-                        currentRequest?.status?.step <
+                        !documentsOk ||
+                        !reportsOk ||
+                        currentRequest?.status.step >=
                           PERFIL_OPERACIONES.steps.STATUS_SERVICIO_FINALIZADO.step
                       }
                       onClick={() => setShowModalOC(true)}>
@@ -241,18 +260,7 @@ export default function RightSection(props: any) {
             )}
 
             {showModalOC && (
-              <ModalOC
-                handleClose={() => setShowModalOC(false)}
-                // instructors={instructors}
-                // providers={providers}
-                date={currentRequest?.start_time}
-                track={currentRequest?.track}
-                fare_track={currentRequest?.fare_track}
-                fisrt_payment={currentRequest?.f_p_track}
-                requestId={requestId}
-                status={currentRequest?.status}
-                service={currentRequest?.service}
-              />
+              <ModalOC handleClose={() => setShowModalOC(false)} requestId={requestId} />
             )}
           </React.Fragment>
         )}

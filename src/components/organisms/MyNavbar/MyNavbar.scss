@@ -1,5 +1,5 @@
 .navbar {
-  // transition: all 0.1s ease-in-out;
+  transition: 0.2s;
   .navbar-nav {
     a {
       font-size: 1rem;
@@ -55,6 +55,7 @@
   }
 }
 .nav-scrolled {
+  transition: 0.2s;
   opacity: 0.96;
   -webkit-box-shadow: 1px 5px 11px 0px rgba(0, 0, 0, 0.52);
   box-shadow: 1px 5px 11px 0px rgba(0, 0, 0, 0.52);

@@ -1,10 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-  AiFillDollarCircle,
-  AiFillCalendar,
-  AiOutlineHistory
-} from 'react-icons/ai';
+import { AiFillDollarCircle, AiFillCalendar, AiOutlineHistory } from 'react-icons/ai';
 import { GiTireTracks, GiThreeFriends } from 'react-icons/gi';
 import {
   FaPeopleCarry,
@@ -77,12 +73,12 @@ export const Sidebar = () => {
   };
 
   return (
-    <nav
-      className={`col-md-2 d-md-block bg-dark bg-${
-        profile || 'primary'
-      } sidebar pr-0 pl-0`}>
+    <nav className={`col-md-2 d-md-block bg-dark bg-${profile || 'primary'} sidebar pr-0 pl-0`}>
       <div className="sidebar-sticky">
         <div className="sidebar-brand">
+          <Badge variant="warning" id="version-badge">
+            BETA
+          </Badge>
           <img alt="RideproLogo" src={logo} className="mb-3" />
           <small style={{ fontSize: '12px' }} className="text-capitalize">
             {profile || 'desconocido'}
@@ -119,9 +115,7 @@ export const Sidebar = () => {
                 onClick={() => setShowContactModal(true)}>
                 <small>¿Sin créditos?</small>
               </Button>
-              {showContactModal && (
-                <ModalContact handleClose={() => setShowContactModal(false)} />
-              )}
+              {showContactModal && <ModalContact handleClose={() => setShowContactModal(false)} />}
             </React.Fragment>
           )}
         </ul>
@@ -132,9 +126,7 @@ export const Sidebar = () => {
               return (
                 <Link
                   to={url}
-                  className={`nav-link text-capitalize ${
-                    isLinkActive(url) && 'active'
-                  }`}
+                  className={`nav-link text-capitalize ${isLinkActive(url) && 'active'}`}
                   key={url}>
                   <Icon name={icon} className="mb-1 mr-2" />
                   {name}

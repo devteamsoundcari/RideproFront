@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Spinner, Table } from 'react-bootstrap';
 import SingleDriver from './SingleDriver/SingleDriver';
 import { SingleRequestContext } from '../../../contexts';
@@ -20,13 +20,14 @@ interface Participant {
 
 type ParticipantsData = Participant[];
 
-const DriversSection: React.FC<DriversProps> = ({
-  drivers,
-  status,
-  requestId
-}) => {
-  const { getRequestDrivers, loadingDrivers, requestDrivers } =
+const DriversSection: React.FC<DriversProps> = ({ drivers, status, requestId }) => {
+  const { getRequestDrivers, loadingDrivers, requestDrivers, requestDriversReports } =
     useContext(SingleRequestContext);
+  const [showExtraColumns, setShowExtraColumns] = useState(false);
+
+  useEffect(() => {
+    setShowExtraColumns(requestDriversReports.filter((item) => item?.file !== null).length);
+  }, [requestDriversReports]);
 
   const fetchDrivers = async () => await getRequestDrivers(drivers);
 
@@ -50,12 +51,14 @@ const DriversSection: React.FC<DriversProps> = ({
           <th className="text-white">Apellido</th>
           <th className="text-white">Email</th>
           <th className="text-white">Teléfono</th>
-          {status > 4 && (
-            <React.Fragment>
+          {status > 4 || showExtraColumns ? (
+            <>
               <th className="text-white">Resultado</th>
               <th className="text-white">Link</th>
               <th className="text-white">Reporte</th>
-            </React.Fragment>
+            </>
+          ) : (
+            ''
           )}
         </tr>
       </thead>
