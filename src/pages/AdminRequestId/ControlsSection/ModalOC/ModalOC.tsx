@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FaSave } from 'react-icons/fa';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
-import { AuthContext, SingleRequestContext, RequestsContext } from '../../../../contexts';
+import { AuthContext, SingleRequestContext } from '../../../../contexts';
 import swal from 'sweetalert';
 import { useProfile } from '../../../../utils/useProfile';
 import {
@@ -9,7 +9,8 @@ import {
   hashCode,
   COMPANY_NAME,
   dateWithTime,
-  COMPANY_EMAIL
+  COMPANY_EMAIL,
+  PERFIL_OPERACIONES
 } from '../../../../utils';
 
 type ModalOCProps = any;
@@ -26,7 +27,6 @@ const ModalOC: React.FC<ModalOCProps> = ({ requestId, handleClose }) => {
   } = useContext(SingleRequestContext);
   const { userInfo, sendEmail } = useContext(AuthContext);
   const [profile] = useProfile();
-  const { updateRequests } = useContext(RequestsContext);
   const [instructorsFares, setInstructorsFares] = useState<any>({});
   const [providersFares, setProvidersFares] = useState<any>({});
   const [trackInfo, setTrackInfo] = useState<any>(null);
@@ -129,7 +129,7 @@ const ModalOC: React.FC<ModalOCProps> = ({ requestId, handleClose }) => {
         let payload = {
           new_request: 0, // It wont be a new request anymore
           operator: userInfo.id,
-          status: `${process.env.REACT_APP_STATUS_STEP_6}`
+          status: PERFIL_OPERACIONES.steps.STATUS_SERVICIO_FINALIZADO.id
         };
         let res = await updateRequestId(requestId, payload);
         if (res.status === 200) {
@@ -139,64 +139,66 @@ const ModalOC: React.FC<ModalOCProps> = ({ requestId, handleClose }) => {
           });
 
           // Send track email if track is part of ridepro
-          if (trackInfo.company.name === COMPANY_NAME) {
+          if (trackInfo?.company?.name.toLowerCase() === COMPANY_NAME) {
             let trackPayload = {
               id: requestId,
-              emailType: 'requestFinishedAll',
+              template: 'request_finished_all',
               subject: 'Gracias por tus servicios ✔️',
-              email: trackInfo.contact_email,
+              to: trackInfo.contact_email,
               name: trackInfo.contact_name,
               date: dateWithTime(currentRequest.start_time),
-              fare: trackInfo.fare,
-              firstPayment: trackInfo.firstPayment,
+              balance: trackInfo.fare - trackInfo.first_payment,
               hash: trackInfo.hash
             };
             await sendEmail(trackPayload);
           }
 
           // Send email to each instructor
-          requestInstructors.forEach(async (ins) => {
-            let instructosPayload = {
+          const instructorsPayloads = requestInstructors.map((ins) => {
+            return {
               id: requestId,
-              emailType: 'requestFinishedAll',
+              template: 'request_finished_all',
               subject: 'Gracias por tus servicios ✔️',
-              email: ins.instructors.email,
+              to: ins.instructors.email,
               name: ins.instructors.first_name,
               date: dateWithTime(currentRequest.start_time),
-              fare: ins.fare,
-              firstPayment: ins.first_payment,
+              balance: ins.fare - ins.first_payment,
               hash: ins.hash
             };
-            await sendEmail(instructosPayload);
           });
+
+          await Promise.all(instructorsPayloads.map(sendEmail));
 
           // Send email to each provider
-          requestProviders.forEach(async (prov) => {
-            let providersPayload = {
+          const providersPayloads = requestProviders.map((prov) => {
+            return {
               id: requestId,
-              emailType: 'requestFinishedAll',
+              template: 'request_finished_all',
               subject: 'Gracias por tus servicios ✔️',
-              email: prov.providers.email,
+              to: prov.providers.email,
               name: prov.providers.name,
               date: dateWithTime(currentRequest.start_time),
-
-              fare: prov.fare,
-              firstPayment: prov.first_payment,
+              balance: prov.fare - prov.first_payment,
               hash: prov.hash
             };
-            await sendEmail(providersPayload);
           });
+
+          await Promise.all(providersPayloads.map(sendEmail));
 
           //Email to admins
           let adminPayload = {
             id: requestId,
-            emailType: 'ocAdmin',
+            template: 'oc_admin',
             subject: `OC Servicio#${requestId} 📑`,
-            email: [COMPANY_EMAIL],
+            to: [COMPANY_EMAIL],
             date: dateWithTime(currentRequest.start_time),
-            track: trackInfo,
-            providers: requestProviders,
-            instructors: requestInstructors,
+            track: { ...trackInfo, balance: trackInfo.fare - trackInfo.first_payment },
+            providers: requestProviders.map((prov) => {
+              return { ...prov, balance: prov.fare - prov.first_payment };
+            }),
+            instructors: requestInstructors.map((ins) => {
+              return { ...ins, balance: ins.fare - ins.first_payment };
+            }),
             service: currentRequest.service
           };
           await sendEmail(adminPayload);
@@ -206,7 +208,6 @@ const ModalOC: React.FC<ModalOCProps> = ({ requestId, handleClose }) => {
             `Haz culminado tus labores con la solicitud #${requestId} 👍`,
             'success'
           );
-          updateRequests();
           handleClose();
         } else {
           swal('Algo pasa!', 'No pudimos actualizar la solicitud 😢', 'error');
