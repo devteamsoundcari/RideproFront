@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link, HashRouter } from 'react-router-dom';
 import { AuthContext } from './contexts';
 import {
   Login,
@@ -44,57 +44,30 @@ function App() {
   };
 
   const renderNestedRoute = (url, children) => {
-    return (
-      <Route
-        path={`${url}/${children.url}`}
-        element={getComponent(children.component)}
-      />
-    );
+    return <Route path={`${url}/${children.url}`} element={getComponent(children.component)} />;
   };
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route
           path="/"
-          element={
-            (isAuthenticated && <Navigate to="/historial" />) || (
-              <Navigate to="/login" />
-            )
-          }
+          element={(isAuthenticated && <Navigate to="/historial" />) || <Navigate to="/login" />}
         />
-        {routes.map(
-          ({
-            name,
-            url,
-            component,
-            isProtected,
-            profiles,
-            children = null
-          }) => {
-            if (isProtected) {
-              if (isAuthenticated && profilesContainsCurrentProfile(profiles)) {
-                return (
-                  <Route
-                    path={url}
-                    element={getComponent(component)}
-                    key={name}>
-                    {children && renderNestedRoute(url, children)}
-                  </Route>
-                );
-              }
-              return '';
-            } else {
+        {routes.map(({ name, url, component, isProtected, profiles, children = null }) => {
+          if (isProtected) {
+            if (isAuthenticated && profilesContainsCurrentProfile(profiles)) {
               return (
-                <Route
-                  path={url}
-                  element={getComponent(component)}
-                  key={name}
-                />
+                <Route path={url} element={getComponent(component)} key={name}>
+                  {children && renderNestedRoute(url, children)}
+                </Route>
               );
             }
+            return '';
+          } else {
+            return <Route path={url} element={getComponent(component)} key={name} />;
           }
-        )}
+        })}
         <Route
           path="*"
           element={
@@ -105,7 +78,7 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
