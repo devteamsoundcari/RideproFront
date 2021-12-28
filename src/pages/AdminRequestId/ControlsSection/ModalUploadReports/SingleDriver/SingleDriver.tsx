@@ -21,9 +21,10 @@ const SingleDriver: React.FC<SingleDriverProps> = ({ driver }) => {
   }, [requestDriversReports, driver]);
 
   const handleChange = (event) => {
+    const value = event.target.value === '' ? null : event.target.value === '1' ? true : false;
     setReport({
       ...report,
-      quialified: event.target.value === '' ? null : event.target.value === 1 ? true : false
+      quialified: value
     });
   };
 

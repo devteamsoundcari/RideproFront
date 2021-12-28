@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Button, Card, ListGroup } from 'react-bootstrap';
+import { Button, ListGroup } from 'react-bootstrap';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../../components/atoms';
@@ -64,7 +64,11 @@ export default function RightSection(props: any) {
     return <StatusRenderer step={foundStep} />;
   };
 
-  const handleConfirmClick = () => {
+  const handleChangeRequestStatus = (
+    status: string,
+    emailTemplate: string,
+    emailSubject: string
+  ) => {
     swal({
       title: '¿Estas segur@?',
       text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
@@ -76,15 +80,15 @@ export default function RightSection(props: any) {
         let payload = {
           new_request: 0, // It wont be a new request anymore
           operator: userInfo.id,
-          status: PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_AL_CLIENTE.id
+          status
         };
         let res = await updateRequestId(requestId, payload);
         if (res.status === 200) {
           //   // SEND EMAIL
           const payload = {
             id: requestId,
-            template: 'request_options',
-            subject: 'Confirmar solicitud ⚠️',
+            template: emailTemplate,
+            subject: emailSubject,
             to: currentRequest?.customer?.email,
             name: currentRequest?.customer?.first_name
           };
@@ -198,7 +202,11 @@ export default function RightSection(props: any) {
                     className="btn-block btn-success"
                     disabled={checkDisabled()}
                     onClick={() => {
-                      handleConfirmClick();
+                      handleChangeRequestStatus(
+                        PERFIL_OPERACIONES.steps.STATUS_ESPERANDO_AL_CLIENTE.id,
+                        'request_options',
+                        'Confirmar solicitud ⚠️'
+                      );
                     }}>
                     <span>
                       {currentRequest?.status?.step ===
@@ -278,7 +286,7 @@ export default function RightSection(props: any) {
                     currentRequest?.status?.step < PERFIL_TECNICO.steps.STATUS_GENERAR_INFORMES.step
                   }
                   onClick={() => setShowModalUploadReports(true)}>
-                  <span>Generar Informes </span>
+                  <span>Generar reportes</span>
                 </Button>
                 {showModalUploadReports && (
                   <ModalUploadReports handleClose={() => setShowModalUploadReports(false)} />
@@ -289,38 +297,11 @@ export default function RightSection(props: any) {
                   className="btn-block btn-success"
                   disabled={currentRequest?.status?.step > 4 ? true : false}
                   onClick={() => {
-                    swal({
-                      title: '¿Estas seguro?',
-                      text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
-                      icon: 'warning',
-                      buttons: ['No, volver', 'Si, confirmar servicio'],
-                      dangerMode: true
-                    }).then(async (willUpdate) => {
-                      if (willUpdate) {
-                        let payload = {
-                          new_request: 0, // It wont be a new request anymore
-                          operator: userInfo.id,
-                          status: `${process.env.REACT_APP_STATUS_STEP_5}`
-                        };
-
-                        let res = await updateRequestId(payload, requestId);
-                        if (res.status === 200) {
-                          // setDisabled(true);
-                          swal('Solicitud actualizada!', {
-                            icon: 'success'
-                          });
-                          // SEND EMAIL TO CLIENT
-                          const payload = {
-                            id: requestId,
-                            emailType: 'requestFinished',
-                            subject: 'Servicio Finalizado ✔️',
-                            email: currentRequest?.customer?.email,
-                            name: currentRequest?.customer?.first_name
-                          };
-                          await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
-                        }
-                      }
-                    });
+                    handleChangeRequestStatus(
+                      PERFIL_TECNICO.steps.STATUS_SERVICIO_FINALIZADO.id,
+                      'request_finished',
+                      'Servicio Finalizado ✔️'
+                    );
                   }}>
                   <span>Confirmar Finalizado</span>
                 </Button>

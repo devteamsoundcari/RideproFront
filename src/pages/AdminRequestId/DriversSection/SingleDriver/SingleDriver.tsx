@@ -3,16 +3,21 @@ import { FaExternalLinkAlt, FaFilePdf } from 'react-icons/fa';
 import { SingleRequestContext } from '../../../../contexts';
 type SingleDriverProps = any;
 
-const SingleDriver: React.FC<SingleDriverProps> = ({ data, requestId }) => {
-  const { getDriverReport, loadingReport, setRequestDriversReports } =
+const SingleDriver: React.FC<SingleDriverProps> = ({ driver, requestId }) => {
+  const { getDriverReport, loadingReport, requestDriversReports } =
     useContext(SingleRequestContext);
   const [report, setReport] = useState<any>({});
 
+  useEffect(() => {
+    if (requestDriversReports?.length) {
+      const foundReport = requestDriversReports.filter((report) => report.driver === driver.id)[0];
+      if (foundReport) setReport(foundReport);
+    }
+  }, [requestDriversReports, driver]);
+
   const fetchReport = async () => {
     try {
-      const driversReport = await getDriverReport(requestId, data.id);
-      setRequestDriversReports((oldArr) => [...oldArr, driversReport]);
-      setReport(driversReport);
+      await getDriverReport(requestId, driver.id);
     } catch (error) {
       throw new Error('Error getting the report');
     }
@@ -21,15 +26,19 @@ const SingleDriver: React.FC<SingleDriverProps> = ({ data, requestId }) => {
   useEffect(() => {
     fetchReport();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestId, data]);
+  }, [requestId, driver]);
 
-  return (
+  return loadingReport ? (
     <tr>
-      <td>{data?.official_id}</td>
-      <td className="text-capitalize">{data?.first_name}</td>
-      <td className="text-capitalize">{data?.last_name}</td>
-      <td className="text-primary font-weight-bold">{data?.email}</td>
-      <td>{data?.cellphone}</td>
+      <td colSpan={8}>Cargando...</td>
+    </tr>
+  ) : (
+    <tr>
+      <td>{driver?.official_id}</td>
+      <td className="text-capitalize">{driver?.first_name}</td>
+      <td className="text-capitalize">{driver?.last_name}</td>
+      <td className="text-primary font-weight-bold">{driver?.email}</td>
+      <td>{driver?.cellphone}</td>
       {!loadingReport && report && report.file && (
         <>
           <td>

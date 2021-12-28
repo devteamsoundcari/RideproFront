@@ -261,6 +261,7 @@ export const SingleRequestContextProvider = (props) => {
       const response = await apiClient.get(
         `${API_REQUEST_DRIVER_REPORT}${requestId}&driver=${driverId}`
       );
+      setRequestDriversReports((oldArr) => [...oldArr, response.data.results[0]]);
       setLoadingReport(false);
       return response.data.results[0];
     } catch (error) {
@@ -272,6 +273,7 @@ export const SingleRequestContextProvider = (props) => {
   // ==================== UPDATE DRIVER REPORT ====================
   const updateDriverReport = async (report) => {
     setLoadingReport(true);
+
     if (report?.file?.name) {
       const formData = new FormData();
       formData.append('file', report.file);
@@ -296,6 +298,9 @@ export const SingleRequestContextProvider = (props) => {
         `${API_REQUEST_DRIVER_UPDATE_REPORT}${report.id}/`,
         payload
       );
+
+      setRequestDriversReports([]);
+      await getDriverReport(resData.data.request, resData.data.driver);
       setLoadingReport(false);
       return resData.data;
     } catch (error) {

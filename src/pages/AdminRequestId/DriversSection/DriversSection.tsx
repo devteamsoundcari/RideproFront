@@ -65,7 +65,7 @@ const DriversSection: React.FC<DriversProps> = ({ drivers, status, requestId }) 
       <tbody>
         {!loadingDrivers && requestDrivers.length ? (
           requestDrivers.map((participant, idx) => (
-            <SingleDriver data={participant} key={idx} requestId={requestId} />
+            <SingleDriver driver={participant} key={idx} requestId={requestId} />
           ))
         ) : (
           <tr>
