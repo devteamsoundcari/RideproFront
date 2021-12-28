@@ -5,7 +5,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import './ModalPlaceDate.scss';
 import { useProfile } from '../../../../utils';
 import { FaPlus } from 'react-icons/fa';
-import { Alternative } from './Alternatve/Alternative';
+import { Alternative } from './Alternative/Alternative';
 import { ModalNewTrack } from '../../../../components/molecules';
 
 interface ModalPlaceDateProps {

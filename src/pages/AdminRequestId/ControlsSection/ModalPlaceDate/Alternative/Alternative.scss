@@ -1,0 +1,25 @@
+@import url('/src/global.scss');
+
+.alternative-tabs {
+  display: flex;
+  justify-content: center;
+  .active {
+    font-weight: bold;
+  }
+  .nav-link {
+    color: cornflowerblue;
+  }
+}
+
+.icon-search {
+  cursor: pointer;
+}
+
+.small-results-table {
+  tr {
+    cursor: pointer;
+  }
+  .selection-row {
+    background-color: lightgreen !important;
+  }
+}
