@@ -58,7 +58,7 @@ const DriversSection: React.FC<DriversProps> = ({ drivers, status, requestId }) 
               <th className="text-white">Reporte</th>
             </>
           ) : (
-            ''
+            <></>
           )}
         </tr>
       </thead>

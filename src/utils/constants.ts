@@ -16,6 +16,7 @@ export const API_REQUEST_PROVIDERS = '/api/v1/request_prov/?request=';
 export const API_REQUEST_PROVIDER_UPDATE = '/api/v1/request_prov/';
 export const API_REQUEST_DRIVERS = '/api/v1/drivers/';
 export const API_REQUEST_DRIVER_REPORT = '/api/v1/request_drivers/?request=';
+export const API_REQUEST_DRIVER_UPDATE_REPORT = '/api/v1/request_drivers/';
 export const API_REQUEST_DOCUMENTS = '/api/v1/request_doc/?request=';
 export const API_REQUEST_DOCUMENT_UPLOAD = '/api/v1/request_doc/';
 export const API_REQUEST_BILLS = '/api/v1/bills/';

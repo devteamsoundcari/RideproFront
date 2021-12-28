@@ -12,6 +12,7 @@ import ModalOC from './ModalOC/ModalOC';
 import ModalInstructors from './ModalInstructors/ModalInstructors';
 import ModalProviders from './ModalProviders/ModalProviders';
 import ConfirmSection from './ConfirmSection/ConfirmSection';
+import ModalUploadReports from './ModalUploadReports/ModalUploadReports';
 
 export interface IRightSectionProps {}
 
@@ -279,14 +280,9 @@ export default function RightSection(props: any) {
                   onClick={() => setShowModalUploadReports(true)}>
                   <span>Generar Informes </span>
                 </Button>
-                {/* {showModalUploadReports && (
-                <ModalUploadReports
-                  drivers={currentRequest?.drivers}
-                  handleClose={() => setShowModalUploadReports(false)}
-                  requestId={requestId}
-                  onUpdate={() => fetchRequest(requestId)}
-                />
-              )} */}
+                {showModalUploadReports && (
+                  <ModalUploadReports handleClose={() => setShowModalUploadReports(false)} />
+                )}
               </div>
               <div className="invoice-action-btn">
                 <Button

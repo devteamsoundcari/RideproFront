@@ -15,7 +15,8 @@ import {
   API_REQUEST_INSTRUCTOR_UPDATE,
   API_REQUEST_PROVIDER_UPDATE,
   API_ALL_DOCUMENTS,
-  API_UPDATE_REQUEST_DOCUMENTS
+  API_UPDATE_REQUEST_DOCUMENTS,
+  API_REQUEST_DRIVER_UPDATE_REPORT
 } from '../utils';
 
 export const SingleRequestContext = createContext('' as any);
@@ -268,6 +269,41 @@ export const SingleRequestContextProvider = (props) => {
     }
   };
 
+  // ==================== UPDATE DRIVER REPORT ====================
+  const updateDriverReport = async (report) => {
+    setLoadingReport(true);
+    if (report?.file?.name) {
+      const formData = new FormData();
+      formData.append('file', report.file);
+      try {
+        await apiClient.patch(`${API_REQUEST_DRIVER_UPDATE_REPORT}${report.id}/`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        setLoadingReport(false);
+      } catch (error) {
+        setLoadingReport(false);
+        return error;
+      }
+    }
+    try {
+      const payload = {
+        description: report.description,
+        quialified: report.quialified
+      };
+      const resData = await apiClient.patch(
+        `${API_REQUEST_DRIVER_UPDATE_REPORT}${report.id}/`,
+        payload
+      );
+      setLoadingReport(false);
+      return resData.data;
+    } catch (error) {
+      setLoadingReport(false);
+      return error;
+    }
+  };
+
   // ==================== GET REQUEST DOCUMENTS ====================
   const getRequestDocuments = async (requestId: string) => {
     setLoadingDocuments(true);
@@ -441,7 +477,6 @@ export const SingleRequestContextProvider = (props) => {
   };
 
   // ===================== GET ALL DOCUMENTS AVAILABLE ============
-
   const getAllDocuments = async (page?: string) => {
     setLoadingDocuments(true);
     if (page) {
@@ -505,6 +540,7 @@ export const SingleRequestContextProvider = (props) => {
           requestDrivers,
           loadingReport,
           getDriverReport,
+          updateDriverReport,
           requestDriversReports,
           setRequestDriversReports,
           getRequestDocuments,
