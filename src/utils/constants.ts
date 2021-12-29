@@ -162,31 +162,41 @@ export const PERFIL_ADMIN = {
     STATUS_CANCELADO,
     STATUS_ESPERANDO_CONFIRMACION,
     STATUS_ESPERANDO_AL_CLIENTE,
+    STATUS_SERVICIO_PROGRAMADO,
     STATUS_CONFIRMAR_PROGRAMACION: {
       ...STATUS_PROGRAMACION_ACEPTADA,
       step: 4,
       id: STATUS_IDS[4]
     },
-    STATUS_SERVICIO_PROGRAMADO,
     STATUS_ESPERANDO_RECEPCION_DOCUMENTOS,
     STATUS_ASIGNAR_FACTURA,
     STATUS_SERVICIO_FINALIZADO: {
-      ...STATUS_SERVICIO_FINALIZADO,
       step: 7,
-      id: STATUS_IDS[7]
+      id: STATUS_IDS[7],
+      name: 'Servicio finalizado',
+      variant: 'event-finished',
+      now: 100,
+      level: 100
     }
   }
 };
 
-export const PERFIL_CLIENTE = {
-  profile: 2,
-  name: 'cliente',
+export const PERFIL_TECNICO = {
+  profile: 5,
+  name: 'tecnico',
   steps: {
     STATUS_CANCELADO,
     STATUS_ESPERANDO_CONFIRMACION,
-    STATUS_CONFIRMAR_PROGRAMACION,
-    STATUS_SERVICIO_PROGRAMADO,
-    STATUS_SERVICIO_FINALIZADO
+    STATUS_ESPERANDO_AL_CLIENTE,
+    STATUS_PROGRAMACION_ACEPTADA,
+    STATUS_GENERAR_INFORMES,
+    STATUS_SERVICIO_FINALIZADO: {
+      ...STATUS_SERVICIO_FINALIZADO,
+      name: 'Evento Finalizado',
+      variant: 'event-finished',
+      now: 100,
+      level: 100
+    }
   }
 };
 
@@ -209,24 +219,6 @@ export const PERFIL_EJECUTIVO = {
   steps: {
     STATUS_CANCELADO,
     STATUS_ESPERANDO_CONFIRMACION,
-    STATUS_CONFIRMAR_PROGRAMACION,
-    STATUS_SERVICIO_PROGRAMADO,
-    STATUS_ESPERANDO_RECEPCION_DOCUMENTOS: { step: 5, id: STATUS_IDS[5] },
-    STATUS_ASIGNAR_FACTURA: { step: 6, id: STATUS_IDS[6] },
-    STATUS_SERVICIO_FINALIZADO: {
-      ...STATUS_SERVICIO_FINALIZADO,
-      step: 7,
-      id: STATUS_IDS[7]
-    }
-  }
-};
-
-export const PERFIL_TECNICO = {
-  profile: 5,
-  name: 'tecnico',
-  steps: {
-    STATUS_CANCELADO,
-    STATUS_ESPERANDO_CONFIRMACION,
     STATUS_ESPERANDO_AL_CLIENTE,
     STATUS_PROGRAMACION_ACEPTADA,
     STATUS_GENERAR_INFORMES,
@@ -237,6 +229,18 @@ export const PERFIL_TECNICO = {
       now: 100,
       level: 100
     }
+  }
+};
+
+export const PERFIL_CLIENTE = {
+  profile: 2,
+  name: 'cliente',
+  steps: {
+    STATUS_CANCELADO,
+    STATUS_ESPERANDO_CONFIRMACION,
+    STATUS_CONFIRMAR_PROGRAMACION,
+    STATUS_SERVICIO_PROGRAMADO,
+    STATUS_SERVICIO_FINALIZADO
   }
 };
 

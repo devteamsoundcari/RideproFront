@@ -12,6 +12,7 @@ import ModalInstructors from './ModalInstructors/ModalInstructors';
 import ModalProviders from './ModalProviders/ModalProviders';
 import ConfirmSection from './ConfirmSection/ConfirmSection';
 import ModalUploadReports from './ModalUploadReports/ModalUploadReports';
+import ModalInvoice from './ModalInvoice/ModalInvoice';
 
 export interface IRightSectionProps {}
 
@@ -290,7 +291,9 @@ export default function RightSection(props: any) {
               <div className="invoice-action-btn">
                 <Button
                   className="btn-block btn-success"
-                  disabled={currentRequest?.status?.step > 4 ? true : false}
+                  disabled={
+                    currentRequest?.status?.step > PERFIL_TECNICO.steps.STATUS_GENERAR_INFORMES.step
+                  }
                   onClick={() => {
                     handleChangeRequestStatus(
                       PERFIL_TECNICO.steps.STATUS_SERVICIO_FINALIZADO.id,
@@ -324,13 +327,7 @@ export default function RightSection(props: any) {
             </div>
           )
         : ''}
-      {/* {showModalInvoice && (
-      <ModalInvoice
-        handleClose={() => setShowModalInvoice(false)}
-        requestInfo={data}
-        onUpdate={() => fetchRequest(requestId)}
-      />
-    )} */}
+      {showModalInvoice && <ModalInvoice handleClose={() => setShowModalInvoice(false)} />}
     </div>
   );
 }

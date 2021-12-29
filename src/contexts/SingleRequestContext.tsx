@@ -357,6 +357,33 @@ export const SingleRequestContextProvider = (props) => {
     }
   };
 
+  // ==================== ADD REQUEST BILLS =====================
+  const addRequestBill = async (payload) => {
+    setLoadingBills(true);
+    const { file, description, seller, buyer, payment_method, value, notes, bill_id } = payload;
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('description', description);
+    formData.append('seller', seller);
+    formData.append('buyer', buyer);
+    formData.append('payment_method', payment_method);
+    formData.append('value', value);
+    formData.append('notes', notes);
+    formData.append('bill_id', bill_id);
+    try {
+      const response = apiClient.post(`${API_REQUEST_BILLS}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setLoadingBills(false);
+      return response;
+    } catch (error) {
+      setLoadingBills(false);
+      throw new Error(error as any);
+    }
+  };
+
   // ==================== UPDATE SINGLE REQUEST ====================
   const updateRequestId = async (requestId: any, payload = null) => {
     setLoadingRequest(true);
@@ -555,6 +582,7 @@ export const SingleRequestContextProvider = (props) => {
           uploadingDocument,
           getRequestBills,
           requestBills,
+          addRequestBill,
           loadingBills,
           requestTrackOpt1,
           setRequestTrackOpt1,
