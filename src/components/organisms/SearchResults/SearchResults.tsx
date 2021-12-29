@@ -1,9 +1,9 @@
 import React, { useContext, useRef, useEffect } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { FaUserFriends } from 'react-icons/fa';
-import { AuthContext, SearchFiltersContext } from '../../../contexts';
+import { SearchFiltersContext } from '../../../contexts';
 import { useNavigate } from 'react-router';
-import { allStatus } from '../../../allStatus';
+
 import { StatusRenderer } from '../../atoms';
 import { dateDDMMYYY } from '../../../utils';
 
@@ -11,7 +11,6 @@ export function SearchResults() {
   let navigate = useNavigate();
   const wrapperRef: any = useRef(null);
   const { results, setResults } = useContext(SearchFiltersContext);
-  const { userInfo } = useContext(AuthContext);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -26,15 +25,7 @@ export function SearchResults() {
   }, [setResults, wrapperRef]);
 
   // STATUS FORMATTER
-  const statusFormatter = (requestStep: number) => {
-    const foundProfile = allStatus.find(
-      (user) => user.profile.profile === userInfo.profile
-    );
-    const foundStep = foundProfile?.steps.find(
-      ({ step }) => step === requestStep
-    );
-    return <StatusRenderer step={foundStep} />;
-  };
+  const statusFormatter = (requestStep: number) => <StatusRenderer rowStep={requestStep} />;
 
   return (
     <div className="w-50 ml-3 search-results shadow">

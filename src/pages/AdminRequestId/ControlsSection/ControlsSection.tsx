@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Button, ListGroup } from 'react-bootstrap';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
-import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../../components/atoms';
 import { SingleRequestContext, AuthContext, TracksContext } from '../../../contexts';
 import { PERFIL_OPERACIONES, PERFIL_TECNICO, PERFIL_ADMIN } from '../../../utils';
@@ -58,11 +57,7 @@ export default function RightSection(props: any) {
   };
 
   // STATUS FORMATTER
-  const statusFormatter = (statusStep) => {
-    const foundProfile = allStatus.find((user) => user.profile.profile === userInfo.profile);
-    const foundStep = foundProfile?.steps.find(({ step }) => step === statusStep);
-    return <StatusRenderer step={foundStep} />;
-  };
+  const statusFormatter = (statusStep) => <StatusRenderer rowStep={statusStep} />;
 
   const handleChangeRequestStatus = (
     status: string,

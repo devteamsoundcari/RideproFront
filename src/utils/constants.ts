@@ -55,18 +55,126 @@ const STATUS_IDS = {
   8: 'b362904f-5589-4057-8cb4-756aee54140e'
 };
 
-// Profiles
+const STATUS_ESPERANDO_CONFIRMACION = {
+  step: 1,
+  id: STATUS_IDS[1],
+  name: 'Esperando confirmación',
+  variant: 'event-requested',
+  now: 20,
+  level: 60
+};
+
+const STATUS_CANCELADO = {
+  step: 0,
+  id: STATUS_IDS[0],
+  name: 'Solicitud cancelada',
+  variant: 'event-canceled',
+  now: 100,
+  level: 100
+};
+
+const STATUS_CONFIRMAR_PROGRAMACION = {
+  step: 2,
+  id: STATUS_IDS[2],
+  name: 'Confirmar programación',
+  variant: 'confirm-event',
+  now: 40,
+  level: 60
+};
+
+const STATUS_SERVICIO_PROGRAMADO = {
+  step: 3,
+  id: STATUS_IDS[3],
+  name: 'Servicio programado',
+  variant: 'event-confirmed',
+  now: 50,
+  level: 60
+};
+
+const STATUS_SERVICIO_FINALIZADO = {
+  step: 5,
+  id: STATUS_IDS[5],
+  name: 'Confirmar recepción de documentos',
+  variant: 'confirm-docs',
+  now: 60,
+  level: 60
+};
+
+const STATUS_ESPERANDO_AL_CLIENTE = {
+  step: 2,
+  id: STATUS_IDS[2],
+  name: 'Esperando confirmación cliente',
+  variant: 'confirm-event',
+  now: 40,
+  level: 60
+};
+
+const STATUS_PROGRAMACION_ACEPTADA = {
+  step: 3,
+  id: STATUS_IDS[3],
+  name: 'Programación aceptada',
+  variant: 'event-confirmed',
+  now: 50,
+  level: 60
+};
+
+const STATUS_CONFIRMAR_DOCUMENTOS = {
+  step: 4,
+  id: STATUS_IDS[4],
+  name: 'Confirmar recepción de documentos',
+  variant: 'confirm-docs',
+  now: 60,
+  level: 60
+};
+
+const STATUS_GENERAR_INFORMES = {
+  step: 4,
+  id: STATUS_IDS[4],
+  name: 'Generar Informes',
+  variant: 'upload-reports',
+  now: 80,
+  level: 80
+};
+
+const STATUS_ESPERANDO_RECEPCION_DOCUMENTOS = {
+  step: 5,
+  id: STATUS_IDS[5],
+  name: 'Esperando recepción de documentos',
+  variant: 'confirm-docs',
+  now: 60,
+  level: 60
+};
+
+const STATUS_ASIGNAR_FACTURA = {
+  step: 6,
+  id: STATUS_IDS[6],
+  name: 'Adjuntar factura',
+  variant: 'upload-reports',
+  now: 80,
+  level: 80
+};
+
+// ============= Profiles =================
 export const PERFIL_ADMIN = {
   profile: 1,
-  name: 'administrador',
+  name: 'admin',
   steps: {
-    STATUS_CANCELADO: { step: 0, id: STATUS_IDS[0] },
-    STATUS_ESPERANDO_CONFIRMACION: { step: 1, id: STATUS_IDS[1] },
-    STATUS_CONFIRMAR_PROGRAMACION: { step: 2, id: STATUS_IDS[2] },
-    STATUS_SERVICIO_PROGRAMADO: { step: 3, id: STATUS_IDS[3] },
-    STATUS_ESPERANDO_RECEPCION_DOCUMENTOS: { step: 5, id: STATUS_IDS[5] },
-    STATUS_ASIGNAR_FACTURA: { step: 6, id: STATUS_IDS[6] },
-    STATUS_SERVICIO_FINALIZADO: { step: 7, id: STATUS_IDS[7] }
+    STATUS_CANCELADO,
+    STATUS_ESPERANDO_CONFIRMACION,
+    STATUS_ESPERANDO_AL_CLIENTE,
+    STATUS_CONFIRMAR_PROGRAMACION: {
+      ...STATUS_PROGRAMACION_ACEPTADA,
+      step: 4,
+      id: STATUS_IDS[4]
+    },
+    STATUS_SERVICIO_PROGRAMADO,
+    STATUS_ESPERANDO_RECEPCION_DOCUMENTOS,
+    STATUS_ASIGNAR_FACTURA,
+    STATUS_SERVICIO_FINALIZADO: {
+      ...STATUS_SERVICIO_FINALIZADO,
+      step: 7,
+      id: STATUS_IDS[7]
+    }
   }
 };
 
@@ -74,11 +182,11 @@ export const PERFIL_CLIENTE = {
   profile: 2,
   name: 'cliente',
   steps: {
-    STATUS_CANCELADO: { step: 0, id: STATUS_IDS[0] },
-    STATUS_ESPERANDO_CONFIRMACION: { step: 1, id: STATUS_IDS[1] },
-    STATUS_CONFIRMAR_PROGRAMACION: { step: 2, id: STATUS_IDS[2] },
-    STATUS_SERVICIO_PROGRAMADO: { step: 3, id: STATUS_IDS[3] },
-    STATUS_SERVICIO_FINALIZADO: { step: 5, id: STATUS_IDS[5] }
+    STATUS_CANCELADO,
+    STATUS_ESPERANDO_CONFIRMACION,
+    STATUS_CONFIRMAR_PROGRAMACION,
+    STATUS_SERVICIO_PROGRAMADO,
+    STATUS_SERVICIO_FINALIZADO
   }
 };
 
@@ -86,12 +194,12 @@ export const PERFIL_OPERACIONES = {
   profile: 3,
   name: 'operaciones',
   steps: {
-    STATUS_CANCELADO: { step: 0, id: STATUS_IDS[0] },
-    STATUS_ESPERANDO_CONFIRMACION: { step: 1, id: STATUS_IDS[1] },
-    STATUS_ESPERANDO_AL_CLIENTE: { step: 2, id: STATUS_IDS[2] },
-    STATUS_PROGRAMACION_ACEPTADA: { step: 3, id: STATUS_IDS[3] },
-    STATUS_CONFIRMAR_DOCUMENTOS: { step: 4, id: STATUS_IDS[4] },
-    STATUS_SERVICIO_FINALIZADO: { step: 6, id: STATUS_IDS[6] }
+    STATUS_CANCELADO,
+    STATUS_ESPERANDO_CONFIRMACION,
+    STATUS_ESPERANDO_AL_CLIENTE,
+    STATUS_PROGRAMACION_ACEPTADA,
+    STATUS_CONFIRMAR_DOCUMENTOS,
+    STATUS_SERVICIO_FINALIZADO
   }
 };
 
@@ -99,25 +207,36 @@ export const PERFIL_EJECUTIVO = {
   profile: 4,
   name: 'ejecutivo',
   steps: {
-    STATUS_CANCELADO: { step: 0, id: STATUS_IDS[0] },
-    STATUS_ESPERANDO_CONFIRMACION: { step: 1, id: STATUS_IDS[1] },
-    STATUS_CONFIRMAR_PROGRAMACION: { step: 2, id: STATUS_IDS[2] },
-    STATUS_SERVICIO_PROGRAMADO: { step: 3, id: STATUS_IDS[3] },
+    STATUS_CANCELADO,
+    STATUS_ESPERANDO_CONFIRMACION,
+    STATUS_CONFIRMAR_PROGRAMACION,
+    STATUS_SERVICIO_PROGRAMADO,
     STATUS_ESPERANDO_RECEPCION_DOCUMENTOS: { step: 5, id: STATUS_IDS[5] },
     STATUS_ASIGNAR_FACTURA: { step: 6, id: STATUS_IDS[6] },
-    STATUS_SERVICIO_FINALIZADO: { step: 7, id: STATUS_IDS[7] }
+    STATUS_SERVICIO_FINALIZADO: {
+      ...STATUS_SERVICIO_FINALIZADO,
+      step: 7,
+      id: STATUS_IDS[7]
+    }
   }
 };
+
 export const PERFIL_TECNICO = {
   profile: 5,
   name: 'tecnico',
   steps: {
-    STATUS_CANCELADO: { step: 0, id: STATUS_IDS[0] },
-    STATUS_ESPERANDO_CONFIRMACION: { step: 1, id: STATUS_IDS[1] },
-    STATUS_ESPERANDO_AL_CLIENTE: { step: 2, id: STATUS_IDS[2] },
-    STATUS_PROGRAMACION_ACEPTADA: { step: 3, id: STATUS_IDS[3] },
-    STATUS_GENERAR_INFORMES: { step: 4, id: STATUS_IDS[4] },
-    STATUS_SERVICIO_FINALIZADO: { step: 5, id: STATUS_IDS[5] }
+    STATUS_CANCELADO,
+    STATUS_ESPERANDO_CONFIRMACION,
+    STATUS_ESPERANDO_AL_CLIENTE,
+    STATUS_PROGRAMACION_ACEPTADA,
+    STATUS_GENERAR_INFORMES,
+    STATUS_SERVICIO_FINALIZADO: {
+      ...STATUS_SERVICIO_FINALIZADO,
+      name: 'Evento Finalizado',
+      variant: 'event-finished',
+      now: 100,
+      level: 100
+    }
   }
 };
 
@@ -125,11 +244,11 @@ export const PERFIL_SUPERCLIENTE = {
   profile: 7,
   name: 'super-cliente',
   steps: {
-    STATUS_CANCELADO: { step: 0, id: STATUS_IDS[0] },
-    STATUS_ESPERANDO_CONFIRMACION: { step: 1, id: STATUS_IDS[1] },
-    STATUS_CONFIRMAR_PROGRAMACION: { step: 2, id: STATUS_IDS[2] },
-    STATUS_SERVICIO_PROGRAMADO: { step: 3, id: STATUS_IDS[3] },
-    STATUS_SERVICIO_FINALIZADO: { step: 5, id: STATUS_IDS[5] }
+    STATUS_CANCELADO,
+    STATUS_ESPERANDO_CONFIRMACION,
+    STATUS_CONFIRMAR_PROGRAMACION,
+    STATUS_SERVICIO_PROGRAMADO,
+    STATUS_SERVICIO_FINALIZADO
   }
 };
 

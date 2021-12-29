@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
-import { AuthContext, RequestsContext } from '../../../contexts';
+import { RequestsContext } from '../../../contexts';
 import paginationFactory, { PaginationProvider } from 'react-bootstrap-table2-paginator';
 import filterFactory from 'react-bootstrap-table2-filter';
-import { allStatus } from '../../../allStatus';
 import { StatusRenderer } from '../../atoms';
 import './TableWithPagination.scss';
 import { Link, useLocation } from 'react-router-dom';
@@ -26,15 +25,10 @@ export function TableWithPagination({
   totalSize
 }: ITableWithPaginationProps) {
   const { pathname } = useLocation();
-  const { userInfo } = useContext(AuthContext);
   const { isLoadingRequests } = useContext(RequestsContext);
 
   // STATUS FORMATTER
-  const statusFormatter = (cell, row) => {
-    const foundProfile = allStatus.find((user) => user.profile.profile === userInfo.profile);
-    const foundStep = foundProfile?.steps.find(({ step }) => step === row.status.step);
-    return <StatusRenderer step={foundStep} />;
-  };
+  const statusFormatter = (cell, row) => <StatusRenderer rowStep={row.status.step} />;
 
   // CITY FORMATTER
   const cityFormatter = (cell) => cell.charAt(0).toUpperCase() + cell.slice(1).toLowerCase();
