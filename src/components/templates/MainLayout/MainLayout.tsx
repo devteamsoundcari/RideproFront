@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
+import { usePageTitle } from '../../../utils';
 import { Sidebar, MyNavbar } from '../../organisms';
 
 export interface IMainLayoutProps {
@@ -7,6 +8,9 @@ export interface IMainLayoutProps {
 }
 
 export function MainLayout({ children }: IMainLayoutProps) {
+  // Document title set
+  usePageTitle();
+
   return (
     <div className="container-fluid" style={{ height: '100%' }}>
       <div className="row">

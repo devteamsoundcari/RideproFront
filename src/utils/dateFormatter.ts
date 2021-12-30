@@ -13,3 +13,5 @@ export const dateToCalendar = (date) => moment(date).calendar();
 export const dateFromNow = (date) => moment(moment(date)).fromNow();
 
 export const dateWithTime = (date) => moment(date).format('MMMM D YYYY, h:mm a');
+
+export const dateMonthName = (date) => moment(date).format('MMMM');

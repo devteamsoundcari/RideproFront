@@ -1,17 +1,28 @@
-import React from 'react';
-import MyCalendar from '../../components/organisms/MyCalendar/MyCalendar';
+import React, { useEffect, useContext } from 'react';
 import { MainLayout } from '../../components/templates';
 import './Calendar.scss';
-import { CalendarSidebar } from '../../components/organisms';
+import { CalendarSidebar, MyCalendar } from '../../components/organisms';
+
+import { RequestsContext } from '../../contexts/';
 
 export interface ICalendarProps {}
 
 export function Calendar(props: ICalendarProps) {
+  const { isLoadingCalendarRequests, nextUrlCalendar, getCalendarRequests } =
+    useContext(RequestsContext);
+
+  useEffect(() => {
+    if (!isLoadingCalendarRequests && nextUrlCalendar === '') {
+      getCalendarRequests();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <MainLayout>
       <div className="calendar-wrapper">
-        <CalendarSidebar />
         <MyCalendar />
+        <CalendarSidebar />
       </div>
     </MainLayout>
   );

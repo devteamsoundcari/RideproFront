@@ -16,7 +16,7 @@ export const MyNavbar = () => {
   const [filled, setFilled] = useState(false);
   const { userInfo, logOutUser, loadingAuth } = useContext(AuthContext);
   const [profile] = useProfile();
-  const { isLoadingRequests } = useContext(RequestsContext);
+  const { isLoadingRequests, isLoadingCalendarRequests } = useContext(RequestsContext);
   const {
     loadingRequest,
     loadingProviders,
@@ -55,7 +55,8 @@ export const MyNavbar = () => {
         loadingDocuments ||
         loadingBills ||
         loadingInstructors ||
-        uploadingDocument
+        uploadingDocument ||
+        isLoadingCalendarRequests
     );
   }, [
     loadingRequest,
@@ -67,7 +68,8 @@ export const MyNavbar = () => {
     loadingInstructors,
     uploadingDocument,
     loadingAuth,
-    isLoadingRequests
+    isLoadingRequests,
+    isLoadingCalendarRequests
   ]);
 
   const hideProfileEditModal = () => {

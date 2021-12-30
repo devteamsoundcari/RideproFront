@@ -6,3 +6,4 @@ export * from './regExp';
 export * from './currencyFormatter';
 export * from './cryptoHash';
 export * from './calendarEventsFormatter';
+export * from './usePageTitle';
