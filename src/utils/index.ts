@@ -5,3 +5,4 @@ export * from './useDropdown';
 export * from './regExp';
 export * from './currencyFormatter';
 export * from './cryptoHash';
+export * from './calendarEventsFormatter';

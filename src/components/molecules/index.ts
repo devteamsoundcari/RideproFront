@@ -9,3 +9,4 @@ export * from './TableWithPagination/TableWithPagination';
 export * from './ModalNewTrack/ModalNewTrack';
 export * from './ModalAddInstructor/ModalAddInstructor';
 export * from './ModalAddProvider/ModalAddProvider';
+export * from './CalendarConventions/CalendarConventions';
