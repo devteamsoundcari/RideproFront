@@ -60,6 +60,7 @@ const STATUS_ESPERANDO_CONFIRMACION = {
   id: STATUS_IDS[1],
   name: 'Esperando confirmación',
   variant: 'event-requested',
+  bgColor: 'yellow',
   color: '#333',
   now: 20,
   level: 60
@@ -70,6 +71,7 @@ const STATUS_CANCELADO = {
   id: STATUS_IDS[0],
   name: 'Solicitud cancelada',
   variant: 'event-canceled',
+  bgColor: 'red',
   color: '#fff',
   now: 100,
   level: 100
@@ -80,6 +82,7 @@ const STATUS_CONFIRMAR_PROGRAMACION = {
   id: STATUS_IDS[2],
   name: 'Confirmar programación',
   variant: 'confirm-event',
+  bgColor: 'orange',
   color: '#fff',
   now: 40,
   level: 60
@@ -90,6 +93,7 @@ const STATUS_SERVICIO_PROGRAMADO = {
   id: STATUS_IDS[3],
   name: 'Servicio programado',
   variant: 'event-confirmed',
+  bgColor: 'dodgerblue',
   color: '#fff',
   now: 50,
   level: 60
@@ -100,6 +104,7 @@ const STATUS_SERVICIO_FINALIZADO = {
   id: STATUS_IDS[5],
   name: 'Confirmar recepción de documentos',
   variant: 'confirm-docs',
+  bgColor: 'mediumslateblue',
   color: '#fff',
   now: 60,
   level: 60
@@ -110,6 +115,7 @@ const STATUS_ESPERANDO_AL_CLIENTE = {
   id: STATUS_IDS[2],
   name: 'Esperando confirmación cliente',
   variant: 'confirm-event',
+  bgColor: 'orange',
   color: '#fff',
   now: 40,
   level: 60
@@ -120,6 +126,7 @@ const STATUS_PROGRAMACION_ACEPTADA = {
   id: STATUS_IDS[3],
   name: 'Programación aceptada',
   variant: 'event-confirmed',
+  bgColor: 'dodgerblue',
   color: '#fff',
   now: 50,
   level: 60
@@ -130,6 +137,7 @@ const STATUS_CONFIRMAR_DOCUMENTOS = {
   id: STATUS_IDS[4],
   name: 'Confirmar recepción de documentos',
   variant: 'confirm-docs',
+  bgColor: 'mediumslateblue',
   color: '#fff',
   now: 60,
   level: 60
@@ -140,6 +148,7 @@ const STATUS_GENERAR_INFORMES = {
   id: STATUS_IDS[4],
   name: 'Generar Informes',
   variant: 'upload-reports',
+  bgColor: 'deeppink',
   color: '#fff',
   now: 80,
   level: 80
@@ -150,6 +159,7 @@ const STATUS_ESPERANDO_RECEPCION_DOCUMENTOS = {
   id: STATUS_IDS[5],
   name: 'Esperando recepción de documentos',
   variant: 'confirm-docs',
+  bgColor: 'mediumslateblue',
   color: '#fff',
   now: 60,
   level: 60
@@ -160,6 +170,7 @@ const STATUS_ASIGNAR_FACTURA = {
   id: STATUS_IDS[6],
   name: 'Adjuntar factura',
   variant: 'upload-reports',
+  bgColor: 'deeppink',
   color: '#fff',
   now: 80,
   level: 80
@@ -186,6 +197,7 @@ export const PERFIL_ADMIN = {
       id: STATUS_IDS[7],
       name: 'Servicio finalizado',
       variant: 'event-finished',
+      bgColor: 'lightgreen',
       color: '#333',
       now: 100,
       level: 100
@@ -206,6 +218,7 @@ export const PERFIL_TECNICO = {
       ...STATUS_SERVICIO_FINALIZADO,
       name: 'Evento Finalizado',
       variant: 'event-finished',
+      bgColor: 'yellow',
       color: '#333',
       now: 100,
       level: 100
@@ -246,6 +259,7 @@ export const PERFIL_EJECUTIVO = {
       id: STATUS_IDS[7],
       name: 'Servicio finalizado',
       variant: 'event-finished',
+      bgColor: 'yellow',
       color: '#333',
       now: 100,
       level: 100
