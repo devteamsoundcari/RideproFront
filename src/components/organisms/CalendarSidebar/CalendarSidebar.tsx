@@ -44,10 +44,14 @@ export const CalendarSidebar: React.FunctionComponent<ICalendarSidebarProps> = (
 
   return (
     <div className="calendar-sidebar px-3 py-4 ">
-      <div className="mt-4">
-        <label className="">Estadisticas de solicitudes</label>
-        {graphData && <DoughnutChart data={graphData} />}
-      </div>
+      {graphData?.labels.length ? (
+        <div className="mt-4">
+          <label className="">Estadisticas de solicitudes</label>
+          <DoughnutChart data={graphData} />
+        </div>
+      ) : (
+        ''
+      )}
       <div className="mt-3">
         <label className="">Tipos de solicitud</label>
         <CalendarConventions />
