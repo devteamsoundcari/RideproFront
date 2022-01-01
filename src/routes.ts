@@ -97,7 +97,7 @@ export const routes = [
     name: 'créditos',
     visibleInSidebar: true,
     url: '/creditos',
-    component: 'Creaditos',
+    component: 'Creditos',
     isProtected: true,
     icon: 'FaDollarSign',
     profiles: [PERFIL_ADMIN]
@@ -109,12 +109,7 @@ export const routes = [
     component: 'Pistas',
     isProtected: true,
     icon: 'GiTireTracks',
-    profiles: [
-      PERFIL_ADMIN,
-      PERFIL_CLIENTE,
-      PERFIL_OPERACIONES,
-      PERFIL_EJECUTIVO
-    ]
+    profiles: [PERFIL_ADMIN, PERFIL_CLIENTE, PERFIL_OPERACIONES, PERFIL_EJECUTIVO]
   },
   {
     name: 'sucursales',

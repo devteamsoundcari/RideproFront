@@ -9,7 +9,12 @@ import {
   Pistas,
   Proveedores,
   Instructores,
-  AdminRequestId
+  AdminRequestId,
+  Empresas,
+  Usuarios,
+  SuperClientes,
+  Documentos,
+  Creditos
 } from './pages';
 import { routes } from './routes';
 
@@ -38,6 +43,16 @@ function App() {
         return <Instructores />;
       case 'AdminRequestId':
         return <AdminRequestId />;
+      case 'Empresas':
+        return <Empresas />;
+      case 'Usuarios':
+        return <Usuarios />;
+      case 'SuperClientes':
+        return <SuperClientes />;
+      case 'Documentos':
+        return <Documentos />;
+      case 'Creditos':
+        return <Creditos />;
       default:
         return <Historial />;
     }

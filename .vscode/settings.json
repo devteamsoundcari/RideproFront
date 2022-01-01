@@ -1,7 +1,9 @@
 {
   "cSpell.words": [
     "CLIENTE",
+    "Clientes",
     "EJECUTIVO",
+    "Empresas",
     "Historial",
     "Instructores",
     "OPERACIONES",
@@ -9,6 +11,7 @@
     "Pistas",
     "Proveedores",
     "SUPERCLIENTE",
-    "TECNICO"
+    "TECNICO",
+    "Usuarios"
   ]
 }
