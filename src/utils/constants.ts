@@ -21,6 +21,7 @@ export const API_REQUEST_DOCUMENTS = '/api/v1/request_doc/?request=';
 export const API_REQUEST_DOCUMENT_UPLOAD = '/api/v1/request_doc/';
 export const API_REQUEST_BILLS = '/api/v1/bills/';
 export const API_REQUEST_TRACKS = '/api/v1/tracks/';
+export const API_REQUEST_COMPANY_TRACKS = '/api/v1/tracks/?company=';
 export const API_REQUEST_TRACKS_SEARCH = 'api/v1/tracks?search=';
 export const API_DEPARTMENTS = '/api/v1/departments/';
 export const API_CITIES_BY_DEPARTMENT = 'api/v1/municipalities/?department_id=';
@@ -42,6 +43,7 @@ export const API_RESET_PASSWORD_CONFIRM_URL = '/rest-auth/password/reset/confirm
 
 // GOOGLE API
 export const GOOGLE_MAPS_SEARCH = 'https://www.google.com/maps/search/?api=1&query=';
+export const GOOGLE_MAP_URL = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&v=3.exp&libraries=geometry,drawing,places`;
 
 const STATUS_IDS = {
   0: '59a9ee90-bc3a-4abd-a55b-f5957067442f',

@@ -1,5 +1,7 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import ApiClientSingleton from '../controllers/apiClient';
+import { AuthContext } from './AuthContext';
+import { PERFIL_ADMIN, API_REQUEST_COMPANY_TRACKS } from '../utils/constants';
 import {
   API_REQUEST_TRACKS,
   API_REQUEST_TRACKS_SEARCH,
@@ -12,6 +14,7 @@ const apiClient = ApiClientSingleton.getApiInstance();
 export const TracksContext = createContext('' as any);
 
 export const TracksContextProvider = (props) => {
+  const { userInfo } = useContext(AuthContext);
   const [tracks, setTracks] = useState<any>([]);
   const [loadingTracks, setLoadingTracks] = useState(false);
   const [departments, setDepartments] = useState<any>([]);
@@ -25,18 +28,29 @@ export const TracksContextProvider = (props) => {
       try {
         const response = await apiClient.get(page);
         setTracks((oldArr: any) => [...oldArr, ...response.data.results]);
-        setLoadingTracks(false);
-        if (response.data.next) return await getTracks(response.data.next);
+        if (response.data.next) {
+          return await getTracks(response.data.next);
+        } else {
+          setLoadingTracks(false);
+        }
       } catch (error) {
         setTracks(error);
         setLoadingTracks(false);
       }
     } else {
       try {
-        const response = await apiClient.get(API_REQUEST_TRACKS);
-        setTracks((oldArr: any) => [...oldArr, ...response.data.results]);
-        setLoadingTracks(false);
-        if (response.data.next) return await getTracks(response.data.next);
+        setTracks([]);
+        const url =
+          userInfo.profile === PERFIL_ADMIN.profile
+            ? API_REQUEST_TRACKS
+            : `${API_REQUEST_COMPANY_TRACKS}${userInfo.company.id}`;
+
+        const response = await apiClient.get(url);
+        if (response.data.next) {
+          return await getTracks(response.data.next);
+        } else {
+          setLoadingTracks(false);
+        }
       } catch (error) {
         setTracks(error);
         setLoadingTracks(false);
@@ -51,21 +65,17 @@ export const TracksContextProvider = (props) => {
         const response = await apiClient.get(page);
         setTracks((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingTracks(false);
-        if (response.data.next)
-          return await getTracksByCity(cityName, response.data.next);
+        if (response.data.next) return await getTracksByCity(cityName, response.data.next);
       } catch (error) {
         setTracks(error);
         setLoadingTracks(false);
       }
     } else {
       try {
-        const response = await apiClient.get(
-          `${API_REQUEST_TRACKS_SEARCH}${cityName}`
-        );
+        const response = await apiClient.get(`${API_REQUEST_TRACKS_SEARCH}${cityName}`);
         setTracks((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingTracks(false);
-        if (response.data.next)
-          return await getTracksByCity(cityName, response.data.next);
+        if (response.data.next) return await getTracksByCity(cityName, response.data.next);
       } catch (error) {
         setTracks(error);
         setLoadingTracks(false);
@@ -99,10 +109,7 @@ export const TracksContextProvider = (props) => {
     }
   };
 
-  const getCitiesByDepartmentId = async (
-    departmentId: number,
-    page?: string
-  ) => {
+  const getCitiesByDepartmentId = async (departmentId: number, page?: string) => {
     setLoadingCities(true);
     if (page) {
       try {
@@ -110,10 +117,7 @@ export const TracksContextProvider = (props) => {
         setCities((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingCities(false);
         if (response.data.next)
-          return await getCitiesByDepartmentId(
-            departmentId,
-            response.data.next
-          );
+          return await getCitiesByDepartmentId(departmentId, response.data.next);
       } catch (error) {
         setCities(error as any);
         setLoadingCities(false);
@@ -121,16 +125,11 @@ export const TracksContextProvider = (props) => {
     } else {
       setCities([]);
       try {
-        const response = await apiClient.get(
-          `${API_CITIES_BY_DEPARTMENT}${departmentId}`
-        );
+        const response = await apiClient.get(`${API_CITIES_BY_DEPARTMENT}${departmentId}`);
         setCities((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingCities(false);
         if (response.data.next)
-          return await getCitiesByDepartmentId(
-            departmentId,
-            response.data.next
-          );
+          return await getCitiesByDepartmentId(departmentId, response.data.next);
       } catch (error) {
         setCities(error);
         setLoadingCities(false);
@@ -138,8 +137,7 @@ export const TracksContextProvider = (props) => {
     }
   };
 
-  /* =================================   CRATE A NEW TRACK   ===================================== */
-
+  /* ============================ CRATE A NEW TRACK ===================================== */
   const createNewTrack = async ({
     companyId,
     trackAddress,
@@ -174,6 +172,38 @@ export const TracksContextProvider = (props) => {
     }
   };
 
+  /* ============================== TRACK PICTURE ===================================== */
+  const editTrackPicture = async (picture, id) => {
+    setLoadingTracks(true);
+    const formData = new FormData();
+    formData.append('pictures', picture);
+    try {
+      const res = await apiClient.patch(`${API_REQUEST_TRACKS}${id}/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setLoadingTracks(false);
+      return res;
+    } catch (error) {
+      setLoadingTracks(false);
+      throw new Error('Could not upload file');
+    }
+  };
+
+  /* ============================== EDIT TRACK INFO ===================================== */
+  const editTrackInfo = async (payload, id) => {
+    setLoadingTracks(true);
+    try {
+      const res = await apiClient.patch(`${API_REQUEST_TRACKS}${id}/`, payload);
+      setLoadingTracks(false);
+      return res;
+    } catch (error) {
+      setLoadingTracks(false);
+      throw new Error('Could not update info');
+    }
+  };
+
   return (
     <TracksContext.Provider
       value={{
@@ -189,7 +219,9 @@ export const TracksContextProvider = (props) => {
         cities,
         setCities,
         getCitiesByDepartmentId,
-        createNewTrack
+        createNewTrack,
+        editTrackPicture,
+        editTrackInfo
       }}>
       {props.children}
     </TracksContext.Provider>

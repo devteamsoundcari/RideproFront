@@ -5,7 +5,7 @@ import { FaCheckCircle } from 'react-icons/fa';
 import { PERFIL_CLIENTE, useDropdown, useProfile } from '../../../utils';
 import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
-import MapContainer from './MapContainer';
+import { GoogleMapContainer } from '../../atoms';
 import './ModalNewTrack.scss';
 
 interface Props {
@@ -28,10 +28,7 @@ interface City {
   name: string;
 }
 
-export const ModalNewTrack: React.FC<Props> = ({
-  handleClose,
-  fetchTracks
-}) => {
+export const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
   const { register, handleSubmit } = useForm();
   const { userInfo } = useContext(AuthContext);
   const [profile] = useProfile();
@@ -126,9 +123,7 @@ export const ModalNewTrack: React.FC<Props> = ({
 
   useEffect(() => {
     if (!isNaN(selectedDepartment)) {
-      const foundDepartment = departments.find(
-        ({ id }) => id === parseInt(selectedDepartment)
-      );
+      const foundDepartment = departments.find(({ id }) => id === parseInt(selectedDepartment));
       setCurrentDepartment(foundDepartment);
       setCities([]);
     }
@@ -153,11 +148,7 @@ export const ModalNewTrack: React.FC<Props> = ({
       className="modal-new-track">
       <Modal.Header closeButton className={`bg-${profile}`}>
         <Modal.Title className="text-white">
-          {loading
-            ? 'Creando pista...'
-            : success
-            ? 'Pista creada!'
-            : 'Crear nueva pista'}
+          {loading ? 'Creando pista...' : success ? 'Pista creada!' : 'Crear nueva pista'}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -220,9 +211,8 @@ export const ModalNewTrack: React.FC<Props> = ({
                     UBICACIÓN EN EL MAPA <span>(opcional)</span>
                   </h6>
                   <p>
-                    Arrastra el marcador rojo hasta el lugar exacto de la pista.
-                    Recuerda que poner una ubicación errornea podra causar
-                    retrasos y confusiones.
+                    Arrastra el marcador rojo hasta el lugar exacto de la pista. Recuerda que poner
+                    una ubicación errornea podra causar retrasos y confusiones.
                   </p>
                   <Form.Check
                     type="switch"
@@ -232,20 +222,17 @@ export const ModalNewTrack: React.FC<Props> = ({
                   />
                   {activateMap && (
                     <div className="coords">
-                      <small>Latitud: {lat}</small>{' '}
-                      <small>Longitud: {lng}</small>
+                      <small>Latitud: {lat}</small> <small>Longitud: {lng}</small>
                     </div>
                   )}
                 </div>
               </Col>
               <Col>
-                <MapContainer
+                <GoogleMapContainer
                   isMarkerShown={activateMap}
                   markerName={'ubicacion'}
                   containerElement={
-                    <div
-                      className={`map-container ${activateMap ? 'active' : ''}`}
-                    />
+                    <div className={`map-container ${activateMap ? 'active' : ''}`} />
                   }
                   latitude={(x) => setLat(x)}
                   longitude={(x) => setLng(x)}
@@ -295,9 +282,7 @@ export const ModalNewTrack: React.FC<Props> = ({
             </Form.Row>
             {error && (
               <div className="text-center">
-                <small className="text-danger">
-                  La información de la pista esta incompleta
-                </small>
+                <small className="text-danger">La información de la pista esta incompleta</small>
               </div>
             )}
             <Button className={`btn-${userInfo.profile}`} type="submit">

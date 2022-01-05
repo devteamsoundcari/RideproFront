@@ -1,46 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Row, Col, Spinner, Card, Button } from 'react-bootstrap';
-import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
-import paginationFactory, {
-  PaginationProvider,
-  PaginationListStandalone
-} from 'react-bootstrap-table2-paginator';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import { textFilter } from 'react-bootstrap-table2-filter';
 import { MainLayout } from '../../components/templates';
-import { FaExternalLinkAlt, FaCheckCircle, FaPlus, FaDownload } from 'react-icons/fa';
-import { useLocation } from 'react-router';
-import { AuthContext } from '../../contexts';
+import { FaExternalLinkAlt, FaPlus, FaDownload } from 'react-icons/fa';
+import { TracksContext } from '../../contexts';
 import { CustomTable } from '../../components/organisms';
-// import { getTracks } from '../../controllers/apiRequests';
-import { CustomCard, ModalNewTrack } from '../../components/molecules';
-
-export interface Track {
-  id: number;
-  name: string;
-  address: string;
-  fare: number;
-  description: string;
-  municipality: any;
-  company: any;
-  cellphone: string;
-  contactName: string;
-  contactEmail: string;
-  latitude: string;
-  longitude: string;
-  pictures: string;
-}
+import { CustomCard, ModalEditTrack, ModalNewTrack } from '../../components/molecules';
+import { Track } from '../../interfaces';
 
 export interface IPistasProps {}
 
 export function Pistas(props: IPistasProps) {
+  const { getTracks, tracks, loadingTracks, setTracks } = useContext(TracksContext);
   const [showAddTrack, setShowAddTrack] = useState(false);
   const [showTrackEditModal, setShowTrackEditModal] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
-  const [filteredTracks, setFilteredTracks] = useState<Track[]>([]);
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { userInfo } = useContext(AuthContext);
-  const location = useLocation();
+
   const defaultImage = require('../../assets/img/track.jpg');
 
   const formatLocation = (cell, row) => {
@@ -111,6 +85,12 @@ export function Pistas(props: IPistasProps) {
       text: 'Dirección'
     },
     {
+      dataField: 'company.name',
+      text: 'Empresa',
+      filter: textFilter(),
+      sort: true
+    },
+    {
       dataField: 'latitude',
       text: 'Ubicación',
       formatter: formatLocation
@@ -125,56 +105,20 @@ export function Pistas(props: IPistasProps) {
     setSelectedTrack(track);
   };
 
-  const updateTrackInfo = (track: Track) => {
-    let newTracks = [...tracks];
-    let index = newTracks.findIndex((t) => t.id === track.id);
-    if (index >= 0) {
-      newTracks[index] = track;
+  // ================================ FETCH TRACKS ON LOAD =====================================================
+  const fetchTracks = async () => {
+    try {
+      await getTracks();
+    } catch (error) {
+      throw new Error('Error getting the tracks');
     }
-
-    setTracks(newTracks);
   };
 
-  // ================================ FETCH TRACKS ON LOAD =====================================================
-  // const fetchTracks = async (url: string) => {
-  //   let tempTracks: any = [];
-  //   const response = await getTracks(url);
-  //   response.results.forEach(async (item: any) => {
-  //     tempTracks.push(item);
-  //   });
-  //   setTracks((oldArr) => oldArr.concat(tempTracks));
-  //   if (response.next) {
-  //     return await fetchTracks(response.next);
-  //   }
-  //   setLoading(false);
-  // };
-
-  // useEffect(() => {
-  //   if (userInfo.profile === 1) {
-  //     fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
-  //   } else {
-  //     fetchTracks(
-  //       `${process.env.REACT_APP_API_URL}/api/v1/tracks/?company=${userInfo.company.id}`
-  //     );
-  //   }
-  //   //eslint-disable-next-line
-  // }, []);
-
   useEffect(() => {
-    tracks.forEach((item) => {
-      if (userInfo.company.id === item.company.id) {
-        setFilteredTracks((oldArr: any) => [...oldArr, item]);
-      }
-    });
-  }, [tracks, userInfo.company.id]);
+    if (!loadingTracks) fetchTracks();
+    //eslint-disable-next-line
+  }, []);
 
-  // const handleFetch = () => {
-  //   setFilteredTracks([]);
-  //   setTracks([]);
-  //   fetchTracks(
-  //     `${process.env.REACT_APP_API_URL}/api/v1/tracks/?company=${userInfo.company.id}`
-  //   );
-  // };
   const actionButtons = [
     {
       onClick: () => setShowAddTrack(true),
@@ -187,9 +131,20 @@ export function Pistas(props: IPistasProps) {
     }
   ];
 
+  const updateTrackInfo = (track: Track) => {
+    let newTracks = [...tracks];
+    let index = newTracks.findIndex((t) => t.id === track.id);
+    if (index >= 0) newTracks[index] = track;
+    setTracks(newTracks);
+  };
+
   return (
     <MainLayout>
-      <CustomCard title="Pistas" subtitle="Detalle de tus pistas" actionButtons={actionButtons}>
+      <CustomCard
+        title="Pistas"
+        subtitle="Detalle de tus pistas"
+        actionButtons={actionButtons}
+        loading={loadingTracks}>
         <CustomTable
           columns={columns}
           data={tracks}
@@ -203,10 +158,14 @@ export function Pistas(props: IPistasProps) {
       {showAddTrack && (
         <ModalNewTrack
           handleClose={() => setShowAddTrack(false)}
-          fetchTracks={() => {
-            setTracks([]);
-            // getTracksByCity(municipality.name);
-          }}
+          fetchTracks={() => fetchTracks()}
+        />
+      )}
+      {showTrackEditModal && selectedTrack && (
+        <ModalEditTrack
+          onHide={() => setShowTrackEditModal(false)}
+          onTrackUpdate={updateTrackInfo}
+          track={selectedTrack}
         />
       )}
     </MainLayout>

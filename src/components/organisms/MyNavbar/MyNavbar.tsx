@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { SearchFiltersContextProvider } from '../../../contexts';
+import { SearchFiltersContextProvider, TracksContext } from '../../../contexts';
 import { FaPowerOff, FaUser, FaRegBuilding } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import { useProfile, PERFIL_CLIENTE, PERFIL_SUPERCLIENTE } from '../../../utils';
@@ -27,6 +27,7 @@ export const MyNavbar = () => {
     loadingInstructors,
     uploadingDocument
   } = useContext(SingleRequestContext);
+  const { loadingTracks } = useContext(TracksContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
@@ -36,7 +37,7 @@ export const MyNavbar = () => {
 
   useState(() => {
     window.addEventListener('scroll', () => {
-      if (window.scrollY < 30) {
+      if (window.scrollY < 8) {
         setFilled(false);
       } else {
         setFilled(true);
@@ -56,7 +57,8 @@ export const MyNavbar = () => {
         loadingBills ||
         loadingInstructors ||
         uploadingDocument ||
-        isLoadingCalendarRequests
+        isLoadingCalendarRequests ||
+        loadingTracks
     );
   }, [
     loadingRequest,
@@ -69,7 +71,8 @@ export const MyNavbar = () => {
     uploadingDocument,
     loadingAuth,
     isLoadingRequests,
-    isLoadingCalendarRequests
+    isLoadingCalendarRequests,
+    loadingTracks
   ]);
 
   const hideProfileEditModal = () => {

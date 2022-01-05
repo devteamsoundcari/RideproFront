@@ -1,0 +1,15 @@
+.custom-table {
+  th {
+    text-align: center;
+    vertical-align: middle !important;
+  }
+  td {
+    vertical-align: middle !important;
+  }
+  .custom-row {
+    &:hover {
+      background-color: lightgreen;
+      cursor: pointer;
+    }
+  }
+}

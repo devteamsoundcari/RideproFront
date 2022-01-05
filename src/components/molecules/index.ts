@@ -11,3 +11,5 @@ export * from './ModalAddInstructor/ModalAddInstructor';
 export * from './ModalAddProvider/ModalAddProvider';
 export * from './CalendarConventions/CalendarConventions';
 export * from './CustomCard/CustomCard';
+export * from './ModalEditTrack/ModalEditTrack';
+export * from './ModalTrackPicture/ModalTrackPicture';

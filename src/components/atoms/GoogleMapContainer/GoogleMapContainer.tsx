@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { compose, withProps } from 'recompose';
-import {
-  withScriptjs,
-  withGoogleMap,
-  GoogleMap,
-  Marker
-} from 'react-google-maps';
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import { GOOGLE_MAP_URL } from '../../../utils';
 
-const MapContainer = compose(
+export const GoogleMapContainer = compose(
   withProps({
-    googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&v=3.exp&libraries=geometry,drawing,places`,
+    googleMapURL: GOOGLE_MAP_URL,
     loadingElement: <div style={{ height: `100%` }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
@@ -56,5 +52,3 @@ const MapContainer = compose(
     </GoogleMap>
   );
 });
-
-export default MapContainer;

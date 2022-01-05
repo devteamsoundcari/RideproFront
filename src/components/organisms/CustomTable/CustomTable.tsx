@@ -35,23 +35,19 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
   };
 
   const contentTable = ({ paginationProps, paginationTableProps }) => (
-    <div>
+    <div className="custom-table">
       <PaginationListStandalone {...paginationProps} />
-      <div>
-        <div>
-          <BootstrapTable
-            bootstrap4
-            keyField="id"
-            data={data}
-            columns={columns}
-            selectRow={selectRow}
-            filter={filterFactory()}
-            pagination={paginationFactory()}
-            rowClasses={'custom-row'}
-            {...paginationTableProps}
-          />
-        </div>
-      </div>
+      <BootstrapTable
+        bootstrap4
+        keyField="id"
+        data={data}
+        columns={columns}
+        selectRow={selectRow}
+        filter={filterFactory()}
+        pagination={paginationFactory()}
+        rowClasses={'custom-row'}
+        {...paginationTableProps}
+      />
       <PaginationListStandalone {...paginationProps} />
     </div>
   );
