@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { Form, Col, Button, Modal } from 'react-bootstrap';
+import { Form, Col, Button, Modal, Spinner } from 'react-bootstrap';
 import { useProfile } from '../../../utils/useProfile';
+import { CustomTable } from '../../organisms';
+import { CompaniesContext } from '../../../contexts';
 
 export interface IModalNewUserProps {
   handleClose: () => void;
 }
 
 export function ModalNewUser({ handleClose }: IModalNewUserProps) {
+  const { companies, loadingCompanies, getCompanies, allCompaniesLoaded, count } =
+    useContext(CompaniesContext);
   const { register, handleSubmit, errors } = useForm();
   const [profile] = useProfile();
-  const [companies, setCompanies] = useState([]);
   const [passError, setPassError] = useState('');
   const [userSucessMessage, setUserSucessMessage] = useState({
     name: '',
@@ -99,19 +102,20 @@ export function ModalNewUser({ handleClose }: IModalNewUserProps) {
       setPassError('');
     }
   }, [data]);
-  // ================================= GET COMPANIES ==========================================
 
-  const fetchCompanies = async (url) => {
-    // const response = await getUsers(url);
-    // setCompanies((oldArr) => [...oldArr, ...response.results]);
-    // if (response.next) {
-    //   return await fetchCompanies(response.next);
-    // }
+  // ================================= GET COMPANIES ==========================================
+  const fetchCompanies = async () => {
+    try {
+      await getCompanies();
+    } catch (error) {
+      throw new Error('Error getting companies');
+    }
   };
+
   useEffect(() => {
-    fetchCompanies(`${process.env.REACT_APP_API_URL}/api/v1/companies/`);
-    // eslint-disable-next-line
-  }, []);
+    if (!loadingCompanies && !allCompaniesLoaded) fetchCompanies();
+    //eslint-disable-next-line
+  }, [allCompaniesLoaded]);
   // ================================= UPDATE STATE AS THE USER TYPES ==========================================
 
   const updateData = (e) => {
@@ -150,6 +154,21 @@ export function ModalNewUser({ handleClose }: IModalNewUserProps) {
   //     return '';
   //   }
   // };
+
+  const columns = [
+    {
+      dataField: 'name',
+      text: 'Nombre',
+      sort: true
+    },
+    {
+      dataField: 'arl',
+      text: 'ARL',
+      sort: true,
+      classes: 'small-column',
+      headerClasses: 'small-column'
+    }
+  ];
 
   return (
     <Modal show={true} onHide={handleClose}>
@@ -259,8 +278,10 @@ export function ModalNewUser({ handleClose }: IModalNewUserProps) {
                 })}
               />
               <Form.Text className="text-muted">
-                La contraseña debe tener ocho caracteres como mínimo y debe incluír una mayúscula,
-                un número y un caracter especial (@$!%*?&).
+                <small>
+                  Ocho caracteres como mínimo una mayúscula, un número y un caracter especial
+                  (@$!%*?&).
+                </small>
                 <br></br>
                 {errors.password && (
                   <span className="text-danger">Ingrese una contraseña válida</span>
@@ -294,8 +315,56 @@ export function ModalNewUser({ handleClose }: IModalNewUserProps) {
           {/* ROW */}
           <Form.Row>
             <Form.Group as={Col}>
-              <Form.Label>Empresa</Form.Label>
+              <Form.Label>
+                Cargo en la Empresa<span> *</span>
+              </Form.Label>
               <Form.Control
+                type="text"
+                placeholder="Cargo..."
+                name="charge"
+                onChange={updateData}
+                value={data.charge}
+                autoComplete="off"
+                ref={register}
+              />
+            </Form.Group>
+            <Form.Group as={Col} controlId="formGridState">
+              <Form.Label>
+                Tipo de perfil<span> *</span>
+              </Form.Label>
+              <Form.Control
+                as="select"
+                name="profileType"
+                onChange={updateData}
+                autoComplete="off"
+                ref={register({ required: true })}>
+                <option value="">Seleccione...</option>
+                <option value="1">Administrador</option>
+                <option value="2">Cliente</option>
+                <option value="7">SuperCliente</option>
+                <option value="3">Operaciones</option>
+                <option value="5">Técnico</option>
+              </Form.Control>
+              {errors.profileType && (
+                <small className="text-danger">Por favor, seleccione un perfil.</small>
+              )}
+            </Form.Group>
+          </Form.Row>
+          {/* ROW */}
+          <hr />
+          <Form.Row>
+            <Form.Group as={Col}>
+              <Form.Label className="mb-0">
+                Empresa{' '}
+                {loadingCompanies && <Spinner animation="border" variant="secondary" size="sm" />}
+                <Form.Text className="text-muted mt-0">
+                  {`Empresas registradas ${
+                    loadingCompanies ? `(${companies.length} de ${count})` : `(${count})`
+                  }`}
+                </Form.Text>
+              </Form.Label>
+
+              {/* <Form.Control
                 type="number"
                 name="company"
                 onChange={updateData}
@@ -317,45 +386,17 @@ export function ModalNewUser({ handleClose }: IModalNewUserProps) {
                 {errors.company && (
                   <span className="text-danger">Por favor, selecciona una empresa.</span>
                 )}
-              </Form.Text>
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>
-                Cargo en la Empresa<span> *</span>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Cargo..."
-                name="charge"
-                onChange={updateData}
-                value={data.charge}
-                autoComplete="off"
-                ref={register}
+              </Form.Text> */}
+              <CustomTable
+                columns={columns}
+                data={companies}
+                renderSearch
+                loading={loadingCompanies}
+                showPagination={false}
+                paginationSize={3}
+                onSelectRow={(row: any) => console.log(row)}
+                hideSelectColumn={false}
               />
-            </Form.Group>
-          </Form.Row>
-          {/* ROW */}
-          <Form.Row>
-            <Form.Group as={Col} md={12} controlId="formGridState">
-              <Form.Label>
-                Tipo de perfil<span> *</span>
-              </Form.Label>
-              <Form.Control
-                as="select"
-                name="profileType"
-                onChange={updateData}
-                autoComplete="off"
-                ref={register({ required: true })}>
-                <option value="">Seleccione...</option>
-                <option value="1">Administrador</option>
-                <option value="2">Cliente</option>
-                <option value="7">SuperCliente</option>
-                <option value="3">Operaciones</option>
-                <option value="5">Técnico</option>
-              </Form.Control>
-              {errors.profileType && (
-                <small className="text-danger">Por favor, seleccione un perfil.</small>
-              )}
             </Form.Group>
           </Form.Row>
           {/* ROW */}

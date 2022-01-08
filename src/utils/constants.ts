@@ -32,6 +32,7 @@ export const API_ALL_PROVIDERS = '/api/v1/providers/';
 export const API_ALL_DOCUMENTS = '/api/v1/documents/';
 export const API_UPDATE_REQUEST_DOCUMENTS = '/api/v1/request_documents/';
 export const API_ALL_USERS = '/api/v1/users/';
+export const API_ALL_COMPANIES = '/api/v1/companies/';
 
 // Auth
 export const API_LOGIN_URL = '/rest-auth/login/';

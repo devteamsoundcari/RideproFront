@@ -59,7 +59,9 @@ export function Pistas(props: IPistasProps) {
     {
       dataField: 'id',
       text: 'ID',
-      hidden: true
+      hidden: true,
+      classes: 'small-column',
+      headerClasses: 'small-column'
     },
     {
       dataField: 'pictures',
@@ -140,7 +142,8 @@ export function Pistas(props: IPistasProps) {
     },
     {
       onClick: () => setShowAddTrack(true),
-      icon: <FaPlus />
+      icon: <FaPlus />,
+      disabled: loadingTracks
     },
     {
       onClick: () => console.log('yex'),
@@ -161,7 +164,7 @@ export function Pistas(props: IPistasProps) {
       <CustomCard
         title="Pistas"
         subtitle={`Detalle de tus pistas registrados ${
-          loadingTracks ? `(${tracks.length + 25} de ${count})` : `(${count})`
+          loadingTracks ? `(${tracks.length} de ${count})` : `(${count})`
         }`}
         actionButtons={actionButtons}
         loading={loadingTracks}>

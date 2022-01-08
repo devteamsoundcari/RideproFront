@@ -7,6 +7,7 @@ import paginationFactory, {
 import filterFactory from 'react-bootstrap-table2-filter';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import './CustomTable.scss';
+import { Spinner } from 'react-bootstrap';
 
 interface ICustomTableProps {
   columns: any;
@@ -14,6 +15,9 @@ interface ICustomTableProps {
   onSelectRow?: (x: any) => void;
   renderSearch?: boolean;
   loading: boolean;
+  showPagination?: boolean;
+  paginationSize?: number;
+  hideSelectColumn?: boolean;
 }
 
 export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
@@ -21,20 +25,30 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
   columns,
   onSelectRow,
   renderSearch,
-  loading
+  loading,
+  showPagination = true,
+  paginationSize = 10,
+  hideSelectColumn = true
 }) => {
   const options = {
     custom: true,
     paginationSize: 4,
     pageStartIndex: 1,
     showTotal: true,
-    totalSize: data.length
+    totalSize: data.length,
+    sizePerPageList: [
+      {
+        text: String(paginationSize),
+        value: paginationSize
+      }
+    ]
   };
 
   const selectRow: SelectRowProps<any> = {
     mode: 'radio',
     clickToSelect: true,
-    hideSelectColumn: true,
+    hideSelectColumn: hideSelectColumn,
+    selectColumnPosition: 'right',
     bgColor: 'lightgreen' as any,
     onSelect: (row) => (onSelectRow ? onSelectRow(row) : ('' as any))
   };
@@ -45,11 +59,11 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
       props.onSearch(input.value);
     };
     return (
-      <div>
+      <div className={showPagination ? 'w-75' : 'w-100'}>
         <input
           className="form-control"
           disabled={loading}
-          placeholder="Buscar..."
+          placeholder={loading ? 'Cargando...' : 'Buscar...'}
           ref={(n) => (input = n)}
           onChange={handleChange}
           type="text"
@@ -60,7 +74,7 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
 
   const contentTable = ({ paginationProps, paginationTableProps }) => (
     <div className="custom-table">
-      <PaginationListStandalone {...paginationProps} />
+      {showPagination && <PaginationListStandalone {...paginationProps} />}
       <BootstrapTable
         bootstrap4
         keyField="id"
@@ -68,17 +82,24 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
         columns={columns}
         selectRow={selectRow}
         filter={filterFactory()}
-        pagination={paginationFactory()}
+        pagination={paginationFactory(options)}
         rowClasses={'custom-row'}
+        noDataIndication={indication}
         {...paginationTableProps}
       />
-      <PaginationListStandalone {...paginationProps} />
+      {showPagination && <PaginationListStandalone {...paginationProps} />}
     </div>
   );
 
+  const indication = loading ? (
+    <Spinner animation="border" variant="secondary" />
+  ) : (
+    <>No hay datos</>
+  );
+
   const tableWithSearch = ({ paginationProps, paginationTableProps }) => (
-    <div>
-      <PaginationListStandalone {...paginationProps} />
+    <div className="custom-table">
+      {showPagination && <PaginationListStandalone {...paginationProps} />}
       <ToolkitProvider
         keyField="id"
         columns={columns}
@@ -87,15 +108,22 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
         rowClasses={'custom-row'}
         selectRow={selectRow}
         filter={filterFactory()}
-        pagination={paginationFactory()}>
+        pagination={paginationFactory(options)}>
         {(toolkitProps) => (
           <div>
             <MySearch {...toolkitProps.searchProps} />
-            <BootstrapTable striped hover {...toolkitProps.baseProps} {...paginationTableProps} />
+            <BootstrapTable
+              striped
+              hover
+              {...toolkitProps.baseProps}
+              {...paginationTableProps}
+              selectRow={selectRow}
+              noDataIndication={indication}
+            />
           </div>
         )}
       </ToolkitProvider>
-      <PaginationListStandalone {...paginationProps} />
+      {showPagination && <PaginationListStandalone {...paginationProps} />}
     </div>
   );
 

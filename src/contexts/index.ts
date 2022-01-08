@@ -9,3 +9,4 @@ export * from './TracksContext';
 export * from './InstructorsContext';
 export * from './ProvidersContext';
 export * from './UsersContext';
+export * from './CompaniesContext';

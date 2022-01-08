@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaDownload, FaPlus } from 'react-icons/fa';
-import { CustomCard } from '../../components/molecules';
+import { CustomCard, ModalNewUser } from '../../components/molecules';
 import { MainLayout } from '../../components/templates';
 
 interface IEmpresasProps {}
 
 export const Empresas: React.FunctionComponent<IEmpresasProps> = (props) => {
+  const [showAddUser, setShowAddUser] = useState(false);
   const actionButtons = [
     {
-      onClick: () => console.log('yex'),
+      onClick: () => setShowAddUser(true),
       icon: <FaPlus />
     },
     {
@@ -25,6 +26,7 @@ export const Empresas: React.FunctionComponent<IEmpresasProps> = (props) => {
         subtitle="Detalle de las empresas registradas"
         actionButtons={actionButtons}>
         <p>Empresas</p>
+        {showAddUser && <ModalNewUser handleClose={() => setShowAddUser(false)} />}
       </CustomCard>
     </MainLayout>
   );

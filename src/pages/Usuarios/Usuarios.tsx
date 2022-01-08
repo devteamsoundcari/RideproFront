@@ -32,15 +32,15 @@ export const Usuarios: React.FunctionComponent<IUsuariosProps> = (props) => {
       dataField: 'id',
       text: 'Id',
       sort: true,
-      classes: 'small-column',
-      headerClasses: 'small-column'
+      classes: 'xs-column',
+      headerClasses: 'xs-column'
     },
     {
       dataField: 'profile',
       text: 'Perfil',
       sort: true,
-      classes: 'md-column',
-      headerClasses: 'md-column',
+      classes: 'small-column',
+      headerClasses: 'small-column',
       formatter: (cell: any, row: any) => {
         const found = ALL_PROFILES.find((profile) => profile.profile === row.profile);
         return <span className="text-capitalize">{found?.name}</span>;
@@ -100,7 +100,7 @@ export const Usuarios: React.FunctionComponent<IUsuariosProps> = (props) => {
       <CustomCard
         title="Usuarios"
         subtitle={`Detalle de los usuarios registrados ${
-          loadingUsers ? `(${users.length + 25} de ${count})` : `(${count})`
+          loadingUsers ? `(${users.length} de ${count})` : `(${count})`
         }`}
         loading={loadingUsers}
         actionButtons={actionButtons}>
