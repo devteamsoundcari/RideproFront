@@ -21,6 +21,8 @@ export const TracksContextProvider = (props) => {
   const [loadingDepartments, setLoadingDepartments] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
   const [cities, setCities] = useState<any>([]);
+  const [allTracksLoaded, setAllTracksLoaded] = useState(false);
+  const [count, setCount] = useState(0);
 
   const getTracks = async (page?: string) => {
     setLoadingTracks(true);
@@ -31,6 +33,7 @@ export const TracksContextProvider = (props) => {
         if (response.data.next) {
           return await getTracks(response.data.next);
         } else {
+          setAllTracksLoaded(true);
           setLoadingTracks(false);
         }
       } catch (error) {
@@ -46,9 +49,11 @@ export const TracksContextProvider = (props) => {
             : `${API_REQUEST_COMPANY_TRACKS}${userInfo.company.id}`;
 
         const response = await apiClient.get(url);
+        setCount(response.data.count);
         if (response.data.next) {
           return await getTracks(response.data.next);
         } else {
+          setAllTracksLoaded(true);
           setLoadingTracks(false);
         }
       } catch (error) {
@@ -221,7 +226,10 @@ export const TracksContextProvider = (props) => {
         getCitiesByDepartmentId,
         createNewTrack,
         editTrackPicture,
-        editTrackInfo
+        editTrackInfo,
+        allTracksLoaded,
+        setAllTracksLoaded,
+        count
       }}>
       {props.children}
     </TracksContext.Provider>

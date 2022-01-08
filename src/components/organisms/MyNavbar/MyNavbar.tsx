@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { SearchFiltersContextProvider, TracksContext } from '../../../contexts';
+import { SearchFiltersContextProvider, TracksContext, UsersContext } from '../../../contexts';
 import { FaPowerOff, FaUser, FaRegBuilding } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import { useProfile, PERFIL_CLIENTE, PERFIL_SUPERCLIENTE } from '../../../utils';
@@ -28,6 +28,7 @@ export const MyNavbar = () => {
     uploadingDocument
   } = useContext(SingleRequestContext);
   const { loadingTracks } = useContext(TracksContext);
+  const { loadingUsers } = useContext(UsersContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
   const [showCompanyEditModal, setShowCompanyEditModal] = useState(false);
@@ -58,7 +59,8 @@ export const MyNavbar = () => {
         loadingInstructors ||
         uploadingDocument ||
         isLoadingCalendarRequests ||
-        loadingTracks
+        loadingTracks ||
+        loadingUsers
     );
   }, [
     loadingRequest,
@@ -72,7 +74,8 @@ export const MyNavbar = () => {
     loadingAuth,
     isLoadingRequests,
     isLoadingCalendarRequests,
-    loadingTracks
+    loadingTracks,
+    loadingUsers
   ]);
 
   const hideProfileEditModal = () => {

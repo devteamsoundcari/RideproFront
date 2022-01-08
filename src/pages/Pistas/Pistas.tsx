@@ -1,16 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { textFilter } from 'react-bootstrap-table2-filter';
 import { MainLayout } from '../../components/templates';
-import { FaExternalLinkAlt, FaPlus, FaDownload } from 'react-icons/fa';
+import { FaExternalLinkAlt, FaPlus, FaDownload, FaUndoAlt } from 'react-icons/fa';
 import { TracksContext } from '../../contexts';
 import { CustomTable } from '../../components/organisms';
 import { CustomCard, ModalEditTrack, ModalNewTrack } from '../../components/molecules';
 import { Track } from '../../interfaces';
+import { Spinner } from 'react-bootstrap';
 
 export interface IPistasProps {}
 
 export function Pistas(props: IPistasProps) {
-  const { getTracks, tracks, loadingTracks, setTracks } = useContext(TracksContext);
+  const {
+    getTracks,
+    tracks,
+    loadingTracks,
+    setTracks,
+    allTracksLoaded,
+    setAllTracksLoaded,
+    count
+  } = useContext(TracksContext);
   const [showAddTrack, setShowAddTrack] = useState(false);
   const [showTrackEditModal, setShowTrackEditModal] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
@@ -115,11 +124,20 @@ export function Pistas(props: IPistasProps) {
   };
 
   useEffect(() => {
-    if (!loadingTracks) fetchTracks();
+    if (!loadingTracks && !allTracksLoaded) fetchTracks();
     //eslint-disable-next-line
-  }, []);
+  }, [allTracksLoaded]);
 
   const actionButtons = [
+    {
+      onClick: () => setAllTracksLoaded(false),
+      icon: loadingTracks ? (
+        <Spinner animation="border" size="sm" className="mt-2" />
+      ) : (
+        <FaUndoAlt />
+      ),
+      disabled: loadingTracks
+    },
     {
       onClick: () => setShowAddTrack(true),
       icon: <FaPlus />
@@ -142,10 +160,13 @@ export function Pistas(props: IPistasProps) {
     <MainLayout>
       <CustomCard
         title="Pistas"
-        subtitle="Detalle de tus pistas"
+        subtitle={`Detalle de tus pistas registrados ${
+          loadingTracks ? `(${tracks.length + 25} de ${count})` : `(${count})`
+        }`}
         actionButtons={actionButtons}
         loading={loadingTracks}>
         <CustomTable
+          loading={loadingTracks}
           columns={columns}
           data={tracks}
           onSelectRow={(row) => {

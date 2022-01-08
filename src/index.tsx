@@ -8,7 +8,8 @@ import {
   RequestsContextProvider,
   TracksContextProvider,
   InstructorsContextProvider,
-  ProvidersContextProvider
+  ProvidersContextProvider,
+  UsersContextProvider
   // ReportsContextProvider
 } from './contexts';
 import App from './App';
@@ -24,7 +25,9 @@ ReactDOM.render(
         <ProvidersContextProvider>
           <TracksContextProvider>
             <SingleRequestContextProvider>
-              <App />
+              <UsersContextProvider>
+                <App />
+              </UsersContextProvider>
             </SingleRequestContextProvider>
           </TracksContextProvider>
         </ProvidersContextProvider>
