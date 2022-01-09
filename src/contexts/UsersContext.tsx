@@ -1,10 +1,22 @@
 import React, { createContext, useState } from 'react';
 import ApiClientSingleton from '../controllers/apiClient';
-import { API_ALL_USERS } from '../utils';
+import { API_ALL_USERS, API_REGISTRATION_URL } from '../utils';
 
 export const UsersContext = createContext('' as any);
 
 const apiClient = ApiClientSingleton.getApiInstance();
+
+export interface INewUser {
+  first_name: string;
+  last_name: string;
+  charge: string;
+  password1: string;
+  password2: string;
+  company: string;
+  profile: string;
+  email: string;
+  gender: string;
+}
 
 export const UsersContextProvider = (props) => {
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -46,6 +58,18 @@ export const UsersContextProvider = (props) => {
     }
   };
 
+  const addNewUser = async (user: any) => {
+    setLoadingUsers(true);
+    try {
+      const res = await apiClient.post(API_REGISTRATION_URL, user);
+      setLoadingUsers(false);
+      return res;
+    } catch (error) {
+      setLoadingUsers(false);
+      throw new Error('Error adding the user');
+    }
+  };
+
   return (
     <UsersContext.Provider
       value={{
@@ -55,7 +79,8 @@ export const UsersContextProvider = (props) => {
         getUsers,
         allUsersLoaded,
         setAllUsersLoaded,
-        count
+        count,
+        addNewUser
       }}>
       {props.children}
     </UsersContext.Provider>
