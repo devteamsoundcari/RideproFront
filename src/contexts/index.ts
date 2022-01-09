@@ -10,3 +10,5 @@ export * from './InstructorsContext';
 export * from './ProvidersContext';
 export * from './UsersContext';
 export * from './CompaniesContext';
+export * from './DocumentsContext';
+export * from './CreditsContext';

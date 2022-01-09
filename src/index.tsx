@@ -10,7 +10,9 @@ import {
   InstructorsContextProvider,
   ProvidersContextProvider,
   UsersContextProvider,
-  CompaniesContextProvider
+  CompaniesContextProvider,
+  DocumentsContextProvider,
+  CreditsContextProvider
   // ReportsContextProvider
 } from './contexts';
 import App from './App';
@@ -28,7 +30,11 @@ ReactDOM.render(
             <SingleRequestContextProvider>
               <UsersContextProvider>
                 <CompaniesContextProvider>
-                  <App />
+                  <DocumentsContextProvider>
+                    <CreditsContextProvider>
+                      <App />
+                    </CreditsContextProvider>
+                  </DocumentsContextProvider>
                 </CompaniesContextProvider>
               </UsersContextProvider>
             </SingleRequestContextProvider>
