@@ -76,10 +76,10 @@ export const routes = [
     profiles: [PERFIL_ADMIN]
   },
   {
-    name: 'superclientes',
+    name: 'superusuarios',
     visibleInSidebar: true,
-    url: '/superclientes',
-    component: 'SuperClientes',
+    url: '/superusuarios',
+    component: 'SuperUsuarios',
     isProtected: true,
     icon: 'FaUserShield',
     profiles: [PERFIL_ADMIN]

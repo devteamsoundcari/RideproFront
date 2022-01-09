@@ -12,7 +12,7 @@ import {
   AdminRequestId,
   Empresas,
   Usuarios,
-  SuperClientes,
+  SuperUsuarios,
   Documentos,
   Creditos
 } from './pages';
@@ -47,8 +47,8 @@ function App() {
         return <Empresas />;
       case 'Usuarios':
         return <Usuarios />;
-      case 'SuperClientes':
-        return <SuperClientes />;
+      case 'SuperUsuarios':
+        return <SuperUsuarios />;
       case 'Documentos':
         return <Documentos />;
       case 'Creditos':

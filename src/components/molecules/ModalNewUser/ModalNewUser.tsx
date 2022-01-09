@@ -342,6 +342,7 @@ export function ModalNewUser({ handleClose }: IModalNewUserProps) {
           </Form.Control>
 
           <CustomTable
+            keyField="id"
             columns={columns}
             data={companies}
             renderSearch

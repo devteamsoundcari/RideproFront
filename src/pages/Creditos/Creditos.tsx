@@ -127,7 +127,13 @@ export const Creditos: React.FunctionComponent<ICreditosProps> = (props) => {
         }`}
         loading={loadingCredits}
         actionButtons={actionButtons}>
-        <CustomTable columns={columns} data={credits} renderSearch loading={loadingCredits} />
+        <CustomTable
+          keyField="id"
+          columns={columns}
+          data={credits}
+          renderSearch
+          loading={loadingCredits}
+        />
       </CustomCard>
     </MainLayout>
   );

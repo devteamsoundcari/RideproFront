@@ -101,7 +101,13 @@ export const Empresas: React.FunctionComponent<IEmpresasProps> = (props) => {
         }`}
         loading={loadingCompanies}
         actionButtons={actionButtons}>
-        <CustomTable columns={columns} data={companies} renderSearch loading={loadingCompanies} />
+        <CustomTable
+          keyField="id"
+          columns={columns}
+          data={companies}
+          renderSearch
+          loading={loadingCompanies}
+        />
       </CustomCard>
       {showAddUser && <ModalNewUser handleClose={() => setShowAddUser(false)} />}
     </MainLayout>

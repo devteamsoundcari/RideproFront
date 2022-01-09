@@ -169,6 +169,7 @@ export function Pistas(props: IPistasProps) {
         actionButtons={actionButtons}
         loading={loadingTracks}>
         <CustomTable
+          keyField="id"
           loading={loadingTracks}
           columns={columns}
           data={tracks}

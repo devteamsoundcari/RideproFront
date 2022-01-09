@@ -92,7 +92,13 @@ export const Documentos: React.FunctionComponent<IDocumentosProps> = (props) => 
         }`}
         loading={loadingDocuments}
         actionButtons={actionButtons}>
-        <CustomTable columns={columns} data={documents} renderSearch loading={loadingDocuments} />
+        <CustomTable
+          keyField="id"
+          columns={columns}
+          data={documents}
+          renderSearch
+          loading={loadingDocuments}
+        />
       </CustomCard>
     </MainLayout>
   );

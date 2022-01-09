@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import paginationFactory, {
   PaginationProvider,
@@ -12,15 +12,20 @@ import { Spinner } from 'react-bootstrap';
 interface ICustomTableProps {
   columns: any;
   data: any;
-  onSelectRow?: (x: any) => void;
+  onSelectRow?: (row: any, isSelect?: any, rowIndex?: any, e?: any) => void;
   renderSearch?: boolean;
   loading: boolean;
   showPagination?: boolean;
   paginationSize?: number;
   hideSelectColumn?: boolean;
+  showExpandRow?: boolean;
+  expandComponent?: any;
+  keyField: string;
+  selectionMode?: 'radio' | 'checkbox';
 }
 
 export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
+  keyField,
   data,
   columns,
   onSelectRow,
@@ -28,7 +33,10 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
   loading,
   showPagination = true,
   paginationSize = 10,
-  hideSelectColumn = true
+  hideSelectColumn = true,
+  showExpandRow = false,
+  expandComponent,
+  selectionMode = 'radio'
 }) => {
   const options = {
     custom: true,
@@ -45,12 +53,34 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
   };
 
   const selectRow: SelectRowProps<any> = {
-    mode: 'radio',
+    mode: selectionMode,
     clickToSelect: true,
     hideSelectColumn: hideSelectColumn,
     selectColumnPosition: 'right',
     bgColor: 'lightgreen' as any,
-    onSelect: (row) => (onSelectRow ? onSelectRow(row) : ('' as any))
+    onSelect: (row, isSelect, rowIndex, e) =>
+      onSelectRow ? onSelectRow(row, isSelect, rowIndex, e) : ('' as any)
+  };
+
+  const expandRow = {
+    parentClassName: 'parent-row',
+    className: 'expanding-foo',
+    onlyOneExpanding: true,
+    // renderer: (row) => <ExpandSection row={row} />,
+    renderer: (row) => expandComponent(row),
+    showExpandColumn: true,
+    expandHeaderColumnRenderer: ({ isAnyExpands }) => {
+      if (isAnyExpands) {
+        return <b>-</b>;
+      }
+      return <b>+</b>;
+    },
+    expandColumnRenderer: ({ expanded }) => {
+      if (expanded) {
+        return <b>-</b>;
+      }
+      return <b>+</b>;
+    }
   };
 
   const MySearch = (props) => {
@@ -77,7 +107,7 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
       {showPagination && <PaginationListStandalone {...paginationProps} />}
       <BootstrapTable
         bootstrap4
-        keyField="id"
+        keyField={keyField}
         data={data}
         columns={columns}
         selectRow={selectRow}
@@ -85,6 +115,7 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
         pagination={paginationFactory(options)}
         rowClasses={'custom-row'}
         noDataIndication={indication}
+        expandRow={showExpandRow ? expandRow : {}}
         {...paginationTableProps}
       />
       {showPagination && <PaginationListStandalone {...paginationProps} />}
@@ -101,7 +132,7 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
     <div className="custom-table">
       {showPagination && <PaginationListStandalone {...paginationProps} />}
       <ToolkitProvider
-        keyField="id"
+        keyField={keyField}
         columns={columns}
         data={data}
         search
@@ -119,6 +150,7 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
               {...paginationTableProps}
               selectRow={selectRow}
               noDataIndication={indication}
+              expandRow={showExpandRow ? expandRow : {}}
             />
           </div>
         )}

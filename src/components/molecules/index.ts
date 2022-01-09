@@ -14,3 +14,4 @@ export * from './CustomCard/CustomCard';
 export * from './ModalEditTrack/ModalEditTrack';
 export * from './ModalTrackPicture/ModalTrackPicture';
 export * from './ModalNewUser/ModalNewUser';
+export * from './ModalAddCompanyToSuperUser/ModalAddCompanyToSuperUser';

@@ -1,18 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { FaDownload, FaPlus, FaUndoAlt } from 'react-icons/fa';
-import { CustomCard, ModalNewUser } from '../../components/molecules';
-import { CustomTable } from '../../components/organisms';
+import { FaDownload, FaUndoAlt } from 'react-icons/fa';
+import { CustomCard } from '../../components/molecules';
+import { CustomTable, SuperUsersCompanies } from '../../components/organisms';
 import { MainLayout } from '../../components/templates';
 import { UsersContext } from '../../contexts';
-import { ALL_PROFILES } from '../../utils';
+import { PERFIL_SUPERCLIENTE } from '../../utils/constants';
 
-interface IUsuariosProps {}
+interface ISuperUsuariosProps {}
 
-export const Usuarios: React.FunctionComponent<IUsuariosProps> = (props) => {
-  const { loadingUsers, getUsers, users, allUsersLoaded, setAllUsersLoaded, count } =
+export const SuperUsuarios: React.FunctionComponent<ISuperUsuariosProps> = (props) => {
+  const { loadingUsers, getUsers, users, allUsersLoaded, setAllUsersLoaded } =
     useContext(UsersContext);
-  const [showAddUser, setShowAddUser] = useState(false);
+  const [superUsers, setSuperUsers] = useState<any>([]);
+  const [superUsersCount, setSuperUsersCount] = useState(0);
+
+  useEffect(() => {
+    setSuperUsers(users.filter((user) => user.profile === PERFIL_SUPERCLIENTE.profile));
+    setSuperUsersCount(superUsers.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [users]);
 
   const fetchUsers = async () => {
     try {
@@ -32,25 +39,10 @@ export const Usuarios: React.FunctionComponent<IUsuariosProps> = (props) => {
       dataField: 'id',
       text: 'Id',
       sort: true,
-      classes: 'xs-column',
+      classes: 'xs-column text-center',
       headerClasses: 'xs-column'
     },
-    {
-      dataField: 'profile',
-      text: 'Perfil',
-      sort: true,
-      classes: 'small-column',
-      headerClasses: 'small-column',
-      formatter: (cell: any, row: any) => {
-        const found = ALL_PROFILES.find((profile) => profile.profile === row.profile);
-        return <span className="text-capitalize">{found?.name}</span>;
-      }
-    },
-    {
-      dataField: 'company.name',
-      text: 'Empresa',
-      sort: true
-    },
+
     {
       dataField: 'first_name',
       text: 'Nombre'
@@ -58,6 +50,11 @@ export const Usuarios: React.FunctionComponent<IUsuariosProps> = (props) => {
     {
       dataField: 'last_name',
       text: 'Apellido'
+    },
+    {
+      dataField: 'company.name',
+      text: 'Empresa',
+      sort: true
     },
     {
       dataField: 'email',
@@ -68,7 +65,7 @@ export const Usuarios: React.FunctionComponent<IUsuariosProps> = (props) => {
     {
       dataField: 'credit',
       text: 'Cred',
-      classes: 'small-column',
+      classes: 'small-column text-center',
       headerClasses: 'small-column',
       formatter: (cell) => <p>${cell}</p>
     }
@@ -85,10 +82,6 @@ export const Usuarios: React.FunctionComponent<IUsuariosProps> = (props) => {
       disabled: loadingUsers
     },
     {
-      onClick: () => setShowAddUser(true),
-      icon: <FaPlus />
-    },
-    {
       onClick: () => console.log('yex'),
       icon: <FaDownload />,
       disabled: true
@@ -98,21 +91,20 @@ export const Usuarios: React.FunctionComponent<IUsuariosProps> = (props) => {
   return (
     <MainLayout>
       <CustomCard
-        title="Usuarios"
-        subtitle={`Detalle de los usuarios registrados ${
-          loadingUsers ? `(${users.length} de ${count})` : `(${count})`
-        }`}
+        title="Super usuarios"
+        subtitle={`Detalle de los super-usuarios registrados (${superUsersCount})`}
         loading={loadingUsers}
         actionButtons={actionButtons}>
         <CustomTable
           keyField="id"
           columns={columns}
-          data={users}
+          data={superUsers}
           renderSearch
           loading={loadingUsers}
+          showExpandRow
+          expandComponent={(row) => <SuperUsersCompanies row={row} />}
         />
       </CustomCard>
-      {showAddUser && <ModalNewUser handleClose={() => setShowAddUser(false)} />}
     </MainLayout>
   );
 };

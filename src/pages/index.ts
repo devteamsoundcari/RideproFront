@@ -9,6 +9,6 @@ export * from './Proveedores/Proveedores';
 export * from './AdminRequestId/AdminRequestId';
 export * from './Empresas/Empresas';
 export * from './Usuarios/Usuarios';
-export * from './SuperClientes/SuperClientes';
+export * from './SuperUsuarios/SuperUsuarios';
 export * from './Documentos/Documentos';
 export * from './Creditos/Creditos';
