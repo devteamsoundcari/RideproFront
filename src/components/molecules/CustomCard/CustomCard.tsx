@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react';
 import { Card, Spinner } from 'react-bootstrap';
 
 interface ICustomCardProps {
-  title: string;
-  subtitle: string;
+  title?: string;
+  subtitle?: string;
   actionButtons?: {
     icon: ReactNode;
     onClick: () => any;
@@ -11,6 +11,7 @@ interface ICustomCardProps {
   }[];
   children: any;
   loading?: boolean;
+  bodyPadding?: string;
 }
 
 export const CustomCard: React.FunctionComponent<ICustomCardProps> = ({
@@ -18,17 +19,20 @@ export const CustomCard: React.FunctionComponent<ICustomCardProps> = ({
   subtitle,
   actionButtons,
   children,
-  loading
+  loading,
+  bodyPadding = '1.25rem'
 }) => {
   return (
     <Card>
       <Card.Header>
         <div className="d-flex justify-content-between align-items-center">
           <div>
-            <h2 className="display-6 mb-0">
-              {title} {loading && <Spinner animation="border" size="sm" className="mb-2" />}
-            </h2>
-            <div className="card-text">{subtitle}</div>
+            {title && (
+              <h2 className="display-6 mb-0">
+                {title} {loading && <Spinner animation="border" size="sm" className="mb-2" />}
+              </h2>
+            )}
+            {subtitle && <div className="card-text">{subtitle}</div>}
           </div>
           <div className="d-flex gap-2">
             {actionButtons?.map(({ onClick, icon, disabled }, idx) => (
@@ -44,7 +48,7 @@ export const CustomCard: React.FunctionComponent<ICustomCardProps> = ({
           </div>
         </div>
       </Card.Header>
-      <Card.Body>{children}</Card.Body>
+      <Card.Body style={{ padding: bodyPadding }}>{children}</Card.Body>
     </Card>
   );
 };

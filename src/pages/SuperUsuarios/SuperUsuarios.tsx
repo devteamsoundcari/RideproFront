@@ -17,7 +17,7 @@ export const SuperUsuarios: React.FunctionComponent<ISuperUsuariosProps> = (prop
 
   useEffect(() => {
     setSuperUsers(users.filter((user) => user.profile === PERFIL_SUPERCLIENTE.profile));
-    setSuperUsersCount(superUsers.length);
+    setSuperUsersCount(users.filter((user) => user.profile === PERFIL_SUPERCLIENTE.profile).length);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users]);
 

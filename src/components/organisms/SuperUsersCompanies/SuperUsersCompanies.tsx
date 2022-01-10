@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
-import { FaDownload, FaPlus, FaTrash } from 'react-icons/fa';
+import { Button, Spinner } from 'react-bootstrap';
+import { FaPlus, FaTrash, FaUndoAlt } from 'react-icons/fa';
 import { CustomTable } from '..';
 import { CompaniesContext } from '../../../contexts';
 import { CustomCard, ModalAddCompanyToSuperUser } from '../../molecules';
@@ -87,8 +87,18 @@ export function SuperUsersCompanies({ row }: ISuperUsersCompaniesProps) {
 
   const actionButtons = [
     {
+      onClick: () => fetchUserCompanies(),
+      icon: loadingCompanies ? (
+        <Spinner animation="border" size="sm" className="mt-2" />
+      ) : (
+        <FaUndoAlt />
+      ),
+      disabled: loadingCompanies
+    },
+    {
       onClick: () => setShowModalAddCompany(true),
-      icon: <FaPlus />
+      icon: <FaPlus />,
+      disabled: loadingCompanies
     }
   ];
 
@@ -99,7 +109,8 @@ export function SuperUsersCompanies({ row }: ISuperUsersCompaniesProps) {
       loading={loadingCompanies}
       actionButtons={actionButtons}>
       <CustomTable
-        keyField="company.name"
+        keyField="id"
+        renderSearch
         columns={columns}
         data={userCompanies}
         loading={loadingCompanies}
@@ -108,7 +119,9 @@ export function SuperUsersCompanies({ row }: ISuperUsersCompaniesProps) {
         <ModalAddCompanyToSuperUser
           handleClose={() => setShowModalAddCompany(false)}
           userName={`${first_name} ${last_name}`}
+          userId={id}
           companyName={company.name}
+          userCompanies={userCompanies.map((userCompany) => userCompany.company)}
         />
       )}
     </CustomCard>

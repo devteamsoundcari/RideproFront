@@ -95,6 +95,21 @@ export const CompaniesContextProvider = (props) => {
     }
   };
 
+  const addSuperUserCompanies = async (companiesIds: string[], userId: string) => {
+    setLoadingCompanies(true);
+    try {
+      const response = await apiClient.post(`${API_USER_COMPANIES}`, {
+        user: userId,
+        companies: [...companiesIds]
+      });
+      setLoadingCompanies(false);
+      return response;
+    } catch (error) {
+      setLoadingCompanies(false);
+      throw new Error('Error adding the companies');
+    }
+  };
+
   return (
     <CompaniesContext.Provider
       value={{
@@ -108,7 +123,8 @@ export const CompaniesContextProvider = (props) => {
         userCompanies,
         getUserCompanies,
         countUserCompanies,
-        deleteSuerUserCompany
+        deleteSuerUserCompany,
+        addSuperUserCompanies
       }}>
       {props.children}
     </CompaniesContext.Provider>
