@@ -50,6 +50,24 @@ export const CompaniesContextProvider = (props) => {
     }
   };
 
+  const createCompany = async (data: any) => {
+    setLoadingCompanies(true);
+    const formData = new FormData();
+    Object.keys(data).forEach((key) => formData.append(key, data[key]));
+    try {
+      const res = await apiClient.post(API_ALL_COMPANIES, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setLoadingCompanies(false);
+      return res.data;
+    } catch (error) {
+      setLoadingCompanies(false);
+      throw new Error('Error al registrar la empresa');
+    }
+  };
+
   const getUserCompanies = async (userId: string, page?: string) => {
     setLoadingCompanies(true);
     if (page) {
@@ -124,7 +142,8 @@ export const CompaniesContextProvider = (props) => {
         getUserCompanies,
         countUserCompanies,
         deleteSuerUserCompany,
-        addSuperUserCompanies
+        addSuperUserCompanies,
+        createCompany
       }}>
       {props.children}
     </CompaniesContext.Provider>

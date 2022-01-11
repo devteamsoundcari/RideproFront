@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Image, Spinner } from 'react-bootstrap';
 import { FaDownload, FaPlus, FaUndoAlt } from 'react-icons/fa';
-import { CustomCard, ModalNewUser } from '../../components/molecules';
+import { CustomCard, ModalAddNewCompany } from '../../components/molecules';
 import { CustomTable } from '../../components/organisms';
 import { MainLayout } from '../../components/templates';
 import { CompaniesContext } from '../../contexts/';
@@ -9,7 +9,7 @@ import { CompaniesContext } from '../../contexts/';
 interface IEmpresasProps {}
 
 export const Empresas: React.FunctionComponent<IEmpresasProps> = (props) => {
-  const [showAddUser, setShowAddUser] = useState(false);
+  const [showAddCompany, setShowAddCompany] = useState(true);
   const {
     companies,
     loadingCompanies,
@@ -43,8 +43,9 @@ export const Empresas: React.FunctionComponent<IEmpresasProps> = (props) => {
       disabled: loadingCompanies
     },
     {
-      onClick: () => setShowAddUser(true),
-      icon: <FaPlus />
+      onClick: () => setShowAddCompany(true),
+      icon: <FaPlus />,
+      disabled: loadingCompanies
     },
     {
       onClick: () => console.log('yex'),
@@ -62,7 +63,7 @@ export const Empresas: React.FunctionComponent<IEmpresasProps> = (props) => {
       dataField: 'logo',
       text: 'Logo',
       formatter: logoFormatter,
-      classes: 'md-column',
+      classes: 'md-column text-center',
       headerClasses: 'md-column'
     },
     {
@@ -109,7 +110,7 @@ export const Empresas: React.FunctionComponent<IEmpresasProps> = (props) => {
           loading={loadingCompanies}
         />
       </CustomCard>
-      {showAddUser && <ModalNewUser handleClose={() => setShowAddUser(false)} />}
+      {showAddCompany && <ModalAddNewCompany handleClose={() => setShowAddCompany(false)} />}
     </MainLayout>
   );
 };
