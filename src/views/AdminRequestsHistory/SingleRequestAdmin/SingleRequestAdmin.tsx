@@ -207,8 +207,10 @@ const SingleRequestAdmin = () => {
                           </small>
                           <span>
                             {data?.created_at
-                              ? `${dateFormatter(data.created_at)} | ${formatAMPM(data.created_at)}`
-                              : ''} 
+                              ? `${dateFormatter(
+                                  data.created_at
+                                )} | ${formatAMPM(data.created_at)}`
+                              : ''}
                           </span>
                         </div>
                       </div>
@@ -569,11 +571,12 @@ const SingleRequestAdmin = () => {
                 {data?.status?.step
                   ? data?.status?.step > 2 && (
                       <ConfirmSection
+                        customer={data?.customer}
                         instructors={instructors}
                         providers={providers}
                         track={data?.track}
                         fare_track={data?.fare_track}
-                        fisrt_payment={data?.f_p_track}
+                        first_payment={data?.f_p_track}
                         requestId={requestId}
                         status={data?.status}
                         date={data?.start_time}

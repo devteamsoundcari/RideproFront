@@ -8,7 +8,6 @@ import {
   updateProviderFares,
   updateRequest,
   updateRequestDocuments,
-  sendEmail,
   sendEmailMG
 } from '../../../../controllers/apiRequests';
 import swal from 'sweetalert';
@@ -23,11 +22,12 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
   track,
   requestId,
   fare_track,
-  fisrt_payment,
+  first_payment,
   status,
   date,
   participants,
-  service
+  service,
+  customer
 }) => {
   const [showModalProviders, setShowModalProviders] = useState(false);
   const [showModalDocuments, setShowModalDocuments] = useState(false);
@@ -60,11 +60,11 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
     );
 
     setTheTrack(track);
-    setTrackFP(fisrt_payment);
+    setTrackFP(first_payment);
     setTrackFare(fare_track);
 
     // eslint-disable-next-line
-  }, [instructors, providers, track, fisrt_payment, fare_track]);
+  }, [instructors, providers, track, first_payment, fare_track]);
 
   let formatter = new Intl.NumberFormat('en-CO', {
     style: 'currency',
@@ -447,6 +447,22 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                       instructors: instructors
                     };
                     await sendEmailMG(adminPayload);
+
+                    // Send email to client
+                    let clientPayload = {
+                      id: requestId,
+                      template: 'request_confirmed',
+                      subject: 'Servicio confirmado ✔️',
+                      to: customer?.email,
+                      date: `${dateFormatter(date)}, ${formatAMPM(date)}`,
+                      name: customer?.first_name,
+                      service: service?.name,
+                      track: track,
+                      providers: providers,
+                      instructors: instructors
+                    };
+
+                    await sendEmailMG(clientPayload);
 
                     setLoading(false);
 
