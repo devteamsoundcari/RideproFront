@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { FaDownload, FaPlus, FaUndoAlt } from 'react-icons/fa';
-import { CustomCard } from '../../components/molecules';
+import { CustomCard, ModalAddCredit } from '../../components/molecules';
 import { CustomTable } from '../../components/organisms';
 import { MainLayout } from '../../components/templates';
 import { CreditsContext } from '../../contexts';
@@ -10,6 +10,7 @@ import { dateDDMMYYYnTime } from '../../utils';
 interface ICreditosProps {}
 
 export const Creditos: React.FunctionComponent<ICreditosProps> = (props) => {
+  const [showAddCredit, setShowAddCredit] = useState(true);
   const { loadingCredits, getCredits, allCreditsLoaded, credits, count, setAllCreditsLoaded } =
     useContext(CreditsContext);
 
@@ -37,7 +38,7 @@ export const Creditos: React.FunctionComponent<ICreditosProps> = (props) => {
       disabled: loadingCredits
     },
     {
-      onClick: () => console.log('yex'),
+      onClick: () => setShowAddCredit(true),
       icon: <FaPlus />
     },
     {
@@ -135,6 +136,7 @@ export const Creditos: React.FunctionComponent<ICreditosProps> = (props) => {
           loading={loadingCredits}
         />
       </CustomCard>
+      {showAddCredit && <ModalAddCredit handleClose={() => setShowAddCredit(false)} />}
     </MainLayout>
   );
 };

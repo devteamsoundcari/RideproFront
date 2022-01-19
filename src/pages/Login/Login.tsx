@@ -72,7 +72,12 @@ export const Login = () => {
             <Form.Label className="text-white"> Olvidé mi contraseña</Form.Label>
           </Link>
 
-          {authError && <p className="text-danger">{authError.message}</p>}
+          {authError && (
+            <>
+              <br />
+              <small className="text-white">{authError.message}</small>
+            </>
+          )}
         </Form>
       </div>
 

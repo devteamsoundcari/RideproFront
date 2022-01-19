@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { FaDownload, FaExternalLinkAlt, FaPlus, FaUndoAlt } from 'react-icons/fa';
-import { CustomCard } from '../../components/molecules';
+import { CustomCard, ModalAddNewDocument } from '../../components/molecules';
 import { CustomTable } from '../../components/organisms';
 import { MainLayout } from '../../components/templates';
 import { DocumentsContext } from '../../contexts';
@@ -9,6 +9,8 @@ import { DocumentsContext } from '../../contexts';
 interface IDocumentosProps {}
 
 export const Documentos: React.FunctionComponent<IDocumentosProps> = (props) => {
+  const [showAddDocument, setShowAddDocument] = useState(false);
+
   const {
     documents,
     loadingDocuments,
@@ -42,8 +44,9 @@ export const Documentos: React.FunctionComponent<IDocumentosProps> = (props) => 
       disabled: loadingDocuments
     },
     {
-      onClick: () => console.log('yex'),
-      icon: <FaPlus />
+      onClick: () => setShowAddDocument(true),
+      icon: <FaPlus />,
+      disabled: loadingDocuments
     },
     {
       onClick: () => console.log('yex'),
@@ -100,6 +103,7 @@ export const Documentos: React.FunctionComponent<IDocumentosProps> = (props) => 
           loading={loadingDocuments}
         />
       </CustomCard>
+      {showAddDocument && <ModalAddNewDocument handleClose={() => setShowAddDocument(false)} />}
     </MainLayout>
   );
 };

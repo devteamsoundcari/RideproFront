@@ -46,6 +46,36 @@ export const CreditsContextProvider = (props) => {
     }
   };
 
+  const updateUserCredits = async (userId: string, credits: number) => {
+    try {
+      const response = await apiClient.patch(`/users/${userId}/`, { credits });
+      if (response.status === 200) {
+        return true;
+      }
+    } catch (error) {
+      throw new Error('Error updating user credits');
+    }
+  };
+
+  const newSale = async (data: any) => {
+    setLoadingCredits(true);
+    const formData = new FormData();
+    Object.keys(data).forEach((key) => formData.append(key, data[key]));
+    try {
+      const response = await apiClient.post(API_ALL_CREDITS, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      const creditsUpdated = await updateUserCredits(data.user, data.credits);
+      if (response && creditsUpdated) {
+        return response;
+      }
+    } catch (error) {
+      throw new Error('Error al crear la venta');
+    }
+  };
+
   return (
     <CreditsContext.Provider
       value={{
@@ -55,7 +85,8 @@ export const CreditsContextProvider = (props) => {
         getCredits,
         allCreditsLoaded,
         setAllCreditsLoaded,
-        count
+        count,
+        newSale
       }}>
       {props.children}
     </CreditsContext.Provider>

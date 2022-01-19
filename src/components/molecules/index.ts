@@ -16,3 +16,5 @@ export * from './ModalTrackPicture/ModalTrackPicture';
 export * from './ModalNewUser/ModalNewUser';
 export * from './ModalAddCompanyToSuperUser/ModalAddCompanyToSuperUser';
 export * from './ModalAddNewCompany/ModalAddNewCompany';
+export * from './ModalAddNewDocument/ModalAddNewDocument';
+export * from './ModalAddCredit/ModalAddCredit';

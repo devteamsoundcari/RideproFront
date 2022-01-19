@@ -46,6 +46,24 @@ export const DocumentsContextProvider = (props) => {
     }
   };
 
+  const createDocument = async (data: any) => {
+    setLoadingDocuments(true);
+    const formData = new FormData();
+    Object.keys(data).forEach((key) => formData.append(key, data[key]));
+    try {
+      const res = await apiClient.post(API_ALL_DOCUMENTS, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setLoadingDocuments(false);
+      return res.data;
+    } catch (error) {
+      setLoadingDocuments(false);
+      throw new Error('Error al registrar el documento');
+    }
+  };
+
   return (
     <DocumentsContext.Provider
       value={{
@@ -55,7 +73,8 @@ export const DocumentsContextProvider = (props) => {
         getDocuments,
         allDocumentsLoaded,
         setAllDocumentsLoaded,
-        count
+        count,
+        createDocument
       }}>
       {props.children}
     </DocumentsContext.Provider>

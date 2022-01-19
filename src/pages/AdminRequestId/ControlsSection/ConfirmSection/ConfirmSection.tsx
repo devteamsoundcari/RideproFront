@@ -138,8 +138,22 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({ requestId }) => {
           };
           await sendEmail(adminPayload);
 
-          setLoading(false);
+          // Send email to client
+          let clientPayload = {
+            id: requestId,
+            template: 'request_confirmed',
+            subject: 'Servicio confirmado ✔️',
+            to: currentRequest?.customer?.email,
+            date: dateWithTime(currentRequest.start_time),
+            name: currentRequest?.customer?.first_name,
+            service: currentRequest?.service?.name,
+            track: trackInfo,
+            providers: requestProviders,
+            instructors: requestInstructors
+          };
+          await sendEmail(clientPayload);
 
+          setLoading(false);
           swal('Solicitud actualizada!', {
             icon: 'success'
           });

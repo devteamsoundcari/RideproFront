@@ -9,7 +9,7 @@ import { CompaniesContext } from '../../contexts/';
 interface IEmpresasProps {}
 
 export const Empresas: React.FunctionComponent<IEmpresasProps> = (props) => {
-  const [showAddCompany, setShowAddCompany] = useState(true);
+  const [showAddCompany, setShowAddCompany] = useState(false);
   const {
     companies,
     loadingCompanies,
