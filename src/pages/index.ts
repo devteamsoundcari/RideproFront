@@ -12,3 +12,4 @@ export * from './Usuarios/Usuarios';
 export * from './SuperUsuarios/SuperUsuarios';
 export * from './Documentos/Documentos';
 export * from './Creditos/Creditos';
+export * from './Solicitar/Solicitar';

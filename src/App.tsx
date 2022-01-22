@@ -14,7 +14,8 @@ import {
   Usuarios,
   SuperUsuarios,
   Documentos,
-  Creditos
+  Creditos,
+  Solicitar
 } from './pages';
 import { routes } from './routes';
 
@@ -53,6 +54,8 @@ function App() {
         return <Documentos />;
       case 'Creditos':
         return <Creditos />;
+      case 'Solicitar':
+        return <Solicitar />;
       default:
         return <Historial />;
     }

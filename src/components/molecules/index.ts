@@ -18,3 +18,5 @@ export * from './ModalAddCompanyToSuperUser/ModalAddCompanyToSuperUser';
 export * from './ModalAddNewCompany/ModalAddNewCompany';
 export * from './ModalAddNewDocument/ModalAddNewDocument';
 export * from './ModalAddCredit/ModalAddCredit';
+export * from './ServiceLineCard/ServiceLineCard';
+export * from './ModalSelectService/ModalSelectService';

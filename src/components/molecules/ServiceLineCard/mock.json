@@ -1,0 +1,50 @@
+[
+  {
+    "url": "https://app-db.ridepro.co/api/v1/services/0172f7bd-4120-4b33-866b-d775766efd6b/",
+    "id": "0172f7bd-4120-4b33-866b-d775766efd6b",
+    "name": "Inspección de rutas internas",
+    "service_type": "Persona",
+    "description": "NA",
+    "requirements": "NA",
+    "duration": 60,
+    "ride_value": 1,
+    "updated_at": "2020-11-30T19:17:06.277304-05:00",
+    "penalty_rides": 1,
+    "location": "Presencial",
+    "min_clients": 1,
+    "max_clients": 25,
+    "line_service": "e7561e8b-17fb-40e1-8112-19656fb27025"
+  },
+  {
+    "url": "https://app-db.ridepro.co/api/v1/services/01f28335-b2fd-4109-a3d1-5a87bf0d9eeb/",
+    "id": "01f28335-b2fd-4109-a3d1-5a87bf0d9eeb",
+    "name": "Lección aprendida Moto (Práctica)",
+    "service_type": "Persona",
+    "description": "na",
+    "requirements": "na",
+    "duration": 60,
+    "ride_value": 1,
+    "updated_at": "2020-10-01T14:17:57.961128-05:00",
+    "penalty_rides": 1,
+    "location": "Presencial",
+    "min_clients": 1,
+    "max_clients": 25,
+    "line_service": "25b201f1-5b43-488f-8d15-c5b769fb11ed"
+  },
+  {
+    "url": "https://app-db.ridepro.co/api/v1/services/037bd820-e9a4-48b3-a20c-588e599dee73/",
+    "id": "037bd820-e9a4-48b3-a20c-588e599dee73",
+    "name": "Capacitación en seguridad vial",
+    "service_type": "Persona",
+    "description": "na",
+    "requirements": "na",
+    "duration": 60,
+    "ride_value": 1,
+    "updated_at": "2020-09-22T15:03:37.510857-05:00",
+    "penalty_rides": 1,
+    "location": "Presencial",
+    "min_clients": 1,
+    "max_clients": 25,
+    "line_service": "5a15699b-92a0-4475-8f6e-c43ed01c0ea5"
+  }
+]

@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {
   AuthContextProvider,
-  // ServiceContextProvider,
   // ParticipantsContextProvider,
   SingleRequestContextProvider,
   RequestsContextProvider,
@@ -12,7 +11,8 @@ import {
   UsersContextProvider,
   CompaniesContextProvider,
   DocumentsContextProvider,
-  CreditsContextProvider
+  CreditsContextProvider,
+  ServiceContextProvider
   // ReportsContextProvider
 } from './contexts';
 import App from './App';
@@ -32,7 +32,9 @@ ReactDOM.render(
                 <CompaniesContextProvider>
                   <DocumentsContextProvider>
                     <CreditsContextProvider>
-                      <App />
+                      <ServiceContextProvider>
+                        <App />
+                      </ServiceContextProvider>
                     </CreditsContextProvider>
                   </DocumentsContextProvider>
                 </CompaniesContextProvider>

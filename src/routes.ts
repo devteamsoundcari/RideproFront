@@ -39,7 +39,7 @@ export const routes = [
     name: 'solicitar',
     visibleInSidebar: true,
     url: '/solicitar',
-    component: 'CrearSolicitud',
+    component: 'Solicitar',
     isProtected: true,
     icon: 'badge',
     profiles: [PERFIL_CLIENTE]

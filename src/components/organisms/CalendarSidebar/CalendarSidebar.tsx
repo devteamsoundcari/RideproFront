@@ -16,7 +16,7 @@ export const CalendarSidebar: React.FunctionComponent<ICalendarSidebarProps> = (
   useEffect(() => {
     const counts = {};
     const colors = {};
-    const foundProfile: any = ALL_PROFILES.find((user) => user.profile === userInfo.id)?.steps;
+    const foundProfile: any = ALL_PROFILES.find((user) => user.profile === userInfo.profile)?.steps;
     const stepsKeys = Object.keys(foundProfile);
     const arrayOfDuplicates = calendarRequests.map((request) => {
       const key: any = stepsKeys.filter((key) => foundProfile[key].step === request?.status?.step);
