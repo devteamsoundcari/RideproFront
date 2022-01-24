@@ -49,6 +49,7 @@ export const TracksContextProvider = (props) => {
             : `${API_REQUEST_COMPANY_TRACKS}${userInfo.company.id}`;
 
         const response = await apiClient.get(url);
+        setTracks((oldArr: any) => [...oldArr, ...response.data.results]);
         setCount(response.data.count);
         if (response.data.next) {
           return await getTracks(response.data.next);

@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Spinner } from 'react-bootstrap';
 
 export const useDropdown = (label, defaultState, options, loading) => {
   const [state, setState] = useState(defaultState);
 
   const Dropdown = () => (
     <React.Fragment>
-      <Form.Label>{label.length > 0 ? label : null}</Form.Label>
+      <Form.Label>
+        {label.length > 0 ? label : null}{' '}
+        {loading && <Spinner size="sm" variant="primary" animation="border" />}
+      </Form.Label>
       <Form.Control
         as="select"
         value={state}
@@ -15,10 +18,7 @@ export const useDropdown = (label, defaultState, options, loading) => {
         disabled={loading || options.length === 0 || state === 'disabled'}>
         <option>{loading ? 'Cargando...' : 'Seleccione...'}</option>
         {options.map((item) => (
-          <option
-            key={item.id}
-            value={item.id}
-            id={`use-dropdown-option-${item.id}`}>
+          <option key={item.id} value={item.id} id={`use-dropdown-option-${item.id}`}>
             {item.name}
           </option>
         ))}

@@ -7,3 +7,4 @@ export * from './MyCalendar/MyCalendar';
 export * from './CustomTable/CustomTable';
 export * from './SuperUsersCompanies/SuperUsersCompanies';
 export * from './TabSelectService/TabSelectService';
+export * from './TabSelectPlace/TabSelectPlace';

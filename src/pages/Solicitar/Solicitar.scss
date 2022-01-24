@@ -1,0 +1,55 @@
+.steps-nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  width: 20%;
+  .nav-item {
+    position: relative;
+    height: 5rem;
+    &:before {
+      position: absolute;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background-color: red;
+      top: 1rem;
+      left: 0.5rem;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    &:after {
+      position: absolute;
+      width: 3px;
+      height: 100%;
+      content: '';
+      background-color: #ebebeb;
+      top: 0;
+      left: 1.9rem;
+      z-index: 1;
+    }
+    a {
+      height: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-left: 5rem;
+      flex-direction: column;
+    }
+    .active {
+      background-color: gainsboro !important;
+      color: var(--primary) !important;
+    }
+  }
+}
+
+.tab-content {
+  max-height: 87vh;
+  min-height: 50vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  vertical-align: middle;
+}

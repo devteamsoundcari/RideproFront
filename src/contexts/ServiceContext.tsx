@@ -31,10 +31,18 @@ export interface IService {
   updated_at: string;
 }
 
+export interface IPlace {
+  department: string;
+  city: string;
+  track: string;
+}
+
 export const ServiceContextProvider = (props) => {
   const [lineServices, setLinesServices] = useState<ILineService[] | []>([]);
   const [services, setServices] = useState<IService[] | []>([]);
   const [loadingLineServices, setLoadingLineServices] = useState(false);
+  const [selectedService, setSelectedService] = useState<IService | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
 
   const getLineServices = async (page: string) => {
     setLoadingLineServices(true);
@@ -90,7 +98,17 @@ export const ServiceContextProvider = (props) => {
 
   return (
     <ServiceContext.Provider
-      value={{ lineServices, loadingLineServices, getLineServices, services, getServices }}>
+      value={{
+        lineServices,
+        loadingLineServices,
+        getLineServices,
+        services,
+        getServices,
+        selectedService,
+        setSelectedService,
+        selectedPlace,
+        setSelectedPlace
+      }}>
       {props.children}
     </ServiceContext.Provider>
   );

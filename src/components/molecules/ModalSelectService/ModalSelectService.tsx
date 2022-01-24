@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { AiFillCar } from 'react-icons/ai';
 import {
@@ -9,7 +9,8 @@ import {
   FaTruckMoving,
   FaTruckPickup
 } from 'react-icons/fa';
-import { IService, ILineService } from '../../../contexts';
+import swal from 'sweetalert';
+import { IService, ILineService, AuthContext, ServiceContext } from '../../../contexts';
 import { dateFromNow, useProfile } from '../../../utils';
 import { CustomTable } from '../../organisms';
 import './ModalSelectService.scss';
@@ -25,9 +26,10 @@ export function ModalSelectService({
   lineService,
   handleClose
 }: IModalSelectServiceProps) {
+  const { userInfo } = useContext(AuthContext);
+  const { selectedService, setSelectedService } = useContext(ServiceContext);
   const [profile] = useProfile();
   const [filteredServices, setFilteredServices] = useState<IService[]>([]);
-  const [selectedService, setSelectedService] = useState<IService | null>(null);
 
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -98,6 +100,17 @@ export function ModalSelectService({
     }
   ];
 
+  const handleClick = (service: any) => {
+    if (service.ride_value >= userInfo.credit) {
+      swal('No tienes crédito suficiente', '', 'warning');
+      return;
+    } else {
+      setSelectedService(service);
+      handleClose();
+      swal('Servicio seleccionado', `${service?.name} seleccionado`, 'success');
+    }
+  };
+
   return (
     <Modal show={true} onHide={handleClose} className="modal-new-track" size="lg">
       <Modal.Header closeButton className={`bg-${profile}`}>
@@ -115,10 +128,10 @@ export function ModalSelectService({
           showPagination={false}
           paginationSize={10}
           selectionMode="radio"
-          onSelectRow={(row: any) => setSelectedService(row)}
+          onSelectRow={(row: any) => handleClick(row)}
           hideSelectColumn={false}
         />
-        <small className="text-muted">
+        <small className="text-muted ">
           Actualizado{' '}
           {dateFromNow(selectedService ? selectedService.updated_at : lineService.updated_at)}
         </small>

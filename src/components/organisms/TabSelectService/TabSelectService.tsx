@@ -38,7 +38,7 @@ export function TabSelectService(props: ITabSelectServiceProps) {
     <CardGroup className="select-service">
       {loadingLineServices && <Spinner animation="border" variant="primary" />}
       {lineServices.map((line) => (
-        <Col md={6} sm={6} lg={3} key={line.id}>
+        <Col md={4} key={line.id}>
           <ServiceLineCard data={line} setSelected={(line) => setSelectedLineService(line)} />
         </Col>
       ))}
