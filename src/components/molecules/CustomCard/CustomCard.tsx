@@ -52,7 +52,9 @@ export const CustomCard: React.FunctionComponent<ICustomCardProps> = ({
           </div>
         </Card.Header>
       )}
-      <Card.Body style={{ padding: bodyPadding }}>{children}</Card.Body>
+      <Card.Body style={{ padding: bodyPadding }} className="overflow-hidden">
+        {children}
+      </Card.Body>
     </Card>
   );
 };

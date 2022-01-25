@@ -8,3 +8,5 @@ export * from './CustomTable/CustomTable';
 export * from './SuperUsersCompanies/SuperUsersCompanies';
 export * from './TabSelectService/TabSelectService';
 export * from './TabSelectPlace/TabSelectPlace';
+export * from './TabSelectDate/TabSelectDate';
+export * from './TabAddParticipants/TabAddParticipants';

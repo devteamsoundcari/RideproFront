@@ -1,26 +1,23 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { CardGroup, Col, Card, Tabs, Tab, Nav, Row, Form } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
-import { CustomCard, ServiceLineCard } from '../../components/molecules';
-import { TabSelectPlace, TabSelectService } from '../../components/organisms';
+import { Col, Tab, Nav, Row } from 'react-bootstrap';
+import { CustomCard } from '../../components/molecules';
+import {
+  TabSelectPlace,
+  TabSelectService,
+  TabSelectDate,
+  TabAddParticipants
+} from '../../components/organisms';
 import { MainLayout } from '../../components/templates';
-import { ServiceContext, TracksContext } from '../../contexts';
-import { useDropdown } from '../../utils';
+import { ServiceContext } from '../../contexts';
 import swal from 'sweetalert';
 import './Solicitar.scss';
+import { dateWithTime } from '../../utils';
 
 export interface ISolicitarProps {}
 
 export function Solicitar(props: ISolicitarProps) {
-  // const { userInfo } = useContext(AuthContext);
-  const { selectedService, selectedPlace } = useContext(ServiceContext);
-
-  const [key, setKey] = useState('service');
-  const [date, setDate] = useState('');
-  const [service, setService] = useState('');
-  const [place, setPlace] = useState('');
-  const [rides, setRides] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  const { selectedService, selectedPlace, selectedDate } = useContext(ServiceContext);
+  const [key, setKey] = useState('date');
 
   useEffect(() => {
     if (selectedService) {
@@ -39,9 +36,16 @@ export function Solicitar(props: ISolicitarProps) {
     }
   }, [selectedPlace]);
 
+  useEffect(() => {
+    if (selectedDate) {
+      swal('Fecha seleccionada', `${dateWithTime(selectedDate)}`, 'success');
+      setKey('participants');
+    }
+  }, [selectedDate]);
+
   const styleStep = (stepNumber: number, condition: any) => {
     if (condition) {
-      return "content: '\u2713'; background-color: #fff; color: var(--success); border: 3px solid var(--success);";
+      return "content: '\u2713'; background-color: var(--success); color: #fff; border: 3px solid #fff";
     }
     return `content: '${stepNumber}';`;
   };
@@ -50,11 +54,11 @@ export function Solicitar(props: ISolicitarProps) {
   .steps-nav .nav-item:nth-child(2):before {
     ${styleStep(1, selectedService)}
   }
-  .nav-item:nth-child(3):before {
+  .steps-nav .nav-item:nth-child(3):before {
     ${styleStep(2, selectedPlace?.department && selectedPlace?.city && selectedPlace?.track)}
   }
-  .nav-item:nth-child(4):before {
-    content: "3";
+  .steps-nav .nav-item:nth-child(4):before {
+    ${styleStep(3, selectedDate)}
   }
   .nav-item:nth-child(5):before {
     content: "4";
@@ -64,14 +68,14 @@ export function Solicitar(props: ISolicitarProps) {
   return (
     <MainLayout>
       <style>{css}</style>
-      <CustomCard title="Solicitar servicios" hideHeader>
+      <CustomCard title="Solicitar servicios" hideHeader bodyPadding="0">
         <Tab.Container
           id="solicitar-steps"
           defaultActiveKey={key}
           activeKey={key}
           onSelect={(k: any) => setKey(k)}>
           <Row>
-            <Col sm={9} className="">
+            <Col md={8} sm={12} className="p-0">
               <Tab.Content>
                 <Tab.Pane eventKey="service">
                   <TabSelectService />
@@ -79,10 +83,18 @@ export function Solicitar(props: ISolicitarProps) {
                 <Tab.Pane eventKey="place">
                   <TabSelectPlace />
                 </Tab.Pane>
-                <Tab.Pane eventKey="date">date</Tab.Pane>
+                <Tab.Pane eventKey="date">
+                  <TabSelectDate />
+                </Tab.Pane>
+                <Tab.Pane eventKey="participants">
+                  <TabAddParticipants />
+                </Tab.Pane>
               </Tab.Content>
             </Col>
-            <Col sm={3} className="d-flex align-items-center pl-1">
+            <Col
+              md={4}
+              sm={12}
+              className="d-flex align-items-center justify-content-center steps-container">
               <Nav variant="pills" className="steps-nav">
                 <div className="mb-3 text-center">
                   <h2>Solicitar Servicio</h2>
@@ -90,7 +102,7 @@ export function Solicitar(props: ISolicitarProps) {
                 <Nav.Item>
                   <Nav.Link eventKey="service">
                     <strong>Servicio</strong>
-                    <span className="text-muted font-italic">
+                    <span className="text-white font-italic">
                       {selectedService ? selectedService.name : 'Selecciona un servicio'}
                     </span>
                   </Nav.Link>
@@ -98,7 +110,7 @@ export function Solicitar(props: ISolicitarProps) {
                 <Nav.Item>
                   <Nav.Link eventKey="place">
                     <strong>Lugar</strong>
-                    <span className="text-muted font-italic ">
+                    <span className="text-white font-italic">
                       {selectedPlace?.department && selectedPlace?.city && selectedPlace?.track
                         ? `${selectedPlace?.track?.name}, ${selectedPlace?.city?.name}, ${selectedPlace.department?.name}`
                         : 'Selecciona un lugar'}
@@ -108,13 +120,15 @@ export function Solicitar(props: ISolicitarProps) {
                 <Nav.Item>
                   <Nav.Link eventKey="date">
                     <strong>Fecha</strong>
-                    <span className="text-muted font-italic ">Selecciona una fecha</span>
+                    <span className="text-light font-italic">
+                      {selectedDate ? dateWithTime(selectedDate) : 'Selecciona una fecha'}
+                    </span>
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link eventKey="participants">
                     <strong>Participantes</strong>
-                    <span className="text-muted font-italic ">Añade participantes</span>
+                    <span className="text-white font-italic">Añade participantes</span>
                   </Nav.Link>
                 </Nav.Item>
               </Nav>

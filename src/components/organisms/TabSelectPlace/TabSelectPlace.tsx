@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Form, Col } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { TracksContext, AuthContext, ServiceContext } from '../../../contexts';
 import { useDropdown } from '../../../utils';
 import { COMPANY_NAME } from '../../../utils/constants';
-
+import './TabSelectPlace.scss';
 export interface ITabSelectPlaceProps {}
 
 export function TabSelectPlace(props: ITabSelectPlaceProps) {
@@ -117,36 +117,30 @@ export function TabSelectPlace(props: ITabSelectPlaceProps) {
   };
 
   return (
-    <Form className="text-center mt-5">
-      <Form.Row>
-        <Form.Group as={Col} md={{ span: 4, offset: 4 }}>
-          <DepartmentsDropdown />
-        </Form.Group>
-      </Form.Row>
-      <Form.Row>
-        <Form.Group as={Col} md={{ span: 4, offset: 4 }}>
-          <CitiesDropdown />
-        </Form.Group>
-      </Form.Row>
-      <Form.Row>
-        <Form.Group as={Col} md={{ span: 4, offset: 4 }}>
-          <Form.Label>Pista</Form.Label>
-          <Form.Control
-            as="select"
-            value={selectedPlace?.track ? selectedPlace?.track?.id : 'Seleccione...'}
-            onChange={(e) => handleTrackChange(e.target.value)}
-            onBlur={(e) => handleTrackChange(e.target.value)}
-            disabled={loadingTracks || !selectedPlace?.department || !selectedPlace?.city}>
-            <option>Seleccione...</option>
-            <option>Pista {COMPANY_NAME}</option>
-            {filteredTracks.map((item) => (
-              <option key={item.id} value={item.id} id={`use-dropdown-option-${item.id}`}>
-                {item.name}
-              </option>
-            ))}
-          </Form.Control>
-        </Form.Group>
-      </Form.Row>
+    <Form className="tab-select-place">
+      <div className="form-item">
+        <DepartmentsDropdown />
+      </div>
+      <div className="form-item">
+        <CitiesDropdown />
+      </div>
+      <div className="form-item">
+        <Form.Label>Pista</Form.Label>
+        <Form.Control
+          as="select"
+          value={selectedPlace?.track ? selectedPlace?.track?.id : 'Seleccione...'}
+          onChange={(e) => handleTrackChange(e.target.value)}
+          onBlur={(e) => handleTrackChange(e.target.value)}
+          disabled={loadingTracks || !selectedPlace?.department || !selectedPlace?.city}>
+          <option>Seleccione...</option>
+          <option>Pista {COMPANY_NAME}</option>
+          {filteredTracks.map((item) => (
+            <option key={item.id} value={item.id} id={`use-dropdown-option-${item.id}`}>
+              {item.name}
+            </option>
+          ))}
+        </Form.Control>
+      </div>
     </Form>
   );
 }

@@ -43,6 +43,7 @@ export const ServiceContextProvider = (props) => {
   const [loadingLineServices, setLoadingLineServices] = useState(false);
   const [selectedService, setSelectedService] = useState<IService | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
+  const [selectedDate, setSelectedDate] = useState<any>(null);
 
   const getLineServices = async (page: string) => {
     setLoadingLineServices(true);
@@ -107,7 +108,9 @@ export const ServiceContextProvider = (props) => {
         selectedService,
         setSelectedService,
         selectedPlace,
-        setSelectedPlace
+        setSelectedPlace,
+        selectedDate,
+        setSelectedDate
       }}>
       {props.children}
     </ServiceContext.Provider>
