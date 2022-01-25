@@ -25,7 +25,7 @@ export const CustomCard: React.FunctionComponent<ICustomCardProps> = ({
   hideHeader = false
 }) => {
   return (
-    <Card className="custom-card">
+    <Card className={hideHeader ? 'custom-card' : ''}>
       {!hideHeader && (
         <Card.Header>
           <div className="d-flex justify-content-between align-items-center">

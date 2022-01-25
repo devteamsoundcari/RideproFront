@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import DatePicker, { registerLocale } from 'react-datepicker';
@@ -23,6 +23,10 @@ export function TabSelectDate(props: ITabSelectDateProps) {
     // We compare if the time is different so we can tell if the user changed the time
     if (dateAMPM(date) !== dateAMPM(minimumDate)) setSelectedDate(date);
   };
+
+  useEffect(() => {
+    console.log('minimumDate', minimumDate);
+  }, [minimumDate]);
 
   return (
     <Form className="tab-select-date">

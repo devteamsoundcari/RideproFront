@@ -10,7 +10,7 @@ import { dateDDMMYYYnTime } from '../../utils';
 interface ICreditosProps {}
 
 export const Creditos: React.FunctionComponent<ICreditosProps> = (props) => {
-  const [showAddCredit, setShowAddCredit] = useState(true);
+  const [showAddCredit, setShowAddCredit] = useState(false);
   const { loadingCredits, getCredits, allCreditsLoaded, credits, count, setAllCreditsLoaded } =
     useContext(CreditsContext);
 

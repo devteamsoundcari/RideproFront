@@ -3,7 +3,12 @@ import { SearchFiltersContextProvider, TracksContext, UsersContext } from '../..
 import { FaPowerOff, FaUser, FaRegBuilding } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import { useProfile, PERFIL_CLIENTE, PERFIL_SUPERCLIENTE } from '../../../utils';
-import { AuthContext, RequestsContext, SingleRequestContext } from '../../../contexts';
+import {
+  AuthContext,
+  RequestsContext,
+  SingleRequestContext,
+  ServiceContext
+} from '../../../contexts';
 import { Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
 import { ModalEditProfile, ModalChangePassword, ModalEditCompany } from '../../molecules';
 import { FiltersInput } from '../FiltersInput/FiltersInput';
@@ -27,6 +32,7 @@ export const MyNavbar = () => {
     loadingInstructors,
     uploadingDocument
   } = useContext(SingleRequestContext);
+  const { loadingLineServices } = useContext(ServiceContext);
   const { loadingTracks } = useContext(TracksContext);
   const { loadingUsers } = useContext(UsersContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
@@ -60,7 +66,8 @@ export const MyNavbar = () => {
         uploadingDocument ||
         isLoadingCalendarRequests ||
         loadingTracks ||
-        loadingUsers
+        loadingUsers ||
+        loadingLineServices
     );
   }, [
     loadingRequest,
@@ -75,7 +82,8 @@ export const MyNavbar = () => {
     isLoadingRequests,
     isLoadingCalendarRequests,
     loadingTracks,
-    loadingUsers
+    loadingUsers,
+    loadingLineServices
   ]);
 
   const hideProfileEditModal = () => {

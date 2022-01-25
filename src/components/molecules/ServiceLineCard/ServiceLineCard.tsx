@@ -3,6 +3,8 @@ import { Badge, Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { dateFromNow } from '../../../utils/dateFormatter';
 import { ILineService } from '../../../contexts';
 import './ServiceLineCard.scss';
+import { GiFullMotorcycleHelmet } from 'react-icons/gi';
+import { COMPANY_NAME } from '../../../utils/constants';
 
 export interface IServiceLineCardProps {
   data: ILineService;
@@ -23,7 +25,9 @@ export function ServiceLineCard({ data, setSelected }: IServiceLineCardProps) {
   return (
     <Card className="service-line-card" onClick={() => setSelected(data)}>
       <Card.Header>
-        <Badge className="bg-secondary text-white">New</Badge>
+        <Badge className="bg-secondary text-white text-capitalize">
+          {COMPANY_NAME} <GiFullMotorcycleHelmet />
+        </Badge>
         <div className="img" style={{ backgroundImage: `url(${image})` }}></div>
       </Card.Header>
       <Card.Body>

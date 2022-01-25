@@ -55,6 +55,7 @@ export function useServicePriority() {
   };
 
   useEffect(() => {
+    console.log('selectedCity', selectedCity);
     if (selectedCity?.service_priority) {
       const minimumDays = getMinimumDays(selectedCity.service_priority);
       const minDate = addDays(setHours(new Date(), HORAS_DE_ANTELACION), minimumDays);

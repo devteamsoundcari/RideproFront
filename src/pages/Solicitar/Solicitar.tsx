@@ -17,7 +17,7 @@ export interface ISolicitarProps {}
 
 export function Solicitar(props: ISolicitarProps) {
   const { selectedService, selectedPlace, selectedDate } = useContext(ServiceContext);
-  const [key, setKey] = useState('date');
+  const [key, setKey] = useState('service');
 
   useEffect(() => {
     if (selectedService) {
@@ -108,7 +108,7 @@ export function Solicitar(props: ISolicitarProps) {
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="place">
+                  <Nav.Link eventKey="place" disabled={!selectedService}>
                     <strong>Lugar</strong>
                     <span className="text-white font-italic">
                       {selectedPlace?.department && selectedPlace?.city && selectedPlace?.track
@@ -118,7 +118,11 @@ export function Solicitar(props: ISolicitarProps) {
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="date">
+                  <Nav.Link
+                    eventKey="date"
+                    disabled={
+                      !selectedPlace?.department || !selectedPlace?.city || !selectedPlace?.track
+                    }>
                     <strong>Fecha</strong>
                     <span className="text-light font-italic">
                       {selectedDate ? dateWithTime(selectedDate) : 'Selecciona una fecha'}
@@ -126,7 +130,7 @@ export function Solicitar(props: ISolicitarProps) {
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="participants">
+                  <Nav.Link eventKey="participants" disabled={!selectedDate}>
                     <strong>Participantes</strong>
                     <span className="text-white font-italic">Añade participantes</span>
                   </Nav.Link>
@@ -135,50 +139,7 @@ export function Solicitar(props: ISolicitarProps) {
             </Col>
           </Row>
         </Tab.Container>
-        {/* ================================================== */}
-        {/* <Tabs activeKey={key} onSelect={(k: any) => setKey(k)}>
-          <Tab
-            eventKey="paso1"
-            title={
-              <p>
-                <span>1</span> Seleccionar servicio
-              </p>
-            }>
-            <TabSelectService />
-          </Tab>
-          <Tab
-            eventKey="paso2"
-            title={
-              <p>
-                <span>2</span> Seleccionar lugar
-              </p>
-            }
-            disabled={service ? false : true}>
-     
-          </Tab>
-          <Tab
-            eventKey="paso3"
-            title={
-              <p>
-                <span>3</span> Seleccionar fecha
-              </p>
-            }
-            disabled={date ? false : true}>
-     
-          </Tab>
-          <Tab
-            eventKey="paso4"
-            title={
-              <p>
-                <span>4</span> Participantes
-              </p>
-            }
-            disabled={place ? false : true}>
-
-          </Tab>
-        </Tabs> */}
       </CustomCard>
-
       {/* {showModal && (
         <ServiceConfirmationModal
           show={true}

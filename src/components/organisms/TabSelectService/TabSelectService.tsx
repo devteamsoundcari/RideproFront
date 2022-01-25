@@ -1,16 +1,15 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { CardGroup, Col, Spinner } from 'react-bootstrap';
-import { ILineService, ServiceContext } from '../../../contexts';
-import './TabSelectService.scss';
-import { ServiceLineCard, ModalSelectService } from '../../molecules';
 import swal from 'sweetalert';
+import React, { useEffect, useContext, useState } from 'react';
+import { CardGroup, Col } from 'react-bootstrap';
+import { ILineService, ServiceContext } from '../../../contexts';
+import { ServiceLineCard, ModalSelectService } from '../../molecules';
+import './TabSelectService.scss';
 
 export interface ITabSelectServiceProps {}
 
 export function TabSelectService(props: ITabSelectServiceProps) {
   const [selectedLineService, setSelectedLineService] = useState<ILineService | null>(null);
-  const { getLineServices, loadingLineServices, lineServices, getServices, services } =
-    useContext(ServiceContext);
+  const { getLineServices, lineServices, getServices, services } = useContext(ServiceContext);
 
   const fetchLineServices = async () => {
     try {
@@ -36,7 +35,6 @@ export function TabSelectService(props: ITabSelectServiceProps) {
 
   return (
     <CardGroup className="select-service">
-      {loadingLineServices && <Spinner animation="border" variant="primary" />}
       {lineServices.map((line) => (
         <Col md={4} key={line.id}>
           <ServiceLineCard data={line} setSelected={(line) => setSelectedLineService(line)} />
