@@ -36,12 +36,12 @@ export function Solicitar(props: ISolicitarProps) {
     }
   }, [selectedPlace]);
 
-  useEffect(() => {
-    if (selectedDate) {
-      swal('Fecha seleccionada', `${dateWithTime(selectedDate)}`, 'success');
-      setKey('participants');
-    }
-  }, [selectedDate]);
+  // useEffect(() => {
+  //   if (selectedDate) {
+  //     swal('Fecha seleccionada', `${dateWithTime(selectedDate)}`, 'success');
+  //     setKey('participants');
+  //   }
+  // }, [selectedDate]);
 
   const styleStep = (stepNumber: number, condition: any) => {
     if (condition) {
@@ -80,14 +80,14 @@ export function Solicitar(props: ISolicitarProps) {
                 <Tab.Pane eventKey="service">
                   <TabSelectService />
                 </Tab.Pane>
-                <Tab.Pane eventKey="place">
-                  <TabSelectPlace />
-                </Tab.Pane>
+                <Tab.Pane eventKey="place">{selectedService && <TabSelectPlace />}</Tab.Pane>
                 <Tab.Pane eventKey="date">
-                  <TabSelectDate />
+                  {selectedPlace?.department && selectedPlace?.city && selectedPlace?.track && (
+                    <TabSelectDate />
+                  )}
                 </Tab.Pane>
                 <Tab.Pane eventKey="participants">
-                  <TabAddParticipants />
+                  {selectedDate && <TabAddParticipants />}
                 </Tab.Pane>
               </Tab.Content>
             </Col>
