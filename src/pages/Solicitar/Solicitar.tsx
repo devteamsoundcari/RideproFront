@@ -17,7 +17,7 @@ export interface ISolicitarProps {}
 
 export function Solicitar(props: ISolicitarProps) {
   const { selectedService, selectedPlace, selectedDate } = useContext(ServiceContext);
-  const [key, setKey] = useState('service');
+  const [key, setKey] = useState('participants');
 
   useEffect(() => {
     if (selectedService) {
@@ -87,7 +87,8 @@ export function Solicitar(props: ISolicitarProps) {
                   )}
                 </Tab.Pane>
                 <Tab.Pane eventKey="participants">
-                  {selectedDate && <TabAddParticipants />}
+                  {/* {selectedDate && <TabAddParticipants />} */}
+                  <TabAddParticipants />
                 </Tab.Pane>
               </Tab.Content>
             </Col>
