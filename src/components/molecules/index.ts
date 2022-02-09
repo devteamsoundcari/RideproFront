@@ -20,3 +20,4 @@ export * from './ModalAddNewDocument/ModalAddNewDocument';
 export * from './ModalAddCredit/ModalAddCredit';
 export * from './ServiceLineCard/ServiceLineCard';
 export * from './ModalSelectService/ModalSelectService';
+export * from './ModalAddParticipant/ModalAddParticipant';

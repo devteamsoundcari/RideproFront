@@ -37,6 +37,7 @@ export const API_USER_COMPANIES = '/api/v1/user_companies/';
 export const API_ALL_CREDITS = '/api/v1/sale_credits/';
 export const API_ALL_LINE_SERVICES = '/api/v1/service_lines/';
 export const API_ALL_SERVICES = '/api/v1/services/';
+export const API_DRIVERS_BY_COMPANY = '/api/v1/drivers_company/';
 
 // Auth
 export const API_LOGIN_URL = '/rest-auth/login/';

@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 import ApiClientSingleton from '../controllers/apiClient';
-import { API_ALL_LINE_SERVICES, API_ALL_SERVICES } from '../utils';
+import { API_ALL_LINE_SERVICES, API_ALL_SERVICES, API_DRIVERS_BY_COMPANY } from '../utils';
 export const ServiceContext = createContext('' as any);
 
 const apiClient = ApiClientSingleton.getApiInstance();
@@ -44,6 +44,9 @@ export const ServiceContextProvider = (props) => {
   const [selectedService, setSelectedService] = useState<IService | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
   const [selectedDate, setSelectedDate] = useState<any>(null);
+  const [countCompanyDrivers, setCountCompanyDrivers] = useState(0);
+  const [companyDrivers, setCompanyDrivers] = useState<any>([]);
+  const [loadingDrivers, setLoadingDrivers] = useState(false);
 
   const getLineServices = async (page: string) => {
     setLoadingLineServices(true);
@@ -97,6 +100,39 @@ export const ServiceContextProvider = (props) => {
     }
   };
 
+  const getCompanyDrivers = async (companyId: string, page?: string) => {
+    setLoadingDrivers(true);
+    if (page) {
+      try {
+        const response = await apiClient.get(page);
+        setCompanyDrivers((oldArr: any) => [...oldArr, ...response.data.results]);
+        if (response.data.next) {
+          return await getCompanyDrivers(companyId, response.data.next);
+        } else {
+          setLoadingDrivers(false);
+        }
+      } catch (error) {
+        setCompanyDrivers(error);
+        setLoadingDrivers(false);
+      }
+    } else {
+      try {
+        setCompanyDrivers([]);
+        const response = await apiClient.get(`${API_DRIVERS_BY_COMPANY}?company=${companyId}`);
+        setCompanyDrivers((oldArr: any) => [...oldArr, ...response.data.results]);
+        setCountCompanyDrivers(response.data.count);
+        if (response.data.next) {
+          return await getCompanyDrivers(companyId, response.data.next);
+        } else {
+          setLoadingDrivers(false);
+        }
+      } catch (error) {
+        setCompanyDrivers(error);
+        setLoadingDrivers(false);
+      }
+    }
+  };
+
   return (
     <ServiceContext.Provider
       value={{
@@ -110,7 +146,11 @@ export const ServiceContextProvider = (props) => {
         selectedPlace,
         setSelectedPlace,
         selectedDate,
-        setSelectedDate
+        setSelectedDate,
+        getCompanyDrivers,
+        countCompanyDrivers,
+        companyDrivers,
+        loadingDrivers
       }}>
       {props.children}
     </ServiceContext.Provider>

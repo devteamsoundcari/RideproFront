@@ -89,7 +89,7 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
       props.onSearch(input.value);
     };
     return (
-      <div className={showPagination ? 'w-75' : 'w-100'}>
+      <div className={showPagination ? 'w-50' : 'w-100'}>
         <input
           className="form-control"
           disabled={loading}
