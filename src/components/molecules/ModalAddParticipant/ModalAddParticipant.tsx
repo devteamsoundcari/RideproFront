@@ -1,11 +1,16 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useProfile } from '../../../utils/useProfile';
 import { Modal, Form, Col, Button, Spinner, Tab, Tabs } from 'react-bootstrap';
 import { AuthContext, ServiceContext } from '../../../contexts';
-import { REGEX_EMAIl, REGEX_OFFICIAL_ID } from '../../../utils';
-import './ModalAddParticipants.scss';
+import { filterByReference, REGEX_EMAIl, REGEX_OFFICIAL_ID } from '../../../utils';
+import swal from 'sweetalert';
 import { CustomTable } from '../../organisms';
+
+import './ModalAddParticipants.scss';
+import { newParticipantFields, newParticipantSchema } from '../../../schemas';
+import { FormInput } from '../../atoms';
 
 export interface IModalAddParticipantProps {
   handleClose: () => void;
@@ -14,11 +19,21 @@ export interface IModalAddParticipantProps {
 export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) {
   const [profile] = useProfile();
   const { userInfo } = useContext(AuthContext);
-  const { getCompanyDrivers, loadingDrivers, companyDrivers } = useContext(ServiceContext);
-  const { register, handleSubmit, errors } = useForm();
+  const [foundParticipants, setFoundParticipants] = useState<any[]>([]);
+  const [newParticipant, setNewParticipant] = useState<any>(null);
+  const {
+    getCompanyDrivers,
+    loadingDrivers,
+    companyDrivers,
+    setServiceParticipants,
+    serviceParticipants
+  } = useContext(ServiceContext);
+  const { register, handleSubmit, errors } = useForm({
+    // reValidateMode: 'onChange',
+    // resolver: yupResolver(newParticipantSchema)
+  });
 
   const fetchCompanyDrivers = async () => {
-    console.log(userInfo);
     try {
       await getCompanyDrivers(userInfo.company.id);
     } catch (error) {
@@ -31,26 +46,41 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ================================= ON SUBMIT THE FORM ==========================================
-  const onSubmit = async (data) => {
-    const { name, services, phoneNumber, email, officialId } = data;
+  const handleAddOldParticipant = async () => {
+    const listHtmlOfParticipants = foundParticipants.map(
+      (participant) =>
+        `<tr key=${participant.id}>
+          <td>${participant?.first_name}</td>
+          <td>${participant?.last_name}</td>
+          <td>${participant?.email}</td>
+        </tr>`
+    );
+    const content = document.createElement('table');
+    content.innerHTML = `<thead><tr><th>Nombre</th><th>Apellido</th><th>Email</th></tr></thead><tbody>${listHtmlOfParticipants.join(
+      ''
+    )}</tbody></table>`;
+    content.classList.add('alert-table');
+    swal({
+      className: 'large-alert',
+      title: 'Agregar a',
+      content: content as any,
+      icon: 'warning',
+      buttons: ['Volver', 'Continuar'],
+      dangerMode: true
+    }).then(async (willCreate) => {
+      if (willCreate) {
+        // TODO: add participant to list
+        console.log('add', foundParticipants);
+        setServiceParticipants([...serviceParticipants, ...foundParticipants]);
+        handleClose();
+      }
+    });
+  };
 
-    const payload = {
-      name: name.toLowerCase(),
-      services: services.toLowerCase(),
-      official_id: officialId,
-      cellphone: phoneNumber,
-      email: email.toLowerCase(),
-      documents: 'na',
-      picture: 'na'
-    };
-    // const response = await addProvider(payload);
-    // if (response) {
-    //   swal('Perfecto!', `${name} fue registrado existosamente`, 'success');
-    //   handleClose();
-    // } else {
-    //   swal('Ooops!', 'Algo paso, no pudimos registrar el proveedor', 'danger');
-    // }
+  const handleAddNewUser = async (data) => {
+    console.log('data', data);
+    setNewParticipant(data);
+    handleClose();
   };
 
   const columns = [
@@ -82,8 +112,12 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
   ];
 
   const newParticipantForm = (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <Form.Row>
+    <Form onSubmit={handleSubmit(handleAddNewUser)}>
+      {newParticipantFields.map((field, index) => (
+        <FormInput field={field} register={register} errors={errors} key={`form-input=${index}`} />
+        // <FormItem field={field} register={register} errors={errors} key={`form-input=${index}`} />
+      ))}
+      {/* <Form.Row>
         <Form.Group as={Col}>
           <Form.Label>
             Nombre<span className="text-danger"> *</span>
@@ -176,63 +210,45 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
             {errors.phone && <span className="text-danger">Ingrese un texto valido.</span>}
           </Form.Text>
         </Form.Group>
-      </Form.Row>
+      </Form.Row> */}
       <Button variant="primary" type="submit" disabled={loadingDrivers} className="float-right">
-        Agregar
+        {loadingDrivers ? (
+          <Spinner animation="border" role="status" size="sm">
+            <span className="sr-only">Cargando...</span>
+          </Spinner>
+        ) : (
+          `Agregar`
+        )}
       </Button>
-
-      {loadingDrivers && (
-        <Spinner animation="border" role="status" size="sm">
-          <span className="sr-only">Cargando...</span>
-        </Spinner>
-      )}
     </Form>
   );
 
   const searchParticipantForm = (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <hr />
-      <Form.Row>
-        <Form.Group as={Col}>
-          <Form.Control
-            className="d-none"
-            name="user"
-            // value={data?.user.id}
-            autoComplete="off"
-            placeholder="Usuario"
-            ref={register({ required: true })}
-          />
-          <CustomTable
-            keyField="id"
-            columns={columns}
-            data={companyDrivers}
-            renderSearch
-            loading={loadingDrivers}
-            // showPagination
-            paginationSize={3}
-            onSelectRow={(row: any) => {
-              const e = {
-                target: {
-                  value: row,
-                  name: 'user'
-                }
-              };
-              console.log(e);
-              // updateData(e);
-            }}
-            hideSelectColumn={false}
-          />
-          <Form.Text color="danger">
-            {errors.user && <span className="text-danger">Por favor, selecciona un usuario.</span>}
-          </Form.Text>
-        </Form.Group>
-      </Form.Row>
-      <Modal.Footer>
-        <Button variant="primary" type="submit">
-          Agregar
-        </Button>
-      </Modal.Footer>
-    </Form>
+    <>
+      <CustomTable
+        keyField="id"
+        columns={columns}
+        data={filterByReference(companyDrivers, serviceParticipants)}
+        renderSearch
+        loading={loadingDrivers}
+        paginationSize={7}
+        onSelectRow={(row, isSelect) => {
+          let rows = [...foundParticipants];
+          if (!isSelect) rows = rows.filter((r) => r.id !== row.id);
+          else rows.push(row);
+          setFoundParticipants(rows);
+        }}
+        hideSelectColumn={false}
+        selectionMode="checkbox"
+      />
+      {errors.user && <span className="text-danger">Por favor, selecciona un usuario.</span>}
+      <Button
+        variant="primary"
+        disabled={!foundParticipants.length}
+        onClick={handleAddOldParticipant}>
+        Agregar
+      </Button>
+    </>
   );
 
   return (

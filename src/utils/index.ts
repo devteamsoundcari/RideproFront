@@ -8,3 +8,4 @@ export * from './cryptoHash';
 export * from './calendarEventsFormatter';
 export * from './usePageTitle';
 export * from './useServicePriority';
+export * from './filterByReference';

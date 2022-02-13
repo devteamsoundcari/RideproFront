@@ -3,3 +3,18 @@
     min-height: auto;
   }
 }
+
+.large-alert {
+  width: fit-content;
+  .alert-table {
+    width: 100%;
+    border: 1px solid #dee2e6;
+    th {
+      border: 1px solid #dee2e6;
+    }
+    td {
+      border: 1px solid #dee2e6;
+      padding: 0 1rem;
+    }
+  }
+}

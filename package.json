@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@hookform/resolvers": "^2.8.8",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -43,7 +44,8 @@
     "react-tooltip": "^4.2.8",
     "sweetalert": "^2.1.2",
     "typescript": "^3.8.3",
-    "xlsx": "^0.16.1"
+    "xlsx": "^0.16.1",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "predeploy": "yarn build",

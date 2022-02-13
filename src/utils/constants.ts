@@ -315,3 +315,13 @@ export const REGEX_OFFICIAL_ID = /^E?\d+$/;
 export const REGEX_EMAIl =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
 export const REGEX_LETTERS_AND_SPACES = /^[a-zA-Z\s]*$/;
+
+// Validation labels
+export const ERROR_REQUIRED = 'Este campo es obligatorio';
+export const ERROR_INVALID_EMAIL = 'Por favor ingresa un email valido';
+export const ERROR_PASSWORD_TOO_SHORT = 'La contraseña es muy corta';
+export const ERROR_PASSWORD_TOO_LONG = 'La contraseña es muy larga';
+export const ERROR_INVALID_PHONE_NUMBER = 'Ingresa un numero de teléfono valido';
+export const ERROR_INVALID_DATE_TYPE = 'Por favor ingresa DIA/MES/AÑO';
+export const ERROR_INVALID_FILE_TYPE = 'El archivo debe ser de tipo Imagen o PDF';
+export const ERROR_PROCESS_FAILED = 'Algo salió mal, intenta de nuevo';

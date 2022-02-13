@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { FaUndoAlt, FaPlus, FaDownload } from 'react-icons/fa';
+import { ServiceContext } from '../../../contexts';
 import { CustomCard, ModalAddParticipant } from '../../molecules';
 import { CustomTable } from '../CustomTable/CustomTable';
 import './TabAddParticipants.scss';
@@ -9,20 +10,10 @@ export interface ITabAddParticipantsProps {}
 
 export function TabAddParticipants(props: ITabAddParticipantsProps) {
   const [showModalAddParticipant, setShowModalAddParticipant] = useState(true);
-
-  const participants = [
-    {
-      id: 1,
-      first_name: 'Juan',
-      last_name: 'Perez',
-      email: 'asdas@asd.com',
-      phone: '123456789'
-    }
-  ];
-
+  const { serviceParticipants } = useContext(ServiceContext);
   const columns = [
     {
-      dataField: 'id',
+      dataField: 'official_id',
       text: 'Identificación'
     },
     {
@@ -38,17 +29,12 @@ export function TabAddParticipants(props: ITabAddParticipantsProps) {
       text: 'Email'
     },
     {
-      dataField: 'phone',
+      dataField: 'cellphone',
       text: 'Teléfono'
     }
   ];
 
   const actionButtons = [
-    {
-      onClick: () => console.log('click'),
-      icon: false ? <Spinner animation="border" size="sm" className="mt-2" /> : <FaUndoAlt />,
-      disabled: false
-    },
     {
       onClick: () => setShowModalAddParticipant(true),
       icon: <FaPlus />,
@@ -76,7 +62,7 @@ export function TabAddParticipants(props: ITabAddParticipantsProps) {
           hideSelectColumn={false}
           loading={false}
           columns={columns}
-          data={participants}
+          data={serviceParticipants}
           onSelectRow={(row) => {
             console.log(row);
           }}

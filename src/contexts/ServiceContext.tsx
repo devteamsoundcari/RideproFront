@@ -47,6 +47,7 @@ export const ServiceContextProvider = (props) => {
   const [countCompanyDrivers, setCountCompanyDrivers] = useState(0);
   const [companyDrivers, setCompanyDrivers] = useState<any>([]);
   const [loadingDrivers, setLoadingDrivers] = useState(false);
+  const [serviceParticipants, setServiceParticipants] = useState<any>([]);
 
   const getLineServices = async (page: string) => {
     setLoadingLineServices(true);
@@ -150,7 +151,9 @@ export const ServiceContextProvider = (props) => {
         getCompanyDrivers,
         countCompanyDrivers,
         companyDrivers,
-        loadingDrivers
+        loadingDrivers,
+        serviceParticipants,
+        setServiceParticipants
       }}>
       {props.children}
     </ServiceContext.Provider>

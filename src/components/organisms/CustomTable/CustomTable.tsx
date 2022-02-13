@@ -58,6 +58,7 @@ export const CustomTable: React.FunctionComponent<ICustomTableProps> = ({
     hideSelectColumn: hideSelectColumn,
     selectColumnPosition: 'right',
     bgColor: 'lightgreen' as any,
+    hideSelectAll: true,
     onSelect: (row, isSelect, rowIndex, e) =>
       onSelectRow ? onSelectRow(row, isSelect, rowIndex, e) : ('' as any)
   };
