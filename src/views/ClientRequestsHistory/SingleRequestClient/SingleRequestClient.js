@@ -21,7 +21,8 @@ import {
   cancelRequestId,
   sendEmail,
   updateRequest,
-  fetchInstructor
+  fetchInstructor,
+  sendEmailMG
 } from '../../../controllers/apiRequests';
 import { TiCogOutline } from 'react-icons/ti';
 import { EditableTable } from '../../../utils/EditableTable';
@@ -379,9 +380,9 @@ const SingleRequestClient = () => {
 
           const payload = {
             id: res.canceled.data.id,
-            emailType: 'canceledRequest',
+            template: 'canceled_request',
             subject: 'Solicitud cancelada ❌',
-            email: userInfoContext.email,
+            to: userInfoContext.email,
             name: userInfoContext.name,
             date: res.canceled.data.start_time,
             refund_credits: res.canceled.data.spent_credit,
@@ -391,7 +392,7 @@ const SingleRequestClient = () => {
               department: res.canceled.data.municipality.department.name
             }
           };
-          await sendEmail(payload); // SEND SERVICE CANCELED EMAIL TO USER
+          await sendEmailMG(payload); // SEND SERVICE CANCELED EMAIL TO USER
         } else {
           setLoading(false);
           swal('Ooops! No pudimos cancelar la solicitud', {
@@ -743,13 +744,16 @@ const SingleRequestClient = () => {
                             });
                             setLoading(false);
 
+                            // Send email of cancelation to the client
                             const payload = {
                               id: res.canceled.data.id,
-                              emailType: 'canceledRequest',
+                              template: 'canceled_request',
                               subject: 'Solicitud cancelada ❌',
-                              email: userInfoContext.email,
+                              to: userInfoContext.email,
                               name: userInfoContext.name,
-                              date: res.canceled.data.start_time,
+                              date: `${dateFormatter(
+                                res.canceled.data.start_time
+                              )}, ${formatAMPM(res.canceled.data.start_time)}`,
                               refund_credits: res.canceled.data.spent_credit,
                               service: res.canceled.data.service.name,
                               municipality: {
@@ -758,7 +762,26 @@ const SingleRequestClient = () => {
                                   res.canceled.data.municipality.department.name
                               }
                             };
-                            await sendEmail(payload); // SEND SERVICE CANCELED EMAIL TO USER
+                            await sendEmailMG(payload); // SEND SERVICE CANCELED EMAIL TO USER
+
+                            // Send email of cancelation to operacionts and the first instructor
+                            const payloadIns = {
+                              id: res.canceled.data.id,
+                              template: 'cancel_request_instructors',
+                              subject: 'Solicitud cancelada ❌',
+                              to: `${instructor.email}, operaciones-2@ridepro.co`,
+                              date: `${dateFormatter(
+                                res.canceled.data.start_time
+                              )}, ${formatAMPM(res.canceled.data.start_time)}`,
+                              service: res.canceled.data.service.name,
+                              municipality: {
+                                city: res.canceled.data.municipality.name,
+                                department:
+                                  res.canceled.data.municipality.department.name
+                              }
+                            };
+
+                            await sendEmailMG(payloadIns);
                           } else {
                             setLoading(false);
                             swal('Ooops! No pudimos cancelar la solicitud', {
