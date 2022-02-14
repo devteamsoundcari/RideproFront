@@ -1,16 +1,27 @@
 import React, { useContext } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import './Login.scss';
 import bgImage from '../../assets/img/loginImage.png';
 import logo from '../../assets/img/logo.png';
 import { Button, Form, Spinner } from 'react-bootstrap';
+import { FormInput } from '../../components/atoms';
+import { loginSchema, loginFields } from '../../schemas';
+import './Login.scss';
 
 export const Login = () => {
   let navigate = useNavigate();
-  const { register, handleSubmit, errors } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    resolver: yupResolver(loginSchema)
+  });
   const { loginUser, loadingAuth, authError } = useContext(AuthContext);
 
   // ====================== ON SUBMIT THE FORM ======================
@@ -30,37 +41,17 @@ export const Login = () => {
       <div className="form-container mb-5 text-center">
         <img src={logo} alt="RideproLogo" />
         <Form onSubmit={handleSubmit(onSubmit)} className="text-center">
-          <Form.Group className="mb-0">
-            <Form.Label className="text-white">Tu email</Form.Label>
-            <Form.Control
+          {loginFields.map((field, index) => (
+            <FormInput
+              errorClassName="text-white"
+              labelClassName="text-white"
               className="rounded-pill p-4"
-              name="email"
-              type="email"
-              placeholder="Tu email"
-              autoComplete="off"
-              ref={register({
-                required: true,
-                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
-              })}
+              field={field}
+              register={register}
+              errors={errors}
+              key={`form-input=${index}`}
             />
-            <Form.Text className="text-muted">
-              {errors.email && <span>Por favor, ingresa un email válido</span>}
-            </Form.Text>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label className="text-white">Tu contraseña</Form.Label>
-            <Form.Control
-              className="rounded-pill p-4"
-              name="password"
-              type="password"
-              placeholder="Tu contraseña"
-              ref={register({ required: true })}
-              autoComplete="off"
-            />
-            <Form.Text className="text-muted">
-              {errors.password && <span>Contraseña inválida</span>}
-            </Form.Text>
-          </Form.Group>
+          ))}
 
           <Button
             variant="primary"
@@ -83,7 +74,7 @@ export const Login = () => {
 
       <div className="text-white mt-5">
         <small>
-          Copyright ©Ridepro2022 - Desarrollado por{' '}
+          Copyright ©Ridepro 2022 - Desarrollado por{' '}
           <a href="https://soundlutions.com/en/">
             <strong className="text-white"> soundlutions.com</strong>
           </a>

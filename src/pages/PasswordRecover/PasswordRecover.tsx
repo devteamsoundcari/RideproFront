@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { ModalSuccess } from '../../components/molecules';
 import { Button, Form, Spinner } from 'react-bootstrap';
@@ -8,6 +9,8 @@ import { passwordReset } from '../../controllers/apiRequests';
 import './PasswordRecover.scss';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { passwordRecoverFields, passwordRecoverSchema } from '../../schemas';
+import { FormInput } from '../../components/atoms';
 
 export const PasswordRecover = (props) => {
   let navigate = useNavigate();
@@ -21,11 +24,16 @@ export const PasswordRecover = (props) => {
     setEmail(data.email);
     setSmShow(true);
     setLoading(false);
-
-    // Object.assign(data, { emailType: "passwordReset" }); // EMAIL TYPE
-    // await sendEmail(data); // SEND WELCOME EMAIL TO USER
   };
-  const { register, handleSubmit, errors } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    resolver: yupResolver(passwordRecoverSchema)
+  });
 
   const handleClose = () => {
     setSmShow(false);
@@ -41,38 +49,26 @@ export const PasswordRecover = (props) => {
       <div className="form-container mb-5 text-center">
         <img src={logo} alt="RideproLogo" />
         <Form onSubmit={handleSubmit(onSubmit)} className="text-center">
-          <Form.Group className="mb-0">
-            <Form.Label className="text-white">Tu email</Form.Label>
-            <Form.Control
+          {passwordRecoverFields.map((field, index) => (
+            <FormInput
+              errorClassName="text-white"
+              labelClassName="text-white"
               className="rounded-pill p-4"
-              name="email"
-              type="email"
-              placeholder="Tu email"
-              autoComplete="off"
-              ref={register({
-                required: true,
-                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
-              })}
+              field={field}
+              register={register}
+              errors={errors}
+              key={`form-input=${index}`}
             />
-            <Form.Text className="text-white">
-              {errors.email && <span>Por favor ingresa un email válido</span>}
-            </Form.Text>
-          </Form.Group>
-
+          ))}
           <Button
             variant="primary"
             type="submit"
             className="w-100 rounded-pill p-3 mb-2 mt-3 font-weight-bold">
-            Restrablecer contraseña
+            {loading ? <Spinner animation="border" size="sm" /> : 'Restrablecer contraseña'}
           </Button>
-
-          {loading ? (
-            <Spinner animation="border" role="status" className="text-white"></Spinner>
-          ) : (
-            <Link to="/login" className="text-white">
-              <Form.Label className="text-white">Iniciar sesión</Form.Label>
-            </Link>
-          )}
+          <Link to="/login" className="text-white">
+            <Form.Label className="text-white">Iniciar sesión</Form.Label>
+          </Link>
         </Form>
         <ModalSuccess show={smShow} data={email} onHide={handleClose} />;
       </div>

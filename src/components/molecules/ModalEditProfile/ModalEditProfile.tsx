@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Modal, Col, Form, Spinner, Button, Image } from 'react-bootstrap';
 import { AuthContext } from '../../../contexts';
 import { ModalEditProfilePicture } from '../ModalEditProfilePicture/ModalEditProfilePicture';
 import { editUser } from '../../../controllers/apiRequests';
 import './ModalEditProfile.scss';
-import { useProfile, regularExpressions } from '../../../utils';
+import { useProfile } from '../../../utils';
+import { editProfileFields, editProfileSchema } from '../../../schemas';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormInput } from '../../atoms';
 
 export const ModalEditProfile = (props: any) => {
   const [stage, setStage] = useState('waiting');
@@ -21,8 +24,17 @@ export const ModalEditProfile = (props: any) => {
     charge: userInfo.charge,
     gender: userInfo.gender
   };
-  const form = useForm({ defaultValues: defaultValues });
-  const { handleSubmit, errors, control, watch } = form;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch
+  } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    defaultValues: defaultValues,
+    resolver: yupResolver(editProfileSchema)
+  });
   const formValues = watch();
   const [canSave, setCanSave] = useState(false);
 
@@ -76,7 +88,7 @@ export const ModalEditProfile = (props: any) => {
     }
 
     setCanSave(false);
-  }, [defaultValues, form, formValues]);
+  }, [defaultValues, formValues]);
 
   const confirmationModal = () => {
     return (
@@ -158,7 +170,7 @@ export const ModalEditProfile = (props: any) => {
 
   return (
     <>
-      <Modal centered show={props.show} onHide={props.onHide} size="lg">
+      <Modal centered show={props.show} onHide={props.onHide}>
         <Modal.Header closeButton className={`bg-${profile}`}>
           <Modal.Title className="text-white">
             <h5>
@@ -169,104 +181,42 @@ export const ModalEditProfile = (props: any) => {
         <Form onSubmit={handleSubmit(onSubmit)} className="profile-edit-modal">
           <Modal.Body>
             <Form.Row>
-              <Col md={2}>
-                <Image src={userInfo.picture} fluid roundedCircle className="shadow" />
+              <Col md={6} className="text-center">
+                <Image src={userInfo.picture} fluid roundedCircle className="shadow w-75" />
               </Col>
-              <Col md={10} className="pl-3">
+              <Col md={6} className="pl-3">
                 <h6 className="mt-2">FOTO DE PERFIL</h6>
-                <div className="w-50 recommendation">
+                <div className="recommendation">
                   <small>
                     Para una correcta visualización el aspecto de la imagen debe ser lo mas cuadrado
                     posible.
                   </small>
                 </div>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  // className="mt-3"
-                  onClick={handleUserProfilePictureEditModal}>
+                <Button variant="primary" size="sm" onClick={handleUserProfilePictureEditModal}>
                   Cambiar
                 </Button>
               </Col>
             </Form.Row>
-            <Form.Row className="mt-2">
-              <Form.Group as={Col}>
-                <Form.Label>Nombre</Form.Label>
-                <Controller
-                  as={<Form.Control type="text" />}
-                  name="name"
-                  control={control}
-                  rules={{
-                    required: true,
-                    pattern: regularExpressions.name
-                  }}
-                />
-                {errors.name?.type === 'required' && <small>El nombre no debe estar vacío.</small>}
-                {errors.name?.type === 'pattern' && <small>Este nombre es inválido.</small>}
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Apellido</Form.Label>
-                <Controller
-                  as={<Form.Control type="text" />}
-                  name="lastName"
-                  control={control}
-                  rules={{
-                    required: 'El apellido no debe estar en blanco.',
-                    pattern: regularExpressions.name
-                  }}
-                />
-                {errors.lastName?.type === 'required' && (
-                  <small>El apellido no debe estar vacío.</small>
-                )}
-                {errors.lastName?.type === 'pattern' && <small>Este apellido es inválido.</small>}
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label>Correo electrónico</Form.Label>
-                <Controller
-                  as={<Form.Control type="email" disabled />}
-                  name="email"
-                  control={control}
-                  disabled={true}
-                  rules={{
-                    required: 'El correo electrónico no debe estar en blanco.',
-                    pattern: regularExpressions.email
-                  }}
-                />
-                {errors.email?.type === 'required' && (
-                  <p>El correo electrónico no debe estar vacío.</p>
-                )}
-                {errors.email?.type === 'pattern' && <p>Este correo electrónico es inválido.</p>}
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Cargo</Form.Label>
-                <Controller
-                  as={<Form.Control type="text" />}
-                  name="charge"
-                  control={control}
-                  rules={{
-                    required: 'El cargo no debe estar en blanco.'
-                  }}
-                />
-                {errors.charge?.type === 'required' && <small>El cargo no debe estar vacío.</small>}
-              </Form.Group>
-            </Form.Row>
+            <hr />
+            {editProfileFields.map((field, index) => (
+              <FormInput
+                field={field}
+                register={register}
+                errors={errors}
+                key={`form-input=${index}`}
+              />
+            ))}
             <Form.Row>
               <Form.Group as={Col}>
                 <Form.Label>Género</Form.Label>
-                <Controller
-                  as={
-                    <Form.Control as="select">
-                      <option>M</option>
-                      <option>F</option>
-                      <option>O</option>
-                    </Form.Control>
-                  }
-                  name="gender"
-                  control={control}
-                  defaultValue={userInfo.gender}
-                />
+                <Form.Control
+                  as="select"
+                  autoComplete="off"
+                  {...register('gender', { required: true })}>
+                  <option>M</option>
+                  <option>F</option>
+                  <option>O</option>
+                </Form.Control>
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>Contraseña</Form.Label>
