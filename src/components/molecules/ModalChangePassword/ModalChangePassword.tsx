@@ -1,124 +1,50 @@
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { Modal, Col, Form, Spinner, Button } from 'react-bootstrap';
-import { changePassword } from '../../../controllers/apiRequests';
-import { useProfile, regularExpressions } from '../../../utils';
+import React, { useContext } from 'react';
+import swal from 'sweetalert';
+import { useForm } from 'react-hook-form';
+import { Modal, Form, Spinner, Button } from 'react-bootstrap';
+import { useProfile } from '../../../utils';
+import { AuthContext } from '../../../contexts';
+import { editPasswordFields, editPasswordSchema } from '../../../schemas';
+import { FormInput } from '../../atoms';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 export const ModalChangePassword = (props: any) => {
   const [profile] = useProfile();
-  const [stage, setStage] = useState('waiting');
-  const [submittedData, setSubmittedData] = useState();
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const form = useForm();
-  const { handleSubmit, errors, control, watch } = form;
+  const { updatePassword, loadingAuth } = useContext(AuthContext);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    resolver: yupResolver(editPasswordSchema)
+  });
 
   const onSubmit = (data: any) => {
-    setShowConfirmationModal(true);
-    setStage('confirmation');
-    setSubmittedData(data);
+    swal({
+      title: 'Importante',
+      text: '¿Estas segur@ de editar tu información?',
+      icon: 'warning',
+      buttons: ['Volver', 'Continuar'],
+      dangerMode: true
+    })
+      .then(async (willUpdate) => {
+        if (willUpdate) {
+          await updatePassword(data);
+          props.onExit();
+          swal('Perfecto!', 'Contraseña actualizada correctamente', 'success');
+        }
+      })
+      .catch(() => {
+        swal('Oops!', 'No se pudo actualizar la información', 'error');
+        throw new Error('Error updating profile');
+      });
   };
 
   const exit = () => {
     props.onExit();
-  };
-
-  const save = async () => {
-    setStage('loading');
-    let data = Object.assign(submittedData!);
-
-    let result = await changePassword(data);
-    if (result) {
-      setStage('success');
-    } else {
-      setStage('failure');
-    }
-  };
-
-  const hideConfirmationModal = () => {
-    setShowConfirmationModal(false);
-  };
-
-  const handleAccept = () => {
-    setShowConfirmationModal(false);
-    setStage('waiting');
-    props.onExit();
-  };
-
-  const confirmationModal = () => {
-    return (
-      <Modal
-        centered
-        size="sm"
-        className="child-modal"
-        show={showConfirmationModal}
-        onHide={hideConfirmationModal}>
-        {stage === 'confirmation' && confirmationMessage()}
-        {stage === 'loading' && loadingSpinner()}
-        {stage === 'success' && successMessage()}
-        {stage === 'failure' && incorrectPasswordMessage()}
-      </Modal>
-    );
-  };
-
-  const confirmationMessage = () => {
-    return (
-      <>
-        <Modal.Body>
-          <h4>¿Estás seguro de querer cambiar tu contraseña?</h4>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="success" onClick={save}>
-            Si
-          </Button>
-          <Button variant="danger" onClick={hideConfirmationModal}>
-            No, regresar
-          </Button>
-        </Modal.Footer>
-      </>
-    );
-  };
-
-  const loadingSpinner = () => {
-    return (
-      <>
-        <Modal.Body>
-          <Spinner animation="border" role="status" size="sm">
-            <span className="sr-only">Cargando...</span>
-          </Spinner>
-        </Modal.Body>
-      </>
-    );
-  };
-
-  const successMessage = () => {
-    return (
-      <>
-        <Modal.Body>
-          <h4>Tus contraseña ha sido modificada exitosamente</h4>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="success" onClick={handleAccept}>
-            Aceptar
-          </Button>
-        </Modal.Footer>
-      </>
-    );
-  };
-
-  const incorrectPasswordMessage = () => {
-    return (
-      <>
-        <Modal.Header>Error</Modal.Header>
-        <Modal.Body>
-          <h4>Tu contraseña actual introducida es incorrecta. Intenta nuevamente.</h4>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="success" onClick={hideConfirmationModal}>
-            Aceptar
-          </Button>
-        </Modal.Footer>
-      </>
-    );
   };
 
   return (
@@ -128,75 +54,24 @@ export const ModalChangePassword = (props: any) => {
       </Modal.Header>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Label>Antigua contraseña</Form.Label>
-              <Controller
-                as={<Form.Control type="password" />}
-                name="oldPassword"
-                control={control}
-                rules={{
-                  required: true
-                }}
-              />
-              {errors.oldPassword?.type === 'required' && (
-                <small>La contraseña no debe estar vacía.</small>
-              )}
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Label>Nueva contraseña</Form.Label>
-              <Controller
-                as={<Form.Control type="password" />}
-                name="newPassword"
-                control={control}
-                rules={{
-                  required: true,
-                  pattern: regularExpressions.password
-                }}
-              />
-              {errors.newPassword?.type === 'required' && (
-                <small>La contraseña no debe estar vacía.</small>
-              )}
-              {errors.newPassword?.type === 'pattern' && (
-                <small>
-                  La contraseña debe tener ocho caracteres como mínimo y debe incluir un número y un
-                  caracter especial (@$!%*?&).
-                </small>
-              )}
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Label>Confirmar nueva contraseña</Form.Label>
-              <Controller
-                as={<Form.Control type="password" />}
-                name="newPasswordConfirmation"
-                control={control}
-                rules={{
-                  required: true,
-                  validate: (value) => {
-                    return value === watch('newPassword');
-                  }
-                }}
-              />
-              {errors.newPasswordConfirmation?.type === 'validate' && (
-                <small>Las contraseñas deben coincidir.</small>
-              )}
-            </Form.Group>
-          </Form.Row>
+          {editPasswordFields.map((field, index) => (
+            <FormInput
+              field={field}
+              register={register}
+              errors={errors}
+              key={`form-input=${index}`}
+            />
+          ))}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" type="submit">
-            Guardar
-          </Button>
           <Button variant="secondary" onClick={exit}>
-            Salir
+            Cerrar
+          </Button>
+          <Button className={`btn-${profile}`} type="submit">
+            {loadingAuth ? <Spinner animation="border" size="sm" /> : 'Guardar'}
           </Button>
         </Modal.Footer>
       </Form>
-      {showConfirmationModal && confirmationModal()}
     </Modal>
   );
 };

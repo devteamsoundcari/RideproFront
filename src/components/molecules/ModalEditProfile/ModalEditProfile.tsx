@@ -156,11 +156,11 @@ export const ModalEditProfile = (props: any) => {
           </Form.Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button className={`btn-${userInfo.perfil}`} type="submit" disabled={!canSave}>
-            {loadingAuth ? <Spinner animation="border" size="sm" /> : 'Guardar'}
-          </Button>
           <Button variant="secondary" onClick={exit}>
             Cerrar
+          </Button>
+          <Button className={`btn-${profile}`} type="submit" disabled={!canSave}>
+            {loadingAuth ? <Spinner animation="border" size="sm" /> : 'Guardar'}
           </Button>
         </Modal.Footer>
       </Form>

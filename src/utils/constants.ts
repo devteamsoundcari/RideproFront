@@ -46,6 +46,7 @@ export const API_USER_DATA = '/rest-auth/user/';
 export const API_REFRESH_TOKEN_URL = '/rest-auth/token/refresh/';
 export const API_REGISTRATION_URL = '/rest-auth/registration/';
 export const API_RESET_PASSWORD_URL = '/rest-auth/password/reset/';
+export const API_CHANGE_PASSWORD_URL = '/rest-auth/password/change/';
 export const API_RESET_PASSWORD_CONFIRM_URL = '/rest-auth/password/reset/confirm/';
 
 // GOOGLE API
@@ -315,6 +316,8 @@ export const REGEX_OFFICIAL_ID = /^E?\d+$/;
 export const REGEX_EMAIl =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
 export const REGEX_LETTERS_AND_SPACES = /^[a-zA-Z\s]*$/;
+export const REGEX_8_CHARACTERS_1_UPPERCASE_1_LOWERCASE_1_NUMBER_1_SPECIAL_CHAR =
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
 // Validation labels
 export const ERROR_REQUIRED = 'Este campo es obligatorio';
@@ -325,3 +328,5 @@ export const ERROR_INVALID_PHONE_NUMBER = 'Ingresa un numero de teléfono valido
 export const ERROR_INVALID_DATE_TYPE = 'Por favor ingresa DIA/MES/AÑO';
 export const ERROR_INVALID_FILE_TYPE = 'El archivo debe ser de tipo Imagen o PDF';
 export const ERROR_PROCESS_FAILED = 'Algo salió mal, intenta de nuevo';
+export const ERROR_PASSWORD_COMPLEXITY =
+  'La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial';

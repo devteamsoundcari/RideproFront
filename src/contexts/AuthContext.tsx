@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { getUserInfo } from '../controllers/apiRequests';
 import ApiClientSingleton from '../controllers/apiClient';
-import { API_LOGIN_URL, API_USER_DATA, API_LOGOUT_URL } from '../utils';
+import { API_LOGIN_URL, API_USER_DATA, API_LOGOUT_URL, API_CHANGE_PASSWORD_URL } from '../utils';
 
 const apiClient = ApiClientSingleton.getApiInstance();
 
@@ -126,6 +126,17 @@ export const AuthContextProvider = (props) => {
     }
   };
 
+  const updatePassword = async (payload: any) => {
+    setLoadingAuth(true);
+    try {
+      await apiClient.post(API_CHANGE_PASSWORD_URL, payload);
+      setLoadingAuth(false);
+    } catch (error) {
+      setLoadingAuth(false);
+      throw new Error('No se pudo actualizar la contraseña');
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={
@@ -140,7 +151,8 @@ export const AuthContextProvider = (props) => {
           logOutUser,
           sendEmail,
           sendingEmail,
-          updateUserData
+          updateUserData,
+          updatePassword
         } as any
       }>
       {props.children}
