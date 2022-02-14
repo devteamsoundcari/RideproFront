@@ -1,10 +1,5 @@
 import * as Yup from 'yup';
-import {
-  ERROR_INVALID_EMAIL,
-  ERROR_INVALID_PHONE_NUMBER,
-  ERROR_REQUIRED,
-  REGEX_PHONE_NUMBER
-} from '../utils';
+import { ERROR_INVALID_EMAIL, ERROR_REQUIRED } from '../utils';
 
 export const editProfileFields = [
   {
@@ -13,7 +8,7 @@ export const editProfileFields = [
     props: {
       name: 'first_name',
       type: 'text',
-      inputmode: 'text',
+      inputMode: 'text',
       placeholder: ''
     }
   },
@@ -23,7 +18,7 @@ export const editProfileFields = [
     props: {
       name: 'last_name',
       type: 'text',
-      inputmode: 'text',
+      inputMode: 'text',
       placeholder: ''
     }
   },
@@ -33,7 +28,7 @@ export const editProfileFields = [
     props: {
       name: 'email',
       type: 'email',
-      inputmode: 'email',
+      inputMode: 'email',
       placeholder: '',
       disabled: true
     }
@@ -44,18 +39,7 @@ export const editProfileFields = [
     props: {
       name: 'charge',
       type: 'text',
-      inputmode: 'text',
-      placeholder: ''
-    }
-  },
-
-  {
-    label: 'Numero de celular',
-    required: true,
-    props: {
-      name: 'phone',
-      type: 'number',
-      inputmode: 'number',
+      inputMode: 'text',
       placeholder: ''
     }
   }
@@ -66,7 +50,5 @@ export const editProfileSchema = Yup.object().shape({
   last_name: Yup.string().required(ERROR_REQUIRED),
   email: Yup.string().required(ERROR_REQUIRED).email(ERROR_INVALID_EMAIL),
   charge: Yup.string().required(ERROR_REQUIRED),
-  phone: Yup.string()
-    .required(ERROR_REQUIRED)
-    .matches(REGEX_PHONE_NUMBER, ERROR_INVALID_PHONE_NUMBER)
+  gender: Yup.string().required(ERROR_REQUIRED)
 });

@@ -112,6 +112,20 @@ export const AuthContextProvider = (props) => {
     }
   };
 
+  const updateUserData = async (payload: any) => {
+    setLoadingAuth(true);
+    try {
+      const response = await apiClient.patch(API_USER_DATA, payload);
+      localStorage.setItem('User', JSON.stringify(response.data));
+      setUserInfo(response.data);
+      setLoadingAuth(false);
+      return response.data;
+    } catch (error) {
+      setLoadingAuth(false);
+      throw new Error('No se pudo actualizar los datos');
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={
@@ -125,7 +139,8 @@ export const AuthContextProvider = (props) => {
           authError,
           logOutUser,
           sendEmail,
-          sendingEmail
+          sendingEmail,
+          updateUserData
         } as any
       }>
       {props.children}
