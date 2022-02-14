@@ -109,10 +109,10 @@ export const ModalEditProfile = (props: any) => {
       <Form onSubmit={handleSubmit(onSubmit)} className="profile-edit-modal">
         <Modal.Body>
           <Form.Row>
-            <Col md={6} className="text-center">
-              <Image src={userInfo.picture} fluid roundedCircle className="shadow w-75" />
-            </Col>
-            <Col md={6} className="pl-3">
+            <div className="image-cropper">
+              <Image src={userInfo.picture} className="shadow" />
+            </div>
+            <Col className="pl-3">
               <h6 className="mt-2">FOTO DE PERFIL</h6>
               <div className="recommendation">
                 <small>

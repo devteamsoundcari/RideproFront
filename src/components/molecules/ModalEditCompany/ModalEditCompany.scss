@@ -1,6 +1,16 @@
 .company-edit-modal {
-  img {
-    width: 100%;
+  .image-cropper {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    img {
+      display: inline;
+      margin: 0 auto;
+      height: 100%;
+      width: inherit;
+    }
   }
   .recommendation {
     line-height: 15px;
