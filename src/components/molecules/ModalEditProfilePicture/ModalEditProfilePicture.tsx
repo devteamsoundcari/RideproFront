@@ -1,21 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../../contexts';
-import {
-  Container,
-  Modal,
-  Col,
-  Row,
-  Form,
-  Button,
-  Image,
-  Spinner
-} from 'react-bootstrap';
+import { Container, Modal, Col, Row, Form, Button, Image, Spinner } from 'react-bootstrap';
 import { FaCheckCircle } from 'react-icons/fa';
-import { setUserProfilePicture } from '../../../controllers/apiRequests';
+import swal from 'sweetalert';
 import './ModalEditProfilePicture.scss';
 
 export const ModalEditProfilePicture = (props: any) => {
-  const { userInfo, updateUserInfo } = useContext(AuthContext);
+  const { userInfo, updateUserProfilePicture } = useContext(AuthContext);
   const [stage, setStage] = useState('waiting');
   const [imageName, setImageName] = useState('Importar imagen');
   const [imgSrc, setImgSrc] = useState<string | ArrayBuffer | null>();
@@ -24,13 +15,12 @@ export const ModalEditProfilePicture = (props: any) => {
   const save = async (e: any) => {
     setStage('loading');
     e.preventDefault();
-    setUserProfilePicture(userInfo, selectedImage).then(async (result) => {
-      if (result.status === 200) {
-        updateUserInfo().then(() => {
-          setStage('success');
-        });
-      }
-    });
+    try {
+      await updateUserProfilePicture(userInfo, selectedImage);
+      setStage('success');
+    } catch (error) {
+      swal('Error', 'No se pudo actualizar la imagen de perfil', 'error');
+    }
   };
 
   const onFileUpload = (e: any) => {
@@ -101,21 +91,13 @@ export const ModalEditProfilePicture = (props: any) => {
               </Row>
               <Row>
                 <Form.Group as={Col} className="upload-file">
-                  <Form.File
-                    name="logo"
-                    onChange={onFileUpload}
-                    label={imageName}
-                    custom
-                  />
+                  <Form.File name="logo" onChange={onFileUpload} label={imageName} custom />
                 </Form.Group>
               </Row>
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              className={`btn-${userInfo.perfil}`}
-              size="sm"
-              type="submit">
+            <Button className={`btn-${userInfo.perfil}`} size="sm" type="submit">
               Guardar
             </Button>
           </Modal.Footer>

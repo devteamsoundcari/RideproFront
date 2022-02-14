@@ -137,6 +137,25 @@ export const AuthContextProvider = (props) => {
     }
   };
 
+  const updateUserProfilePicture = async (user, picture) => {
+    const formData = new FormData();
+    formData.append('picture', picture);
+    formData.append('company_id', user.company.id);
+    const response = await apiClient
+      .patch(API_USER_DATA, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        return err.response.data;
+      });
+    localStorage.setItem('User', JSON.stringify(response.data));
+    setUserInfo(response.data);
+    return response.data;
+  };
+
   return (
     <AuthContext.Provider
       value={
@@ -152,7 +171,8 @@ export const AuthContextProvider = (props) => {
           sendEmail,
           sendingEmail,
           updateUserData,
-          updatePassword
+          updatePassword,
+          updateUserProfilePicture
         } as any
       }>
       {props.children}
