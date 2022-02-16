@@ -312,7 +312,7 @@ export const ALL_PROFILES = [
 
 // ReqEx common patterns
 export const REGEX_PHONE_NUMBER = /^\d{7,10}$/;
-export const REGEX_OFFICIAL_ID = /^E?\d+$/;
+export const REGEX_OFFICIAL_ID = /^[0-9]+$/;
 export const REGEX_EMAIl =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
 export const REGEX_LETTERS_AND_SPACES = /^[a-zA-Z\s]*$/;
@@ -320,6 +320,9 @@ export const REGEX_8_CHARACTERS_1_UPPERCASE_1_LOWERCASE_1_NUMBER_1_SPECIAL_CHAR 
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
 // Validation labels
+export const ERROR_ONLY_LETTERS_AND_SPACES = 'Solo se permiten letras y espacios';
+export const ERROR_VERY_SHORT = 'Muy corto';
+export const ERROR_VERY_LONG = 'Muy largo';
 export const ERROR_REQUIRED = 'Este campo es obligatorio';
 export const ERROR_INVALID_EMAIL = 'Por favor ingresa un email valido';
 export const ERROR_PASSWORD_TOO_SHORT = 'La contraseña es muy corta';

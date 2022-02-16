@@ -28,9 +28,13 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
     setServiceParticipants,
     serviceParticipants
   } = useContext(ServiceContext);
-  const { register, handleSubmit, errors } = useForm({
-    // reValidateMode: 'onChange',
-    // resolver: yupResolver(newParticipantSchema)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    reValidateMode: 'onChange',
+    resolver: yupResolver(newParticipantSchema)
   });
 
   const fetchCompanyDrivers = async () => {
@@ -77,9 +81,41 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
     });
   };
 
+  const handleAddNewParticipant = async (participant) => {
+    const htmlOfParticipant = `
+        <tr key=${participant.official_id}>
+          <td>${participant?.official_id}</td>
+          <td>${participant?.first_name}</td>
+          <td>${participant?.last_name}</td>
+          <td>${participant?.email}</td>
+          <td>${participant?.cellphone}</td>
+        </tr>`;
+    const content = document.createElement('table');
+    content.innerHTML = `<thead><tr><th>Identificación</th><th>Nombre</th><th>Apellido</th><th>Email</th><th>Teléfono</th></tr></thead><tbody>${htmlOfParticipant}</tbody></table>`;
+    content.classList.add('alert-table');
+    swal({
+      className: 'large-alert',
+      title: 'Agregar a',
+      content: content as any,
+      icon: 'warning',
+      buttons: ['Volver', 'Continuar'],
+      dangerMode: true
+    }).then(async (willCreate) => {
+      if (willCreate) {
+        // TODO: add participant to list
+        console.log('add', participant);
+        setServiceParticipants([...serviceParticipants, participant]);
+        handleClose();
+      }
+    });
+  };
+
   const handleAddNewUser = async (data) => {
-    console.log('data', data);
-    setNewParticipant(data);
+    Object.keys(data).forEach((key, index) => {
+      data[key] = data[key].toLowerCase();
+      data.id = index;
+    });
+    handleAddNewParticipant(data);
     handleClose();
   };
 
@@ -115,102 +151,7 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
     <Form onSubmit={handleSubmit(handleAddNewUser)}>
       {newParticipantFields.map((field, index) => (
         <FormInput field={field} register={register} errors={errors} key={`form-input=${index}`} />
-        // <FormItem field={field} register={register} errors={errors} key={`form-input=${index}`} />
       ))}
-      {/* <Form.Row>
-        <Form.Group as={Col}>
-          <Form.Label>
-            Nombre<span className="text-danger"> *</span>
-          </Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Nombre"
-            name="name"
-            autoComplete="off"
-            ref={register({
-              required: true
-            })}
-          />
-          <Form.Text>
-            {errors.name && <span className="text-danger">Ingrese un nombre válido.</span>}
-          </Form.Text>
-        </Form.Group>
-        <Form.Group as={Col} controlId="formBasicEmail">
-          <Form.Label>
-            Correo electrónico<span className="text-danger"> *</span>
-          </Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Correo electrónico"
-            name="email"
-            autoComplete="off"
-            ref={register({
-              required: true,
-              pattern: REGEX_EMAIl
-            })}
-          />
-          <Form.Text className="text-muted">
-            {errors.email && <span className="text-danger">Ingrese un email válido.</span>}
-          </Form.Text>
-        </Form.Group>
-      </Form.Row>
-
-      <Form.Row>
-        <Form.Group as={Col}>
-          <Form.Label>
-            Número de documento<span className="text-danger"> *</span>
-          </Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Número de documento"
-            name="officialId"
-            autoComplete="off"
-            ref={register({
-              required: true,
-              pattern: REGEX_OFFICIAL_ID
-            })}
-          />
-          <Form.Text className="text-muted">
-            {errors.officialId && (
-              <span className="text-danger">Ingrese un número de documento válido.</span>
-            )}
-          </Form.Text>
-        </Form.Group>
-        <Form.Group as={Col}>
-          <Form.Label>
-            Email<span className="text-danger"> *</span>
-          </Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Email"
-            name="services"
-            autoComplete="off"
-            ref={register({
-              required: true
-            })}
-          />
-          <Form.Text>
-            {errors.email && <span className="text-danger">Ingrese un texto valido.</span>}
-          </Form.Text>
-        </Form.Group>
-        <Form.Group as={Col}>
-          <Form.Label>
-            Telefono<span className="text-danger"> *</span>
-          </Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Telefono"
-            name="phone"
-            autoComplete="off"
-            ref={register({
-              required: true
-            })}
-          />
-          <Form.Text>
-            {errors.phone && <span className="text-danger">Ingrese un texto valido.</span>}
-          </Form.Text>
-        </Form.Group>
-      </Form.Row> */}
       <Button variant="primary" type="submit" disabled={loadingDrivers} className="float-right">
         {loadingDrivers ? (
           <Spinner animation="border" role="status" size="sm">

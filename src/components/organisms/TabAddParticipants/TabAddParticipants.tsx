@@ -14,6 +14,16 @@ export function TabAddParticipants(props: ITabAddParticipantsProps) {
   const columns = [
     {
       dataField: 'official_id',
+      text: 'Tipo',
+      formatter: (row) => {
+        console.log('row', row);
+        return row.url ? 'Antiguo' : 'Nuevo';
+      },
+      className: 'small-column',
+      sort: true
+    },
+    {
+      dataField: 'official_id',
       text: 'Identificación'
     },
     {
