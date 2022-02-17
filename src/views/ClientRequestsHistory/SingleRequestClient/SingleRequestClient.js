@@ -749,7 +749,7 @@ const SingleRequestClient = () => {
                               id: res.canceled.data.id,
                               template: 'canceled_request',
                               subject: 'Solicitud cancelada ❌',
-                              to: userInfoContext.email,
+                              to: `${userInfoContext.email}, operaciones-2@ridepro.co`,
                               name: userInfoContext.name,
                               date: `${dateFormatter(
                                 res.canceled.data.start_time
