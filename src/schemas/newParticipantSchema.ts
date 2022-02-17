@@ -18,7 +18,7 @@ export const newParticipantFields = [
     props: {
       name: 'official_id',
       type: 'number',
-      inputmode: 'number',
+      inputMode: 'number',
       placeholder: ''
     }
   },
@@ -28,7 +28,7 @@ export const newParticipantFields = [
     props: {
       name: 'first_name',
       type: 'text',
-      inputmode: 'text',
+      inputMode: 'text',
       placeholder: ''
     }
   },
@@ -38,7 +38,7 @@ export const newParticipantFields = [
     props: {
       name: 'last_name',
       type: 'text',
-      inputmode: 'text',
+      inputMode: 'text',
       placeholder: ''
     }
   },
@@ -48,7 +48,7 @@ export const newParticipantFields = [
     props: {
       name: 'email',
       type: 'email',
-      inputmode: 'email',
+      inputMode: 'email',
       placeholder: ''
     }
   },
@@ -58,7 +58,7 @@ export const newParticipantFields = [
     props: {
       name: 'cellphone',
       type: 'number',
-      inputmode: 'number',
+      inputMode: 'number',
       placeholder: ''
     }
   }

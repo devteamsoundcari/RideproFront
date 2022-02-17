@@ -48,6 +48,7 @@ export const ServiceContextProvider = (props) => {
   const [companyDrivers, setCompanyDrivers] = useState<any>([]);
   const [loadingDrivers, setLoadingDrivers] = useState(false);
   const [serviceParticipants, setServiceParticipants] = useState<any>([]);
+  const [allDriversLoaded, setAllDriversLoaded] = useState(false);
 
   const getLineServices = async (page: string) => {
     setLoadingLineServices(true);
@@ -110,6 +111,7 @@ export const ServiceContextProvider = (props) => {
         if (response.data.next) {
           return await getCompanyDrivers(companyId, response.data.next);
         } else {
+          setAllDriversLoaded(true);
           setLoadingDrivers(false);
         }
       } catch (error) {
@@ -125,6 +127,7 @@ export const ServiceContextProvider = (props) => {
         if (response.data.next) {
           return await getCompanyDrivers(companyId, response.data.next);
         } else {
+          setAllDriversLoaded(true);
           setLoadingDrivers(false);
         }
       } catch (error) {
@@ -153,7 +156,8 @@ export const ServiceContextProvider = (props) => {
         companyDrivers,
         loadingDrivers,
         serviceParticipants,
-        setServiceParticipants
+        setServiceParticipants,
+        allDriversLoaded
       }}>
       {props.children}
     </ServiceContext.Provider>

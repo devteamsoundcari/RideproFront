@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Spinner } from 'react-bootstrap';
-import { FaUndoAlt, FaPlus, FaDownload } from 'react-icons/fa';
+import { FaPlus, FaDownload } from 'react-icons/fa';
 import { ServiceContext } from '../../../contexts';
 import { CustomCard, ModalAddParticipant } from '../../molecules';
 import { CustomTable } from '../CustomTable/CustomTable';
@@ -13,12 +12,10 @@ export function TabAddParticipants(props: ITabAddParticipantsProps) {
   const { serviceParticipants } = useContext(ServiceContext);
   const columns = [
     {
-      dataField: 'official_id',
+      dataField: 'id',
+      // isDummyField: true,
       text: 'Tipo',
-      formatter: (row) => {
-        console.log('row', row);
-        return row.url ? 'Antiguo' : 'Nuevo';
-      },
+      formatter: (_, row) => (row.url ? 'Antiguo' : 'Nuevo'),
       className: 'small-column',
       sort: true
     },
