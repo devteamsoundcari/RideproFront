@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import RegisterNewProvider from "./Registration/RegisterNewProvider";
-import { Row, Col } from "react-bootstrap";
-import "./Providers.scss";
-import AllProviders from "./Listing/AllProviders";
-import { getProviders } from "../../controllers/apiRequests";
-
+import React, { useEffect, useState } from 'react';
+import RegisterNewProvider from './Registration/RegisterNewProvider';
+import { Row, Col } from 'react-bootstrap';
+import './Providers.scss';
+import AllProviders from './Listing/AllProviders';
+import { getProviders } from '../../controllers/apiRequests';
 
 const ProvidersView = () => {
   const [providers, setProviders] = useState([]);
@@ -17,12 +16,13 @@ const ProvidersView = () => {
     });
     setProviders(obtainedProviders);
     if (response.next) {
-      return await setProviders(response.next);
+      return await fetchProviders(response.next);
     }
   };
 
   useEffect(() => {
     fetchProviders(`${process.env.REACT_APP_API_URL}/api/v1/providers/`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
