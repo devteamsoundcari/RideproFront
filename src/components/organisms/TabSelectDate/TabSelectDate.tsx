@@ -26,7 +26,6 @@ export function TabSelectDate(props: ITabSelectDateProps) {
   };
 
   useEffect(() => {
-    console.log(selectedDate, minimumDate);
     if (selectedDate) {
       setSelectedDateLocal(selectedDate);
     } else {

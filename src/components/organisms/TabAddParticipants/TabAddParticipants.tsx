@@ -10,7 +10,7 @@ import './TabAddParticipants.scss';
 export interface ITabAddParticipantsProps {}
 
 export function TabAddParticipants(props: ITabAddParticipantsProps) {
-  const [showModalAddParticipant, setShowModalAddParticipant] = useState(true);
+  const [showModalAddParticipant, setShowModalAddParticipant] = useState(false);
   const { serviceParticipants, setServiceParticipants } = useContext(ServiceContext);
   const [selectedParticipants, setSelectedParticipants] = useState<any[]>([]);
   const columns = [

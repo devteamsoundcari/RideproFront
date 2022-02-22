@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Col, Tab, Nav, Row } from 'react-bootstrap';
+import { Col, Tab, Nav, Row, Badge } from 'react-bootstrap';
 import { CustomCard } from '../../components/molecules';
 import {
   TabSelectPlace,
@@ -16,8 +16,9 @@ import { dateWithTime } from '../../utils';
 export interface ISolicitarProps {}
 
 export function Solicitar(props: ISolicitarProps) {
-  const { selectedService, selectedPlace, selectedDate } = useContext(ServiceContext);
-  const [key, setKey] = useState('participants');
+  const { selectedService, selectedPlace, selectedDate, serviceParticipants } =
+    useContext(ServiceContext);
+  const [key, setKey] = useState('service');
 
   useEffect(() => {
     if (selectedService) {
@@ -36,12 +37,12 @@ export function Solicitar(props: ISolicitarProps) {
     }
   }, [selectedPlace]);
 
-  // useEffect(() => {
-  //   if (selectedDate) {
-  //     swal('Fecha seleccionada', `${dateWithTime(selectedDate)}`, 'success');
-  //     setKey('participants');
-  //   }
-  // }, [selectedDate]);
+  useEffect(() => {
+    if (selectedDate) {
+      swal('Fecha seleccionada', `${dateWithTime(selectedDate)}`, 'success');
+      setKey('participants');
+    }
+  }, [selectedDate]);
 
   const styleStep = (stepNumber: number, condition: any) => {
     if (condition) {
@@ -60,8 +61,11 @@ export function Solicitar(props: ISolicitarProps) {
   .steps-nav .nav-item:nth-child(4):before {
     ${styleStep(3, selectedDate)}
   }
-  .nav-item:nth-child(5):before {
-    content: "4";
+  .steps-nav .nav-item:nth-child(5):before {
+    ${styleStep(4, serviceParticipants.length > 0)}
+  }
+  .steps-nav .nav-item:nth-child(6):before {
+    ${styleStep(5, false)}
   }
 `;
 
@@ -87,9 +91,9 @@ export function Solicitar(props: ISolicitarProps) {
                   )}
                 </Tab.Pane>
                 <Tab.Pane eventKey="participants">
-                  {/* {selectedDate && <TabAddParticipants />} */}
                   <TabAddParticipants />
                 </Tab.Pane>
+                <Tab.Pane eventKey="checkout">CHECKOUT</Tab.Pane>
               </Tab.Content>
             </Col>
             <Col
@@ -133,7 +137,22 @@ export function Solicitar(props: ISolicitarProps) {
                 <Nav.Item>
                   <Nav.Link eventKey="participants" disabled={!selectedDate}>
                     <strong>Participantes</strong>
-                    <span className="text-white font-italic">Añade participantes</span>
+                    <span className="text-white font-italic">
+                      {serviceParticipants.length > 0
+                        ? `${serviceParticipants.length} participantes`
+                        : 'Agrega participantes'}
+                    </span>
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="checkout" disabled={!serviceParticipants.length}>
+                    <strong>
+                      Checkout{' '}
+                      {serviceParticipants.length > 0 && (
+                        <Badge variant="warning">{'\u2713'}</Badge>
+                      )}
+                    </strong>
+                    <span className="text-white font-italic">Completar el servicio</span>
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
