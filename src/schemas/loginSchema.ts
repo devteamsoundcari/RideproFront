@@ -8,18 +8,17 @@ export const loginFields = [
     props: {
       name: 'email',
       type: 'email',
-      inputmode: 'email',
+      inputMode: 'email',
       placeholder: ''
     }
   },
-
   {
     label: 'Constraseña',
     required: true,
     props: {
       name: 'password',
       type: 'password',
-      inputmode: 'text',
+      inputMode: 'text',
       placeholder: ''
     }
   }

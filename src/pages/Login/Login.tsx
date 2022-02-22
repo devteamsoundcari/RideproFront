@@ -43,16 +43,15 @@ export const Login = () => {
         <Form onSubmit={handleSubmit(onSubmit)} className="text-center">
           {loginFields.map((field, index) => (
             <FormInput
-              errorClassName="text-white"
-              labelClassName="text-white"
-              className="rounded-pill p-4"
-              field={field}
-              register={register}
-              errors={errors}
               key={`form-input=${index}`}
+              labelClassName="text-white"
+              field={field}
+              className="rounded-pill p-4"
+              register={register}
+              errorClassName="text-white"
+              errors={errors}
             />
           ))}
-
           <Button
             variant="primary"
             type="submit"

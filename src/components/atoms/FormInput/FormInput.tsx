@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Form, Col } from 'react-bootstrap';
 
 export interface IFormInputProps {
@@ -28,7 +28,10 @@ export function FormInput({
         className={className}
         {...(props as any)}
         autoComplete="off"
-        {...register(props.name, { required, ...requiredOptions })}
+        ref={register({
+          required,
+          ...requiredOptions
+        })}
       />
       {required && errors[props.name] && (
         <small className={errorClassName}>{errors[props.name].message}</small>

@@ -73,8 +73,6 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
       dangerMode: true
     }).then(async (willCreate) => {
       if (willCreate) {
-        // TODO: add participant to list
-        console.log('add', foundParticipants);
         setServiceParticipants([...serviceParticipants, ...foundParticipants]);
         handleClose();
       }
@@ -83,7 +81,7 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
 
   const handleAddNewParticipant = async (participant) => {
     const htmlOfParticipant = `
-        <tr key=${participant.official_id}>
+        <tr>
           <td>${participant?.official_id}</td>
           <td>${participant?.first_name}</td>
           <td>${participant?.last_name}</td>
@@ -167,7 +165,7 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
   const searchParticipantForm = (
     <>
       <CustomTable
-        keyField="id"
+        keyField="official_id"
         columns={columns}
         data={filterByReference(companyDrivers, serviceParticipants)}
         renderSearch
