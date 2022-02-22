@@ -3,10 +3,12 @@ import { Form } from 'react-bootstrap';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
 import './TabSelectDate.scss';
-import { useServicePriority } from '../../../utils';
+import { dateWithTime, useServicePriority } from '../../../utils';
 import setHours from 'date-fns/setHours';
 import setMinutes from 'date-fns/setMinutes';
 import { ServiceContext } from '../../../contexts';
+import swal from 'sweetalert';
+
 registerLocale('es', es);
 
 const TIME_INTERVALS = 30;
@@ -19,10 +21,11 @@ export function TabSelectDate(props: ITabSelectDateProps) {
   const [selectedDateLocal, setSelectedDateLocal] = useState(minimumDate);
 
   const dateHandler = (date) => {
-    // We compare if the time is different so we can tell if the user changed the time
-    // if (dateAMPM(date) !== dateAMPM(minimumDate)) setSelectedDate(date);
+    console.log('FUCK', date, selectedDate, date === selectedDate);
+
     setSelectedDate(date);
     determineHourRange(date);
+    swal('Fecha seleccionada', `${dateWithTime(selectedDate)}`, 'success');
   };
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export function TabSelectDate(props: ITabSelectDateProps) {
           minTime={setHours(setMinutes(new Date(), minHour[1]), minHour[0])}
           maxTime={setHours(setMinutes(new Date(), maxHour[1]), maxHour[0])}
           selected={selectedDateLocal}
-          onChange={dateHandler}
+          onChange={(date) => dateHandler(date)}
           dateCaptions={'asdsd'}
           timeCaption="Hora"
           locale="es"

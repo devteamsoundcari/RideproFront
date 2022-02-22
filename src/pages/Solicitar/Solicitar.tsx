@@ -28,20 +28,12 @@ export function Solicitar(props: ISolicitarProps) {
 
   useEffect(() => {
     if (selectedPlace?.department && selectedPlace?.city && selectedPlace?.track) {
-      swal(
-        'Lugar seleccionado',
-        `${selectedPlace?.track?.name}, ${selectedPlace?.city?.name}, ${selectedPlace.department?.name}`,
-        'success'
-      );
       setKey('date');
     }
   }, [selectedPlace]);
 
   useEffect(() => {
-    if (selectedDate) {
-      swal('Fecha seleccionada', `${dateWithTime(selectedDate)}`, 'success');
-      setKey('participants');
-    }
+    if (selectedDate) setKey('participants');
   }, [selectedDate]);
 
   const styleStep = (stepNumber: number, condition: any) => {

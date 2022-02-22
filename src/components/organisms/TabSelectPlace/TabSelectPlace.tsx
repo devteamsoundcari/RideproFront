@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap';
 import { TracksContext, AuthContext, ServiceContext } from '../../../contexts';
 import { useDropdown } from '../../../utils';
 import { COMPANY_NAME } from '../../../utils/constants';
+import swal from 'sweetalert';
 import './TabSelectPlace.scss';
 export interface ITabSelectPlaceProps {}
 
@@ -39,7 +40,7 @@ export function TabSelectPlace(props: ITabSelectPlaceProps) {
   // =========================== FETCHING DEPARTMENTS ===================================
 
   useEffect(() => {
-    setSelectedPlace(null);
+    // setSelectedPlace(null);
     getDepartments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -114,6 +115,11 @@ export function TabSelectPlace(props: ITabSelectPlaceProps) {
       ...selectedPlace,
       track: foundTrack === undefined ? { id: trackId, name: trackId } : foundTrack
     });
+    swal(
+      'Lugar seleccionado',
+      `${selectedPlace?.track?.name}, ${selectedPlace?.city?.name}, ${selectedPlace.department?.name}`,
+      'success'
+    );
   };
 
   return (
