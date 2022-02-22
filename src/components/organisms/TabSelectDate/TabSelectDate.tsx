@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
 import './TabSelectDate.scss';
-import { dateAMPM, useServicePriority } from '../../../utils';
+import { useServicePriority } from '../../../utils';
 import setHours from 'date-fns/setHours';
 import setMinutes from 'date-fns/setMinutes';
 import { ServiceContext } from '../../../contexts';
@@ -18,22 +18,13 @@ export function TabSelectDate(props: ITabSelectDateProps) {
   const { selectedDate, setSelectedDate } = useContext(ServiceContext);
   const [selectedDateLocal, setSelectedDateLocal] = useState(minimumDate);
 
-  const dateHandler = (date, x, y, z) => {
-    console.log(date, x, y, z);
+  const dateHandler = (date) => {
     // We compare if the time is different so we can tell if the user changed the time
     // if (dateAMPM(date) !== dateAMPM(minimumDate)) setSelectedDate(date);
     setSelectedDate(date);
     determineHourRange(date);
   };
 
-  // const getSelectedDate = () => {
-  //   console.log(selectedDate, minimumDate);
-  //   if (selectedDate) {
-  //     return selectedDate;
-  //   } else {
-  //     return minimumDate;
-  //   }
-  // };
   useEffect(() => {
     console.log(selectedDate, minimumDate);
     if (selectedDate) {
@@ -42,10 +33,6 @@ export function TabSelectDate(props: ITabSelectDateProps) {
       setSelectedDateLocal(minimumDate);
     }
   }, [minimumDate, selectedDate]);
-
-  useEffect(() => {
-    console.log('minHour, maxHour', minHour, maxHour);
-  }, [minHour, maxHour]);
 
   return (
     <Form className="tab-select-date">
@@ -61,13 +48,9 @@ export function TabSelectDate(props: ITabSelectDateProps) {
           timeCaption="Hora"
           locale="es"
           disabled={false}
-          // control={control}
           dateFormat="MMMM d, yyyy - h:mm aa"
-          // placeholderText={'asdasdasdsadasda'}
-          // name="date"
           timeIntervals={TIME_INTERVALS}
           showTimeSelect
-          // inline
         />
       </div>
     </Form>

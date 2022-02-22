@@ -2,9 +2,9 @@ import React, { useEffect, useContext, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useProfile } from '../../../utils/useProfile';
-import { Modal, Form, Col, Button, Spinner, Tab, Tabs } from 'react-bootstrap';
+import { Modal, Form, Button, Spinner, Tab, Tabs } from 'react-bootstrap';
 import { AuthContext, ServiceContext } from '../../../contexts';
-import { filterByReference, REGEX_EMAIl, REGEX_OFFICIAL_ID } from '../../../utils';
+import { filterByReference } from '../../../utils';
 import swal from 'sweetalert';
 import { CustomTable } from '../../organisms';
 
@@ -20,7 +20,6 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
   const [profile] = useProfile();
   const { userInfo } = useContext(AuthContext);
   const [foundParticipants, setFoundParticipants] = useState<any[]>([]);
-  const [newParticipant, setNewParticipant] = useState<any>(null);
   const {
     getCompanyDrivers,
     loadingDrivers,
@@ -101,7 +100,6 @@ export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) 
     }).then(async (willCreate) => {
       if (willCreate) {
         // TODO: add participant to list
-        console.log('add', participant);
         setServiceParticipants([...serviceParticipants, participant]);
         handleClose();
       }

@@ -298,7 +298,8 @@ export const RequestsContextProvider = (props) => {
           calendarCount,
           setStartDate,
           setEndDate,
-          updateCurrentMonth
+          updateCurrentMonth,
+          cancelledRequests
         } as any
       }>
       {props.children}

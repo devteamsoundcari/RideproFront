@@ -1,22 +1,24 @@
 import React, { useContext, useState } from 'react';
-import { FaPlus, FaDownload } from 'react-icons/fa';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 import { ServiceContext } from '../../../contexts';
+import { filterByReference } from '../../../utils';
 import { CustomCard, ModalAddParticipant } from '../../molecules';
 import { CustomTable } from '../CustomTable/CustomTable';
+import swal from 'sweetalert';
 import './TabAddParticipants.scss';
 
 export interface ITabAddParticipantsProps {}
 
 export function TabAddParticipants(props: ITabAddParticipantsProps) {
   const [showModalAddParticipant, setShowModalAddParticipant] = useState(true);
-  const { serviceParticipants } = useContext(ServiceContext);
+  const { serviceParticipants, setServiceParticipants } = useContext(ServiceContext);
+  const [selectedParticipants, setSelectedParticipants] = useState<any[]>([]);
   const columns = [
     {
       dataField: 'id',
-      // isDummyField: true,
       text: 'Tipo',
       formatter: (_, row) => (row.url ? 'Antiguo' : 'Nuevo'),
-      className: 'small-column',
+      className: 'small-column text-center',
       sort: true
     },
     {
@@ -41,6 +43,22 @@ export function TabAddParticipants(props: ITabAddParticipantsProps) {
     }
   ];
 
+  const removeSelectedParticipants = () => {
+    const newArr = filterByReference(serviceParticipants, selectedParticipants);
+    swal({
+      title: 'Importante',
+      text: '¿Estas seguro de descartar estos participantes?',
+      icon: 'warning',
+      buttons: ['Volver', 'Si, descartar'],
+      dangerMode: true
+    }).then(async (willCreate) => {
+      if (willCreate) {
+        setServiceParticipants(newArr);
+        setSelectedParticipants([]);
+      }
+    });
+  };
+
   const actionButtons = [
     {
       onClick: () => setShowModalAddParticipant(true),
@@ -48,9 +66,9 @@ export function TabAddParticipants(props: ITabAddParticipantsProps) {
       disabled: false
     },
     {
-      onClick: () => console.log('yex'),
-      icon: <FaDownload />,
-      disabled: true
+      onClick: () => removeSelectedParticipants(),
+      icon: <FaTrash />,
+      disabled: selectedParticipants.length === 0
     }
   ];
 
@@ -59,7 +77,7 @@ export function TabAddParticipants(props: ITabAddParticipantsProps) {
       <CustomCard
         bodyPadding="0"
         title="Participantes"
-        subtitle={'hello'}
+        subtitle={`Participantes de este servicio (${serviceParticipants.length})`}
         actionButtons={actionButtons}
         loading={false}>
         <CustomTable
@@ -70,8 +88,11 @@ export function TabAddParticipants(props: ITabAddParticipantsProps) {
           loading={false}
           columns={columns}
           data={serviceParticipants}
-          onSelectRow={(row) => {
-            console.log(row);
+          onSelectRow={(row, isSelect) => {
+            let rows = [...selectedParticipants];
+            if (!isSelect) rows = rows.filter((r) => r.id !== row.id);
+            else rows.push(row);
+            setSelectedParticipants(rows);
           }}
         />
       </CustomCard>

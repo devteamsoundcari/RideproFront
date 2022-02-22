@@ -96,7 +96,6 @@ export function ModalAddCompanyToSuperUser({
       })
       .catch(() => {
         swal('Oops!', 'No se pudo agregar las empresas', 'error');
-
         throw new Error('Error adding companies');
       });
   };
@@ -123,7 +122,6 @@ export function ModalAddCompanyToSuperUser({
             paginationSize={10}
             selectionMode="checkbox"
             onSelectRow={(row: any, isSelect: boolean) => {
-              //   console.log(row, isSelect);
               if (isSelect) {
                 setSelectedCompanies([...selectedCompanies, row.id]);
               } else {

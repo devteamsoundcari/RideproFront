@@ -5,7 +5,6 @@ import { RequestsContext, AuthContext } from '../../../contexts/';
 import { CalendarConventions } from '../../molecules';
 import './CalendarSidebar.scss';
 import { ALL_PROFILES, dateMonthName } from '../../../utils';
-import { Status } from '../../../contexts/SingleRequestContext';
 
 interface ICalendarSidebarProps {}
 
