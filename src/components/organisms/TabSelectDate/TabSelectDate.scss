@@ -1,0 +1,19 @@
+.tab-select-date {
+  height: 87vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .form-item {
+    input {
+      text-transform: capitalize;
+      width: 16rem;
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: 30px;
+      border: 0.5px solid var(--secondary);
+    }
+    .react-datepicker__month-container {
+      text-transform: capitalize;
+    }
+  }
+}

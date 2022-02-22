@@ -1,0 +1,38 @@
+.modal-upload-reports {
+  table {
+    label {
+      cursor: pointer;
+      color: #333;
+      background-color: lightgreen;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px 5px;
+      border-radius: 5px;
+      line-height: 18px;
+      text-transform: capitalize;
+      text-align: center;
+      font-size: 11px;
+      line-height: 13px;
+      max-width: 4rem;
+      min-height: 2rem;
+      overflow: hidden;
+
+      &:hover {
+        color: #fff;
+        background-color: green;
+      }
+    }
+    .custom-file-translate-scss {
+      input {
+        display: none;
+      }
+    }
+    .custom-file-input:lang(es) ~ .custom-file-label::after {
+      display: none;
+    }
+  }
+  tbody > tr > td {
+    vertical-align: middle;
+  }
+}

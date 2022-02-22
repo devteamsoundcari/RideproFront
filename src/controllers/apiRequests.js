@@ -220,19 +220,33 @@ const getCompanyUsers = async (companyId) => {
 
 /* =================================   GET SUPER USER COMPANIES   ===================================== */
 
-const getSuperUserCompanies = async (userId) => {
-  const getInfo = async (url) => {
-    const userData = await axios({
+// const getSuperUserCompanies = async (userId) => {
+//   const getInfo = async (url) => {
+//     const userData = await axios({
+//       method: 'GET',
+//       url
+//     }).catch((err) => {
+//       return err;
+//     });
+//     return userData;
+//   };
+//   let companies = await getInfo(
+//     `${process.env.REACT_APP_API_URL}/api/v1/user_companies/?user=${userId}`
+//   );
+//   return companies;
+// };
+
+const getSuperUserCompanies = async (url) => {
+  const getInfo = async () => {
+    const usersData = await axios({
       method: 'GET',
       url
     }).catch((err) => {
       return err;
     });
-    return userData;
+    return usersData;
   };
-  let companies = await getInfo(
-    `${process.env.REACT_APP_API_URL}/api/v1/user_companies/?user=${userId}`
-  );
+  let companies = await getInfo();
   return companies;
 };
 
@@ -285,7 +299,6 @@ const getServices = async (
 /* =================================   GET LINE SERVICES   ===================================== */
 
 const getLineServices = async (url) => {
-  console.log('url' + url);
   const getInfo = async (url) => {
     const serviceData = await axios({
       method: 'GET',

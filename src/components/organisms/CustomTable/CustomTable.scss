@@ -1,0 +1,27 @@
+.custom-table {
+  th {
+    text-align: center;
+    vertical-align: middle !important;
+  }
+  td {
+    vertical-align: middle !important;
+    overflow: hidden;
+  }
+
+  .custom-row {
+    &:hover {
+      background-color: lightgreen;
+      cursor: pointer;
+    }
+  }
+  .small-column {
+    width: 8rem;
+    overflow: hidden;
+  }
+  .xs-column {
+    width: 4rem;
+  }
+  .pagination {
+    float: right;
+  }
+}

@@ -1,0 +1,23 @@
+.child-modal {
+  background: #383d419e !important;
+}
+
+.profile-edit-modal {
+  .image-cropper {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    img {
+      display: inline;
+      margin: 0 auto;
+      height: 100%;
+      width: inherit;
+    }
+  }
+  .recommendation {
+    line-height: 15px;
+    margin: 0rem 0rem 0.5rem 0rem;
+  }
+}

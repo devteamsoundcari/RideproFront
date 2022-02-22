@@ -1,0 +1,10 @@
+.single-file {
+  flex: 1 0 30% !important;
+  .card-body {
+    padding-bottom: 5px;
+  }
+  label {
+    text-transform: none;
+    overflow: hidden;
+  }
+}

@@ -1,28 +1,18 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState } from 'react';
 
 export const ParticipantsContext = createContext();
 
-const ParticipantsContextProvider = (props) => {
-  const [
-    participantsToRegisterContext,
-    setParticipantsToRegisterContext,
-  ] = useState([]);
-  const [
-    registeredParticipantsContext,
-    setRegisteredParticipantsContext,
-  ] = useState([]);
-  const [
-    allParticipantsInfoContext,
-    setAllParticipantsInfoContext
-  ] = useState([]);
-  const [
-    unregisteredParticipantsContext,
-    setUnregisteredParticipantsContext
-  ] = useState([]);
-  const [
-    newParticipantsContext,
-    setNewParticipantsContext
-  ] = useState([]);
+export const ParticipantsContextProvider = (props) => {
+  const [participantsToRegisterContext, setParticipantsToRegisterContext] =
+    useState([]);
+  const [registeredParticipantsContext, setRegisteredParticipantsContext] =
+    useState([]);
+  const [allParticipantsInfoContext, setAllParticipantsInfoContext] = useState(
+    []
+  );
+  const [unregisteredParticipantsContext, setUnregisteredParticipantsContext] =
+    useState([]);
+  const [newParticipantsContext, setNewParticipantsContext] = useState([]);
 
   return (
     <ParticipantsContext.Provider
@@ -37,11 +27,8 @@ const ParticipantsContextProvider = (props) => {
         setUnregisteredParticipantsContext,
         newParticipantsContext,
         setNewParticipantsContext
-      }}
-    >
+      }}>
       {props.children}
     </ParticipantsContext.Provider>
   );
 };
-
-export default ParticipantsContextProvider;
