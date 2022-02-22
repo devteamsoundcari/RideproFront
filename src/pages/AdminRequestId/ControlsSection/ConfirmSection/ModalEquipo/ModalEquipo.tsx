@@ -4,6 +4,7 @@ import { FaSave } from 'react-icons/fa';
 import { currencyCOP, useProfile } from '../../../../../utils';
 import swal from 'sweetalert';
 import { SingleRequestContext } from '../../../../../contexts';
+import { COMPANY_NAME } from '../../../../../utils/constants';
 
 export interface IModalEquipoProps {
   onHide: () => void;
@@ -199,7 +200,7 @@ export function ModalEquipo({ onHide, requestId }: IModalEquipoProps) {
                 </tr>
               );
             })}
-            {currentRequest?.track.company && currentRequest?.track.company.name === 'StockApp' && (
+            {currentRequest?.track.company && currentRequest?.track.company.name === COMPANY_NAME && (
               <tr>
                 <td className="align-middle">
                   <strong>Pista</strong>

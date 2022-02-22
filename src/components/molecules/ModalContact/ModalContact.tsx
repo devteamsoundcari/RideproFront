@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Modal, Button, Spinner } from 'react-bootstrap';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { sendEmail } from '../../../controllers/apiRequests';
-
+import { COMPANY_NAME } from '../../../utils/constants';
 import swal from 'sweetalert';
 
 type ModalContactProps = any;
@@ -17,8 +17,8 @@ export const ModalContact: React.FC<ModalContactProps> = (props) => {
           <Modal.Title className="text-center">¿Te quedaste sin créditos?</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          Si tu saldo de créditos es insuficiente podemos hacer que un operario de StockApp se ponga
-          en contacto contigo.
+          Si tu saldo de créditos es insuficiente podemos hacer que un operario de {COMPANY_NAME} se
+          ponga en contacto contigo.
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={props.handleClose}>

@@ -9,7 +9,6 @@ import {
 } from '../../components/organisms';
 import { MainLayout } from '../../components/templates';
 import { ServiceContext } from '../../contexts';
-import swal from 'sweetalert';
 import './Solicitar.scss';
 import { dateWithTime } from '../../utils';
 

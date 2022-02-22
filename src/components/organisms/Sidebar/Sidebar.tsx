@@ -15,7 +15,7 @@ import { AuthContext } from '../../../contexts';
 import { Greeting } from '../../atoms';
 import { ModalContact } from '../../molecules';
 import { routes } from '../../../routes';
-import { PERFIL_CLIENTE, useProfile } from '../../../utils';
+import { COMPANY_NAME, PERFIL_CLIENTE, useProfile } from '../../../utils';
 import defaultCompanyImg from '../../../assets/img/defaultCompanyImg.png';
 import logo from '../../../assets/img/logo.png';
 import './Sidebar.scss';
@@ -79,7 +79,7 @@ export const Sidebar = () => {
           <Badge variant="warning" id="version-badge">
             BETA
           </Badge>
-          <img alt="StockAppLogo" src={logo} className="mb-3" />
+          <img alt={`${COMPANY_NAME}Logo`} src={logo} className="mb-3" />
           <small style={{ fontSize: '12px' }} className="text-capitalize">
             {profile || 'desconocido'}
           </small>

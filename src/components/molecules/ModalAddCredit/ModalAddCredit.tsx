@@ -60,7 +60,7 @@ export function ModalAddCredit({ handleClose }: IModalAddCreditProps) {
           //   template: 'welcome',
           //   subject: `${
           //     { M: 'Bienvenido', F: 'Bienvenida', O: 'Bienvenid@' }[data.gender]
-          //   } a StockApp👋`,
+          //   } a ${COMPANY_NAME}`,
           //   to: data.email,
           //   name: `${data.first_name} ${data.last_name}`,
           //   email: data.email,

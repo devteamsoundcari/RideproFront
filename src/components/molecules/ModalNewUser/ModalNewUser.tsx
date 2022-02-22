@@ -5,6 +5,7 @@ import { useProfile } from '../../../utils/useProfile';
 import { CustomTable } from '../../organisms';
 import { CompaniesContext, INewUser, UsersContext, AuthContext } from '../../../contexts';
 import swal from 'sweetalert';
+import { COMPANY_NAME } from '../../../utils';
 
 export interface IModalNewUserProps {
   handleClose: () => void;
@@ -49,7 +50,7 @@ export function ModalNewUser({ handleClose }: IModalNewUserProps) {
               template: 'welcome',
               subject: `${
                 { M: 'Bienvenido', F: 'Bienvenida', O: 'Bienvenid@' }[data.gender]
-              } a StockApp👋`,
+              } a ${COMPANY_NAME}👋`,
               to: data.email,
               name: `${data.first_name} ${data.last_name}`,
               email: data.email,

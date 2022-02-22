@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { passwordRecoverFields, passwordRecoverSchema } from '../../schemas';
 import { FormInput } from '../../components/atoms';
+import { COMPANY_NAME } from '../../utils';
 
 export const PasswordRecover = (props) => {
   let navigate = useNavigate();
@@ -47,7 +48,7 @@ export const PasswordRecover = (props) => {
         background: `url(${bgImage}) no-repeat center center`
       }}>
       <div className="form-container mb-5 text-center">
-        <img src={logo} alt="StockAppLogo" />
+        <img src={logo} alt={`${COMPANY_NAME}Logo`} />
         <Form onSubmit={handleSubmit(onSubmit)} className="text-center">
           {passwordRecoverFields.map((field, index) => (
             <FormInput

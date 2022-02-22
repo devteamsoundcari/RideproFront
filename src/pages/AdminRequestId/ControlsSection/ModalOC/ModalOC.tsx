@@ -138,7 +138,7 @@ const ModalOC: React.FC<ModalOCProps> = ({ requestId, handleClose }) => {
             closeOnClickOutside: false
           });
 
-          // Send track email if track is part of stockapp
+          // Send track email if track is part of the company
           if (trackInfo?.company?.name.toLowerCase() === COMPANY_NAME) {
             let trackPayload = {
               id: requestId,

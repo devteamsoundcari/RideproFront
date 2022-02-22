@@ -10,6 +10,7 @@ import { Button, Form, Spinner } from 'react-bootstrap';
 import { FormInput } from '../../components/atoms';
 import { loginSchema, loginFields } from '../../schemas';
 import './Login.scss';
+import { COMPANY_NAME } from '../../utils/constants';
 
 export const Login = () => {
   let navigate = useNavigate();
@@ -39,7 +40,7 @@ export const Login = () => {
         background: `url(${bgImage}) no-repeat center center`
       }}>
       <div className="form-container mb-5 text-center">
-        <img src={logo} alt="StockAppLogo" />
+        <img src={logo} alt={`${COMPANY_NAME}Logo`} />
         <Form onSubmit={handleSubmit(onSubmit)} className="text-center">
           {loginFields.map((field, index) => (
             <FormInput
@@ -73,7 +74,7 @@ export const Login = () => {
 
       <div className="text-white mt-5">
         <small>
-          Copyright ©StockApp 2022 - Desarrollado por{' '}
+          Copyright ©{COMPANY_NAME} 2022 - Desarrollado por{' '}
           <a href="https://soundlutions.com/en/">
             <strong className="text-white"> soundlutions.com</strong>
           </a>
