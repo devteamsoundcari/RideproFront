@@ -79,7 +79,7 @@ export const Sidebar = () => {
           <Badge variant="warning" id="version-badge">
             BETA
           </Badge>
-          <img alt="RideproLogo" src={logo} className="mb-3" />
+          <img alt="StockAppLogo" src={logo} className="mb-3" />
           <small style={{ fontSize: '12px' }} className="text-capitalize">
             {profile || 'desconocido'}
           </small>

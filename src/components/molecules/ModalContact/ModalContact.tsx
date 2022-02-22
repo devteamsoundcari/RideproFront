@@ -14,13 +14,11 @@ export const ModalContact: React.FC<ModalContactProps> = (props) => {
     <>
       <Modal show={true} onHide={props.handleClose}>
         <Modal.Header closeButton className="text-center">
-          <Modal.Title className="text-center">
-            ¿Te quedaste sin créditos?
-          </Modal.Title>
+          <Modal.Title className="text-center">¿Te quedaste sin créditos?</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          Si tu saldo de créditos es insuficiente podemos hacer que un operario
-          de Ridepro se ponga en contacto contigo.
+          Si tu saldo de créditos es insuficiente podemos hacer que un operario de StockApp se ponga
+          en contacto contigo.
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={props.handleClose}>
@@ -29,21 +27,13 @@ export const ModalContact: React.FC<ModalContactProps> = (props) => {
           <Button
             variant="primary"
             onClick={async () => {
-              const {
-                email,
-                credit,
-                name,
-                lastName,
-                picture,
-                perfil,
-                company
-              } = userInfoContext;
+              const { email, credit, name, lastName, picture, perfil, company } = userInfoContext;
               setLoading(true);
 
               const payload = {
                 emailType: 'moreCredit',
                 subject: 'Cliente sin crédito ⚠️',
-                email: 'vgonzalez@ridepro.co',
+                email: 'vgonzalez@stockapp.co',
                 name: `${name} ${lastName}`,
                 credit,
                 userEmail: email,
@@ -52,11 +42,7 @@ export const ModalContact: React.FC<ModalContactProps> = (props) => {
                 companyName: company.name
               };
               await sendEmail(payload);
-              swal(
-                'Listo!',
-                'Pronto estaremos en contacto contigo!',
-                'success'
-              );
+              swal('Listo!', 'Pronto estaremos en contacto contigo!', 'success');
               setLoading(false);
               props.handleClose();
             }}>

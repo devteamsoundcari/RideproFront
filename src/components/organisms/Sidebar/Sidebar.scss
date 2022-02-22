@@ -58,7 +58,7 @@
           align-items: center;
           max-width: 70px;
           margin: auto;
-          background-color: red;
+          background-color: var(--primary);
           margin-bottom: 0.5rem;
           svg {
             font-size: 20px;
@@ -99,7 +99,7 @@
         }
       }
       .active {
-        background-color: red;
+        background-color: var(--primary);
       }
     }
   }

@@ -47,7 +47,7 @@ export const PasswordRecover = (props) => {
         background: `url(${bgImage}) no-repeat center center`
       }}>
       <div className="form-container mb-5 text-center">
-        <img src={logo} alt="RideproLogo" />
+        <img src={logo} alt="StockAppLogo" />
         <Form onSubmit={handleSubmit(onSubmit)} className="text-center">
           {passwordRecoverFields.map((field, index) => (
             <FormInput

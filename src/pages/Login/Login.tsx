@@ -39,7 +39,7 @@ export const Login = () => {
         background: `url(${bgImage}) no-repeat center center`
       }}>
       <div className="form-container mb-5 text-center">
-        <img src={logo} alt="RideproLogo" />
+        <img src={logo} alt="StockAppLogo" />
         <Form onSubmit={handleSubmit(onSubmit)} className="text-center">
           {loginFields.map((field, index) => (
             <FormInput
@@ -73,7 +73,7 @@ export const Login = () => {
 
       <div className="text-white mt-5">
         <small>
-          Copyright ©Ridepro 2022 - Desarrollado por{' '}
+          Copyright ©StockApp 2022 - Desarrollado por{' '}
           <a href="https://soundlutions.com/en/">
             <strong className="text-white"> soundlutions.com</strong>
           </a>

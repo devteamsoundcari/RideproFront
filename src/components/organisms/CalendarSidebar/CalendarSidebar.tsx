@@ -5,6 +5,7 @@ import { RequestsContext, AuthContext } from '../../../contexts/';
 import { CalendarConventions } from '../../molecules';
 import './CalendarSidebar.scss';
 import { ALL_PROFILES, dateMonthName } from '../../../utils';
+import { Status } from '../../../contexts/SingleRequestContext';
 
 interface ICalendarSidebarProps {}
 
@@ -14,31 +15,50 @@ export const CalendarSidebar: React.FunctionComponent<ICalendarSidebarProps> = (
   const [graphData, setGraphData] = useState<any>(null);
 
   useEffect(() => {
-    const counts = {};
-    const colors = {};
-    const foundProfile: any = ALL_PROFILES.find((user) => user.profile === userInfo.profile)?.steps;
-    const stepsKeys = Object.keys(foundProfile);
-    const arrayOfDuplicates = calendarRequests.map((request) => {
-      const key: any = stepsKeys.filter((key) => foundProfile[key].step === request?.status?.step);
-      return { name: foundProfile[key].name, color: foundProfile[key].bgColor };
-    });
-    arrayOfDuplicates.forEach(({ name, color }) => {
-      colors[name] = color;
-      counts[name] = (counts[name] || 0) + 1;
-    });
-    const payload = {
-      labels: Object.keys(counts),
-      datasets: [
-        {
-          label: '# of requests',
-          data: Object.keys(counts).map((key) => counts[key]),
-          backgroundColor: Object.keys(colors).map((key) => colors[key]),
-          borderColor: Object.keys(colors).map((key) => colors[key]),
-          borderWidth: 1
-        }
-      ]
-    };
-    setGraphData(payload);
+    if (calendarRequests.length > 0) {
+      const counts = {};
+      const colors = {};
+      const foundProfile: any = ALL_PROFILES.find(
+        (profile) => profile.profile === userInfo.profile
+      );
+      console.log('foundProfile', foundProfile);
+      const stepsKeys = Object.keys(foundProfile.steps);
+      console.log('stepsKeys', stepsKeys);
+      // console.log('calendarRequests', calendarRequests);
+
+      const arrayOfDuplicates = calendarRequests.map((request) => {
+        const key: any = stepsKeys.filter((key) => {
+          return foundProfile.steps[key].step.includes(request?.status?.step);
+        });
+        console.log('foudnkey', key);
+        // console.log('FINAL', foundProfile.steps);
+        // console.log('FINAL2', foundProfile.steps[key[0]]);
+        const foundStep = foundProfile.steps[key[0]];
+
+        return { name: foundStep.name, color: foundStep.bgColor };
+      });
+      if (arrayOfDuplicates.length > 0) {
+        arrayOfDuplicates.forEach(({ name, color }) => {
+          colors[name] = color;
+          counts[name] = (counts[name] || 0) + 1;
+        });
+      }
+
+      const payload = {
+        labels: Object.keys(counts),
+        datasets: [
+          {
+            label: '# of requests',
+            data: Object.keys(counts).map((key) => counts[key]),
+            backgroundColor: Object.keys(colors).map((key) => colors[key]),
+            borderColor: Object.keys(colors).map((key) => colors[key]),
+            borderWidth: 1
+          }
+        ]
+      };
+      setGraphData(payload);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarRequests]);
 

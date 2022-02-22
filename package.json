@@ -1,6 +1,6 @@
 {
-  "homepage": "http://mikesosa.github.io/rideproapp",
-  "name": "rideproapp",
+  "homepage": "http://mikesosa.github.io/stockappapp",
+  "name": "stockappapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

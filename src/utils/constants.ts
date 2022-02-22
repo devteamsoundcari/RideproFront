@@ -1,7 +1,7 @@
 // APP
-export const COMPANY_NAME = 'ridepro';
-export const COMPANY_EMAIL = 'soportealiados@ridepro.co';
-export const HASH_KEYWORD = 'motorRidepro';
+export const COMPANY_NAME = 'stockapp';
+export const COMPANY_EMAIL = 'soportealiados@stockapp.co';
+export const HASH_KEYWORD = 'motorStockApp';
 export const APP_LOGIN_URL = '/login';
 
 // API
@@ -66,7 +66,7 @@ const STATUS_IDS = {
 };
 
 const STATUS_ESPERANDO_CONFIRMACION = {
-  step: 1,
+  step: [1],
   id: STATUS_IDS[1],
   name: 'Esperando confirmación',
   variant: 'event-requested',
@@ -77,7 +77,7 @@ const STATUS_ESPERANDO_CONFIRMACION = {
 };
 
 const STATUS_CANCELADO = {
-  step: 0,
+  step: [0],
   id: STATUS_IDS[0],
   name: 'Solicitud cancelada',
   variant: 'event-canceled',
@@ -88,7 +88,7 @@ const STATUS_CANCELADO = {
 };
 
 const STATUS_CONFIRMAR_PROGRAMACION = {
-  step: 2,
+  step: [2],
   id: STATUS_IDS[2],
   name: 'Confirmar programación',
   variant: 'confirm-event',
@@ -99,7 +99,7 @@ const STATUS_CONFIRMAR_PROGRAMACION = {
 };
 
 const STATUS_SERVICIO_PROGRAMADO = {
-  step: 3,
+  step: [3],
   id: STATUS_IDS[3],
   name: 'Servicio programado',
   variant: 'event-confirmed',
@@ -110,7 +110,7 @@ const STATUS_SERVICIO_PROGRAMADO = {
 };
 
 const STATUS_SERVICIO_FINALIZADO = {
-  step: 5,
+  step: [5],
   id: STATUS_IDS[5],
   name: 'Confirmar recepción de documentos',
   variant: 'confirm-docs',
@@ -121,7 +121,7 @@ const STATUS_SERVICIO_FINALIZADO = {
 };
 
 const STATUS_ESPERANDO_AL_CLIENTE = {
-  step: 2,
+  step: [2],
   id: STATUS_IDS[2],
   name: 'Esperando confirmación cliente',
   variant: 'confirm-event',
@@ -132,7 +132,7 @@ const STATUS_ESPERANDO_AL_CLIENTE = {
 };
 
 const STATUS_PROGRAMACION_ACEPTADA = {
-  step: 3,
+  step: [3],
   id: STATUS_IDS[3],
   name: 'Programación aceptada',
   variant: 'event-confirmed',
@@ -143,7 +143,7 @@ const STATUS_PROGRAMACION_ACEPTADA = {
 };
 
 const STATUS_CONFIRMAR_DOCUMENTOS = {
-  step: 4,
+  step: [4],
   id: STATUS_IDS[4],
   name: 'Confirmar recepción de documentos',
   variant: 'confirm-docs',
@@ -154,7 +154,7 @@ const STATUS_CONFIRMAR_DOCUMENTOS = {
 };
 
 const STATUS_GENERAR_INFORMES = {
-  step: 4,
+  step: [4],
   id: STATUS_IDS[4],
   name: 'Generar Informes',
   variant: 'upload-reports',
@@ -165,7 +165,7 @@ const STATUS_GENERAR_INFORMES = {
 };
 
 const STATUS_ESPERANDO_RECEPCION_DOCUMENTOS = {
-  step: 5,
+  step: [5],
   id: STATUS_IDS[5],
   name: 'Esperando recepción de documentos',
   variant: 'confirm-docs',
@@ -176,7 +176,7 @@ const STATUS_ESPERANDO_RECEPCION_DOCUMENTOS = {
 };
 
 const STATUS_ASIGNAR_FACTURA = {
-  step: 6,
+  step: [6],
   id: STATUS_IDS[6],
   name: 'Adjuntar factura',
   variant: 'upload-reports',
@@ -197,13 +197,13 @@ export const PERFIL_ADMIN = {
     STATUS_SERVICIO_PROGRAMADO,
     STATUS_CONFIRMAR_PROGRAMACION: {
       ...STATUS_PROGRAMACION_ACEPTADA,
-      step: 4,
+      step: [4],
       id: STATUS_IDS[4]
     },
     STATUS_ESPERANDO_RECEPCION_DOCUMENTOS,
     STATUS_ASIGNAR_FACTURA,
     STATUS_SERVICIO_FINALIZADO: {
-      step: 7,
+      step: [7],
       id: STATUS_IDS[7],
       name: 'Servicio finalizado',
       variant: 'event-finished',
@@ -259,13 +259,13 @@ export const PERFIL_EJECUTIVO = {
     STATUS_SERVICIO_PROGRAMADO,
     STATUS_CONFIRMAR_PROGRAMACION: {
       ...STATUS_PROGRAMACION_ACEPTADA,
-      step: 4,
+      step: [4],
       id: STATUS_IDS[4]
     },
     STATUS_ESPERANDO_RECEPCION_DOCUMENTOS,
     STATUS_ASIGNAR_FACTURA,
     STATUS_SERVICIO_FINALIZADO: {
-      step: 7,
+      step: [7],
       id: STATUS_IDS[7],
       name: 'Servicio finalizado',
       variant: 'event-finished',
@@ -285,7 +285,16 @@ export const PERFIL_CLIENTE = {
     STATUS_ESPERANDO_CONFIRMACION,
     STATUS_CONFIRMAR_PROGRAMACION,
     STATUS_SERVICIO_PROGRAMADO,
-    STATUS_SERVICIO_FINALIZADO
+    STATUS_SERVICIO_FINALIZADO: {
+      step: [5, 6],
+      id: STATUS_IDS[6],
+      name: 'Servicio finalizado',
+      variant: 'event-finished',
+      bgColor: 'yellow',
+      color: '#333',
+      now: 100,
+      level: 100
+    }
   }
 };
 

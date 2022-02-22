@@ -199,7 +199,7 @@ export function ModalEquipo({ onHide, requestId }: IModalEquipoProps) {
                 </tr>
               );
             })}
-            {currentRequest?.track.company && currentRequest?.track.company.name === 'Ridepro' && (
+            {currentRequest?.track.company && currentRequest?.track.company.name === 'StockApp' && (
               <tr>
                 <td className="align-middle">
                   <strong>Pista</strong>

@@ -16,10 +16,10 @@ export function StatusRenderer({ rowStep }: any) {
   const [step, setStep] = useState<IStep>({ name: '', variant: '', now: 0 });
 
   useEffect(() => {
-    const foundProfile: any = ALL_PROFILES.find((user) => user.profile === userInfo.profile)?.steps;
-    const stepsKeys = Object.keys(foundProfile);
-    const filtered: any = stepsKeys.filter((key) => foundProfile[key].step === rowStep);
-    setStep(foundProfile[filtered]);
+    const foundProfile: any = ALL_PROFILES.find((user) => user.profile === userInfo.profile);
+    const stepsKeys = Object.keys(foundProfile?.steps);
+    const filtered: any = stepsKeys.filter((key) => foundProfile.steps[key].step.includes(rowStep));
+    setStep(foundProfile.steps[filtered]);
   }, [rowStep, userInfo.profile]);
 
   return (

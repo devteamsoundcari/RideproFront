@@ -6,7 +6,7 @@
     "name": "Lección aprendida (Práctica)",
     "short_description": "Capacita de forma práctica a los conductores que hayan sufrido algún incidente.",
     "description": "Capacita de forma práctica a los conductores que hayan sufrido algún incidente.",
-    "image": "https://app-db.ridepro.co/media/content/Lecci%C3%B3n%20aprendida%20(Pr%C3%A1ctica)/Academi_N1hDt2L.png"
+    "image": "https://app-db.stockapp.co/media/content/Lecci%C3%B3n%20aprendida%20(Pr%C3%A1ctica)/Academi_N1hDt2L.png"
   },
   {
     "id": "2631c2eb-3244-4c33-b8d3-ec72a49a946e",
@@ -15,7 +15,7 @@
     "name": "Planes de acción - Camión",
     "short_description": "Intervención de flota de vehículos con factores de mejora luego de prueba OkRidePro",
     "description": "Intervención de flota de vehículos con factores de mejora luego de prueba OkRidePro",
-    "image": "https://app-db.ridepro.co/media/content/Planes%20de%20acci%C3%B3n/Academi.png"
+    "image": "https://app-db.stockapp.co/media/content/Planes%20de%20acci%C3%B3n/Academi.png"
   },
   {
     "id": "2a0a4754-6dba-4420-b545-ff59f217b54a",
@@ -24,16 +24,16 @@
     "name": "Lección aprendida (Teórica y práctica)",
     "short_description": "Capacita de forma teórica y práctica a los conductores que hayan sufrido algún incidente. Solo solicita este servicio si las capacitaciones se harán seguidas, la misma fecha y a la misma hora.",
     "description": "Capacita de forma teórica y práctica a los conductores que hayan sufrido algún incidente. Solo solicita este servicio si las capacitaciones se harán seguidas, la misma fecha y a la misma hora.",
-    "image": "https://app-db.ridepro.co/media/content/Lecci%C3%B3n%20aprendida%20(Te%C3%B3rica)/Academi.png"
+    "image": "https://app-db.stockapp.co/media/content/Lecci%C3%B3n%20aprendida%20(Te%C3%B3rica)/Academi.png"
   },
   {
     "id": "345c764e-67f8-4d90-87d0-779d23a2e9c4",
     "created_at": "2020-07-29T18:45:59-05:00",
     "updated_at": "2020-09-22T19:44:53.607325-05:00",
-    "name": "OkRidepro PreEmpleo",
+    "name": "OkStockApp PreEmpleo",
     "short_description": "Evalúa de manera objetiva los factores de riesgo de los actores viales en proceso de contratación.",
     "description": "Evalúa de manera objetiva los factores de riesgo de los actores viales en proceso de contratación.",
-    "image": "https://app-db.ridepro.co/media/content/OkRidepro%20PreEmpleo/OKpreempleo-fondo.png"
+    "image": "https://app-db.stockapp.co/media/content/OkStockApp%20PreEmpleo/OKpreempleo-fondo.png"
   },
   {
     "id": "5a15699b-92a0-4475-8f6e-c43ed01c0ea5",
@@ -42,7 +42,7 @@
     "name": "Capacitaciones teóricas",
     "short_description": "Capacita y entrena de manera teórica a tus actores viales para mitigar el riesgo de seguridad vial.",
     "description": "Capacita y entrena de manera teórica a tus actores viales para mitigar el riesgo de seguridad vial.",
-    "image": "https://app-db.ridepro.co/media/content/Capacitaciones%20te%C3%B3ricas/Academi.png"
+    "image": "https://app-db.stockapp.co/media/content/Capacitaciones%20te%C3%B3ricas/Academi.png"
   },
   {
     "id": "9c32ab48-4b34-4eff-801d-ac2460b8782b",
@@ -51,7 +51,7 @@
     "name": "Colmena",
     "short_description": "Solicita servicios Colmena",
     "description": "Solicita servicios Colmena",
-    "image": "https://app-db.ridepro.co/media/content/Colmena/Logo-Colmena-Seguros-Horizontal-Color.png"
+    "image": "https://app-db.stockapp.co/media/content/Colmena/Logo-Colmena-Seguros-Horizontal-Color.png"
   },
   {
     "id": "a5fc0e1b-5dd5-4dd8-8314-c013768756d4",
@@ -60,7 +60,7 @@
     "name": "ACHD RidePro",
     "short_description": "Capacita y entrena de manera teórica y práctica a tus actores viales en técnicas de manejo seguro.",
     "description": "Capacita y entrena de manera teórica y práctica a tus actores viales en técnicas de manejo seguro.",
-    "image": "https://app-db.ridepro.co/media/content/ACHD%20RidePro/academy_2xJTdvm.png"
+    "image": "https://app-db.stockapp.co/media/content/ACHD%20RidePro/academy_2xJTdvm.png"
   },
   {
     "id": "b93cef84-5561-4af7-b0c7-0235404c63e3",
@@ -69,7 +69,7 @@
     "name": "Capacitaciones prácticas",
     "short_description": "Capacita y entrena de manera práctica a tus actores viales para mitigar el riesgo de seguridad vial.",
     "description": "Capacita y entrena de manera práctica a tus actores viales para mitigar el riesgo de seguridad vial.",
-    "image": "https://app-db.ridepro.co/media/content/Capacitaciones%20pr%C3%A1cticas/Academi.png"
+    "image": "https://app-db.stockapp.co/media/content/Capacitaciones%20pr%C3%A1cticas/Academi.png"
   },
   {
     "id": "d319a142-70b4-4bb7-9e87-411497e25cca",
@@ -78,7 +78,7 @@
     "name": "RidePro Service",
     "short_description": "Verifica de manera especializada las condiciones mecánicas de tu flota de vehiculos.",
     "description": "Verifica de manera especializada las condiciones mecánicas de tu flota de vehiculos.",
-    "image": "https://app-db.ridepro.co/media/content/RidePro%20Service/service.png"
+    "image": "https://app-db.stockapp.co/media/content/RidePro%20Service/service.png"
   },
   {
     "id": "dd6404dd-15c7-4a0a-8250-4a516f10e94e",
@@ -87,7 +87,7 @@
     "name": "OkRidePro Rutina",
     "short_description": "Evalúa de manera objetiva los factores de riesgo de los actores viales que actualmente trabajan con la empresa.",
     "description": "Evalúa de manera objetiva los factores de riesgo de los actores viales que actualmente trabajan con la empresa.",
-    "image": "https://app-db.ridepro.co/media/content/OkRidePro%20Rutina/OkRutina-fondo.png"
+    "image": "https://app-db.stockapp.co/media/content/OkRidePro%20Rutina/OkRutina-fondo.png"
   },
   {
     "id": "e7561e8b-17fb-40e1-8112-19656fb27025",
@@ -96,7 +96,7 @@
     "name": "Otros servicios PESV",
     "short_description": "Complementa la capacitación y evaluación de tu flota con otros servicios de seguridad vial",
     "description": "Complementa la capacitación y evaluación de tu flota con otros servicios de seguridad vial",
-    "image": "https://app-db.ridepro.co/media/content/Otros%20servicios%20PESV/ok_rutina-small.png"
+    "image": "https://app-db.stockapp.co/media/content/Otros%20servicios%20PESV/ok_rutina-small.png"
   },
   {
     "id": "eb27686f-8249-45dc-aef7-8c6beff30968",
@@ -105,6 +105,6 @@
     "name": "Leccion aprendida (Teorica)",
     "short_description": "Capacita de forma teórica a los conductores que hayan sufrido algún incidente.",
     "description": "Capacita de forma teórica a los conductores que hayan sufrido algún incidente.",
-    "image": "https://app-db.ridepro.co/media/content/Leccion%20aprendida%20(Teorica)/OKpreempleo-fondo.png"
+    "image": "https://app-db.stockapp.co/media/content/Leccion%20aprendida%20(Teorica)/OKpreempleo-fondo.png"
   }
 ]

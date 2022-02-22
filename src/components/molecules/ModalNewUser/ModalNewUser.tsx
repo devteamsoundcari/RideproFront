@@ -49,7 +49,7 @@ export function ModalNewUser({ handleClose }: IModalNewUserProps) {
               template: 'welcome',
               subject: `${
                 { M: 'Bienvenido', F: 'Bienvenida', O: 'Bienvenid@' }[data.gender]
-              } a Ridepro👋`,
+              } a StockApp👋`,
               to: data.email,
               name: `${data.first_name} ${data.last_name}`,
               email: data.email,
