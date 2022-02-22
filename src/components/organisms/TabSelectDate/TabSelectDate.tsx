@@ -21,8 +21,6 @@ export function TabSelectDate(props: ITabSelectDateProps) {
   const [selectedDateLocal, setSelectedDateLocal] = useState(minimumDate);
 
   const dateHandler = (date) => {
-    console.log('FUCK', date, selectedDate, date === selectedDate);
-
     setSelectedDate(date);
     determineHourRange(date);
     swal('Fecha seleccionada', `${dateWithTime(selectedDate)}`, 'success');
