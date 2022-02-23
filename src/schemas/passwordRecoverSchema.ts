@@ -8,7 +8,7 @@ export const passwordRecoverFields = [
     props: {
       name: 'email',
       type: 'email',
-      inputmode: 'email',
+      inputMode: 'email',
       placeholder: 'Tu email'
     }
   }

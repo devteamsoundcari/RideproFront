@@ -1,6 +1,11 @@
 import React, { createContext, useState } from 'react';
 import ApiClientSingleton from '../controllers/apiClient';
-import { API_ALL_LINE_SERVICES, API_ALL_SERVICES, API_DRIVERS_BY_COMPANY } from '../utils';
+import {
+  API_ALL_LINE_SERVICES,
+  API_ALL_SERVICES,
+  API_DRIVERS_BY_COMPANY,
+  API_SINGLE_REQUEST
+} from '../utils';
 export const ServiceContext = createContext('' as any);
 
 const apiClient = ApiClientSingleton.getApiInstance();
@@ -49,6 +54,7 @@ export const ServiceContextProvider = (props) => {
   const [loadingDrivers, setLoadingDrivers] = useState(false);
   const [serviceParticipants, setServiceParticipants] = useState<any>([]);
   const [allDriversLoaded, setAllDriversLoaded] = useState(false);
+  const [creatingRequest, setCreatingRequest] = useState(false);
 
   const getLineServices = async (page: string) => {
     setLoadingLineServices(true);
@@ -137,6 +143,25 @@ export const ServiceContextProvider = (props) => {
     }
   };
 
+  const createRequest = async (payload: any) => {
+    setCreatingRequest(true);
+    try {
+      const response = await apiClient.post(API_SINGLE_REQUEST, payload);
+      const creditsPayload = {
+        newCredit: parseInt(payload.customerCredit) - parseInt(payload.spent_credit),
+        companyId: payload.company
+      };
+      // const creditDecrease = await setUserCredits(creditsPayload); // Calling decrease
+      const creditDecrease = ''; // Calling decrease
+      setCreatingRequest(false);
+      return { response: response, creditDecreasingResponse: creditDecrease };
+      // return response.data;
+    } catch (error) {
+      setCreatingRequest(false);
+      throw new Error('Error creating request');
+    }
+  };
+
   return (
     <ServiceContext.Provider
       value={{
@@ -157,7 +182,9 @@ export const ServiceContextProvider = (props) => {
         loadingDrivers,
         serviceParticipants,
         setServiceParticipants,
-        allDriversLoaded
+        allDriversLoaded,
+        createRequest,
+        creatingRequest
       }}>
       {props.children}
     </ServiceContext.Provider>

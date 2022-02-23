@@ -139,7 +139,7 @@ export function TabSelectPlace(props: ITabSelectPlaceProps) {
           onBlur={(e) => handleTrackChange(e.target.value)}
           disabled={loadingTracks || !selectedPlace?.department || !selectedPlace?.city}>
           <option>Seleccione...</option>
-          <option>Pista {COMPANY_NAME}</option>
+          <option value="na">Pista {COMPANY_NAME}</option>
           {filteredTracks.map((item) => (
             <option key={item.id} value={item.id} id={`use-dropdown-option-${item.id}`}>
               {item.name}

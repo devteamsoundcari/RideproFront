@@ -19,7 +19,7 @@ export function Solicitar(props: ISolicitarProps) {
   const { userInfo } = useContext(AuthContext);
   const { selectedService, selectedPlace, selectedDate, serviceParticipants } =
     useContext(ServiceContext);
-  const [key, setKey] = useState('service');
+  const [key, setKey] = useState('checkout');
 
   useEffect(() => {
     if (selectedService) {
@@ -87,13 +87,7 @@ export function Solicitar(props: ISolicitarProps) {
                   <TabAddParticipants />
                 </Tab.Pane>
                 <Tab.Pane eventKey="checkout">
-                  <TabCheckout
-                    createdAt={new Date()}
-                    service={selectedService}
-                    place={selectedPlace}
-                    userInfo={userInfo}
-                    participants={serviceParticipants}
-                  />
+                  <TabCheckout />
                 </Tab.Pane>
               </Tab.Content>
             </Col>
@@ -161,16 +155,6 @@ export function Solicitar(props: ISolicitarProps) {
           </Row>
         </Tab.Container>
       </CustomCard>
-      {/* {showModal && (
-        <ServiceConfirmationModal
-          show={true}
-          setShow={(e) => setShowModal(e)}
-          service={service}
-          date={date}
-          place={place}
-          rides={rides}
-        />
-      )} */}
     </MainLayout>
   );
 }
