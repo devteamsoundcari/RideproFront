@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
-import { Row, Card, Form } from 'react-bootstrap';
+import { Row, Card, Form, Spinner } from 'react-bootstrap';
 import { dateDDMMYYYnTime } from '../../../utils';
 import { COMPANY_NAME, PERFIL_CLIENTE } from '../../../utils/constants';
 import { useForm } from 'react-hook-form';
 import { checkoutSchema } from '../../../schemas';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import { ServiceContext, AuthContext } from '../../../contexts';
 
@@ -13,8 +14,17 @@ export interface ITabCheckoutProps {}
 export function TabCheckout(props: ITabCheckoutProps) {
   const { userInfo } = useContext(AuthContext);
 
-  const { selectedService, selectedPlace, selectedDate, serviceParticipants, createRequest } =
-    useContext(ServiceContext);
+  const {
+    selectedService,
+    selectedPlace,
+    selectedDate,
+    serviceParticipants,
+    createRequest,
+    creatingRequest,
+    resetServiceRequest
+  } = useContext(ServiceContext);
+  let navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -26,30 +36,30 @@ export function TabCheckout(props: ITabCheckoutProps) {
   });
 
   const onSubmit = async ({ comments }) => {
-    const payload = {
-      service: selectedService.id,
-      customer: userInfo.id,
-      customerCredit: userInfo.credit,
-      municipality: selectedPlace.city.id,
-      selectedPlace: 'na',
-      place: 'na',
-      track: selectedPlace.track.id,
-      start_time: selectedDate,
-      finish_time: selectedDate,
-      company: userInfo.company.id,
-      spent_credit: serviceParticipants.length * selectedService?.ride_value,
-      drivers: serviceParticipants.map((participant) => participant.id),
-      accept_msg: comments === '' ? 'na' : comments,
-      new_request: 1,
-      fare_track: 0.0,
-      operator: null,
-      instructor: 'na',
-      status: PERFIL_CLIENTE.steps.STATUS_ESPERANDO_CONFIRMACION.id,
-      reject_msg: 'na'
-    };
     try {
+      const payload = {
+        service: selectedService.id,
+        customer: userInfo.id,
+        customerCredit: userInfo.credit,
+        municipality: selectedPlace.city.id,
+        operator: null,
+        instructor: 'na',
+        place: 'na',
+        spent_credit: serviceParticipants.length * selectedService?.ride_value,
+        start_time: selectedDate,
+        finish_time: selectedDate,
+        status: PERFIL_CLIENTE.steps.STATUS_ESPERANDO_CONFIRMACION.id,
+        new_request: 1,
+        selectedPlace: 'na',
+        accept_msg: comments === '' ? 'na' : comments,
+        reject_msg: 'na',
+        drivers: serviceParticipants.map((participant) => participant.id),
+        company: userInfo.company.id
+      };
       const res = await createRequest(payload);
-      console.log(res);
+      swal('Solicitud creada', '', 'success');
+      resetServiceRequest();
+      navigate(`/historial/${res?.id}`, { replace: true });
     } catch (err) {
       const error: any = err;
       swal('Error', error?.message, 'error');
@@ -141,7 +151,6 @@ export function TabCheckout(props: ITabCheckoutProps) {
               as="textarea"
               rows={2}
               name="comments"
-              onChange={(e) => console.log(e.target.value)}
               className="mb-3"
               ref={register({
                 required: false
@@ -168,7 +177,7 @@ export function TabCheckout(props: ITabCheckoutProps) {
             )}
             <hr className="mb-4" />
             <button className="btn btn-primary btn-lg btn-block" type="submit">
-              Finalizar
+              {creatingRequest ? <Spinner animation="border" size="sm" /> : 'Finalizar'}
             </button>
           </Form>
         </div>

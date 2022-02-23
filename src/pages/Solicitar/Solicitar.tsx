@@ -9,17 +9,16 @@ import {
   TabCheckout
 } from '../../components/organisms';
 import { MainLayout } from '../../components/templates';
-import { ServiceContext, AuthContext } from '../../contexts';
+import { ServiceContext } from '../../contexts';
 import './Solicitar.scss';
 import { dateWithTime } from '../../utils';
 
 export interface ISolicitarProps {}
 
 export function Solicitar(props: ISolicitarProps) {
-  const { userInfo } = useContext(AuthContext);
   const { selectedService, selectedPlace, selectedDate, serviceParticipants } =
     useContext(ServiceContext);
-  const [key, setKey] = useState('checkout');
+  const [key, setKey] = useState('service');
 
   useEffect(() => {
     if (selectedService) {

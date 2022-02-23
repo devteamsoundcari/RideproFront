@@ -32,7 +32,7 @@ export const MyNavbar = () => {
     loadingInstructors,
     uploadingDocument
   } = useContext(SingleRequestContext);
-  const { loadingLineServices } = useContext(ServiceContext);
+  const { loadingLineServices, creatingRequest } = useContext(ServiceContext);
   const { loadingTracks } = useContext(TracksContext);
   const { loadingUsers } = useContext(UsersContext);
   const [showProfileEditModal, setShowProfileEditModal] = useState(false);
@@ -67,7 +67,8 @@ export const MyNavbar = () => {
         isLoadingCalendarRequests ||
         loadingTracks ||
         loadingUsers ||
-        loadingLineServices
+        loadingLineServices ||
+        creatingRequest
     );
   }, [
     loadingRequest,
@@ -83,7 +84,8 @@ export const MyNavbar = () => {
     isLoadingCalendarRequests,
     loadingTracks,
     loadingUsers,
-    loadingLineServices
+    loadingLineServices,
+    creatingRequest
   ]);
 
   const hideProfileEditModal = () => {

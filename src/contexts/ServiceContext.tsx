@@ -1,11 +1,13 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import ApiClientSingleton from '../controllers/apiClient';
 import {
   API_ALL_LINE_SERVICES,
   API_ALL_SERVICES,
   API_DRIVERS_BY_COMPANY,
-  API_SINGLE_REQUEST
+  API_SINGLE_REQUEST,
+  API_USER_DATA
 } from '../utils';
+import { AuthContext } from './AuthContext';
 export const ServiceContext = createContext('' as any);
 
 const apiClient = ApiClientSingleton.getApiInstance();
@@ -43,6 +45,7 @@ export interface IPlace {
 }
 
 export const ServiceContextProvider = (props) => {
+  const { userInfo, setUserInfo } = useContext(AuthContext);
   const [lineServices, setLinesServices] = useState<ILineService[] | []>([]);
   const [services, setServices] = useState<IService[] | []>([]);
   const [loadingLineServices, setLoadingLineServices] = useState(false);
@@ -143,6 +146,21 @@ export const ServiceContextProvider = (props) => {
     }
   };
 
+  const updateUserCredit = async (data: any) => {
+    setCreatingRequest(true);
+    try {
+      const response = await apiClient.patch(`${API_USER_DATA}`, {
+        credit: data.newCredit,
+        company_id: data.companyId
+      });
+      setCreatingRequest(false);
+      return response.data;
+    } catch (error) {
+      setCreatingRequest(false);
+      throw new Error('Error updating user credit');
+    }
+  };
+
   const createRequest = async (payload: any) => {
     setCreatingRequest(true);
     try {
@@ -151,15 +169,26 @@ export const ServiceContextProvider = (props) => {
         newCredit: parseInt(payload.customerCredit) - parseInt(payload.spent_credit),
         companyId: payload.company
       };
-      // const creditDecrease = await setUserCredits(creditsPayload); // Calling decrease
-      const creditDecrease = ''; // Calling decrease
+      const creditDecrease = await updateUserCredit(creditsPayload); // Calling decrease credit
+      setUserInfo({
+        ...userInfo,
+        credit: creditDecrease?.credit
+      });
       setCreatingRequest(false);
-      return { response: response, creditDecreasingResponse: creditDecrease };
-      // return response.data;
+      return response?.data;
     } catch (error) {
       setCreatingRequest(false);
+      console.error(error);
       throw new Error('Error creating request');
     }
+  };
+
+  const resetServiceRequest = () => {
+    setSelectedService(null);
+    setSelectedPlace(null);
+    setSelectedDate(null);
+    setCompanyDrivers([]);
+    setServiceParticipants([]);
   };
 
   return (
@@ -184,7 +213,8 @@ export const ServiceContextProvider = (props) => {
         setServiceParticipants,
         allDriversLoaded,
         createRequest,
-        creatingRequest
+        creatingRequest,
+        resetServiceRequest
       }}>
       {props.children}
     </ServiceContext.Provider>

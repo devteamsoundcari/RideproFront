@@ -24,7 +24,7 @@ export const editProfileFields = [
   },
   {
     label: 'Correo electrónico',
-    required: true,
+    required: false,
     props: {
       name: 'email',
       type: 'email',
@@ -48,7 +48,7 @@ export const editProfileFields = [
 export const editProfileSchema = Yup.object().shape({
   first_name: Yup.string().required(ERROR_REQUIRED),
   last_name: Yup.string().required(ERROR_REQUIRED),
-  email: Yup.string().required(ERROR_REQUIRED).email(ERROR_INVALID_EMAIL),
+  email: Yup.string().email(ERROR_INVALID_EMAIL),
   charge: Yup.string().required(ERROR_REQUIRED),
   gender: Yup.string().required(ERROR_REQUIRED)
 });
