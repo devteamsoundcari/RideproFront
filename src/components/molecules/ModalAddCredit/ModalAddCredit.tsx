@@ -53,7 +53,6 @@ export function ModalAddCredit({ handleClose }: IModalAddCreditProps) {
     })
       .then(async (willCreate) => {
         if (willCreate) {
-          console.log({ data });
           const res = await newSale(data);
           // Send admin email
           // const emailPayload = {

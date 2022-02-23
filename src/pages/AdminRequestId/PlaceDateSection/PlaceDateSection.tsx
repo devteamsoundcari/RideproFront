@@ -12,12 +12,7 @@ interface PlaceProps {
   title: string;
 }
 
-const PlaceDateSection: React.FC<PlaceProps> = ({
-  municipality,
-  track,
-  date,
-  title
-}) => {
+const PlaceDateSection: React.FC<PlaceProps> = ({ municipality, track, date, title }) => {
   const { userInfo } = useContext(AuthContext);
 
   const renderPlace = () => (
@@ -76,10 +71,8 @@ const PlaceDateSection: React.FC<PlaceProps> = ({
             </div>
             <div className="mb-1">
               <span>
-                {track?.company.id !== userInfo.company.id ? (
-                  <small className="text-danger">
-                    (Pista creada por el cliente)
-                  </small>
+                {track?.company?.id !== userInfo?.company?.id ? (
+                  <small className="text-danger">(Pista creada por el cliente)</small>
                 ) : (
                   <small>
                     <strong>Tarifa: </strong>${track?.fare}

@@ -10,3 +10,4 @@ export * from './TabSelectService/TabSelectService';
 export * from './TabSelectPlace/TabSelectPlace';
 export * from './TabSelectDate/TabSelectDate';
 export * from './TabAddParticipants/TabAddParticipants';
+export * from './TabCheckout/TabCheckout';

@@ -48,7 +48,6 @@ export function Alternative({
   ];
 
   const MySearch = (searchProps) => {
-    console.log(searchProps);
     let input;
     const handleSearch = () => {
       searchProps.onSearch(input.value);

@@ -20,18 +20,11 @@ export const CalendarSidebar: React.FunctionComponent<ICalendarSidebarProps> = (
       const foundProfile: any = ALL_PROFILES.find(
         (profile) => profile.profile === userInfo.profile
       );
-      console.log('foundProfile', foundProfile);
       const stepsKeys = Object.keys(foundProfile.steps);
-      console.log('stepsKeys', stepsKeys);
-      // console.log('calendarRequests', calendarRequests);
-
       const arrayOfDuplicates = calendarRequests.map((request) => {
         const key: any = stepsKeys.filter((key) => {
           return foundProfile.steps[key].step.includes(request?.status?.step);
         });
-        console.log('foudnkey', key);
-        // console.log('FINAL', foundProfile.steps);
-        // console.log('FINAL2', foundProfile.steps[key[0]]);
         const foundStep = foundProfile.steps[key[0]];
 
         return { name: foundStep.name, color: foundStep.bgColor };

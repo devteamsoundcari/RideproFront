@@ -5,16 +5,18 @@ import {
   TabSelectPlace,
   TabSelectService,
   TabSelectDate,
-  TabAddParticipants
+  TabAddParticipants,
+  TabCheckout
 } from '../../components/organisms';
 import { MainLayout } from '../../components/templates';
-import { ServiceContext } from '../../contexts';
+import { ServiceContext, AuthContext } from '../../contexts';
 import './Solicitar.scss';
 import { dateWithTime } from '../../utils';
 
 export interface ISolicitarProps {}
 
 export function Solicitar(props: ISolicitarProps) {
+  const { userInfo } = useContext(AuthContext);
   const { selectedService, selectedPlace, selectedDate, serviceParticipants } =
     useContext(ServiceContext);
   const [key, setKey] = useState('service');
@@ -84,7 +86,15 @@ export function Solicitar(props: ISolicitarProps) {
                 <Tab.Pane eventKey="participants">
                   <TabAddParticipants />
                 </Tab.Pane>
-                <Tab.Pane eventKey="checkout">CHECKOUT</Tab.Pane>
+                <Tab.Pane eventKey="checkout">
+                  <TabCheckout
+                    createdAt={new Date()}
+                    service={selectedService}
+                    place={selectedPlace}
+                    userInfo={userInfo}
+                    participants={serviceParticipants}
+                  />
+                </Tab.Pane>
               </Tab.Content>
             </Col>
             <Col
