@@ -5,7 +5,8 @@ import {
   API_ALL_SERVICES,
   API_DRIVERS_BY_COMPANY,
   API_SINGLE_REQUEST,
-  API_USER_DATA
+  API_USER_DATA,
+  dateWithTime
 } from '../utils';
 import { AuthContext } from './AuthContext';
 export const ServiceContext = createContext('' as any);
@@ -45,7 +46,7 @@ export interface IPlace {
 }
 
 export const ServiceContextProvider = (props) => {
-  const { userInfo, setUserInfo } = useContext(AuthContext);
+  const { userInfo, setUserInfo, sendEmail } = useContext(AuthContext);
   const [lineServices, setLinesServices] = useState<ILineService[] | []>([]);
   const [services, setServices] = useState<IService[] | []>([]);
   const [loadingLineServices, setLoadingLineServices] = useState(false);
@@ -166,14 +167,32 @@ export const ServiceContextProvider = (props) => {
     try {
       const response = await apiClient.post(API_SINGLE_REQUEST, payload);
       const creditsPayload = {
-        newCredit: parseInt(payload.customerCredit) - parseInt(payload.spent_credit),
-        companyId: payload.company
+        newCredit: response.data.customer.credit - response.data.spent_credit,
+        companyId: response.data.customer.company.id
       };
       const creditDecrease = await updateUserCredit(creditsPayload); // Calling decrease credit
       setUserInfo({
         ...userInfo,
         credit: creditDecrease?.credit
       });
+
+      const emailPayload = {
+        id: response?.data?.id,
+        template: 'new_request',
+        subject: 'Solicitud exitosa ⌛',
+        to: response?.data?.customer?.email,
+        name: response?.data?.customer?.first_name,
+        date: dateWithTime(response?.data?.start_time),
+        spent_credits: response?.data?.spent_credit,
+        participantes: serviceParticipants,
+        service: response?.data?.service?.name,
+        municipality: {
+          city: response?.data?.municipality.name,
+          department: response?.data?.municipality.department.name
+        }
+      };
+
+      await sendEmail(emailPayload); // SEND SERVICE REQUESTED EMAIL TO USER
       setCreatingRequest(false);
       return response?.data;
     } catch (error) {

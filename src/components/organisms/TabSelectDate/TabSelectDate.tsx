@@ -23,7 +23,7 @@ export function TabSelectDate(props: ITabSelectDateProps) {
   const dateHandler = (date) => {
     setSelectedDate(date);
     determineHourRange(date);
-    swal('Fecha seleccionada', `${dateWithTime(selectedDate)}`, 'success');
+    swal('Fecha seleccionada', `${dateWithTime(date)}`, 'success');
   };
 
   useEffect(() => {
