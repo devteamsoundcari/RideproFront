@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Table, Form, Button } from 'react-bootstrap';
-import { dateDDMMYYY, dateAMPM } from '../../../../utils/dateFormatter';
-import { PERFIL_CLIENTE } from '../../../../utils/constants';
+import { dateDDMMYYY, dateAMPM, PERFIL_CLIENTE } from '../../../../utils';
 import { AuthContext } from '../../../../contexts';
+import swal from 'sweetalert';
 
 export interface IPlaceTabProps {
   currentRequest: any;
@@ -10,7 +10,132 @@ export interface IPlaceTabProps {
 
 export function PlaceTab({ currentRequest }: IPlaceTabProps) {
   const { userInfo } = useContext(AuthContext);
-  const renderPlaceDateOptions = (optionalDate: string, optionalPlace: any, label: string) => (
+  const [selectedOption, setSelectedOption] = useState(0);
+
+  const handleAccept = () => {
+    swal({
+      title: 'Confirmando programación',
+      text: `Tu solicitud se llevara acabo el ${
+        selectedOption === 1
+          ? dateDDMMYYY(currentRequest.optional_date1)
+          : selectedOption === 2
+          ? dateDDMMYYY(currentRequest.optional_date2)
+          : ''
+      } en ${
+        currentRequest.track
+          ? currentRequest.track.name
+          : selectedOption === 1
+          ? currentRequest.optional_place1.name
+          : selectedOption === 2
+          ? currentRequest.optional_place2.name
+          : ''
+      } - ${
+        currentRequest.track
+          ? currentRequest.track.municipality.name
+          : selectedOption === 1
+          ? currentRequest.optional_place1.municipality.name
+          : selectedOption === 2
+          ? currentRequest.optional_place2.municipality.name
+          : ''
+      } - ${
+        currentRequest.track
+          ? currentRequest.track.municipality.department.name
+          : selectedOption === 1
+          ? currentRequest.optional_place1.municipality.department.name
+          : selectedOption === 2
+          ? currentRequest.optional_place2.municipality.department.name
+          : ''
+      } a las ${
+        selectedOption === 1
+          ? dateAMPM(new Date(currentRequest.optional_date1))
+          : selectedOption === 2
+          ? dateAMPM(new Date(currentRequest.optional_date2))
+          : ''
+      }`,
+      icon: 'info',
+      buttons: ['No, volver', 'Si, confirmar servicio'],
+      dangerMode: true
+    });
+    //   .then(async (willUpdate) => {
+    // if (willUpdate) {
+    //   let payload1 = {
+    //     track:
+    //       track !== null
+    //         ? track.id
+    //         : currentRequest.optional_place1
+    //         ? currentRequest.optional_place1.id
+    //         : '',
+    //     start_time: currentRequest.optional_date1,
+    //     status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`
+    //   };
+    //   let payload2 = {
+    //     track:
+    //       track !== null
+    //         ? track.id
+    //         : currentRequest.optional_place2
+    //         ? currentRequest.optional_place2.id
+    //         : '',
+    //     start_time: currentRequest.optional_date2,
+    //     status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`
+    //   };
+    //   let res = await updateRequest(
+    //     selectedOption === 1 ? payload1 : payload2,
+    //     requestId
+    //   );
+    //   if (res.status === 200) {
+    //     updateRequests();
+    //     swal('Solicitud actualizada!', {
+    //       icon: 'success'
+    //     });
+    //     // SEND EMAIL
+    //     const payload = {
+    //       id: requestId,
+    //       emailType: 'requestConfirmed',
+    //       subject: 'Servicio programado ✅',
+    //       email: userInfoContext.email,
+    //       name: userInfoContext.name,
+    //       instructor: instructor,
+    //       date: selectedOption === 1 ? payload1.start_time : payload2.start_time,
+    //       track:
+    //         track !== null
+    //           ? track
+    //           : selectedOption === 1
+    //           ? currentRequest.optional_place1
+    //           : currentRequest.optional_place2,
+    //       service: currentRequest.service.name
+    //     };
+    //     await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
+    //     const payloadDrivers = {
+    //       id: requestId,
+    //       emailType: 'requestConfirmedDrivers',
+    //       subject: 'Prueba programada ✅',
+    //       email: allDrivers.map((driver) => driver.email),
+    //       name: userInfoContext.name,
+    //       instructor: instructor,
+    //       date: selectedOption === 1 ? payload1.start_time : payload2.start_time,
+    //       track:
+    //         track !== null
+    //           ? track
+    //           : selectedOption === 1
+    //           ? currentRequest.optional_place1
+    //           : currentRequest.optional_place2,
+    //       service: currentRequest.service.name
+    //     };
+    //     await sendEmail(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
+    //   } else {
+    //     swal('Oops, no se pudo actualizar el servicio.', {
+    //       icon: 'error'
+    //     });
+    //   }
+    // }
+    //   });
+  };
+
+  const renderPlaceDateOptions = (
+    optionalDate: string,
+    optionalPlace: any,
+    optionNumber: number
+  ) => (
     <tr>
       <td className="text-capitalize">
         {currentRequest.track
@@ -23,10 +148,10 @@ export function PlaceTab({ currentRequest }: IPlaceTabProps) {
       <td>
         <Form.Check
           type="radio"
-          label={label}
+          label={`Opción ${optionNumber}`}
           name="formHorizontalRadios"
           id="formHorizontalRadios1"
-          // onChange={() => setSelectedOption(1)}
+          onChange={() => setSelectedOption(optionNumber)}
         />
       </td>
     </tr>
@@ -52,14 +177,14 @@ export function PlaceTab({ currentRequest }: IPlaceTabProps) {
                   {renderPlaceDateOptions(
                     currentRequest.optional_date1,
                     currentRequest.optional_place1,
-                    'Opción 1'
+                    1
                   )}
                   {currentRequest.optional_date2 &&
                     currentRequest.optional_place2 &&
                     renderPlaceDateOptions(
                       currentRequest.optional_date2,
                       currentRequest.optional_place2,
-                      'Opción 2'
+                      2
                     )}
                 </tbody>
               </Table>
@@ -71,124 +196,8 @@ export function PlaceTab({ currentRequest }: IPlaceTabProps) {
           <Button
             variant="success"
             size="sm"
-            // disabled={selectedOption !== 0 ? false : true}
-            onClick={() => {
-              //   swal({
-              //     title: 'Confirmando programación',
-              //     text: `Tu solicitud se llevara acabo el ${
-              //       selectedOption === 1
-              //         ? dateFormatter(currentRequest.optional_date1)
-              //         : selectedOption === 2
-              //         ? dateFormatter(currentRequest.optional_date2)
-              //         : ''
-              //     } en ${
-              //       track
-              //         ? track.name
-              //         : selectedOption === 1
-              //         ? currentRequest.optional_place1.name
-              //         : selectedOption === 2
-              //         ? currentRequest.optional_place2.name
-              //         : ''
-              //     } - ${
-              //       track
-              //         ? track.municipality.name
-              //         : selectedOption === 1
-              //         ? currentRequest.optional_place1.municipality.name
-              //         : selectedOption === 2
-              //         ? currentRequest.optional_place2.municipality.name
-              //         : ''
-              //     } - ${
-              //       track
-              //         ? track.municipality.department.name
-              //         : selectedOption === 1
-              //         ? currentRequest.optional_place1.municipality.department.name
-              //         : selectedOption === 2
-              //         ? currentRequest.optional_place2.municipality.department.name
-              //         : ''
-              //     } a las ${
-              //       selectedOption === 1
-              //         ? formatAMPM(new Date(currentRequest.optional_date1))
-              //         : selectedOption === 2
-              //         ? formatAMPM(new Date(currentRequest.optional_date2))
-              //         : ''
-              //     }`,
-              //     icon: 'info',
-              //     buttons: ['No, volver', 'Si, confirmar servicio'],
-              //     dangerMode: true
-              //   }).then(async (willUpdate) => {
-              //     if (willUpdate) {
-              //       let payload1 = {
-              //         track:
-              //           track !== null
-              //             ? track.id
-              //             : currentRequest.optional_place1
-              //             ? currentRequest.optional_place1.id
-              //             : '',
-              //         start_time: currentRequest.optional_date1,
-              //         status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`
-              //       };
-              //       let payload2 = {
-              //         track:
-              //           track !== null
-              //             ? track.id
-              //             : currentRequest.optional_place2
-              //             ? currentRequest.optional_place2.id
-              //             : '',
-              //         start_time: currentRequest.optional_date2,
-              //         status: `${process.env.REACT_APP_STATUS_REQUEST_CONFIRMED}`
-              //       };
-              //       let res = await updateRequest(
-              //         selectedOption === 1 ? payload1 : payload2,
-              //         requestId
-              //       );
-              //       if (res.status === 200) {
-              //         updateRequests();
-              //         swal('Solicitud actualizada!', {
-              //           icon: 'success'
-              //         });
-              //         // SEND EMAIL
-              //         const payload = {
-              //           id: requestId,
-              //           emailType: 'requestConfirmed',
-              //           subject: 'Servicio programado ✅',
-              //           email: userInfoContext.email,
-              //           name: userInfoContext.name,
-              //           instructor: instructor,
-              //           date: selectedOption === 1 ? payload1.start_time : payload2.start_time,
-              //           track:
-              //             track !== null
-              //               ? track
-              //               : selectedOption === 1
-              //               ? currentRequest.optional_place1
-              //               : currentRequest.optional_place2,
-              //           service: currentRequest.service.name
-              //         };
-              //         await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
-              //         const payloadDrivers = {
-              //           id: requestId,
-              //           emailType: 'requestConfirmedDrivers',
-              //           subject: 'Prueba programada ✅',
-              //           email: allDrivers.map((driver) => driver.email),
-              //           name: userInfoContext.name,
-              //           instructor: instructor,
-              //           date: selectedOption === 1 ? payload1.start_time : payload2.start_time,
-              //           track:
-              //             track !== null
-              //               ? track
-              //               : selectedOption === 1
-              //               ? currentRequest.optional_place1
-              //               : currentRequest.optional_place2,
-              //           service: currentRequest.service.name
-              //         };
-              //         await sendEmail(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
-              //       } else {
-              //         swal('Oops, no se pudo actualizar el servicio.', {
-              //           icon: 'error'
-              //         });
-              //       }
-              //     }
-              //   });
-            }}>
+            disabled={selectedOption !== 0 ? false : true}
+            onClick={() => handleAccept()}>
             Aceptar programación
           </Button>
           <Button
