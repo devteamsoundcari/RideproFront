@@ -26,6 +26,7 @@
       }
     }
     .tab-content {
+      min-height: fit-content;
       overflow-x: hidden;
       padding: 1rem 2rem;
       table {
