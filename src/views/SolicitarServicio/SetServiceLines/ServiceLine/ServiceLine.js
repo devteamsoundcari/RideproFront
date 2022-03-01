@@ -1,22 +1,21 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Card, Badge } from "react-bootstrap";
-import { AuthContext } from "../../../../contexts/AuthContext";
-import "./ServiceLine.scss";
-import { Fade } from "react-awesome-reveal";
-import { AiFillCar } from "react-icons/ai";
+import React, { useState, useEffect, useContext } from 'react';
+import { Card, Badge } from 'react-bootstrap';
+import { AuthContext } from '../../../../contexts/AuthContext';
+import './ServiceLine.scss';
+import { Fade } from 'react-awesome-reveal';
+import { AiFillCar } from 'react-icons/ai';
 import {
   FaMotorcycle,
   FaTruckMoving,
   FaDollarSign,
   FaClock,
   FaTruckLoading,
-  FaTruckPickup,
-} from "react-icons/fa";
-import vehiclesImg from "../../../../assets/img/vehicles.png";
-import swal from "sweetalert";
+  FaTruckPickup
+} from 'react-icons/fa';
+import vehiclesImg from '../../../../assets/img/vehicles.png';
+import swal from 'sweetalert';
 
 const ServiceLine = (props) => {
-  // const [showFullDescription, setShowFullDescription] = useState(false);
   const { name, short_description, image, id } = props.line;
   const [showServices, setShowServices] = useState(false);
   const [filteredServices, setFiltededServices] = useState([]);
@@ -33,17 +32,17 @@ const ServiceLine = (props) => {
     const companyCreds = userInfoContext.credit;
     const serviceCreds = service.ride_value;
     if (companyCreds >= serviceCreds) {
-      let el = document.querySelectorAll(".list-group-item");
+      let el = document.querySelectorAll('.list-group-item');
       el.forEach((e) => {
-        e.classList.remove("card-service-active");
+        e.classList.remove('card-service-active');
       });
-      document.getElementById(service.id).classList.add("card-service-active");
+      document.getElementById(service.id).classList.add('card-service-active');
       props.handleClick(service);
     } else {
       swal(
-        "Oops!",
-        "No tienes creditos suficientes para esta operación 😔",
-        "error"
+        'Oops!',
+        'No tienes creditos suficientes para esta operación 😔',
+        'error'
       );
     }
   };
@@ -58,34 +57,20 @@ const ServiceLine = (props) => {
           <div
             className="card-img-top"
             style={{
-              background: `url("${image}") no-repeat center center`,
-            }}
-          ></div>
+              background: `url("${image}") no-repeat center center`
+            }}></div>
           <div className="card-body">
-            <p className="card-text">
-              {short_description}
-              {/* {showFullDescription ? description : short_description} */}
-              {/* <span>
-                <Button
-                  variant="link"
-                  onClick={() => setShowFullDescription(!showFullDescription)}
-                >
-                  {showFullDescription ? "Ver menos" : "Ver más"}
-                </Button>
-              </span> */}
-            </p>
+            <p className="card-text">{short_description}</p>
             <div
               className="card-img-bottom"
               style={{
-                background: `url(${vehiclesImg})`,
-              }}
-            ></div>
+                background: `url(${vehiclesImg})`
+              }}></div>
             <button
               className="btn btn-primary"
               disabled={filteredServices.length > 0 ? false : true}
-              onClick={() => setShowServices(!showServices)}
-            >
-              {showServices ? "Volver" : "Seleccionar"}
+              onClick={() => setShowServices(!showServices)}>
+              {showServices ? 'Volver' : 'Seleccionar'}
             </button>
           </div>
         </Fade>
@@ -104,36 +89,26 @@ const ServiceLine = (props) => {
               <div className="list-group list-group-flush">
                 {filteredServices.map((service) => {
                   return (
-                    // <OverlayTrigger
-                    //   placement="right"
-                    //   overlay={
-                    //     <Tooltip id={`tooltip-${service.name}`}>
-                    //       {service.description}
-                    //       {/* Tooltip on <strong>asd</strong>. */}
-                    //     </Tooltip>
-                    //   }
-                    // >
                     <div
                       className="list-group-item border-0 d-flex"
                       onClick={(e) => handleClickService(e, service)}
                       id={service.id}
-                    >
+                      key={service.id}>
                       <div className="list-icon">
                         <Badge
                           variant="secondary"
-                          className="badge-circle badge-circle-light-secondary bx bxl-instagram-alt mr-1 text-danger"
-                        >
-                          {service.name.toLowerCase().includes("auto") ? (
+                          className="badge-circle badge-circle-light-secondary bx bxl-instagram-alt mr-1 text-danger">
+                          {service.name.toLowerCase().includes('auto') ? (
                             <AiFillCar />
                           ) : service.name
                               .toLowerCase()
-                              .includes(" motocarro") ? (
+                              .includes(' motocarro') ? (
                             <FaTruckPickup />
                           ) : service.name
                               .toLowerCase()
-                              .includes(" montacarga") ? (
+                              .includes(' montacarga') ? (
                             <FaTruckLoading />
-                          ) : service.name.toLowerCase().includes(" moto") ? (
+                          ) : service.name.toLowerCase().includes(' moto') ? (
                             <FaMotorcycle />
                           ) : (
                             <FaTruckMoving />
@@ -156,17 +131,14 @@ const ServiceLine = (props) => {
                             {service.duration} min
                           </p>
                         </div>
-                        {/* <p className="mb-0">{service.description}</p> */}
                       </div>
                     </div>
-                    // </OverlayTrigger>
                   );
                 })}
                 <button
                   className="btn btn-link"
-                  onClick={() => setShowServices(!showServices)}
-                >
-                  {showServices ? "Volver" : "Seleccionar"}
+                  onClick={() => setShowServices(!showServices)}>
+                  {showServices ? 'Volver' : 'Seleccionar'}
                 </button>
               </div>
             </div>

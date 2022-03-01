@@ -325,6 +325,24 @@ const getLineServices = async (url) => {
   return services.data;
 };
 
+const getCompanyPortfolio = async (url, companyId) => {
+  const getInfo = async (url) => {
+    const serviceData = await axios({
+      method: 'GET',
+      url
+    }).catch((err) => {
+      return err;
+    });
+    return serviceData;
+  };
+  let services = await getInfo(
+    url
+      ? url
+      : `${process.env.REACT_APP_API_URL}/api/v1/portfolio/?company=${companyId}`
+  );
+  return services.data;
+};
+
 const getDocuments = async () => {
   const getInfo = async (url) => {
     const docsData = await axios({
@@ -1276,5 +1294,6 @@ export {
   createSale,
   sendInvoice,
   getFilteredDrivers,
-  sendEmailMG
+  sendEmailMG,
+  getCompanyPortfolio
 };
