@@ -232,7 +232,8 @@ export function PlaceTab({ currentRequest }: IPlaceTabProps) {
     <>
       <div className="w-100 text-center">
         {currentRequest.optional_date1 &&
-          currentRequest.status.step < PERFIL_CLIENTE.steps.STATUS_SERVICIO_PROGRAMADO.step[0] && (
+          currentRequest.status.step <
+            PERFIL_CLIENTE.steps.STATUS_PROGRAMACION_ACEPTADA.step[0] && (
             <div className="d-flex align-items-center justify-content-between">
               <Table bordered hover size="sm" className="ml-4 mr-4">
                 <thead className="bg-primary text-white">

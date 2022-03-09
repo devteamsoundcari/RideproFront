@@ -31,7 +31,7 @@ export function SubHeaderSection({ currentRequest }: ISubHeaderSectionProps) {
           <span>
             Fecha: {currentRequest?.start_time ? dateDDMMYYY(currentRequest.start_time) : ''}{' '}
             {currentRequest?.status.step <
-            PERFIL_CLIENTE.steps.STATUS_SERVICIO_PROGRAMADO.step[0] ? (
+            PERFIL_CLIENTE.steps.STATUS_PROGRAMACION_ACEPTADA.step[0] ? (
               <small>(Pendiente por confirmar)</small>
             ) : (
               ''
@@ -42,7 +42,7 @@ export function SubHeaderSection({ currentRequest }: ISubHeaderSectionProps) {
           <span>
             Hora: {currentRequest?.start_time ? dateAMPM(currentRequest.start_time) : ''}{' '}
             {currentRequest?.status.step <
-            PERFIL_CLIENTE.steps.STATUS_SERVICIO_PROGRAMADO.step[0] ? (
+            PERFIL_CLIENTE.steps.STATUS_PROGRAMACION_ACEPTADA.step[0] ? (
               <small>(Pendiente por confirmar)</small>
             ) : (
               ''
