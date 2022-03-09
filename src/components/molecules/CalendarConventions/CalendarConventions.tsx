@@ -16,8 +16,8 @@ export const CalendarConventions = () => {
   return (
     <nav className="calendar-nav">
       {currentProfileStatus &&
-        currentProfileStatus.map(({ variant, name, id }) => (
-          <a role="button" href="/" className="text-capitalize" key={id}>
+        currentProfileStatus.map(({ variant, name, id }, index) => (
+          <a role="button" href="/" className="text-capitalize" key={`${id}${index}`}>
             <span className={`bg-${variant}`}></span> {name}
           </a>
         ))}

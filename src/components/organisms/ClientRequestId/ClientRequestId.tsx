@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
-import { Row, Col, Button, OverlayTrigger, Tooltip, Nav, Tab, Table, Tabs } from 'react-bootstrap';
-import { FaEnvelope, FaExternalLinkAlt } from 'react-icons/fa';
-import { MdPeople, MdHelpOutline, MdLocalPhone, MdWarning } from 'react-icons/md';
+import React, { useContext, useState, useEffect } from 'react';
+import { Row, Col, Nav, Tab, Tabs } from 'react-bootstrap';
+import { FaEnvelope } from 'react-icons/fa';
+import { MdHelpOutline, MdLocalPhone, MdWarning } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
-import { SingleRequestContext, AuthContext } from '../../../contexts';
-import { dateDDMMYYYnTime, dateDDMMYYY, dateAMPM, PERFIL_CLIENTE } from '../../../utils';
+import { SingleRequestContext } from '../../../contexts';
+import { PERFIL_CLIENTE } from '../../../utils';
 import { TiCogOutline } from 'react-icons/ti';
 import { HeaderSection } from './HeaderSection/HeaderSection';
 import { SubHeaderSection } from './SubHeaderSection/SubHeaderSection';
@@ -15,9 +15,19 @@ export interface IClientRequestIdProps {}
 
 export function ClientRequestId(props: IClientRequestIdProps) {
   const [defaultTab, setDefaultTab] = useState('participants');
-  const { userInfo } = useContext(AuthContext);
   const { requestId } = useParams() as any;
-  const { currentRequest } = useContext(SingleRequestContext);
+  const { currentRequest, getRequestInstructors, getRequestDrivers } =
+    useContext(SingleRequestContext);
+
+  const getInstructorsAndDrivers = async () => {
+    await getRequestInstructors(currentRequest.id);
+    await getRequestDrivers(currentRequest.drivers);
+  };
+
+  useEffect(() => {
+    if (currentRequest) getInstructorsAndDrivers();
+    //eslint-disable-next-line
+  }, [currentRequest]);
 
   return (
     <section className="single-request-client mb-3">
