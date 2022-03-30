@@ -233,7 +233,8 @@ export const ServiceContextProvider = (props) => {
         allDriversLoaded,
         createRequest,
         creatingRequest,
-        resetServiceRequest
+        resetServiceRequest,
+        updateUserCredit
       }}>
       {props.children}
     </ServiceContext.Provider>

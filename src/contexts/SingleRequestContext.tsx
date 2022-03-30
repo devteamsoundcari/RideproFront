@@ -156,7 +156,7 @@ export const SingleRequestContextProvider = (props) => {
   const getSingleRequest = async (id: number) => {
     setLoadingRequest(true);
     try {
-      const response = await apiClient.get(`${API_SINGLE_REQUEST}${id}`);
+      const response = await apiClient.get(`${API_SINGLE_REQUEST}${id}/`);
       resetState();
       setCurrentRequest(response.data);
       setRequestTrackOpt1(response.data.optional_place1);
@@ -187,7 +187,7 @@ export const SingleRequestContextProvider = (props) => {
     } else {
       setRequestInstructors([]);
       try {
-        const response = await apiClient.get(`${API_REQUEST_INSTRUCTORS}${id}`);
+        const response = await apiClient.get(`${API_REQUEST_INSTRUCTORS}${id}/`);
         setRequestInstructors((oldArr: any) => [...oldArr, ...response.data.results]);
         setLoadingInstructors(false);
         if (response.next) {

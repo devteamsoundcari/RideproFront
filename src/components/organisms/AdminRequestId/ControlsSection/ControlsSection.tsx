@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Button, ListGroup } from 'react-bootstrap';
+import { Button, ListGroup, Col } from 'react-bootstrap';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 import { StatusRenderer } from '../../../../components/atoms';
 import { SingleRequestContext, AuthContext, TracksContext } from '../../../../contexts';
@@ -108,13 +108,14 @@ export default function RightSection(props: any) {
   };
 
   return (
-    <div
-      className="col-xl-3 col-md-4 col-12"
-      style={{
-        position: 'fixed',
-        right: '1rem',
-        maxWidth: '17rem'
-      }}>
+    <Col
+      style={
+        {
+          // position: 'fixed',
+          // right: '1rem'
+          // maxWidth: '17rem'
+        }
+      }>
       <div className="mt-2 mb-3">{statusFormatter(currentRequest?.status?.step)}</div>
       {userInfo.profile === PERFIL_OPERACIONES.profile &&
         currentRequest?.status?.step !== PERFIL_OPERACIONES.steps.STATUS_CANCELADO.step && (
@@ -328,6 +329,6 @@ export default function RightSection(props: any) {
           )
         : ''}
       {showModalInvoice && <ModalInvoice handleClose={() => setShowModalInvoice(false)} />}
-    </div>
+    </Col>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import { ServiceContext } from '../../../contexts';
 import { filterByReference } from '../../../utils';
@@ -7,12 +7,23 @@ import { CustomTable } from '../CustomTable/CustomTable';
 import swal from 'sweetalert';
 import './TabAddParticipants.scss';
 
-export interface ITabAddParticipantsProps {}
+export interface ITabAddParticipantsProps {
+  preloadedParticipants?: any[];
+  classNames?: string;
+}
 
-export function TabAddParticipants(props: ITabAddParticipantsProps) {
+export function TabAddParticipants({
+  preloadedParticipants,
+  classNames = 'p-4'
+}: ITabAddParticipantsProps) {
   const [showModalAddParticipant, setShowModalAddParticipant] = useState(false);
   const { serviceParticipants, setServiceParticipants } = useContext(ServiceContext);
   const [selectedParticipants, setSelectedParticipants] = useState<any[]>([]);
+
+  useEffect(() => {
+    setServiceParticipants(preloadedParticipants || []);
+  }, [preloadedParticipants]);
+
   const columns = [
     {
       dataField: 'id',
@@ -73,7 +84,7 @@ export function TabAddParticipants(props: ITabAddParticipantsProps) {
   ];
 
   return (
-    <div className="tab-add-participants">
+    <div className={`tab-add-participants ${classNames}`}>
       <CustomCard
         bodyPadding="0"
         title="Participantes"

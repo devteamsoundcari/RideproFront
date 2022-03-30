@@ -12,6 +12,7 @@ import './ClientRequestId.scss';
 import { PlaceTab } from './PlaceTab/PlaceTab';
 import { ParticipantsTab } from './ParticipantsTab/ParticipantsTab';
 import { COMPANY_EMAIL, COMPANY_PHONE_NUMBER } from '../../../utils/constants';
+import ControlsSection from '../AdminRequestId/ControlsSection/ControlsSection';
 
 export interface IClientRequestIdProps {}
 
@@ -181,7 +182,7 @@ export function ClientRequestId(props: IClientRequestIdProps) {
             </div>
           </div>
         </div>
-        {/* <ControlsSection /> */}
+        <ControlsSection />
       </Row>
     </section>
   );
