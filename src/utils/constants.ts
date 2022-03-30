@@ -1,6 +1,7 @@
 // APP
 export const COMPANY_NAME = 'stockapp';
-export const COMPANY_EMAIL = 'soportealiados@stockapp.co';
+export const COMPANY_PHONE_NUMBER = '+ (319) 242 1712';
+export const COMPANY_EMAIL = `soportealiados@${COMPANY_NAME}.co`;
 export const HASH_KEYWORD = 'motorStockApp';
 export const APP_LOGIN_URL = '/login';
 

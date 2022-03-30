@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Modal, Button, Spinner } from 'react-bootstrap';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { sendEmail } from '../../../controllers/apiRequests';
-import { COMPANY_NAME } from '../../../utils/constants';
+import { COMPANY_NAME, COMPANY_EMAIL } from '../../../utils/constants';
 import swal from 'sweetalert';
 
 type ModalContactProps = any;
@@ -33,7 +33,7 @@ export const ModalContact: React.FC<ModalContactProps> = (props) => {
               const payload = {
                 emailType: 'moreCredit',
                 subject: 'Cliente sin crédito ⚠️',
-                email: 'vgonzalez@stockapp.co',
+                email: COMPANY_EMAIL,
                 name: `${name} ${lastName}`,
                 credit,
                 userEmail: email,

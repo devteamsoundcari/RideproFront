@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Row, Col, Nav, Tab, Tabs } from 'react-bootstrap';
 import { FaEnvelope } from 'react-icons/fa';
-import { MdHelpOutline, MdLocalPhone, MdWarning } from 'react-icons/md';
+import { MdHelpOutline, MdLocalPhone, MdPeople, MdWarning } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import { SingleRequestContext } from '../../../contexts';
 import { PERFIL_CLIENTE } from '../../../utils';
@@ -10,6 +10,8 @@ import { HeaderSection } from './HeaderSection/HeaderSection';
 import { SubHeaderSection } from './SubHeaderSection/SubHeaderSection';
 import './ClientRequestId.scss';
 import { PlaceTab } from './PlaceTab/PlaceTab';
+import { ParticipantsTab } from './ParticipantsTab/ParticipantsTab';
+import { COMPANY_EMAIL, COMPANY_PHONE_NUMBER } from '../../../utils/constants';
 
 export interface IClientRequestIdProps {}
 
@@ -61,7 +63,6 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                       </Tab>
                     )}
 
-                    {/* 
                     <Tab
                       eventKey="participants"
                       title={
@@ -70,66 +71,8 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                         </span>
                       }
                       style={{ overflow: 'auto' }}>
-                      {currentRequest?.status?.step === 1 &&
-                      userInfo.profile === 2 &&
-                      allDrivers ? (
-                        <React.Fragment>
-                          <EditableTable
-                            size="sm"
-                            currentRequestSet={allDrivers}
-                            fields={fields}
-                            onValidate={handleNewDriversValidation}
-                            onUpdate={handleAllDrivers}
-                            readOnly={true}
-                            readOnlyIf={isParticipantAlreadyRegistered}
-                            recordsForReplacing={driversForReplacing}
-                          />
-                          {currentRequest?.status.step === 1 && (
-                            <Button
-                              variant="dark"
-                              onClick={saveDrivers}
-                              style={{ margin: 'auto' }}
-                              {...(!canSaveDrivers ? { disabled: 'true' } : {})}>
-                              Guardar
-                            </Button>
-                          )}
-                        </React.Fragment>
-                      ) : allDrivers && allDrivers.length > 0 ? (
-                        <Table striped bordered hover size="sm">
-                          <thead>
-                            <tr>
-                              <th>Documento</th>
-                              <th>Nombre</th>
-                              <th>Apellido</th>
-                              <th>Email</th>
-                              <th>Teléfono</th>
-                              {currentRequest.status.step > 4 && (
-                                <React.Fragment>
-                                  <th className="text-white">Resultado</th>
-                                  <th className="text-white">Link</th>
-                                  <th className="text-white">Reporte</th>
-                                </React.Fragment>
-                              )}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {allDrivers.length &&
-                              allDrivers.map((driver, idx) => {
-                                return (
-                                  <SingleDriver
-                                    currentRequest={driver}
-                                    key={idx}
-                                    requestId={requestId}
-                                    status={currentRequest.status.step}
-                                  />
-                                );
-                              })}
-                          </tbody>
-                        </Table>
-                      ) : (
-                        ''
-                      )}
-                    </Tab> */}
+                      <ParticipantsTab currentRequest={currentRequest} />
+                    </Tab>
 
                     <Tab eventKey="options" title={<TiCogOutline />}>
                       <Tab.Container id="left-tabs-example" defaultActiveKey="first">
@@ -153,13 +96,13 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                               <Tab.Pane eventKey="first">
                                 <Row>
                                   <Col md={12}>
-                                    {/* <p>
+                                    <p>
                                       Recuerda que puedes cancelar sin penalidad{' '}
                                       <strong>
                                         hasta{' '}
-                                        {cancelationPriority(
+                                        {/* {cancelationPriority(
                                           currentRequest.municipality.service_priority
-                                        )}{' '}
+                                        )}{' '} */}
                                         horas antes
                                       </strong>{' '}
                                       del evento. Ten en cuenta que estos valores pueden cambiar
@@ -172,7 +115,7 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                                       </strong>{' '}
                                       por este servicio.
                                       <br />
-                                    </p> */}
+                                    </p>
                                     {/* {canBeCanceled(currentRequest.start_time) &&
                                     userInfo.profile === 2 ? (
                                       <Button
@@ -196,8 +139,8 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                                     <div className="row">
                                       <div className="col-12 text-center">
                                         <p className="p-2 text-muted">
-                                          Si tienes unca solicitud, o no encuentras la respuesta a
-                                          tus dudas, ponte en contacto con nosotos!
+                                          Si tienes una solicitud, o no encuentras la respuesta a
+                                          tus dudas, ponte en contacto con nosotros!
                                         </p>
                                       </div>
                                       <div className="fucki">
@@ -205,7 +148,7 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                                           <span className="text-muted ">
                                             <MdLocalPhone />
                                           </span>
-                                          <h5>+ (319) 242 1712</h5>
+                                          <h5>{COMPANY_PHONE_NUMBER}</h5>
                                           <p className="text-muted font-medium-1">
                                             {' '}
                                             Disponibles 24*7. Estaremos felices de ayudar
@@ -216,7 +159,7 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                                             <FaEnvelope />
                                           </span>
                                           <h5>
-                                            <a href="sdelrio@ridepro.co">sdelrio@ridepro.co</a>
+                                            <a href="sdelrio@ridepro.co">{COMPANY_EMAIL}</a>
                                           </h5>
                                           <p className="text-muted font-medium-1">
                                             La manera mas rapida de respuesta.
