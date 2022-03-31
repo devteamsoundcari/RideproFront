@@ -28,7 +28,16 @@ export function ClientRequestId(props: IClientRequestIdProps) {
   };
 
   useEffect(() => {
-    if (currentRequest) getInstructorsAndDrivers();
+    if (currentRequest) {
+      getInstructorsAndDrivers();
+      if (
+        currentRequest.status.step === PERFIL_CLIENTE.steps.STATUS_CONFIRMAR_PROGRAMACION.step[0] // Set defaulTKey tab depending on status
+      ) {
+        setDefaultTab('place');
+      } else {
+        setDefaultTab('participants');
+      }
+    }
     //eslint-disable-next-line
   }, [currentRequest]);
 

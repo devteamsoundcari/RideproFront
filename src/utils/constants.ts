@@ -133,7 +133,7 @@ const STATUS_ESPERANDO_AL_CLIENTE = {
 };
 
 const STATUS_PROGRAMACION_ACEPTADA = {
-  step: [3],
+  step: [3, 4],
   id: STATUS_IDS[3],
   name: 'Programación aceptada',
   variant: 'event-confirmed',
@@ -287,11 +287,11 @@ export const PERFIL_CLIENTE = {
     STATUS_CONFIRMAR_PROGRAMACION,
     STATUS_PROGRAMACION_ACEPTADA,
     STATUS_SERVICIO_FINALIZADO: {
-      step: [5, 6],
+      step: [5, 6, 7, 8],
       id: STATUS_IDS[6],
       name: 'Servicio finalizado',
       variant: 'event-finished',
-      bgColor: 'yellow',
+      bgColor: 'lightgreen',
       color: '#333',
       now: 100,
       level: 100
