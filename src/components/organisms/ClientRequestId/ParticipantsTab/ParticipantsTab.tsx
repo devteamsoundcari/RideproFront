@@ -11,15 +11,16 @@ export interface IParticipantsTabProps {
 }
 
 export function ParticipantsTab({ currentRequest }: IParticipantsTabProps) {
-  const { userInfo, setUserInfo } = useContext(AuthContext);
-  const { requestDrivers, updateRequestId } = useContext(SingleRequestContext);
+  const { userInfo, getUserData, setUserInfo } = useContext(AuthContext);
+  const { requestDrivers, updateRequestId, getSingleRequest } = useContext(SingleRequestContext);
   const { serviceParticipants, updateUserCredit } = useContext(ServiceContext);
   const [usedCredits, setUsedCredits] = useState(currentRequest.service.ride_value);
 
   useEffect(() => {
-    if (currentRequest.service.service_type === 'Persona')
-      setUsedCredits(serviceParticipants.length * currentRequest.service.ride_value);
-    else setUsedCredits(currentRequest.service.ride_value);
+    if (currentRequest.service.service_type === 'Persona') {
+      const numOfNewParticipants = serviceParticipants.length - requestDrivers.length;
+      setUsedCredits(numOfNewParticipants);
+    } else setUsedCredits(currentRequest.service.ride_value);
   }, [serviceParticipants]);
 
   const canSaveDrivers = () => {
@@ -28,7 +29,7 @@ export function ParticipantsTab({ currentRequest }: IParticipantsTabProps) {
   };
 
   const updateRequestParticipants = () => {
-    const listHtmlOfParticipants = serviceParticipants.map(
+    const listHtmlOfParticipants = filterByReference(serviceParticipants, requestDrivers).map(
       (participant) =>
         `<tr key=${participant.id}>
             <td>${participant?.first_name}</td>
@@ -36,10 +37,13 @@ export function ParticipantsTab({ currentRequest }: IParticipantsTabProps) {
             <td>${participant?.email}</td>
           </tr>`
     );
-    const content = document.createElement('div');
-    content.innerHTML = `<div><p><strong>Creditos a usar:</strong> ${usedCredits} créditos</p><table class='w-100 alert-table'><thead><tr><th>Nombre</th><th>Apellido</th><th>Email</th></tr></thead><tbody>${listHtmlOfParticipants.join(
+    const table = `<table class='w-100 alert-table'><thead><tr><th>Nombre</th><th>Apellido</th><th>Email</th></tr></thead><tbody>${listHtmlOfParticipants.join(
       ''
-    )}</tbody></table></div>`;
+    )}</tbody></table>`;
+    const content = document.createElement('div');
+    content.innerHTML = `<div><p><strong>Creditos ${
+      usedCredits < 0 ? 'a reembolsar' : 'a cargar'
+    }:</strong> $${Math.abs(usedCredits)}</p>${listHtmlOfParticipants.length ? table : ''}</div>`;
 
     swal({
       className: 'large-alert',
@@ -52,20 +56,28 @@ export function ParticipantsTab({ currentRequest }: IParticipantsTabProps) {
         if (willUpdate) {
           const payload = {
             prev_credits: currentRequest.spent_credit,
-            spent_credit: usedCredits,
+            spent_credit:
+              currentRequest.service.service_type === 'Persona'
+                ? serviceParticipants.length * currentRequest.service.ride_value
+                : currentRequest.service.ride_value,
             drivers: serviceParticipants.map((participant) => participant.id)
           };
           const response = await updateRequestId(currentRequest.id, payload);
-          // TODO: update user credit depending on less or more participants
           const creditsPayload = {
-            newCredit: response.data.customer.credit - response.data.spent_credit,
+            newCredit:
+              usedCredits < 0
+                ? response.data.customer.credit + Math.abs(usedCredits)
+                : response.data.customer.credit - Math.abs(usedCredits),
             companyId: response.data.customer.company.id
           };
           const creditDecrease = await updateUserCredit(creditsPayload); // Calling decrease credit
+          await getUserData();
           setUserInfo({
             ...userInfo,
             credit: creditDecrease?.credit
           });
+          await getSingleRequest(currentRequest.id);
+          swal('Perfecto!', 'Servicio actualizado correctamente', 'success');
         }
       })
       .catch(() => {

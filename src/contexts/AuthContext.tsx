@@ -172,7 +172,8 @@ export const AuthContextProvider = (props) => {
           sendingEmail,
           updateUserData,
           updatePassword,
-          updateUserProfilePicture
+          updateUserProfilePicture,
+          getUserData
         } as any
       }>
       {props.children}
