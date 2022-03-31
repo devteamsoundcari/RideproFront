@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Row, Col, Nav, Tab, Tabs } from 'react-bootstrap';
+import { Row, Col, Nav, Tab, Tabs, Button } from 'react-bootstrap';
 import { FaEnvelope } from 'react-icons/fa';
 import { MdHelpOutline, MdLocalPhone, MdPeople, MdWarning } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
-import { SingleRequestContext } from '../../../contexts';
+import { SingleRequestContext, AuthContext } from '../../../contexts';
 import { PERFIL_CLIENTE } from '../../../utils';
 import { TiCogOutline } from 'react-icons/ti';
 import { HeaderSection } from './HeaderSection/HeaderSection';
@@ -18,6 +18,7 @@ export interface IClientRequestIdProps {}
 
 export function ClientRequestId(props: IClientRequestIdProps) {
   const [defaultTab, setDefaultTab] = useState('participants');
+  const { userInfo } = useContext(AuthContext);
   const { requestId } = useParams() as any;
   const { currentRequest, getRequestInstructors, getRequestDrivers } =
     useContext(SingleRequestContext);
@@ -40,6 +41,23 @@ export function ClientRequestId(props: IClientRequestIdProps) {
     }
     //eslint-disable-next-line
   }, [currentRequest]);
+
+  const cancellationPriorityHours = (priority) => {
+    switch (priority) {
+      case 0:
+        return 5;
+      case 1:
+        return 7;
+      default:
+        return 9;
+    }
+  };
+
+  const canBeCancel = (date) => {
+    let eventTime = new Date(date);
+    let now = new Date();
+    return now >= eventTime || currentRequest.status.step === 0 ? false : true;
+  };
 
   return (
     <section className="single-request-client mb-3">
@@ -110,9 +128,9 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                                       Recuerda que puedes cancelar sin penalidad{' '}
                                       <strong>
                                         hasta{' '}
-                                        {/* {cancelationPriority(
+                                        {cancellationPriorityHours(
                                           currentRequest.municipality.service_priority
-                                        )}{' '} */}
+                                        )}{' '}
                                         horas antes
                                       </strong>{' '}
                                       del evento. Ten en cuenta que estos valores pueden cambiar
@@ -126,20 +144,20 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                                       por este servicio.
                                       <br />
                                     </p>
-                                    {/* {canBeCanceled(currentRequest.start_time) &&
-                                    userInfo.profile === 2 ? (
+                                    {canBeCancel(currentRequest.start_time) &&
+                                    userInfo.profile === PERFIL_CLIENTE.profile ? (
                                       <Button
                                         variant="danger"
                                         size="sm"
-                                        // disabled={
-                                        //   currentRequest.status.step !== 1 ? true : false
-                                        // }
-                                        onClick={() => handleCancelEvent(penaltyRides)}>
+                                        disabled={currentRequest.status.step !== 1 ? true : false}
+                                        // TODO: Cancel service
+                                        // onClick={() => handleCancelEvent(penaltyRides)}
+                                      >
                                         Cancelar solicitud
                                       </Button>
                                     ) : (
                                       ''
-                                    )} */}
+                                    )}
                                   </Col>
                                 </Row>
                               </Tab.Pane>
@@ -161,7 +179,7 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                                           <h5>{COMPANY_PHONE_NUMBER}</h5>
                                           <p className="text-muted font-medium-1">
                                             {' '}
-                                            Disponibles 24*7. Estaremos felices de ayudar
+                                            Disponibles 24/7. Estaremos felices de ayudar
                                           </p>
                                         </div>
                                         <div className="help-icon border">

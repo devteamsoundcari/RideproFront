@@ -21,6 +21,7 @@ export function ParticipantsTab({ currentRequest }: IParticipantsTabProps) {
       const numOfNewParticipants = serviceParticipants.length - requestDrivers.length;
       setUsedCredits(numOfNewParticipants);
     } else setUsedCredits(currentRequest.service.ride_value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serviceParticipants]);
 
   const canSaveDrivers = () => {

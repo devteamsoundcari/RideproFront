@@ -22,6 +22,7 @@ export function TabAddParticipants({
 
   useEffect(() => {
     setServiceParticipants(preloadedParticipants || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preloadedParticipants]);
 
   const columns = [
