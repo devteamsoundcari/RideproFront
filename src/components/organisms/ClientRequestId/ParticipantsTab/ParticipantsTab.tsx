@@ -26,7 +26,10 @@ export function ParticipantsTab({ currentRequest }: IParticipantsTabProps) {
 
   const canSaveDrivers = () => {
     const newDrivers = filterByReference(serviceParticipants, requestDrivers);
-    return newDrivers.length > 0 || serviceParticipants.length !== requestDrivers.length;
+    return (
+      newDrivers.length > 0 ||
+      (serviceParticipants.length !== requestDrivers.length && serviceParticipants.length > 0)
+    );
   };
 
   const updateRequestParticipants = () => {

@@ -13,6 +13,7 @@ import { PlaceTab } from './PlaceTab/PlaceTab';
 import { ParticipantsTab } from './ParticipantsTab/ParticipantsTab';
 import { COMPANY_EMAIL, COMPANY_PHONE_NUMBER } from '../../../utils/constants';
 import ControlsSection from '../AdminRequestId/ControlsSection/ControlsSection';
+import swal from 'sweetalert';
 
 export interface IClientRequestIdProps {}
 
@@ -20,6 +21,7 @@ export function ClientRequestId(props: IClientRequestIdProps) {
   const [defaultTab, setDefaultTab] = useState('participants');
   const { userInfo } = useContext(AuthContext);
   const { requestId } = useParams() as any;
+  const [penaltyCredits, setPenaltyCredits] = useState(0);
   const { currentRequest, getRequestInstructors, getRequestDrivers } =
     useContext(SingleRequestContext);
 
@@ -28,16 +30,27 @@ export function ClientRequestId(props: IClientRequestIdProps) {
     await getRequestDrivers(currentRequest.drivers);
   };
 
+  // ================ Set penalty credits ==================
+  useEffect(() => {
+    if (currentRequest) {
+      const eventDate: any = new Date(currentRequest.start_time);
+      const now: any = new Date();
+      const diffHours = Math.floor(Math.abs(eventDate - now) / 36e5);
+      const hoursPriority = cancellationPriorityHours(currentRequest.service.priority);
+      if (diffHours <= hoursPriority) setPenaltyCredits(currentRequest.service.penalty_rides);
+      else setPenaltyCredits(0);
+    }
+  }, [currentRequest]);
+
   useEffect(() => {
     if (currentRequest) {
       getInstructorsAndDrivers();
       if (
-        currentRequest.status.step === PERFIL_CLIENTE.steps.STATUS_CONFIRMAR_PROGRAMACION.step[0] // Set defaulTKey tab depending on status
-      ) {
+        // Set defaulTKey tab depending on status
+        currentRequest.status.step === PERFIL_CLIENTE.steps.STATUS_CONFIRMAR_PROGRAMACION.step[0]
+      )
         setDefaultTab('place');
-      } else {
-        setDefaultTab('participants');
-      }
+      else setDefaultTab('participants');
     }
     //eslint-disable-next-line
   }, [currentRequest]);
@@ -57,6 +70,67 @@ export function ClientRequestId(props: IClientRequestIdProps) {
     let eventTime = new Date(date);
     let now = new Date();
     return now >= eventTime || currentRequest.status.step === 0 ? false : true;
+  };
+
+  const cancelMessage = () => {
+    if (penaltyCredits > 0)
+      return `Cancelar este servicio te costara ${currentRequest.service.penalty_rides} creditos`;
+    else return 'Cancelar este servicio no genera costo alguno.';
+  };
+
+  const handleCancelRequest = async () => {
+    swal({
+      title: 'Un momento!',
+      text: `${cancelMessage()} ¿Estas seguro que deseas cancelar esta solicitud?`,
+      icon: 'warning',
+      buttons: ['No, volver', 'Si, estoy seguro'],
+      dangerMode: true
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        // setLoading(true);
+        // let payload = {
+        //   id: requestId,
+        //   user: userInfoContext,
+        //   companyId: userInfoContext.company.id,
+        //   reject_msg: `Cancelado por el usuario ${
+        //     penaltyRides ? `| Penalidad: $${penaltyRides} rides` : ''
+        //   }`,
+        //   newCredit:
+        //     parseInt(userInfoContext.credit) + parseInt(data.spent_credit) - parseInt(penaltyRides)
+        // };
+        // const res = await cancelRequestId(payload);
+        // if (res.canceled.status === 200 && res.refund.status === 200) {
+        //   setUserInfoContext({
+        //     ...userInfoContext,
+        //     credit: res.refund.data.credit
+        //   });
+        //   swal('Listo! Esta solicitud ha sido cancelada', {
+        //     icon: 'success'
+        //   });
+        //   setLoading(false);
+        //   const payload = {
+        //     id: res.canceled.data.id,
+        //     template: 'canceled_request',
+        //     subject: 'Solicitud cancelada ❌',
+        //     to: userInfoContext.email,
+        //     name: userInfoContext.name,
+        //     date: res.canceled.data.start_time,
+        //     refund_credits: res.canceled.data.spent_credit,
+        //     service: res.canceled.data.service.name,
+        //     municipality: {
+        //       city: res.canceled.data.municipality.name,
+        //       department: res.canceled.data.municipality.department.name
+        //     }
+        //   };
+        //   await sendEmailMG(payload); // SEND SERVICE CANCELED EMAIL TO USER
+        // } else {
+        //   setLoading(false);
+        //   swal('Ooops! No pudimos cancelar la solicitud', {
+        //     icon: 'error'
+        //   });
+        // }
+      }
+    });
   };
 
   return (
@@ -139,7 +213,7 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                                       <br />
                                       Luego de este plazo se te cargaran{' '}
                                       <strong>
-                                        {currentRequest.service.penalty_rides} rides de penalidad
+                                        {currentRequest.service.penalty_rides} creditos de penalidad
                                       </strong>{' '}
                                       por este servicio.
                                       <br />
@@ -150,9 +224,7 @@ export function ClientRequestId(props: IClientRequestIdProps) {
                                         variant="danger"
                                         size="sm"
                                         disabled={currentRequest.status.step !== 1 ? true : false}
-                                        // TODO: Cancel service
-                                        // onClick={() => handleCancelEvent(penaltyRides)}
-                                      >
+                                        onClick={() => handleCancelRequest()}>
                                         Cancelar solicitud
                                       </Button>
                                     ) : (
