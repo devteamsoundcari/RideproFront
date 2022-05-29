@@ -9,6 +9,7 @@ import ParticipantsContextProvider from './contexts/ParticipantsContext';
 import RequestsContextProvider from './contexts/RequestsContext';
 import NewPassword from './views/NewPassword/NewPassword';
 import ReportsContextProvider from './contexts/ReportsContext';
+import TracksContextProvider from './contexts/TracksContext';
 
 function App() {
   // ========================================================================
@@ -19,34 +20,36 @@ function App() {
         <RequestsContextProvider>
           <ParticipantsContextProvider>
             <ReportsContextProvider>
-              <HashRouter>
-                <Switch>
-                  <Route exact path="/">
-                    <Home />
-                  </Route>
-                  <Route path="/administrador">
-                    <DashboardLayout />
-                  </Route>
-                  <Route path="/cliente">
-                    <DashboardLayout />
-                  </Route>
-                  <Route path="/operario">
-                    <DashboardLayout />
-                  </Route>
-                  <Route path="/tecnico">
-                    <DashboardLayout />
-                  </Route>
-                  <Route path="/super-cliente">
-                    <DashboardLayout />
-                  </Route>
-                  <Route path="/login">
-                    <Login />
-                  </Route>
-                  <Route path="/password-reset">
-                    <NewPassword />
-                  </Route>
-                </Switch>
-              </HashRouter>
+              <TracksContextProvider>
+                <HashRouter>
+                  <Switch>
+                    <Route exact path="/">
+                      <Home />
+                    </Route>
+                    <Route path="/administrador">
+                      <DashboardLayout />
+                    </Route>
+                    <Route path="/cliente">
+                      <DashboardLayout />
+                    </Route>
+                    <Route path="/operario">
+                      <DashboardLayout />
+                    </Route>
+                    <Route path="/tecnico">
+                      <DashboardLayout />
+                    </Route>
+                    <Route path="/super-cliente">
+                      <DashboardLayout />
+                    </Route>
+                    <Route path="/login">
+                      <Login />
+                    </Route>
+                    <Route path="/password-reset">
+                      <NewPassword />
+                    </Route>
+                  </Switch>
+                </HashRouter>
+              </TracksContextProvider>
             </ReportsContextProvider>
           </ParticipantsContextProvider>
         </RequestsContextProvider>
