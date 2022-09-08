@@ -427,7 +427,10 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({
                         firstPayment: ins.first_payment,
                         date: `${dateFormatter(date)}, ${formatAMPM(date)}`,
                         track: track,
-                        participantes: participants,
+                        participantes: participants.map((p) => ({
+                          ...p,
+                          requests: []
+                        })),
                         documents: selectedDocuments,
                         service: service
                       };

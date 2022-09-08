@@ -1,4 +1,8 @@
 .modal-documents {
+  .modal-body {
+    max-height: 80vh;
+    overflow: scroll;
+  }
   table {
     .expand-cell-header {
       padding: 0px;

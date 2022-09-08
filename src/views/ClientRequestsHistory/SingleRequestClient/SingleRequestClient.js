@@ -19,7 +19,6 @@ import {
   fetchDriver,
   getAllDrivers,
   cancelRequestId,
-  sendEmail,
   updateRequest,
   fetchInstructor,
   sendEmailMG
@@ -51,7 +50,6 @@ const SingleRequestClient = () => {
   let { requestId } = useParams();
   const [loading, setLoading] = useState(false);
 
-  const { updateRequests } = useContext(RequestsContext);
   const [selectedOption, setSelectedOption] = useState(0);
 
   const [data, setData] = useState();
@@ -621,22 +619,23 @@ const SingleRequestClient = () => {
                         requestId
                       );
                       if (res.status === 200) {
-                        updateRequests();
-                        swal('Solicitud actualizada!', {
-                          icon: 'success'
-                        });
                         // SEND EMAIL
                         const payload = {
                           id: requestId,
-                          emailType: 'requestConfirmed',
+                          template: 'request_confirmed',
                           subject: 'Servicio programado ✅',
-                          email: userInfoContext.email,
+                          to: userInfoContext.email,
                           name: userInfoContext.name,
                           instructor: instructor,
-                          date:
+                          date: `${dateFormatter(
                             selectedOption === 1
                               ? payload1.start_time
-                              : payload2.start_time,
+                              : payload2.start_time
+                          )}, ${formatAMPM(
+                            selectedOption === 1
+                              ? payload1.start_time
+                              : payload2.start_time
+                          )}`,
                           track:
                             track !== null
                               ? track
@@ -645,18 +644,25 @@ const SingleRequestClient = () => {
                               : data.optional_place2,
                           service: data.service.name
                         };
-                        await sendEmail(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
+                        await sendEmailMG(payload); // SEND SERVICE CONFIRMED EMAIL TO USER
                         const payloadDrivers = {
                           id: requestId,
-                          emailType: 'requestConfirmedDrivers',
+                          template: 'request_confirmed_drivers',
                           subject: 'Prueba programada ✅',
-                          email: allDrivers.map((driver) => driver.email),
+                          to: allDrivers
+                            .map((driver) => driver.email)
+                            .join(', '),
                           name: userInfoContext.name,
                           instructor: instructor,
-                          date:
+                          date: `${dateFormatter(
                             selectedOption === 1
                               ? payload1.start_time
-                              : payload2.start_time,
+                              : payload2.start_time
+                          )}, ${formatAMPM(
+                            selectedOption === 1
+                              ? payload1.start_time
+                              : payload2.start_time
+                          )}`,
                           track:
                             track !== null
                               ? track
@@ -665,7 +671,10 @@ const SingleRequestClient = () => {
                               : data.optional_place2,
                           service: data.service.name
                         };
-                        await sendEmail(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
+                        await sendEmailMG(payloadDrivers); // SEND SERVICE CONFIRMED EMAIL TO PARTIVIPANTS
+                        swal('Solicitud actualizada!', {
+                          icon: 'success'
+                        });
                       } else {
                         swal('Oops, no se pudo actualizar el servicio.', {
                           icon: 'error'
