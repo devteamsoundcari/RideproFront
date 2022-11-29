@@ -37,7 +37,6 @@ import ClientStatus from '../../../utils/ClientStatus';
 import RegularExpressions from '../../../utils/RegularExpressions';
 import { ParticipantsContext } from '../../../contexts/ParticipantsContext';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { RequestsContext } from '../../../contexts/RequestsContext';
 import ServiceEditConfirmationModal from './ServiceEditConfirmationModal';
 import NotEnoughCreditsModal from './NotEnoughCreditsModal';
 import './SingleRequestClient.scss';

@@ -10,6 +10,12 @@ import { getUserRequests, getRequest } from '../controllers/apiRequests';
 
 export const RequestsContext = createContext();
 
+// eslint-disable-next-line no-extend-native
+Date.prototype.addHours = function (h) {
+  this.setHours(this.getHours() + h);
+  return this;
+};
+
 const RequestsContextProvider = (props) => {
   const { userInfoContext, isLoggedInContext } = useContext(AuthContext);
   const [startDate, setStartDate] = useState(
@@ -75,7 +81,7 @@ const RequestsContextProvider = (props) => {
 
         item.title = `${item.service.name}, ${item.place} - ${item.municipality.name} (${item.municipality.department.name})`;
         item.start = new Date(item.start_time);
-        item.end = new Date(item.finish_time);
+        item.end = new Date(item.start_time).addHours(1);
 
         if (item.status.step === 0) {
           fetchedCancelledRequests.push(item);
@@ -123,7 +129,7 @@ const RequestsContextProvider = (props) => {
         ? 'user_requests'
         : userInfoContext.profile === 7
         ? 'request_superuser'
-        : 'requests';
+        : 'requests_summary';
     if (clear) {
       setCalendarRequests([]);
       setCancelledRequests([]);

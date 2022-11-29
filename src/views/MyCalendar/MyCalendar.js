@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Children, useContext } from 'react';
 import { Card, Spinner, Row, Col, ListGroup, Form } from 'react-bootstrap';
-import { FaUsers } from 'react-icons/fa';
 import { MdPlace } from 'react-icons/md';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { useHistory } from 'react-router-dom';
@@ -82,17 +81,11 @@ const MyCalendar = () => {
   };
 
   const eventFormatter = (event) => {
-    const { service, municipality, drivers } = event.event;
+    const { service, municipality } = event.event;
     return (
       <div className="event-formated">
         <h5>{service.name}</h5>
         <div className="event-details">
-          <p>
-            <span className="mr-1">
-              <FaUsers />
-            </span>
-            {drivers.length}
-          </p>
           <p className="ml-1">
             <span>
               <MdPlace />
