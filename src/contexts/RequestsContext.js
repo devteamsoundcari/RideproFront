@@ -93,9 +93,9 @@ const RequestsContextProvider = (props) => {
 
     setCalendarRequests((prev) => [...prev, ...fetchedRequests]);
     setCancelledRequests((prev) => [...prev, ...fetchedCancelledRequests]);
-    setNextUrlCalendar(response.next);
-    if (response && response.next !== null) {
-      return await fetchRequestsByMonth(response.next);
+    setNextUrlCalendar(response?.next);
+    if (response && response?.next !== null) {
+      return await fetchRequestsByMonth(response?.next);
     } else {
       setIsLoadingCalendarRequests(false);
     }
