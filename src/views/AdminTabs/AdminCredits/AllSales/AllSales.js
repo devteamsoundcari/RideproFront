@@ -9,11 +9,11 @@ import "./AllSales.scss";
 
 const AllSales = (props) => {
   const buyerFormatter = (cell, row) => {
-    return `${row.buyer.first_name} ${row.buyer.last_name}`;
+    return `${row?.buyer?.first_name} ${row?.buyer?.last_name}`;
   };
 
   const sellerFormatter = (cell, row) => {
-    return `${row.seller.first_name} ${row.seller.last_name}`;
+    return `${row?.seller?.first_name} ${row?.seller?.last_name}`;
   };
 
   const paymentFormatter = (cell, row) => {
