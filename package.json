@@ -30,6 +30,7 @@
     "react-bootstrap-table2-paginator": "^2.1.2",
     "react-contenteditable": "^3.3.4",
     "react-csv-reader": "^3.0.5",
+    "react-debounce-input": "^3.3.0",
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.1",
     "react-google-maps": "^9.4.5",

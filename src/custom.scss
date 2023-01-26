@@ -15,7 +15,7 @@ $theme-colors: (
   "confirm-docs": mediumslateblue,
   "upload-reports": deeppink,
   "event-finished": lightgreen,
-  "event-canceled": red,
+  "event-canceled": red
 );
 
 html {
@@ -91,36 +91,46 @@ html {
   color: #61534e;
 }
 
-// $border-radius: 2rem;
+.table {
+  .small-column {
+    // background: red;
+    width: 7rem;
+    text-align: center;
+    p {
+      margin: 0;
+    }
+  }
 
-// .btn-lg {
-//   border-radius: 2rem !important;
-// }
+  .expand-credits {
+    background: whitesmoke;
+    line-height: 10px;
+    .notes-wrapper {
+      height: 4rem;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: gainsboro;
+    }
+  }
 
-// .jumbotron {
-//   background-color: #0d2128 !important;
-//   color: #fff;
-//   border-radius: 0px !important;
-//   a {
-//     font-size: 16px;
+  .parent-row {
+    background: lightgreen;
+  }
+  .rowClass {
+    &:hover {
+      background: lightgreen;
+      cursor: pointer;
+    }
+  }
 
-//     padding-left: 20px;
-//     padding-right: 20px;
-//     font-weight: 600;
-//     i {
-//       margin-right: 5px;
-//     }
-//   }
-//   h1 {
-//     margin-bottom: 1.5rem;
-//     line-height: 1;
-//     font-size: 4.5rem;
-//     font-weight: 600;
-//   }
-// }
+  .small-item {
+    td {
+      padding: 0.2rem;
+      p {
+        font-size: small;
+      }
+    }
+  }
+}
 
-// .display-4 {
-//   font-weight: 600 !important;
-// }
 // Import Bootstrap and its default variables
 @import "~bootstrap/scss/bootstrap.scss";

@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
-import BootstrapTable from "react-bootstrap-table-next";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import ToolkitProvider from "react-bootstrap-table2-toolkit";
+import { getUsers } from "../../../../controllers/apiRequests";
 import { dateFormatter } from "../../../../utils/helpFunctions";
-
-import "./AllSales.scss";
+import CustomTable from "../../../../components/CustomTable";
 
 const AllSales = (props) => {
+  const [sales, setSales] = useState([]);
+  const [totalOfSales, setTotalOfSales] = useState(0);
+  const SALES_URL = `${process.env.REACT_APP_API_URL}/api/v1/sale_credits/`;
+
+  const fetchSales = async (url, page) => {
+    const newUrl = `${url}${page ? page : ""}`;
+    const response = await getUsers(newUrl);
+    setTotalOfSales(response.count);
+    setSales(response.results);
+  };
+
+  useEffect(() => {
+    fetchSales(`${SALES_URL}?page=`, 1);
+    // eslint-disable-next-line
+  }, []);
+
   const buyerFormatter = (cell, row) => {
     return `${row?.buyer?.first_name} ${row?.buyer?.last_name}`;
   };
@@ -36,61 +49,48 @@ const AllSales = (props) => {
       sort: true,
       classes: "small-column",
       headerClasses: "small-column",
-      formatter: (cell) => <small>{cell}</small>,
+      formatter: (cell) => <small>{cell}</small>
     },
     {
       dataField: "buyer.first_name",
       text: "Vendido a",
-      formatter: buyerFormatter,
+      formatter: buyerFormatter
     },
     {
       dataField: "buyer.email",
       text: "Email",
-      formatter: (cell) => <small>{cell}</small>,
+      formatter: (cell) => <small>{cell}</small>
     },
     {
       dataField: "seller.email",
       text: "Vendido por",
       sort: true,
-      formatter: sellerFormatter,
+      formatter: sellerFormatter
     },
     {
       dataField: "payment_method",
       text: "Forma de pago",
       sort: true,
-      formatter: paymentFormatter,
+      formatter: paymentFormatter
     },
     {
       dataField: "created_at",
       text: "Fecha",
       formatter: (cell) => dateFormatter(cell),
-      sort: true,
+      sort: true
     },
     {
       dataField: "credits",
       text: "Cred",
       classes: "small-column",
       headerClasses: "small-column",
-      formatter: (cell) => <p>{cell}</p>,
-    },
+      formatter: (cell) => <p>{cell}</p>
+    }
   ];
 
-  const MySearch = (props) => {
-    let input;
-    const handleChange = () => {
-      props.onSearch(input.value);
-    };
-    return (
-      <div>
-        <input
-          className="form-control"
-          placeholder="Buscar..."
-          ref={(n) => (input = n)}
-          onChange={handleChange}
-          type="text"
-        />
-      </div>
-    );
+  const handleSearch = (value) => {
+    const url = `${SALES_URL}?search=${value}`;
+    fetchSales(url);
   };
 
   const expandRow = {
@@ -123,7 +123,12 @@ const AllSales = (props) => {
           )}
         </Col>
       </Row>
-    ),
+    )
+  };
+
+  const handlePageChange = (page, sizePerPage) => {
+    setSales([]);
+    fetchSales(`${SALES_URL}?page=`, page);
   };
 
   return (
@@ -131,27 +136,16 @@ const AllSales = (props) => {
       <Card.Body>
         <Card.Title>Historial de creditos</Card.Title>
         <Card.Body>
-          <ToolkitProvider
-            bootstrap4
-            keyField="id"
-            data={props.users}
+          <CustomTable
             columns={columns}
-            pagination={paginationFactory()}
-            hover
-            search
-          >
-            {(props) => (
-              <div>
-                <MySearch {...props.searchProps} />
-                <hr />
-                <BootstrapTable
-                  {...props.baseProps}
-                  expandRow={expandRow}
-                  rowClasses={"rowClass"}
-                />
-              </div>
-            )}
-          </ToolkitProvider>
+            data={sales}
+            sizePerPage={25}
+            onPageChange={handlePageChange}
+            totalSize={totalOfSales}
+            expandRow={expandRow}
+            onSearch={handleSearch}
+            showTopPagination
+          />
         </Card.Body>
       </Card.Body>
     </Card>

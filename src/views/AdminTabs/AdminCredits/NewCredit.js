@@ -1,45 +1,49 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Modal, Button, Form, Col } from "react-bootstrap";
-import useDropdown from "../../../utils/useDropdown";
 import { useForm } from "react-hook-form";
 import swal from "sweetalert";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { createSale } from "../../../controllers/apiRequests";
+import CustomTable from "../../../components/CustomTable";
+import { getUsers } from "../../../controllers/apiRequests";
 
-const NewCredit = ({ handleClose, users, onUpdate }) => {
-  const [userNames, setUserNames] = useState([]);
+const USERS_URL = `${process.env.REACT_APP_API_URL}/api/v1/users/`;
+
+const NewCredit = ({ handleClose, onUpdate }) => {
+  const [users, setUsers] = useState([]);
   const { userInfoContext } = useContext(AuthContext);
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const { register, handleSubmit, errors } = useForm();
+  const [totalOfUsers, setTotalOfUsers] = useState(0);
   const [file, setFile] = useState(null);
-  const [selectedUser, UsersDropdown] = useDropdown(
-    "Cliente *",
-    "Seleccione...",
-    userNames
-  );
+  const [selectedUser, setSelectedUer] = useState(null);
+
+  const fetchURL = async (url, page) => {
+    const newUrl = `${url}${page ? page : ""}`;
+    const response = await getUsers(newUrl);
+    if (response) {
+      setTotalOfUsers(response?.count);
+      setUsers(response?.results);
+    }
+  };
 
   useEffect(() => {
-    let onlyClients = users.filter((user) => user.profile === 2);
-    let newArr = onlyClients.map((user) => {
-      return {
-        id: user.id,
-        name: `${user.email} - ${user.first_name} ${user.last_name}`,
-      };
-    });
-    newArr.sort((a, b) => a.name.localeCompare(b.name));
-    setUserNames(newArr);
-  }, [users]);
+    fetchURL(`${USERS_URL}?page=`, 1);
+    // eslint-disable-next-line
+  }, []);
 
   const onSubmit = async (data) => {
-    if (selectedUser === "Seleccione...") {
+    if (!selectedUser) {
       swal("Error", `Por favor seleccione un cliente`, "error");
     } else {
-      data.bill_id = parseInt(selectedUser + new Date().getUTCMilliseconds());
-      data.buyer = parseInt(selectedUser);
+      data.bill_id = parseInt(
+        selectedUser.id + new Date().getUTCMilliseconds()
+      );
+      data.buyer = parseInt(selectedUser.id);
       data.file = file;
       data.seller = userInfoContext.id;
       data.payment_method = paymentMethod;
-      data.user = users.find((item) => item.id === parseInt(selectedUser));
+      data.user = users.find((item) => item.id === parseInt(selectedUser.id));
       const response = await createSale(data); // SAVE A NEW USER IN DB
       if (
         response.sale.status === 201 &&
@@ -55,14 +59,64 @@ const NewCredit = ({ handleClose, users, onUpdate }) => {
     }
   };
 
+  const columns = [
+    {
+      dataField: "email",
+      text: "Email",
+      classes: "small-column",
+      headerClasses: "small-column",
+      formatter: (cell) => <p>{cell}</p>
+    },
+    {
+      dataField: "first_name",
+      text: "Nombre",
+      classes: "small-column",
+      headerClasses: "small-column",
+      formatter: (cell, row) => (
+        <p>
+          {row.first_name} {row.last_name}
+        </p>
+      )
+    }
+  ];
+
+  const handlePageChange = (page, sizePerPage) => {
+    setUsers([]);
+    fetchURL(`${USERS_URL}?page=`, page);
+  };
+
+  const handleSearch = (value) => {
+    const url = `${USERS_URL}?search=${value}`;
+    fetchURL(url);
+  };
+
   return (
-    <Modal show={true} onHide={handleClose} size="sm">
+    <Modal show={true} onHide={handleClose} size="md">
       <Modal.Header closeButton>
         <Modal.Title>Asignar créditos</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <UsersDropdown />
+          <CustomTable
+            columns={columns}
+            data={users}
+            rowClasses="small-item"
+            onPageChange={handlePageChange}
+            totalSize={totalOfUsers}
+            onSearch={handleSearch}
+            onRowClick={(row) => {
+              setSelectedUer(row);
+            }}
+          />
+          <Form.Row>
+            <Form.Group as={Col} controlId="formGridRides">
+              <Form.Label>Usuario seleccionado: </Form.Label>
+              <p className="font-italic m-0">
+                {selectedUser?.first_name} {selectedUser?.last_name}
+              </p>
+              <p className="font-italic m-0">{selectedUser?.email}</p>
+            </Form.Group>
+          </Form.Row>
           <Form.Row>
             <Form.Group as={Col} controlId="formGridRides">
               <Form.Label>Cantidad de Rides *</Form.Label>
