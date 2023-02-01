@@ -17,7 +17,6 @@ const SetPlace = (props) => {
   const { handleSubmit } = useForm();
   const [error, setError] = useState('');
   const [noTrack, setNoTrack] = useState(false);
-  const [tracks, setTracks] = useState([]);
   const [filteredTracks, setFilteredTracks] = useState([]);
   const [track, setTrack] = useState({});
   const [departments, setDepartments] = useState([]);
@@ -36,21 +35,28 @@ const SetPlace = (props) => {
   const [loading, setLoading] = useState(true);
 
   // ================================ FETCH TRACKS ON LOAD =====================================================
+
   const fetchTracks = async (url) => {
-    let tempTracks = [];
+    setLoading(true);
     const response = await getTracks(url);
-    response.results.forEach(async (item) => {
-      tempTracks.push(item);
-    });
-    setTracks((oldArr) => oldArr.concat(tempTracks));
+
+    const companyTracks = response.results.filter(
+      (item) => item.company.id === userInfoContext.company.id
+    );
+
+    setFilteredTracks((oldArr) => oldArr.concat(companyTracks));
     if (response.next) {
       return await fetchTracks(response.next);
+    } else {
+      setLoading(false);
     }
   };
-  // useEffect(() => {
-  //   fetchTracks(`${process.env.REACT_APP_API_URL}/api/v1/tracks/`);
-  //   //eslint-disable-next-line
-  // }, []);
+
+  const getTracksByDepartment = async (departmentName) => {
+    const url = `${process.env.REACT_APP_API_URL}/api/v1/tracks/?search=${departmentName}`;
+    setFilteredTracks([]);
+    fetchTracks(url);
+  };
 
   // =========================== FETCHING DEPARTMENTS ===================================
 
@@ -109,19 +115,12 @@ const SetPlace = (props) => {
   // =============================== FILTER TRACKS BY CITY ====================================
 
   useEffect(() => {
-    if (department.id) {
-      setFilteredTracks([]);
-      tracks.forEach((item) => {
-        if (
-          item.municipality.department.id === parseInt(department.id) &&
-          userInfoContext.company.id === item.company.id
-        ) {
-          setFilteredTracks((oldArr) => [...oldArr, item]);
-        }
-      });
+    if (department.name) {
+      getTracksByDepartment(department.name);
     }
+
     //eslint-disable-next-line
-  }, [department, tracks]);
+  }, [department]);
 
   const handleCheckChange = () => {
     setNoTrack(!noTrack);
