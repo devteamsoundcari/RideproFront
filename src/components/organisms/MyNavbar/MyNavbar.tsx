@@ -19,7 +19,7 @@ import { SearchBar } from './SearchBar/SearchBar';
 export const MyNavbar = () => {
   const { pathname } = useLocation();
   const [filled, setFilled] = useState(false);
-  const { userInfo, logOutUser, loadingAuth } = useContext(AuthContext);
+  const { userInfo, logOutUser, loadingAuth } = useContext(AuthContext) as any;
   const [profile] = useProfile();
   const { isLoadingRequests, isLoadingCalendarRequests } = useContext(RequestsContext);
   const {

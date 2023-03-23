@@ -23,7 +23,7 @@ export const Login = () => {
     reValidateMode: 'onChange',
     resolver: yupResolver(loginSchema)
   });
-  const { loginUser, loadingAuth, authError } = useContext(AuthContext);
+  const { loginUser, loadingAuth, authError } = useContext(AuthContext) as any;
 
   // ====================== ON SUBMIT THE FORM ======================
   const onSubmit = async (data) => {

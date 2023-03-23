@@ -11,7 +11,7 @@ export interface IParticipantsTabProps {
 }
 
 export function ParticipantsTab({ currentRequest }: IParticipantsTabProps) {
-  const { userInfo, getUserData, setUserInfo } = useContext(AuthContext);
+  const { userInfo, getUserData, setUserInfo } = useContext(AuthContext) as any;
   const { requestDrivers, updateRequestId, getSingleRequest } = useContext(SingleRequestContext);
   const { serviceParticipants, updateUserCredit } = useContext(ServiceContext);
   const [usedCredits, setUsedCredits] = useState(currentRequest.service.ride_value);

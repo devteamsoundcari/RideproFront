@@ -12,7 +12,7 @@ import { ServiceContext, AuthContext } from '../../../contexts';
 export interface ITabCheckoutProps {}
 
 export function TabCheckout(props: ITabCheckoutProps) {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
 
   const {
     selectedService,

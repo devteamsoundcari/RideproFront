@@ -13,7 +13,7 @@ import { FormInput } from '../../atoms';
 export const ModalEditCompany = (props: any) => {
   const [loading, setLoading] = useState(false);
   const [showCompanyLogoEditModal, setShowCompanyEditModal] = useState(false);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [profile] = useProfile();
   // eslint-disable-next-line
   const [data, setData] = useState({

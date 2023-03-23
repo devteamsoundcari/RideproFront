@@ -6,7 +6,7 @@ import { AuthContext, SingleRequestContext } from '../../../../../contexts';
 import swal from 'sweetalert';
 
 const ModalInvoice = ({ handleClose }) => {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const { currentRequest, addRequestBill, updateRequestId } = useContext(SingleRequestContext);
   const [profile] = useProfile();
   const [loading, setLoading] = useState(false);

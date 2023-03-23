@@ -10,7 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 export const ModalChangePassword = (props: any) => {
   const [profile] = useProfile();
-  const { updatePassword, loadingAuth } = useContext(AuthContext);
+  const { updatePassword, loadingAuth } = useContext(AuthContext) as any;
 
   const {
     register,

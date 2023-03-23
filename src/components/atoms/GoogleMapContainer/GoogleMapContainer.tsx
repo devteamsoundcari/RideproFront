@@ -35,20 +35,21 @@ export const GoogleMapContainer = compose(
   };
 
   return (
-    <GoogleMap
-      defaultZoom={8}
-      defaultCenter={{ lat: 4.681475271707987, lng: -74.10880761718745 }}
-      options={mapOptions}>
-      {props.isMarkerShown && (
-        <Marker
-          draggable={true}
-          position={{ lat: lat, lng: lng }}
-          onDragEnd={(e) => onMarkerDragEnd(e)}
-          icon={{
-            url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-          }}
-        />
-      )}
-    </GoogleMap>
+    <p>googlemap</p>
+    // <GoogleMap
+    //   defaultZoom={8}
+    //   defaultCenter={{ lat: 4.681475271707987, lng: -74.10880761718745 }}
+    //   options={mapOptions}>
+    //   {props.isMarkerShown && (
+    //     <Marker
+    //       draggable={true}
+    //       position={{ lat: lat, lng: lng }}
+    //       onDragEnd={(e) => onMarkerDragEnd(e)}
+    //       icon={{
+    //         url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+    //       }}
+    //     />
+    //   )}
+    // </GoogleMap>
   );
 });

@@ -22,7 +22,7 @@ export function TabSelectPlace(props: ITabSelectPlaceProps) {
     tracks
   } = useContext(TracksContext);
   const { selectedPlace, setSelectedPlace } = useContext(ServiceContext);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [selectedDepartment, DepartmentsDropdown] = useDropdown(
     'Departamento',
     'Seleccione...',

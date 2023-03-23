@@ -22,7 +22,7 @@ import './Sidebar.scss';
 
 export const Sidebar = () => {
   const { pathname } = useLocation();
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [profile] = useProfile();
   const [profilePicture, setProfilePicture] = useState('');
   const [showContactModal, setShowContactModal] = useState(false);

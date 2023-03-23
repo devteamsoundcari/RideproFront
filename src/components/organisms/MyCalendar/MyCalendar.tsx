@@ -16,7 +16,7 @@ const localizer = momentLocalizer(moment);
 export const MyCalendar = () => {
   const { calendarRequests, setStartDate, setEndDate, updateCurrentMonth, currentMonth } =
     useContext(RequestsContext);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
 
   const ColoredDateCellWrapper = ({ children, value }) => {
     const now = moment().toDate();

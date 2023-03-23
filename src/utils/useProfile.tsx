@@ -3,7 +3,7 @@ import { ALL_PROFILES } from '.';
 import { AuthContext } from '../contexts/AuthContext';
 
 export function useProfile() {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {

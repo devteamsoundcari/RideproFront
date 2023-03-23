@@ -5,7 +5,7 @@ import { API_LOGIN_URL, API_USER_DATA, API_LOGOUT_URL, API_CHANGE_PASSWORD_URL }
 
 const apiClient = ApiClientSingleton.getApiInstance();
 
-export const AuthContext: any = createContext('');
+export const AuthContext: any = createContext('') as any;
 
 export interface IUser {
   name: string;

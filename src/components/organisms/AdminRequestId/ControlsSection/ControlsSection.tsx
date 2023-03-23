@@ -18,7 +18,7 @@ export interface IRightSectionProps {}
 
 export default function RightSection(props: any) {
   const { requestId } = useParams() as any;
-  const { userInfo, sendEmail } = useContext(AuthContext);
+  const { userInfo, sendEmail } = useContext(AuthContext) as any;
   const {
     currentRequest,
     requestDocuments,

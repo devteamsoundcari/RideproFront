@@ -6,7 +6,7 @@ import swal from 'sweetalert';
 import './ModalEditProfilePicture.scss';
 
 export const ModalEditProfilePicture = (props: any) => {
-  const { userInfo, updateUserProfilePicture } = useContext(AuthContext);
+  const { userInfo, updateUserProfilePicture } = useContext(AuthContext) as any;
   const [stage, setStage] = useState('waiting');
   const [imageName, setImageName] = useState('Importar imagen');
   const [imgSrc, setImgSrc] = useState<string | ArrayBuffer | null>();

@@ -4,7 +4,7 @@ import { ALL_PROFILES } from '../../../utils';
 import './CalendarConventions.scss';
 
 export const CalendarConventions = () => {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [currentProfileStatus, setCurrentProfileStatus] = useState<any>(null);
 
   useEffect(() => {

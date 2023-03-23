@@ -25,7 +25,7 @@ const ModalOC: React.FC<ModalOCProps> = ({ requestId, handleClose }) => {
     getSingleRequest,
     updateRequestId
   } = useContext(SingleRequestContext);
-  const { userInfo, sendEmail } = useContext(AuthContext);
+  const { userInfo, sendEmail } = useContext(AuthContext) as any;
   const [profile] = useProfile();
   const [instructorsFares, setInstructorsFares] = useState<any>({});
   const [providersFares, setProvidersFares] = useState<any>({});

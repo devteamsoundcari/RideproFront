@@ -10,7 +10,7 @@ interface ICalendarSidebarProps {}
 
 export const CalendarSidebar: React.FunctionComponent<ICalendarSidebarProps> = (props) => {
   const { calendarCount, currentMonth, calendarRequests } = useContext(RequestsContext);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [graphData, setGraphData] = useState<any>(null);
 
   useEffect(() => {

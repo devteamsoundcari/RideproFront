@@ -30,7 +30,7 @@ interface City {
 
 export const ModalNewTrack: React.FC<Props> = ({ handleClose, fetchTracks }) => {
   const { register, handleSubmit } = useForm();
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [profile] = useProfile();
   const {
     getDepartments,

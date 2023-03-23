@@ -11,7 +11,7 @@ export function RequestId(props: IRequestIdProps) {
   const { requestId } = useParams() as any;
   const { getSingleRequest, loadingRequest, getRequestDocuments } =
     useContext(SingleRequestContext);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
 
   const fetchRequest = async (id: string) => {
     try {

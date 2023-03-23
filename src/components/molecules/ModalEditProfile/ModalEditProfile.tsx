@@ -12,7 +12,7 @@ import swal from 'sweetalert';
 
 export const ModalEditProfile = (props: any) => {
   const [showUserProfileEditModal, setShowUserProfileEditModal] = useState(false);
-  const { userInfo, updateUserData, loadingAuth } = useContext(AuthContext);
+  const { userInfo, updateUserData, loadingAuth } = useContext(AuthContext) as any;
   const [profile] = useProfile();
   const defaultValues = {
     first_name: userInfo.first_name,

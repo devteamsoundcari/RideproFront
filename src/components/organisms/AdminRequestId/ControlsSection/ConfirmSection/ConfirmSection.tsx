@@ -26,7 +26,7 @@ const ConfirmSection: React.FC<ConfirmSectionProps> = ({ requestId }) => {
     requestDocuments,
     loadingDocuments
   } = useContext(SingleRequestContext);
-  const { userInfo, sendEmail } = useContext(AuthContext);
+  const { userInfo, sendEmail } = useContext(AuthContext) as any;
   const [showModalProviders, setShowModalProviders] = useState(false);
   const [showModalDocuments, setShowModalDocuments] = useState(false);
   const [instructorsFares, setInstructorsFares] = useState<any>({});

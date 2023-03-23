@@ -12,7 +12,7 @@ interface IStep {
 }
 
 export function StatusRenderer({ rowStep }: any) {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [step, setStep] = useState<IStep>({ name: '', variant: '', now: 0 });
 
   useEffect(() => {

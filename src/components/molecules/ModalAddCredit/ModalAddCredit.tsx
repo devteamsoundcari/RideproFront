@@ -11,7 +11,7 @@ export interface IModalAddCreditProps {
 }
 
 export function ModalAddCredit({ handleClose }: IModalAddCreditProps) {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [profile] = useProfile();
   const { loadingUsers, users, count, getUsers, allUsersLoaded } = useContext(UsersContext);
   const { newSale } = useContext(CreditsContext);

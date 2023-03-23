@@ -19,7 +19,7 @@ export interface IClientRequestIdProps {}
 
 export function ClientRequestId(props: IClientRequestIdProps) {
   const [defaultTab, setDefaultTab] = useState('participants');
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const { requestId } = useParams() as any;
   const [penaltyCredits, setPenaltyCredits] = useState(0);
   const { currentRequest, getRequestInstructors, getRequestDrivers } =

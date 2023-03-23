@@ -1,9 +1,5 @@
 import axios from 'axios';
-import {
-  API_BASE_URL,
-  APP_LOGIN_URL,
-  API_REFRESH_TOKEN_URL
-} from '../utils/constants';
+import { API_BASE_URL, APP_LOGIN_URL, API_REFRESH_TOKEN_URL } from '../utils/constants';
 
 // Return session storage token
 const readAccessToken = (name) => {
@@ -57,10 +53,7 @@ const refreshAccessToken = async () => {
   }
 };
 
-const buildClient = (
-  baseUrl = API_BASE_URL,
-  contentType = 'application/json'
-) => {
+const buildClient = (baseUrl = API_BASE_URL, contentType = 'application/json') => {
   /**
    * Axios basic configuration
    * Some general configuration can be added like timeout, headers, params etc. More details can be found on https://github.com/axios/axios

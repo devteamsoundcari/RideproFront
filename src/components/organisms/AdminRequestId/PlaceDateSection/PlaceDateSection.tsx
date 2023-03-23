@@ -12,7 +12,7 @@ interface PlaceProps {
 }
 
 const PlaceDateSection: React.FC<PlaceProps> = ({ municipality, track, date, title }) => {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
 
   const renderPlace = () => (
     <Row>

@@ -1,15 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../../contexts';
-import {
-  Container,
-  Modal,
-  Col,
-  Row,
-  Form,
-  Button,
-  Image,
-  Spinner
-} from 'react-bootstrap';
+import { Container, Modal, Col, Row, Form, Button, Image, Spinner } from 'react-bootstrap';
 import { FaCheckCircle } from 'react-icons/fa';
 import { setCompanyLogo } from '../../../controllers/apiRequests';
 import './ModalEditCompanyLogo.scss';
@@ -19,7 +10,7 @@ export const ModalEditCompanyLogo = (props: any) => {
   const {
     userInfo: { company },
     updateUserInfo
-  } = useContext(AuthContext);
+  } = useContext(AuthContext) as any;
   const [profile] = useProfile();
   const [stage, setStage] = useState('waiting');
   const [imageName, setImageName] = useState('Importar imagen');
@@ -106,12 +97,7 @@ export const ModalEditCompanyLogo = (props: any) => {
               </Row>
               <Row>
                 <Form.Group as={Col} className="upload-file">
-                  <Form.File
-                    name="logo"
-                    onChange={onFileUpload}
-                    label={imageName}
-                    custom
-                  />
+                  <Form.File name="logo" onChange={onFileUpload} label={imageName} custom />
                 </Form.Group>
               </Row>
             </Container>

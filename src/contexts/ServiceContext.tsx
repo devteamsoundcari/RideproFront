@@ -46,7 +46,7 @@ export interface IPlace {
 }
 
 export const ServiceContextProvider = (props) => {
-  const { userInfo, setUserInfo, sendEmail } = useContext(AuthContext);
+  const { userInfo, setUserInfo, sendEmail } = useContext(AuthContext) as any;
   const [lineServices, setLinesServices] = useState<ILineService[] | []>([]);
   const [services, setServices] = useState<IService[] | []>([]);
   const [loadingLineServices, setLoadingLineServices] = useState(false);

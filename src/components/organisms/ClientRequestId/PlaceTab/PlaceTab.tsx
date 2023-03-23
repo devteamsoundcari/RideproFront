@@ -9,7 +9,7 @@ export interface IPlaceTabProps {
 }
 
 export function PlaceTab({ currentRequest }: IPlaceTabProps) {
-  const { userInfo, sendEmail } = useContext(AuthContext);
+  const { userInfo, sendEmail } = useContext(AuthContext) as any;
   const { updateRequestId, requestInstructors, requestDrivers } = useContext(SingleRequestContext);
   const [selectedOption, setSelectedOption] = useState(0);
 

@@ -18,7 +18,7 @@ export interface IModalAddParticipantProps {
 
 export function ModalAddParticipant({ handleClose }: IModalAddParticipantProps) {
   const [profile] = useProfile();
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [foundParticipants, setFoundParticipants] = useState<any[]>([]);
   const {
     getCompanyDrivers,

@@ -16,7 +16,7 @@ import './AdminRequestId.scss';
 export const AdminRequestId = () => {
   const { requestId } = useParams() as any;
   const { currentRequest } = useContext(SingleRequestContext);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
 
   return (
     <section className="single-request-admin mb-3">

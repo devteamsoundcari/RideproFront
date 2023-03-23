@@ -15,7 +15,7 @@ export function ModalNewUser({ handleClose }: IModalNewUserProps) {
   const { companies, loadingCompanies, getCompanies, allCompaniesLoaded, count } =
     useContext(CompaniesContext);
   const { addNewUser, loadingUsers } = useContext(UsersContext);
-  const { sendEmail, sendingEmail } = useContext(AuthContext);
+  const { sendEmail, sendingEmail } = useContext(AuthContext) as any;
   const { register, handleSubmit, errors } = useForm();
   const [profile] = useProfile();
   const [passError, setPassError] = useState('');

@@ -8,7 +8,7 @@ import swal from 'sweetalert';
 type ModalContactProps = any;
 export const ModalContact: React.FC<ModalContactProps> = (props) => {
   const [loading, setLoading] = useState(false);
-  const { userInfoContext } = useContext(AuthContext);
+  const { userInfoContext } = useContext(AuthContext) as any;
 
   return (
     <>

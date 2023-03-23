@@ -36,7 +36,7 @@ export const ModalEditTrack: React.FC<ModalEditTrackProps> = (props: ModalEditTr
   const [lng, setLng] = useState(0);
   const { editTrackInfo } = useContext(TracksContext);
   const [submittedData, setSubmittedData] = useState();
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const defaultValues: ModalEditTrackFormValues = {
     name: props.track.name,
     address: props.track.address,

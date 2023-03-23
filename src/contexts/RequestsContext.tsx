@@ -22,7 +22,7 @@ export const RequestsContextProvider = (props) => {
   const [nextUrl, setNextUrl] = useState(null);
   const [requests, setRequests]: any = useState([]);
   const [count, setCount] = useState(null);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [currentMonth, setCurrentMonth] = useState(moment().toDate());
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

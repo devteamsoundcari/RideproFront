@@ -14,7 +14,7 @@ const SingleFile: React.FC<SingleFileProps> = ({ document, requestId, onUpdate }
   const [fileName, setFileName] = useState('Vacio');
   const [loading, setLoading] = useState(false);
   const [truncate, setTruncate] = useState(true);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const { uploadDocument } = useContext(SingleRequestContext);
 
   useEffect(() => {

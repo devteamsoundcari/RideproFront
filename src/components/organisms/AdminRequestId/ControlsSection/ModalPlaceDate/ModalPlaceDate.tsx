@@ -24,7 +24,7 @@ type Tracks = Track[];
 
 const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({ requestId, handleClose }) => {
   const { setTracks, getTracksByCity, loadingTracks } = useContext(TracksContext);
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const {
     currentRequest,
     requestTrackOpt1,

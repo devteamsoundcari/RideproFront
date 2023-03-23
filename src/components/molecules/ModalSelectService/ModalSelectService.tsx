@@ -26,7 +26,7 @@ export function ModalSelectService({
   lineService,
   handleClose
 }: IModalSelectServiceProps) {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const { selectedService, setSelectedService } = useContext(ServiceContext);
   const [profile] = useProfile();
   const [filteredServices, setFilteredServices] = useState<IService[]>([]);

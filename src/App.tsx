@@ -20,7 +20,7 @@ import {
 import { routes } from './routes';
 
 function App() {
-  const { isAuthenticated, userInfo } = useContext(AuthContext);
+  const { isAuthenticated, userInfo } = useContext(AuthContext) as any;
 
   const profilesContainsCurrentProfile = (arr: any[]) => {
     return arr.find(({ profile }: any) => profile === userInfo.profile);

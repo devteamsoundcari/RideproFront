@@ -14,7 +14,7 @@ const apiClient = ApiClientSingleton.getApiInstance();
 export const TracksContext = createContext('' as any);
 
 export const TracksContextProvider = (props) => {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext) as any;
   const [tracks, setTracks] = useState<any>([]);
   const [loadingTracks, setLoadingTracks] = useState(false);
   const [departments, setDepartments] = useState<any>([]);
