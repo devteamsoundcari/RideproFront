@@ -183,6 +183,7 @@ export function TableWithPagination({
                   remote={{ search: true, pagination: true }}
                   onTableChange={onTableChange}
                   filter={filterFactory()}
+                  selectRow={selectRow}
                 />
                 <div className="d-flex justify-content-center ">
                   <PaginationListStandalone {...paginationProps} />
