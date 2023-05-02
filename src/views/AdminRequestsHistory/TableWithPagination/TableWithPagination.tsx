@@ -12,6 +12,7 @@ import { useHistory, useRouteMatch } from 'react-router';
 import OperacionesStatus from '../../../utils/OperacionesStatus';
 import TecnicoStatus from '../../../utils/TecnicoStatus';
 import AdminStatus from '../../../utils/AdminStatus';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 export interface ITableWithPaginationProps {
   data: any;
@@ -130,6 +131,20 @@ export function TableWithPagination({
     }
   ];
 
+  const MyExportCSV = (props) => {
+    const handleClick = () => {
+      props.onExport();
+    };
+    return (
+      <button
+        className="position-absolute btn btn-success"
+        style={{ right: '2rem' }}
+        onClick={handleClick}>
+        Exportar a CSV
+      </button>
+    );
+  };
+
   return (
     <div>
       <PaginationProvider
@@ -140,31 +155,48 @@ export function TableWithPagination({
           totalSize
         })}>
         {({ paginationProps, paginationTableProps }) => (
-          <div className="d-flex align-center flex-column justify-content-center">
-            <div className="d-flex justify-content-center mt-3">
-              <PaginationListStandalone {...paginationProps} />
-              {isLoadingRequests && (
-                <Spinner animation="border" className="mt-1" variant="info" />
-              )}
-            </div>
-            <BootstrapTable
-              remote
-              bootstrap4
-              keyField="id"
-              data={data}
-              selectRow={selectRow}
-              columns={columns}
-              onTableChange={onTableChange}
-              filter={filterFactory()}
-              {...paginationTableProps}
-            />
-            <div className="d-flex justify-content-center ">
-              <PaginationListStandalone {...paginationProps} />
-              {isLoadingRequests && (
-                <Spinner animation="border" className="mt-1" variant="info" />
-              )}
-            </div>
-          </div>
+          <ToolkitProvider
+            keyField="id"
+            columns={columns}
+            data={data}
+            search
+            exportCSV={{
+              fileName: `ridepro-${dateFormatter(new Date())}.csv`
+            }}>
+            {(toolkitprops) => (
+              <div className="d-flex align-center flex-column justify-content-center">
+                <div className="d-flex justify-content-center mt-3">
+                  <PaginationListStandalone {...paginationProps} />
+                  <MyExportCSV {...toolkitprops.csvProps} />
+                  {isLoadingRequests && (
+                    <Spinner
+                      animation="border"
+                      className="mt-1"
+                      variant="info"
+                    />
+                  )}
+                </div>
+
+                <BootstrapTable
+                  {...toolkitprops.baseProps}
+                  {...paginationTableProps}
+                  remote={{ search: true, pagination: true }}
+                  onTableChange={onTableChange}
+                  filter={filterFactory()}
+                />
+                <div className="d-flex justify-content-center ">
+                  <PaginationListStandalone {...paginationProps} />
+                  {isLoadingRequests && (
+                    <Spinner
+                      animation="border"
+                      className="mt-1"
+                      variant="info"
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+          </ToolkitProvider>
         )}
       </PaginationProvider>
     </div>
