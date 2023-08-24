@@ -200,7 +200,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   useEffect(() => {
     tracks.forEach((item) => {
       if (userInfoContext.company.id === item.company.id) {
-        if (item.municipality.department.id === propsCity.department.id) {
+        if (item?.municipality?.department?.id === propsCity.department.id) {
           setFilteredTracks((oldArr: any) => [...oldArr, item]);
         }
       }
