@@ -6,7 +6,6 @@ import swal from 'sweetalert';
 import {
   getRequest,
   updateRequest,
-  sendEmail,
   sendEmailMG
 } from '../../../controllers/apiRequests';
 import './SingleRequestAdmin.scss';
@@ -158,8 +157,13 @@ const SingleRequestAdmin = () => {
       month: '2-digit',
       day: '2-digit'
     });
-    const [{ value: month }, , { value: day }, , { value: year }] =
-      dateTimeFormat.formatToParts(d);
+    const [
+      { value: month },
+      ,
+      { value: day },
+      ,
+      { value: year }
+    ] = dateTimeFormat.formatToParts(d);
     return `${month}/${day}/${year}`;
   };
 
@@ -185,106 +189,171 @@ const SingleRequestAdmin = () => {
     } else return true;
   };
 
-  if (loading) {
-    return <Spinner animation="border" />;
-  } else {
+  const sendFinishedEmail = async () => {
+    // Send email to client
+    let clientPayload = {
+      id: requestId,
+      template: 'request_finished',
+      subject: 'Servicio finalizado ✔️',
+      to: data?.customer?.email,
+      name: data?.customer?.first_name
+    };
+
+    try {
+      await sendEmailMG(clientPayload);
+      swal('Solicitud actualizada!', {
+        icon: 'success'
+      });
+      setLoading(false);
+    } catch (error) {
+      throw new Error('No se pudo enviar el correo al cliente');
+    }
+  };
+
+  const resendEmails = (step) => {
+    if (step < 5) return;
     return (
-      <section className="single-request-admin mb-3">
-        <Row>
-          <div className="col-xl-9 col-md-8 col-12">
-            <div className="card invoice-print-area">
-              <div className="card-content">
-                <div className="card-body pb-0 mx-25">
-                  <Row>
-                    <div className="col-xl-4 col-md-12">
-                      <span className="invoice-number mr-50">Solicitud#</span>
-                      <span>{requestId}</span>
-                    </div>
-                    <div className="col-xl-8 col-md-12">
-                      <div className="d-flex align-items-center justify-content-xl-end flex-wrap">
-                        <div className="mr-3">
-                          <small className="text-muted">
-                            Fecha de creación:{' '}
-                          </small>
-                          <span>
-                            {data?.created_at
-                              ? `${dateFormatter(
-                                  data.created_at
-                                )} | ${formatAMPM(data.created_at)}`
-                              : ''}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Row>
-                  <div className="row my-3">
-                    <div className="col-6">
-                      <h4 className="text-primary">Solicitud</h4>
-                      <span>{data?.service?.name}</span>
-                      <br />
-                      <span>
-                        {data?.start_time ? dateFormatter(data.start_time) : ''}
-                      </span>
-                      <br />
-                      <span>
-                        {data?.start_time ? formatAMPM(data.start_time) : ''}
-                      </span>
-                      <br />
-                      <span>
-                        {data?.municipality?.name}{' '}
-                        {data?.municipality?.department?.name}
-                      </span>
-                    </div>
-                    <div className="col-6 d-flex justify-content-end">
-                      <img
-                        src={data?.customer?.company?.logo}
-                        alt="logo"
-                        height="80"
-                        width="80"
-                      />
-                    </div>
+      <Button
+        variant="link"
+        className="btn-block"
+        onClick={() => {
+          swal({
+            title: '¿Estas segur@?',
+            text:
+              'Esta operación enviara un correo al cliente con la información de finalizado, ¿estas seguro?',
+            icon: 'warning',
+            buttons: ['Canelar', 'Si, reenviar correo']
+          })
+            .then(() => {
+              sendFinishedEmail();
+            })
+            .catch((err) => {
+              swal('Ooops!', 'Algo paso, no pudimos enviar el correo', 'error');
+            });
+        }}>
+        <span>Reenviar email de finalizado</span>
+      </Button>
+    );
+  };
+
+  if (loading) return <Spinner animation="border" />;
+
+  return (
+    <section className="single-request-admin mb-3">
+      <Row>
+        <div className="col-xl-9 col-md-8 col-12">
+          <div className="card invoice-print-area">
+            <div className="card-content">
+              <div className="card-body pb-0 mx-25">
+                <Row>
+                  <div className="col-xl-4 col-md-12">
+                    <span className="invoice-number mr-50">Solicitud#</span>
+                    <span>{requestId}</span>
                   </div>
-                  <hr />
-                  <div className="row invoice-info">
-                    <div className="col-4 mt-1">
-                      <h6 className="invoice-from">Solicitado por</h6>
-                      <div className="mb-1">
+                  <div className="col-xl-8 col-md-12">
+                    <div className="d-flex align-items-center justify-content-xl-end flex-wrap">
+                      <div className="mr-3">
+                        <small className="text-muted">
+                          Fecha de creación:{' '}
+                        </small>
                         <span>
-                          {data?.customer?.first_name}{' '}
-                          {data?.customer?.last_name}
+                          {data?.created_at
+                            ? `${dateFormatter(data.created_at)} | ${formatAMPM(
+                                data.created_at
+                              )}`
+                            : ''}
                         </span>
                       </div>
-                      <div className="mb-1">
-                        <span>{data?.customer?.email}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>{data?.customer?.charge}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>601-678-8022</span>
-                      </div>
                     </div>
-                    <div className="col-4 mt-1">
-                      <h6 className="invoice-to">Empresa</h6>
-                      <div className="mb-1">
-                        <span>{data?.customer?.company?.name}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>{data?.customer?.company?.nit}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>{data?.customer?.company?.arl}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>{data?.customer?.company?.address}</span>
-                      </div>
-                      <div className="mb-1">
-                        <span>{data?.customer?.company?.phone}</span>
-                      </div>
+                  </div>
+                </Row>
+                <div className="row my-3">
+                  <div className="col-6">
+                    <h4 className="text-primary">Solicitud</h4>
+                    <span>{data?.service?.name}</span>
+                    <br />
+                    <span>
+                      {data?.start_time ? dateFormatter(data.start_time) : ''}
+                    </span>
+                    <br />
+                    <span>
+                      {data?.start_time ? formatAMPM(data.start_time) : ''}
+                    </span>
+                    <br />
+                    <span>
+                      {data?.municipality?.name}{' '}
+                      {data?.municipality?.department?.name}
+                    </span>
+                  </div>
+                  <div className="col-6 d-flex justify-content-end">
+                    <img
+                      src={data?.customer?.company?.logo}
+                      alt="logo"
+                      height="80"
+                      width="80"
+                    />
+                  </div>
+                </div>
+                <hr />
+                <div className="row invoice-info">
+                  <div className="col-4 mt-1">
+                    <h6 className="invoice-from">Solicitado por</h6>
+                    <div className="mb-1">
+                      <span>
+                        {data?.customer?.first_name} {data?.customer?.last_name}
+                      </span>
                     </div>
-                    <div className="col-4 mt-1">
-                      <h6 className="invoice-to">Observaciones</h6>
-                      <div className="comments">
+                    <div className="mb-1">
+                      <span>{data?.customer?.email}</span>
+                    </div>
+                    <div className="mb-1">
+                      <span>{data?.customer?.charge}</span>
+                    </div>
+                    <div className="mb-1">
+                      <span>601-678-8022</span>
+                    </div>
+                  </div>
+                  <div className="col-4 mt-1">
+                    <h6 className="invoice-to">Empresa</h6>
+                    <div className="mb-1">
+                      <span>{data?.customer?.company?.name}</span>
+                    </div>
+                    <div className="mb-1">
+                      <span>{data?.customer?.company?.nit}</span>
+                    </div>
+                    <div className="mb-1">
+                      <span>{data?.customer?.company?.arl}</span>
+                    </div>
+                    <div className="mb-1">
+                      <span>{data?.customer?.company?.address}</span>
+                    </div>
+                    <div className="mb-1">
+                      <span>{data?.customer?.company?.phone}</span>
+                    </div>
+                  </div>
+                  <div className="col-4 mt-1">
+                    <h6 className="invoice-to">Observaciones</h6>
+                    <div className="comments">
+                      <div className="user-message">
+                        <div className="avatar">
+                          <img
+                            src={data?.customer?.picture}
+                            alt={data?.customer?.first_name}
+                            width="32"
+                            height="32"
+                          />
+                        </div>
+                        <div className="d-inline-block mt-25">
+                          <h6 className="mb-0 text-bold-500">
+                            {data?.customer?.first_name}{' '}
+                            {data?.customer?.last_name}
+                          </h6>
+                          <p className="text-muted mt-1">
+                            <small>{data?.accept_msg}</small>
+                          </p>
+                        </div>
+                      </div>
+                      {data?.status?.step === 0 ? (
                         <div className="user-message">
                           <div className="avatar">
                             <img
@@ -300,430 +369,413 @@ const SingleRequestAdmin = () => {
                               {data?.customer?.last_name}
                             </h6>
                             <p className="text-muted mt-1">
-                              <small>{data?.accept_msg}</small>
+                              <small>{data?.reject_msg}</small>
                             </p>
                           </div>
                         </div>
-                        {data?.status?.step === 0 ? (
-                          <div className="user-message">
-                            <div className="avatar">
-                              <img
-                                src={data?.customer?.picture}
-                                alt={data?.customer?.first_name}
-                                width="32"
-                                height="32"
-                              />
-                            </div>
-                            <div className="d-inline-block mt-25">
-                              <h6 className="mb-0 text-bold-500">
-                                {data?.customer?.first_name}{' '}
-                                {data?.customer?.last_name}
-                              </h6>
-                              <p className="text-muted mt-1">
-                                <small>{data?.reject_msg}</small>
-                              </p>
-                            </div>
-                          </div>
-                        ) : (
-                          ''
-                        )}
-                      </div>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   </div>
-                  <hr />
-                  <PlaceDate
-                    municipality={data?.municipality}
-                    track={data?.track}
-                    date={data?.start_time}
-                    title=""
+                </div>
+                <hr />
+                <PlaceDate
+                  municipality={data?.municipality}
+                  track={data?.track}
+                  date={data?.start_time}
+                  title=""
+                />
+              </div>
+              <hr />
+              <div className="mx-md-25 text-center pl-3 pr-3 overflow-auto">
+                <h6>Instructores ({data?.instructors.length})</h6>
+                {data?.instructors.length > 0 ? (
+                  <Instructors
+                    requestId={parseInt(requestId)}
+                    instructors={(data: any) => setInstructors(data)}
                   />
-                </div>
-                <hr />
-                <div className="mx-md-25 text-center pl-3 pr-3 overflow-auto">
-                  <h6>Instructores ({data?.instructors.length})</h6>
-                  {data?.instructors.length > 0 ? (
-                    <Instructors
-                      requestId={parseInt(requestId)}
-                      instructors={(data: any) => setInstructors(data)}
-                    />
-                  ) : (
-                    <span>Esta solicitud no tiene instructores</span>
-                  )}
-                </div>
-                <hr />
-                <div className="mx-md-25 text-center pl-3 pr-3 overflow-auto">
-                  <h6>Proveedores ({data?.providers.length})</h6>
-                  {data?.providers.length > 0 ? (
-                    <Providers
-                      requestId={parseInt(requestId)}
-                      providers={(data: any) => setProviders(data)}
-                    />
-                  ) : (
-                    <span>Esta solicitud no tiene proveedores</span>
-                  )}
-                </div>
-                <hr />
-                <div className="mx-md-25 text-center pl-3 pr-3 overflow-auto">
-                  <h6>Participantes ({data?.drivers.length})</h6>
-                  <Drivers
-                    drivers={data?.drivers}
-                    status={data?.status?.step}
-                    requestId={requestId}
-                    onUpdate={(data) => setParticipantsInfo(data)}
-                    allReportsOk={(x) => setAllReportsOk(x)}
-                  />
-                </div>
-                {data?.status?.step ? (
-                  data?.status?.step > 3 ? (
-                    <React.Fragment>
-                      <hr />
-                      <Documents
-                        requestId={requestId}
-                        documentsOk={(data) => setDocumentsOk(data)}
-                      />
-                    </React.Fragment>
-                  ) : (
-                    ''
-                  )
                 ) : (
-                  ''
+                  <span>Esta solicitud no tiene instructores</span>
                 )}
-                {userInfoContext.profile === 1 &&
-                data?.status?.step &&
-                data?.status?.step > 6 ? (
+              </div>
+              <hr />
+              <div className="mx-md-25 text-center pl-3 pr-3 overflow-auto">
+                <h6>Proveedores ({data?.providers.length})</h6>
+                {data?.providers.length > 0 ? (
+                  <Providers
+                    requestId={parseInt(requestId)}
+                    providers={(data: any) => setProviders(data)}
+                  />
+                ) : (
+                  <span>Esta solicitud no tiene proveedores</span>
+                )}
+              </div>
+              <hr />
+              <div className="mx-md-25 text-center pl-3 pr-3 overflow-auto">
+                <h6>Participantes ({data?.drivers.length})</h6>
+                <Drivers
+                  drivers={data?.drivers}
+                  status={data?.status?.step}
+                  requestId={requestId}
+                  onUpdate={(data) => setParticipantsInfo(data)}
+                  allReportsOk={(x) => setAllReportsOk(x)}
+                />
+              </div>
+              {data?.status?.step ? (
+                data?.status?.step > 3 ? (
                   <React.Fragment>
                     <hr />
-                    <Invoice data={data} />
+                    <Documents
+                      requestId={requestId}
+                      documentsOk={(data) => setDocumentsOk(data)}
+                    />
                   </React.Fragment>
                 ) : (
                   ''
-                )}
-              </div>
+                )
+              ) : (
+                ''
+              )}
+              {userInfoContext.profile === 1 &&
+              data?.status?.step &&
+              data?.status?.step > 6 ? (
+                <React.Fragment>
+                  <hr />
+                  <Invoice data={data} />
+                </React.Fragment>
+              ) : (
+                ''
+              )}
             </div>
           </div>
-          <div
-            className="col-xl-3 col-md-4 col-12"
-            style={{
-              position: 'fixed',
-              right: '1rem',
-              maxWidth: '17rem'
-            }}>
-            <div className="mt-2 mb-3">{renderStatus()}</div>
-            {userInfoContext.profile === 3 && (
-              <React.Fragment>
-                <div className="card invoice-action-wrapper shadow-none border">
-                  <div className="card-body">
-                    <div className="invoice-action-btn">
-                      <Button
-                        variant="light"
-                        className="btn-block"
-                        onClick={() => setShowModalPlace(true)}
-                        disabled={
-                          data?.status?.step
-                            ? data?.status?.step >= 3
-                              ? true
-                              : false
+        </div>
+        <div
+          className="col-xl-3 col-md-4 col-12"
+          style={{
+            position: 'fixed',
+            right: '1rem',
+            maxWidth: '17rem'
+          }}>
+          <div className="mt-2 mb-3">{renderStatus()}</div>
+          {userInfoContext.profile === 3 && (
+            <React.Fragment>
+              <div className="card invoice-action-wrapper shadow-none border">
+                <div className="card-body">
+                  <div className="invoice-action-btn">
+                    <Button
+                      variant="light"
+                      className="btn-block"
+                      onClick={() => setShowModalPlace(true)}
+                      disabled={
+                        data?.status?.step
+                          ? data?.status?.step >= 3
+                            ? true
                             : false
-                        }>
-                        <span>Lugar / Fecha / Hora </span>
-                        {data?.optional_date1 ? (
-                          <FaCheckCircle className="text-success" />
-                        ) : (
-                          <FaTimes className="text-danger" />
-                        )}
-                      </Button>
-
-                      {showModalPlace && (
-                        <ModalPlaceDate
-                          requestId={requestId}
-                          handleClose={() => setShowModalPlace(false)}
-                          propsTrack={data?.track}
-                          propsDate={data?.start_time}
-                          propsCity={data?.municipality}
-                          propsOptDate1={data?.optional_date1}
-                          propsOptPlace1={data?.optional_place1}
-                          propsOptDate2={data?.optional_date2}
-                          propsOptPlace2={data?.optional_place2}
-                          operator={data?.operator}
-                        />
+                          : false
+                      }>
+                      <span>Lugar / Fecha / Hora </span>
+                      {data?.optional_date1 ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimes className="text-danger" />
                       )}
-                    </div>
-                    <div className="invoice-action-btn">
-                      <Button
-                        variant="light"
-                        className="btn-block"
-                        onClick={() => setShowModalInstructors(true)}
-                        disabled={
-                          data?.status?.step
-                            ? data?.status?.step >= 3
-                              ? true
-                              : false
+                    </Button>
+
+                    {showModalPlace && (
+                      <ModalPlaceDate
+                        requestId={requestId}
+                        handleClose={() => setShowModalPlace(false)}
+                        propsTrack={data?.track}
+                        propsDate={data?.start_time}
+                        propsCity={data?.municipality}
+                        propsOptDate1={data?.optional_date1}
+                        propsOptPlace1={data?.optional_place1}
+                        propsOptDate2={data?.optional_date2}
+                        propsOptPlace2={data?.optional_place2}
+                        operator={data?.operator}
+                      />
+                    )}
+                  </div>
+                  <div className="invoice-action-btn">
+                    <Button
+                      variant="light"
+                      className="btn-block"
+                      onClick={() => setShowModalInstructors(true)}
+                      disabled={
+                        data?.status?.step
+                          ? data?.status?.step >= 3
+                            ? true
                             : false
-                        }>
-                        <span>Instructores </span>
-                        {data?.instructors.length > 0 ? (
-                          <FaCheckCircle className="text-success" />
-                        ) : (
-                          <FaTimes className="text-danger" />
-                        )}
-                      </Button>
-
-                      {showModalInstructors && (
-                        <ModalInstructors
-                          requestId={requestId}
-                          handleClose={() => setShowModalInstructors(false)}
-                          onUpdate={() => fetchRequest(requestId)}
-                          propsInstructors={instructors}
-                        />
+                          : false
+                      }>
+                      <span>Instructores </span>
+                      {data?.instructors.length > 0 ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimes className="text-danger" />
                       )}
-                    </div>
-                    <div className="invoice-action-btn">
-                      <Button
-                        variant="light"
-                        className="btn-block"
-                        onClick={() => setShowModalProviders(true)}
-                        disabled={
-                          data?.status?.step
-                            ? data?.status?.step >= 3
-                              ? true
-                              : false
+                    </Button>
+
+                    {showModalInstructors && (
+                      <ModalInstructors
+                        requestId={requestId}
+                        handleClose={() => setShowModalInstructors(false)}
+                        onUpdate={() => fetchRequest(requestId)}
+                        propsInstructors={instructors}
+                      />
+                    )}
+                  </div>
+                  <div className="invoice-action-btn">
+                    <Button
+                      variant="light"
+                      className="btn-block"
+                      onClick={() => setShowModalProviders(true)}
+                      disabled={
+                        data?.status?.step
+                          ? data?.status?.step >= 3
+                            ? true
                             : false
-                        }>
-                        <span>Proveedores </span>
-                        {data?.providers.length > 0 ? (
-                          <FaCheckCircle className="text-success" />
-                        ) : (
-                          <FaTimes className="text-danger" />
-                        )}
-                      </Button>
-
-                      {showModalProviders && (
-                        <ModalProviders
-                          requestId={requestId}
-                          handleClose={() => setShowModalProviders(false)}
-                          onUpdate={() => fetchRequest(requestId)}
-                          propsProviders={providers}
-                        />
+                          : false
+                      }>
+                      <span>Proveedores </span>
+                      {data?.providers.length > 0 ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimes className="text-danger" />
                       )}
-                    </div>
-                    <div className="invoice-action-btn">
-                      <Button
-                        className="btn-block btn-success"
-                        disabled={checkDisabled()}
-                        onClick={() => {
-                          swal({
-                            title: '¿Estas seguro?',
-                            text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
-                            icon: 'warning',
-                            buttons: ['No, volver', 'Si, confirmar servicio'],
-                            dangerMode: true
-                          }).then(async (willUpdate) => {
-                            if (willUpdate) {
-                              let payload = {
-                                new_request: 0, // It wont be a new request anymore
-                                operator: userInfoContext.id,
-                                status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`
+                    </Button>
+
+                    {showModalProviders && (
+                      <ModalProviders
+                        requestId={requestId}
+                        handleClose={() => setShowModalProviders(false)}
+                        onUpdate={() => fetchRequest(requestId)}
+                        propsProviders={providers}
+                      />
+                    )}
+                  </div>
+                  <div className="invoice-action-btn">
+                    <Button
+                      className="btn-block btn-success"
+                      disabled={checkDisabled()}
+                      onClick={() => {
+                        swal({
+                          title: '¿Estas seguro?',
+                          text:
+                            'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
+                          icon: 'warning',
+                          buttons: ['No, volver', 'Si, confirmar servicio'],
+                          dangerMode: true
+                        }).then(async (willUpdate) => {
+                          if (willUpdate) {
+                            let payload = {
+                              new_request: 0, // It wont be a new request anymore
+                              operator: userInfoContext.id,
+                              status: `${process.env.REACT_APP_STATUS_CONFIRMATION_CLIENT_PROCESS}`
+                            };
+
+                            let res = await updateRequest(payload, requestId);
+                            if (res.status === 200) {
+                              // setDisabled(true);
+                              swal('Solicitud actualizada!', {
+                                icon: 'success'
+                              });
+                              // SEND EMAIL
+                              const payload = {
+                                id: requestId,
+                                template: 'request_options',
+                                subject: 'Confirmar solicitud ⚠️',
+                                to: data?.customer?.email,
+                                name: data?.customer?.first_name,
+                                optional_place1: data?.optional_place1,
+                                optional_place2: data?.optional_place2,
+                                optional_date1: data?.optional_date1,
+                                optional_date2: data?.optional_date2,
+                                service: data?.service
                               };
-
-                              let res = await updateRequest(payload, requestId);
-                              if (res.status === 200) {
-                                // setDisabled(true);
-                                swal('Solicitud actualizada!', {
-                                  icon: 'success'
-                                });
-                                // SEND EMAIL
-                                const payload = {
-                                  id: requestId,
-                                  template: 'request_options',
-                                  subject: 'Confirmar solicitud ⚠️',
-                                  to: data?.customer?.email,
-                                  name: data?.customer?.first_name,
-                                  optional_place1: data?.optional_place1,
-                                  optional_place2: data?.optional_place2,
-                                  optional_date1: data?.optional_date1,
-                                  optional_date2: data?.optional_date2,
-                                  service: data?.service
-                                };
-                                await sendEmailMG(payload); // SEND SERVICE OPTIONS EMAIL TO USER
-                              } else {
-                                swal(
-                                  'Oops, no se pudo actualizar el servicio.',
-                                  {
-                                    icon: 'error'
-                                  }
-                                );
-                              }
+                              await sendEmailMG(payload); // SEND SERVICE OPTIONS EMAIL TO USER
+                            } else {
+                              swal('Oops, no se pudo actualizar el servicio.', {
+                                icon: 'error'
+                              });
                             }
-                          });
-                        }}>
-                        <span>
-                          {data?.status?.step === 1
-                            ? 'Confirmar solicitud'
-                            : data?.status?.step === 2
-                            ? 'Esperando cliente'
-                            : data?.status?.step === 3
-                            ? 'Servicio confirmado'
-                            : 'Cancelado'}
-                        </span>
-                      </Button>
-                    </div>
+                          }
+                        });
+                      }}>
+                      <span>
+                        {data?.status?.step === 1
+                          ? 'Confirmar solicitud'
+                          : data?.status?.step === 2
+                          ? 'Esperando cliente'
+                          : data?.status?.step === 3
+                          ? 'Servicio confirmado'
+                          : 'Cancelado'}
+                      </span>
+                    </Button>
                   </div>
                 </div>
-                {data?.status?.step
-                  ? data?.status?.step > 2 && (
-                      <ConfirmSection
-                        customer={data?.customer}
-                        instructors={instructors}
-                        providers={providers}
-                        track={data?.track}
-                        fare_track={data?.fare_track}
-                        first_payment={data?.f_p_track}
-                        requestId={requestId}
-                        status={data?.status}
-                        date={data?.start_time}
-                        participants={participantsInfo}
-                        service={data?.service}
-                      />
-                    )
-                  : ''}
+              </div>
+              {data?.status?.step
+                ? data?.status?.step > 2 && (
+                    <ConfirmSection
+                      customer={data?.customer}
+                      instructors={instructors}
+                      providers={providers}
+                      track={data?.track}
+                      fare_track={data?.fare_track}
+                      first_payment={data?.f_p_track}
+                      requestId={requestId}
+                      status={data?.status}
+                      date={data?.start_time}
+                      participants={participantsInfo}
+                      service={data?.service}
+                    />
+                  )
+                : ''}
 
-                {data?.status?.step
-                  ? data?.status?.step > 3 && (
-                      <div className="card invoice-action-wrapper mt-2 shadow-none border">
-                        <div className="card-body">
-                          <div className="invoice-action-btn">
-                            <Button
-                              className="btn-block btn-success"
-                              disabled={
-                                documentsOk &&
-                                data?.status?.step < 6 &&
-                                allReportsOk
-                                  ? false
-                                  : true
-                              }
-                              onClick={() => setShowModalOC(true)}>
-                              <span>Enviar OC</span>
-                            </Button>
-                          </div>
+              {data?.status?.step
+                ? data?.status?.step > 3 && (
+                    <div className="card invoice-action-wrapper mt-2 shadow-none border">
+                      <div className="card-body">
+                        <div className="invoice-action-btn">
+                          <Button
+                            className="btn-block btn-success"
+                            disabled={
+                              documentsOk &&
+                              data?.status?.step < 6 &&
+                              allReportsOk
+                                ? false
+                                : true
+                            }
+                            onClick={() => setShowModalOC(true)}>
+                            <span>Enviar OC</span>
+                          </Button>
                         </div>
                       </div>
-                    )
-                  : ''}
-
-                {showModalOC && (
-                  <ModalOC
-                    handleClose={() => setShowModalOC(false)}
-                    instructors={instructors}
-                    providers={providers}
-                    date={data?.start_time}
-                    track={data?.track}
-                    fare_track={data?.fare_track}
-                    fisrt_payment={data?.f_p_track}
-                    requestId={requestId}
-                    status={data?.status}
-                    service={data?.service}
-                  />
-                )}
-              </React.Fragment>
-            )}
-            {userInfoContext.profile === 5 &&
-            data?.status?.step &&
-            data?.status?.step > 3 ? (
-              <React.Fragment>
-                <div className="card invoice-action-wrapper mt-2 shadow-none border">
-                  <div className="card-body">
-                    <div className="invoice-action-btn">
-                      <Button
-                        variant="light"
-                        className="btn-block"
-                        disabled={data?.status?.step < 4 ? true : false}
-                        onClick={() => setShowModalUploadReports(true)}>
-                        <span>Generar Informes </span>
-                      </Button>
-                      {showModalUploadReports && (
-                        <ModalUploadReports
-                          drivers={data?.drivers}
-                          handleClose={() => setShowModalUploadReports(false)}
-                          requestId={requestId}
-                          onUpdate={() => fetchRequest(requestId)}
-                        />
-                      )}
                     </div>
-                    <div className="invoice-action-btn">
-                      <Button
-                        className="btn-block btn-success"
-                        disabled={data?.status?.step > 4 ? true : false}
-                        onClick={() => {
-                          swal({
-                            title: '¿Estas seguro?',
-                            text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
-                            icon: 'warning',
-                            buttons: ['No, volver', 'Si, confirmar servicio'],
-                            dangerMode: true
-                          }).then(async (willUpdate) => {
+                  )
+                : ''}
+
+              {showModalOC && (
+                <ModalOC
+                  handleClose={() => setShowModalOC(false)}
+                  instructors={instructors}
+                  providers={providers}
+                  date={data?.start_time}
+                  track={data?.track}
+                  fare_track={data?.fare_track}
+                  fisrt_payment={data?.f_p_track}
+                  requestId={requestId}
+                  status={data?.status}
+                  service={data?.service}
+                />
+              )}
+            </React.Fragment>
+          )}
+          {userInfoContext.profile === 5 &&
+          data?.status?.step &&
+          data?.status?.step > 3 ? (
+            <React.Fragment>
+              <div className="card invoice-action-wrapper mt-2 shadow-none border">
+                <div className="card-body">
+                  <div className="invoice-action-btn">
+                    <Button
+                      variant="light"
+                      className="btn-block"
+                      disabled={data?.status?.step < 4 ? true : false}
+                      onClick={() => setShowModalUploadReports(true)}>
+                      <span>Generar Informes </span>
+                    </Button>
+                    {showModalUploadReports && (
+                      <ModalUploadReports
+                        drivers={data?.drivers}
+                        handleClose={() => setShowModalUploadReports(false)}
+                        requestId={requestId}
+                        onUpdate={() => fetchRequest(requestId)}
+                      />
+                    )}
+                  </div>
+                  <div className="invoice-action-btn">
+                    <Button
+                      className="btn-block btn-success"
+                      disabled={data?.status?.step > 4 ? true : false}
+                      onClick={() => {
+                        swal({
+                          title: '¿Estas seguro?',
+                          text:
+                            'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
+                          icon: 'warning',
+                          buttons: ['No, volver', 'Si, confirmar servicio'],
+                          dangerMode: true
+                        })
+                          .then(async (willUpdate) => {
                             if (willUpdate) {
+                              console.log('lets update');
                               let payload = {
                                 new_request: 0, // It wont be a new request anymore
                                 operator: userInfoContext.id,
                                 status: `${process.env.REACT_APP_STATUS_STEP_5}`
                               };
+                              setLoading(true);
+                              const res = await updateRequest(
+                                payload,
+                                requestId
+                              );
 
-                              let res = await updateRequest(payload, requestId);
                               if (res.status === 200) {
-                                // setDisabled(true);
-                                swal('Solicitud actualizada!', {
-                                  icon: 'success'
-                                });
-                                // SEND EMAIL TO CLIENT
-                                const payload = {
-                                  id: requestId,
-                                  emailType: 'requestFinished',
-                                  subject: 'Servicio Finalizado ✔️',
-                                  email: data?.customer?.email,
-                                  name: data?.customer?.first_name
-                                };
-                                await sendEmail(payload); // SEND SERVICE OPTIONS EMAIL TO USER
+                                sendFinishedEmail();
                               }
                             }
+                          })
+                          .catch((err) => {
+                            swal(
+                              'Oops, algo inesperado paso. No se pudo actualizar el servicio.',
+                              {
+                                icon: 'error'
+                              }
+                            );
+                            console.log(err);
+                            setLoading(false);
                           });
-                        }}>
-                        <span>Confirmar Finalizado</span>
+                      }}>
+                      <span>Confirmar Finalizado</span>
+                    </Button>
+                    {resendEmails(data?.status?.step)}
+                  </div>
+                </div>
+              </div>
+            </React.Fragment>
+          ) : (
+            ''
+          )}
+          {userInfoContext.profile === 1 && data?.status?.step
+            ? data?.status?.step > 5 && (
+                <div className="card invoice-action-wrapper mt-2 shadow-none border">
+                  <div className="card-body">
+                    <div className="invoice-action-btn">
+                      <Button
+                        className="btn-block btn-success"
+                        disabled={data?.status?.step > 6}
+                        onClick={() => setShowModalInvoice(true)}>
+                        <span>Adjuntar factura</span>
                       </Button>
                     </div>
                   </div>
                 </div>
-              </React.Fragment>
-            ) : (
-              ''
-            )}
-            {userInfoContext.profile === 1 && data?.status?.step
-              ? data?.status?.step > 5 && (
-                  <div className="card invoice-action-wrapper mt-2 shadow-none border">
-                    <div className="card-body">
-                      <div className="invoice-action-btn">
-                        <Button
-                          className="btn-block btn-success"
-                          disabled={data?.status?.step > 6}
-                          onClick={() => setShowModalInvoice(true)}>
-                          <span>Adjuntar factura</span>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                )
-              : ''}
-            {showModalInvoice && (
-              <ModalInvoice
-                handleClose={() => setShowModalInvoice(false)}
-                requestInfo={data}
-                onUpdate={() => fetchRequest(requestId)}
-              />
-            )}
-          </div>
-        </Row>
-      </section>
-    );
-  }
+              )
+            : ''}
+          {showModalInvoice && (
+            <ModalInvoice
+              handleClose={() => setShowModalInvoice(false)}
+              requestInfo={data}
+              onUpdate={() => fetchRequest(requestId)}
+            />
+          )}
+        </div>
+      </Row>
+    </section>
+  );
 };
 
 export default SingleRequestAdmin;
