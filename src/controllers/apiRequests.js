@@ -794,7 +794,7 @@ const updateRequest = async (data, id) => {
     url: `${process.env.REACT_APP_API_URL}/api/v1/requests/${id}/`,
     data
   }).catch((err) => {
-    return err;
+    throw err;
   });
   return result;
 };

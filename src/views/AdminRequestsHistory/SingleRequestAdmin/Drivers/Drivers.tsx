@@ -70,6 +70,14 @@ const Drivers: React.FC<DriversProps> = ({
     }
   }, [reportsInfoContext, participants, allReportsOk]);
 
+  const renderDrivers = () => {
+    if (!loading && participants.length) {
+      return participants.map((participant, idx) => (
+        <SingleDriver data={participant} key={idx} requestId={requestId} />
+      ));
+    }
+  };
+
   return (
     <Table bordered hover size="sm" className="mb-3 participants-table-admin">
       <thead>
@@ -88,13 +96,7 @@ const Drivers: React.FC<DriversProps> = ({
           )}
         </tr>
       </thead>
-      <tbody>
-        {!loading &&
-          participants.length &&
-          participants.map((participant, idx) => (
-            <SingleDriver data={participant} key={idx} requestId={requestId} />
-          ))}
-      </tbody>
+      <tbody>{renderDrivers()}</tbody>
     </Table>
   );
 };
