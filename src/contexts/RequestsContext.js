@@ -113,8 +113,8 @@ const RequestsContextProvider = (props) => {
     if (isLoggedInContext)
       fetchRequestsByPage(
         page && page !== 1
-          ? `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?page=${page}&search=${value}&start_time__gte=${startDate}&start_time__lt=${endDate}+23:59`
-          : `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?start_time__gte=${startDate}&start_time__lt=${endDate}+23:59&search=${value}`
+          ? `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?page=${page}&search=${value}`
+          : `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?search=${value}`
       );
   };
   const getNextPageOfRequests = (page, value) => getRequestsList(page, value);
