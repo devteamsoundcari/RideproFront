@@ -111,11 +111,23 @@ const RequestsContextProvider = (props) => {
       setRequests([]);
     }
     if (isLoggedInContext)
-      fetchRequestsByPage(
-        page && page !== 1
-          ? `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?page=${page}&search=${value}`
-          : `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?search=${value}`
-      );
+      if (page && page !== 1 && value != '') {
+        fetchRequestsByPage(
+          `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?page=${page}&search=${value}`
+        );
+      } else if (value != '') {
+        fetchRequestsByPage(
+          `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/`
+        );
+      } else if (page && page !== 1) {
+        fetchRequestsByPage(
+          `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/?page=${page}`
+        );
+      } else {
+        fetchRequestsByPage(
+          `${process.env.REACT_APP_API_URL}/api/v1/requests_summary/`
+        );
+      }
   };
   const getNextPageOfRequests = (page, value) => getRequestsList(page, value);
 
