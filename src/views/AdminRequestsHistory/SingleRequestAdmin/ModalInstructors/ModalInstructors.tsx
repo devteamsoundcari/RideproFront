@@ -1,20 +1,18 @@
-import React, { useEffect, useState, useContext } from "react";
-import BootstrapTable from "react-bootstrap-table-next";
-import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import cellEditFactory from "react-bootstrap-table2-editor";
-import { Row, Col, ButtonGroup, Button, Modal, Image } from "react-bootstrap";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { MdRefresh } from "react-icons/md";
-import swal from "sweetalert";
+import React, { useEffect, useState, useContext } from 'react';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import { Row, Col, ButtonGroup, Button, Modal, Image } from 'react-bootstrap';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { MdRefresh } from 'react-icons/md';
+import swal from 'sweetalert';
 
 import {
   getInstructors,
-  updateRequestInstructors,
-} from "../../../../controllers/apiRequests";
-import { AuthContext } from "../../../../contexts/AuthContext";
-import "./ModalInstructors.scss";
-import RegisterNewInstructor from "../../../Instructors/Registration/RegisterNewInstructor";
+  updateRequestInstructors
+} from '../../../../controllers/apiRequests';
+import { AuthContext } from '../../../../contexts/AuthContext';
+import './ModalInstructors.scss';
+import RegisterNewInstructor from '../../../Instructors/Registration/RegisterNewInstructor';
+import { PaginationTable } from '../../../PaginationTable/PaginationTable';
 
 interface ModalInstructorsProps {
   requestId: number;
@@ -29,19 +27,22 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   requestId,
   handleClose,
   propsInstructors,
-  onUpdate,
+  onUpdate
 }) => {
   const [instructors, setInstructors] = useState<any>([]);
   const [
     selectedInstructors,
-    setSelectedInstructors,
+    setSelectedInstructors
   ] = useState<SelectedInstructors>([]);
   const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
-  const { SearchBar } = Search;
   const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
   const [instructorsToShow, setInstructorsToShow] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalInstructors, setTotalInstructors] = useState(0);
+
+  const SIZE_PER_PAGE = 25;
 
   useEffect(() => {
     if (selectedInstructors.length > 0) {
@@ -69,71 +70,79 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   }, [propsInstructors]);
 
   // ================================ FETCH INSTRUCTORS ON LOAD =====================================================
-  const fetchInstructors = async (url) => {
-    let tempArr: any = [];
-    const response = await getInstructors(url);
-    response.results.forEach(async (item: any) => {
-      item.fare = 0;
-      tempArr.push(item);
-    });
-    setInstructors((x) => [...x, ...tempArr]);
-    if (response.next) {
-      return await fetchInstructors(response.next);
+  const fetchInstructors = async (url: string, type: string) => {
+    if (type === 'page') {
+      let tempArr: any = [];
+      const response = await getInstructors(url);
+      response.results.forEach(async (item: any) => {
+        item.fare = 0;
+        tempArr.push(item);
+      });
+      setInstructors((x) => [...x, ...tempArr]);
+      setTotalInstructors(response.count);
+    } else if (type === 'word') {
+      const response = await getInstructors(url);
+      setInstructors(response.results);
+      setTotalInstructors(response.count);
     }
   };
+
   useEffect(() => {
-    fetchInstructors(`${process.env.REACT_APP_API_URL}/api/v1/instructors/`);
+    fetchInstructors(
+      `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
+      'page'
+    );
     //eslint-disable-next-line
   }, []);
 
   const columns = [
     {
-      dataField: "official_id",
-      text: "Identificación",
+      dataField: 'official_id',
+      text: 'Identificación',
       editable: false,
-      headerClasses: "new-style",
+      headerClasses: 'new-style',
       headerStyle: {
-        width: "125px",
-      },
+        width: '125px'
+      }
     },
     {
-      dataField: "first_name",
-      text: "Nombre",
+      dataField: 'first_name',
+      text: 'Nombre',
       editable: false,
-      headerClasses: "new-style",
+      headerClasses: 'new-style'
     },
     {
-      dataField: "last_name",
-      text: "Apellido",
+      dataField: 'last_name',
+      text: 'Apellido',
       editable: false,
-      headerClasses: "new-style",
+      headerClasses: 'new-style'
     },
     {
-      dataField: "municipality.name",
-      text: "Ciudad",
+      dataField: 'municipality.name',
+      text: 'Ciudad',
       editable: false,
-      headerClasses: "new-style",
+      headerClasses: 'new-style'
     },
     {
-      dataField: "municipality.department.name",
-      text: "Departamento",
+      dataField: 'municipality.department.name',
+      text: 'Departamento',
       editable: false,
-      headerClasses: "new-style",
+      headerClasses: 'new-style',
       headerStyle: {
-        width: "125px",
-      },
+        width: '125px'
+      }
     },
     {
-      dataField: "fare",
-      text: "Tarifa $",
-      headerClasses: "new-style",
-      editCellClasses: "editing-cell",
-    },
+      dataField: 'fare',
+      text: 'Tarifa $',
+      headerClasses: 'new-style',
+      editCellClasses: 'editing-cell'
+    }
   ];
 
   const expandRow = {
-    parentClassName: "parent-expand-foo",
-    className: "expanded-div",
+    parentClassName: 'parent-expand-foo',
+    className: 'expanded-div',
     renderer: (row) => (
       <Row>
         <Col md={8}>
@@ -176,7 +185,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
         return <FaChevronUp />;
       }
       return <FaChevronDown />;
-    },
+    }
   };
 
   const containsObject = (obj, arr) => {
@@ -189,13 +198,13 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   };
 
   const selectRow = {
-    mode: "checkbox",
+    mode: 'checkbox',
     clickToSelect: false,
     hideSelectAll: true,
-    selectColumnPosition: "right",
+    selectColumnPosition: 'right',
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect && row.fare === 0) {
-        alert("Por favor añade una tarifa");
+        alert('Por favor añade una tarifa');
         return false;
       }
       if (isSelect) {
@@ -209,7 +218,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
           );
         }
       }
-    },
+    }
   };
 
   const handleUpdateInstructor = async () => {
@@ -219,12 +228,12 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     });
     let res = await updateRequestInstructors({
       request: requestId,
-      instructors: instructorsIds,
+      instructors: instructorsIds
     });
     if (res.status === 201) {
       setDisabled(true);
       onUpdate();
-      swal("Perfecto!", `Instructores actualizados exitosamente!`, "success");
+      swal('Perfecto!', `Instructores actualizados exitosamente!`, 'success');
       handleClose();
     }
   };
@@ -234,14 +243,41 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     setShowAddInstructorsModal(true);
   };
 
+  //==================================SEARCH INSTRUCTOR=========================================
+  const search = (
+    value: number | string,
+    param: string,
+    type: string,
+    pageToGo?: number
+  ) => {
+    if (value !== '') {
+      const url = `https://app-db.ridepro.co/api/v1/instructors/?${param}=${value}`;
+      fetchInstructors(url, type);
+      if (pageToGo) {
+        setCurrentPage(pageToGo);
+      } else {
+        setCurrentPage(1);
+      }
+    }
+    if (value === '') {
+      const url = `https://app-db.ridepro.co/api/v1/instructors/`;
+      fetchInstructors(url, type);
+      setCurrentPage(1);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    search(page, 'page', 'page');
+    setCurrentPage(page);
+  };
+
   return (
     <React.Fragment>
       <Modal
         size="lg"
         show={true}
         onHide={handleClose}
-        className="modal-admin-instructors"
-      >
+        className="modal-admin-instructors">
         <Modal.Header className={`bg-${userInfoContext.perfil}`} closeButton>
           <Modal.Title className="text-white">Instructores</Modal.Title>
         </Modal.Header>
@@ -250,18 +286,10 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
             keyField="official_id"
             data={instructorsToShow}
             columns={columns}
-            search
-          >
+            search>
             {(props) => (
               <React.Fragment>
                 <div className="top d-flex flex-wrap">
-                  <div className="action-filters flex-grow-1">
-                    <SearchBar
-                      {...props.searchProps}
-                      className="custome-search-field"
-                      placeholder="Buscar Instructor"
-                    />
-                  </div>
                   <div className="action-btns d-flex align-items-center">
                     <ButtonGroup aria-label="Basic example">
                       <Button
@@ -269,50 +297,42 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                         size="sm"
                         onClick={() =>
                           fetchInstructors(
-                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`
+                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
+                            'page'
                           )
-                        }
-                      >
+                        }>
                         <MdRefresh />
                       </Button>
                       <Button
                         variant="outline-secondary"
                         size="sm"
-                        onClick={handleClickAddInstructor}
-                      >
+                        onClick={handleClickAddInstructor}>
                         Agregar Instructor
                       </Button>
                       <Button
                         size="sm"
-                        variant={disabled ? "outline-secondary" : "info"}
+                        variant={disabled ? 'outline-secondary' : 'info'}
                         disabled={disabled ? true : false}
-                        onClick={handleUpdateInstructor}
-                      >
+                        onClick={handleUpdateInstructor}>
                         Guardar
                       </Button>
                     </ButtonGroup>
                   </div>
                 </div>
 
-                <BootstrapTable
-                  {...props.baseProps}
-                  expandRow={expandRow}
-                  selectRow={selectRow}
-                  pagination={paginationFactory()}
-                  rowClasses="row-new-style"
-                  cellEdit={cellEditFactory({
-                    mode: "click",
-                    afterSaveCell: (oldValue, newValue, row, column) => {
-                      if (containsObject(row, selectedInstructors)) {
-                        setSelectedInstructors(
-                          selectedInstructors.filter(
-                            (item) => item.id !== row.id
-                          )
-                        );
-                        setSelectedInstructors((oldArr) => [...oldArr, row]);
-                      }
-                    },
-                  })}
+                <PaginationTable
+                  onTableSearch={(text) => search(text, 'search', 'word', 1)}
+                  columns={columns}
+                  data={instructors.slice(
+                    (currentPage - 1) * SIZE_PER_PAGE,
+                    (currentPage - 1) * SIZE_PER_PAGE + SIZE_PER_PAGE
+                  )}
+                  page={currentPage}
+                  sizePerPage={SIZE_PER_PAGE}
+                  totalSize={totalInstructors}
+                  onPageChange={(page: number) => handlePageChange(page)}
+                  onRowClick={selectRow}
+                  textToShow={'Total de instructores'}
                 />
               </React.Fragment>
             )}
@@ -324,8 +344,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
           size="lg"
           show={true}
           onHide={() => setShowAddInstructorsModal(false)}
-          className="modal-add-instructors"
-        >
+          className="modal-add-instructors">
           <Modal.Header className={`bg-${userInfoContext.perfil}`} closeButton>
             <Modal.Title className="text-white">
               Registrar instructor

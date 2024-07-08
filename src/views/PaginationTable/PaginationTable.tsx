@@ -15,6 +15,7 @@ export interface IPaginationTableProps {
   columns: any;
   onRowClick: any;
   onTableSearch?: (searchText: string) => any;
+  textToShow?: string;
 }
 
 export function PaginationTable({
@@ -25,7 +26,8 @@ export function PaginationTable({
   totalSize,
   columns,
   onTableSearch,
-  onRowClick
+  onRowClick,
+  textToShow
 }: IPaginationTableProps) {
   const [searchText, setSearchText] = React.useState<string>('');
   return (
@@ -75,7 +77,9 @@ export function PaginationTable({
               {...paginationTableProps}
             />
             <div>
-              <p>Total de pistas: {totalSize}</p>
+              <p>
+                {textToShow ? textToShow : 'Total de pistas'}: {totalSize}
+              </p>
             </div>
             <div>
               <PaginationListStandalone {...paginationProps} />
