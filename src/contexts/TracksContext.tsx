@@ -58,6 +58,25 @@ const TracksContextProvider = (props) => {
     }
   };
 
+  const getTracksV2 = async (url: string, searchT?: string) => {
+    try {
+      setLoadingTracks(true);
+      const webUrl = `${url}&search=${searchT}`;
+      const res = await axios({
+        method: 'GET',
+        url: webUrl
+      });
+      setLoadingTracks(false);
+      setNextUrl(res.data.next);
+      setPrevUrl(res.data.previous);
+      return res;
+    } catch (error) {
+      setLoadingTracks(false);
+      setErrorTracks('Can not get tracks');
+      console.error('error', error);
+    }
+  };
+
   const getSearchTracks = async (text: string = '') => {
     try {
       setLoadingTracks(true);
@@ -81,19 +100,49 @@ const TracksContextProvider = (props) => {
     }
   };
 
+  const getSearchTracksV2 = async (searchT: string) => {
+    try {
+      setLoadingTracks(true);
+      setSearchText(searchT);
+      setLoadedPages([]);
+      const tempUrl = `${url}&search=${searchT}`;
+      const res = await axios({
+        method: 'GET',
+        url: tempUrl
+      });
+      // console.log('Res', res);
+      setTracks(res.data.results);
+      setTotalTracks(res.data.count);
+      setNextUrl(res.data.next);
+      setPrevUrl(res.data.previous);
+      setCurrentPage(1);
+      setLoadingTracks(false);
+      return res;
+    } catch (error) {
+      setErrorTracks('Can not get tracks');
+      console.error('error', error);
+      setLoadingTracks(false);
+    }
+  };
+
   return (
     <TracksContext.Provider
       value={
         {
           getTracks,
+          getTracksV2,
           tracks,
+          setTracks,
           errorTracks,
           loadingTracks,
+          setLoadingTracks,
           totalTracks,
           currentPage,
           setSearchText,
           searchText,
-          getSearchTracks
+          getSearchTracks,
+          getSearchTracksV2,
+          url
         } as any
       }>
       {props.children}

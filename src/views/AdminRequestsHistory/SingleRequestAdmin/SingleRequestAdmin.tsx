@@ -14,7 +14,7 @@ import Instructors from './Instructors/Instructors';
 import Providers from './Providers/Providers';
 import ModalInstructors from './ModalInstructors/ModalInstructors';
 import ModalProviders from './ModalProviders/ModalProviders';
-import ModalPlaceDate from './ModalPlaceDate/ModalPlaceDate';
+import ModalPlaceDate from './ModalPlaceDate/ModalPlaceDateV2';
 import PlaceDate from './PlaceDate/PlaceDate';
 import { AuthContext } from '../../../contexts/AuthContext';
 import ConfirmSection from './ConfirmSection/ConfirmSection';
@@ -157,13 +157,8 @@ const SingleRequestAdmin = () => {
       month: '2-digit',
       day: '2-digit'
     });
-    const [
-      { value: month },
-      ,
-      { value: day },
-      ,
-      { value: year }
-    ] = dateTimeFormat.formatToParts(d);
+    const [{ value: month }, , { value: day }, , { value: year }] =
+      dateTimeFormat.formatToParts(d);
     return `${month}/${day}/${year}`;
   };
 
@@ -219,8 +214,7 @@ const SingleRequestAdmin = () => {
         onClick={() => {
           swal({
             title: '¿Estas segur@?',
-            text:
-              'Esta operación enviara un correo al cliente con la información de finalizado, ¿estas seguro?',
+            text: 'Esta operación enviara un correo al cliente con la información de finalizado, ¿estas seguro?',
             icon: 'warning',
             buttons: ['Canelar', 'Si, reenviar correo']
           })
@@ -562,8 +556,7 @@ const SingleRequestAdmin = () => {
                       onClick={() => {
                         swal({
                           title: '¿Estas seguro?',
-                          text:
-                            'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
+                          text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
                           icon: 'warning',
                           buttons: ['No, volver', 'Si, confirmar servicio'],
                           dangerMode: true
@@ -703,8 +696,7 @@ const SingleRequestAdmin = () => {
                       onClick={() => {
                         swal({
                           title: '¿Estas seguro?',
-                          text:
-                            'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
+                          text: 'Une vez confirmes el servicio el cliente recibira una notificación y el servicio no podra ser modificado!',
                           icon: 'warning',
                           buttons: ['No, volver', 'Si, confirmar servicio'],
                           dangerMode: true
