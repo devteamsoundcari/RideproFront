@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import BootstrapTable from 'react-bootstrap-table-next';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import cellEditFactory from 'react-bootstrap-table2-editor';
 import { Row, Col, ButtonGroup, Button, Modal, Image } from 'react-bootstrap';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { MdRefresh } from 'react-icons/md';
@@ -12,7 +15,6 @@ import {
 import { AuthContext } from '../../../../contexts/AuthContext';
 import './ModalInstructors.scss';
 import RegisterNewInstructor from '../../../Instructors/Registration/RegisterNewInstructor';
-import { PaginationTable } from '../../../PaginationTable/PaginationTable';
 
 interface ModalInstructorsProps {
   requestId: number;
@@ -37,12 +39,9 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
+  const { SearchBar } = Search;
   const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
   const [instructorsToShow, setInstructorsToShow] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalInstructors, setTotalInstructors] = useState(0);
-
-  const SIZE_PER_PAGE = 25;
 
   useEffect(() => {
     if (selectedInstructors.length > 0) {
@@ -70,28 +69,20 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   }, [propsInstructors]);
 
   // ================================ FETCH INSTRUCTORS ON LOAD =====================================================
-  const fetchInstructors = async (url: string, type: string) => {
-    if (type === 'page') {
-      let tempArr: any = [];
-      const response = await getInstructors(url);
-      response.results.forEach(async (item: any) => {
-        item.fare = 0;
-        tempArr.push(item);
-      });
-      setInstructors((x) => [...x, ...tempArr]);
-      setTotalInstructors(response.count);
-    } else if (type === 'word') {
-      const response = await getInstructors(url);
-      setInstructors(response.results);
-      setTotalInstructors(response.count);
+  const fetchInstructors = async (url) => {
+    let tempArr: any = [];
+    const response = await getInstructors(url);
+    response.results.forEach(async (item: any) => {
+      item.fare = 0;
+      tempArr.push(item);
+    });
+    setInstructors((x) => [...x, ...tempArr]);
+    if (response.next) {
+      return await fetchInstructors(response.next);
     }
   };
-
   useEffect(() => {
-    fetchInstructors(
-      `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
-      'page'
-    );
+    fetchInstructors(`${process.env.REACT_APP_API_URL}/api/v1/instructors/`);
     //eslint-disable-next-line
   }, []);
 
@@ -243,34 +234,6 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     setShowAddInstructorsModal(true);
   };
 
-  //==================================SEARCH INSTRUCTOR=========================================
-  const search = (
-    value: number | string,
-    param: string,
-    type: string,
-    pageToGo?: number
-  ) => {
-    if (value !== '') {
-      const url = `https://app-db.ridepro.co/api/v1/instructors/?${param}=${value}`;
-      fetchInstructors(url, type);
-      if (pageToGo) {
-        setCurrentPage(pageToGo);
-      } else {
-        setCurrentPage(1);
-      }
-    }
-    if (value === '') {
-      const url = `https://app-db.ridepro.co/api/v1/instructors/`;
-      fetchInstructors(url, type);
-      setCurrentPage(1);
-    }
-  };
-
-  const handlePageChange = (page: number) => {
-    search(page, 'page', 'page');
-    setCurrentPage(page);
-  };
-
   return (
     <React.Fragment>
       <Modal
@@ -290,6 +253,13 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
             {(props) => (
               <React.Fragment>
                 <div className="top d-flex flex-wrap">
+                  <div className="action-filters flex-grow-1">
+                    <SearchBar
+                      {...props.searchProps}
+                      className="custome-search-field"
+                      placeholder="Buscar Instructor"
+                    />
+                  </div>
                   <div className="action-btns d-flex align-items-center">
                     <ButtonGroup aria-label="Basic example">
                       <Button
@@ -297,8 +267,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                         size="sm"
                         onClick={() =>
                           fetchInstructors(
-                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
-                            'page'
+                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`
                           )
                         }>
                         <MdRefresh />
@@ -320,19 +289,25 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                   </div>
                 </div>
 
-                <PaginationTable
-                  onTableSearch={(text) => search(text, 'search', 'word', 1)}
-                  columns={columns}
-                  data={instructors.slice(
-                    (currentPage - 1) * SIZE_PER_PAGE,
-                    (currentPage - 1) * SIZE_PER_PAGE + SIZE_PER_PAGE
-                  )}
-                  page={currentPage}
-                  sizePerPage={SIZE_PER_PAGE}
-                  totalSize={totalInstructors}
-                  onPageChange={(page: number) => handlePageChange(page)}
-                  onRowClick={selectRow}
-                  textToShow={'Total de instructores'}
+                <BootstrapTable
+                  {...props.baseProps}
+                  expandRow={expandRow}
+                  selectRow={selectRow}
+                  pagination={paginationFactory()}
+                  rowClasses="row-new-style"
+                  cellEdit={cellEditFactory({
+                    mode: 'click',
+                    afterSaveCell: (oldValue, newValue, row, column) => {
+                      if (containsObject(row, selectedInstructors)) {
+                        setSelectedInstructors(
+                          selectedInstructors.filter(
+                            (item) => item.id !== row.id
+                          )
+                        );
+                        setSelectedInstructors((oldArr) => [...oldArr, row]);
+                      }
+                    }
+                  })}
                 />
               </React.Fragment>
             )}
