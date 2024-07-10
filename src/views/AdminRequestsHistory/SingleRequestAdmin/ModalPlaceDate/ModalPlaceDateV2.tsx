@@ -88,71 +88,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   });
   const [showAlternative, setShowAlternative] = useState(false);
   const { userInfoContext } = useContext(AuthContext);
-  // const { updateRequests } = useContext(RequestsContext);
   const [showModalTracks, setShowModalTracks] = useState(false);
-  // const [selectedPlace, PlacesDropdown] = useDropdown(
-  //   '',
-  //   'Seleccione...',
-  //   filteredTracks
-  // );
-  // const [selectedPlace2, PlacesDropdown2] = useDropdown(
-  //   '',
-  //   'Seleccione...',
-  //   filteredTracks
-  // );
-
-  // useEffect(() => {
-  //   if (showAlternative) {
-  //     if (
-  //       propsTrack ||
-  //       (opt1.place &&
-  //         opt1.place !== 'Seleccione...' &&
-  //         opt2.place &&
-  //         opt2.place !== 'Seleccione...')
-  //     ) {
-  //       if (opt1.date && opt2.date) {
-  //         setDisabled(false);
-  //       }
-  //     } else {
-  //       setDisabled(true);
-  //     }
-  //   } else {
-  //     if (propsTrack && opt1.date !== '') {
-  //       setDisabled(false);
-  //     } else if (opt1.place && opt1.place !== 'Seleccione...') {
-  //       if (opt1.date) {
-  //         setDisabled(false);
-  //       }
-  //     } else {
-  //       setDisabled(true);
-  //     }
-  //   }
-  // }, [
-  //   propsTrack,
-  //   propsOptDate1,
-  //   propsOptDate2,
-  //   propsOptPlace1,
-  //   propsOptPlace2,
-  //   showAlternative,
-  //   opt1,
-  //   opt2
-  // ]);
-
-  // useEffect(() => {
-  //   if (selectedPlace) {
-  //     setOpt1({
-  //       ...opt1,
-  //       place: selectedPlace
-  //     });
-  //   }
-  //   if (selectedPlace2) {
-  //     setOpt2({
-  //       ...opt2,
-  //       place: selectedPlace2
-  //     });
-  //   }
-  //   // eslint-disable-next-line
-  // }, [selectedPlace, selectedPlace2]);
 
   useEffect(() => {
     if (propsDate !== undefined) {
@@ -195,8 +131,19 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
 
   // ================================ FETCH TRACKS ON LOAD =====================================================
   const fetchTracks = async (searchT: string) => {
-    // console.log('Search term', propsCity.name);
-    const response = await getTracksV2(url, searchT);
+    // Se pone un condicional para verificar si el search term es = al propsCity.name y así agregar las búsquedasademás de la ciudad
+    const searchTerm =
+      searchT === propsCity.name ? searchT : `${propsCity.name} ${searchT}`;
+
+    // Alternativa al ternario
+    /*let searchTerm: string = '';
+    if (searchT === propsCity.name) {
+      searchTerm = searchT;
+    } else {
+      searchTerm = `${propsCity.name} ${searchT}`;
+    }*/
+
+    const response = await getTracksV2(url, searchTerm);
     // console.log('Response', response.data.results);
     setFilteredTracks(response.data.results);
     setAltFilteredTracks(response.data.results);
