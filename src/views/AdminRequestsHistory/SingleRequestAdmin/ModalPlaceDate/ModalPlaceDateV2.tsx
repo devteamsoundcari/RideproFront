@@ -288,7 +288,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     if (selectedTrack2) {
       setOpt2((prevOpt2) => ({
         ...prevOpt2,
-        place: selectedTrack2.municipality.name
+        place: selectedTrack2.id.toString()
       }));
     }
     // eslint-disable-next-line
@@ -742,9 +742,9 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                   };
                   let payload2 = {
                     optional_place1: opt1.place,
-                    optional_date1: opt1.date,
+                    optional_date1: new Date(opt1.date).toISOString(),
                     optional_place2: opt2.place,
-                    optional_date2: opt2.date,
+                    optional_date2: new Date(opt2.date).toISOString(),
                     operator: userInfoContext.id
                   };
 
