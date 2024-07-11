@@ -738,6 +738,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                   let payload = {
                     optional_place1: opt1.place,
                     optional_date1: new Date(opt1.date).toISOString(),
+                    track: opt1.place,
                     operator: userInfoContext.id
                   };
                   let payload2 = {
@@ -750,16 +751,19 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                       opt2.date === undefined
                         ? new Date().toISOString()
                         : new Date(opt2.date).toISOString(),
+                    track: opt1.place,
                     operator: userInfoContext.id
                   };
 
                   // console.log('Date 1', opt1.date);
+                  // console.log('Place 1', opt1.place);
                   // console.log('Payload', payload);
 
                   let res = await updateRequest(
                     showAlternative ? payload2 : payload,
                     requestId
                   );
+                  console.log('Response', res);
                   if (res.status === 200) {
                     setDisabled(true);
 
