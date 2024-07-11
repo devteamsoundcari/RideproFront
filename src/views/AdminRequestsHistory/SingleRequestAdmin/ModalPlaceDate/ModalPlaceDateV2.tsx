@@ -763,7 +763,6 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                     showAlternative ? payload2 : payload,
                     requestId
                   );
-                  console.log('Response', res);
                   if (res.status === 200) {
                     setDisabled(true);
 
