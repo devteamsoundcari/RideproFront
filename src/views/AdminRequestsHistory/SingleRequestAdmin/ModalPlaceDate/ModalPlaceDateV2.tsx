@@ -744,7 +744,12 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                     optional_place1: opt1.place,
                     optional_date1: new Date(opt1.date).toISOString(),
                     optional_place2: opt2.place,
-                    optional_date2: new Date(opt2.date).toISOString(),
+                    optional_date2:
+                      opt2.date === '' ||
+                      opt2.date === null ||
+                      opt2.date === undefined
+                        ? new Date().toISOString()
+                        : new Date(opt2.date).toISOString(),
                     operator: userInfoContext.id
                   };
 
