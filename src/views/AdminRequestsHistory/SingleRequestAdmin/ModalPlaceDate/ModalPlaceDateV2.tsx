@@ -89,6 +89,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   const [showAlternative, setShowAlternative] = useState(false);
   const { userInfoContext } = useContext(AuthContext);
   const [showModalTracks, setShowModalTracks] = useState(false);
+  const [oneObjArr, setOneObjArr] = useState<any[]>([]);
 
   useEffect(() => {
     if (propsDate !== undefined) {
@@ -229,8 +230,21 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     }
   };
 
+  function transformObjectToArray(object: any) {
+    let array: any[] = [];
+    array.push(object);
+    return array;
+  }
+
   useEffect(() => {
     fetchTracks(propsCity.name);
+    if (propsTrack) {
+      setSelectedTrack(propsTrack);
+      setOneObjArr(transformObjectToArray(propsTrack));
+    } else if (propsOptPlace1) {
+      setSelectedTrack(propsOptPlace1);
+      setOneObjArr(transformObjectToArray(propsOptPlace1));
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -246,6 +260,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
         propsTrack ||
         (opt1.place && opt1.place !== '' && opt2.place && opt2.place !== '')
       ) {
+        setSelectedTrack(propsTrack);
         if (opt1.date && opt2.date) {
           setDisabled(false);
         }
@@ -254,8 +269,10 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
       }
     } else {
       if (propsTrack && opt1.date !== '') {
+        setSelectedTrack(propsTrack);
         setDisabled(false);
       } else if (opt1.place && opt1.place !== null) {
+        setSelectedTrack(propsTrack);
         if (opt1.date) {
           setDisabled(false);
         }
@@ -275,11 +292,18 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   ]);
 
   useEffect(() => {
+    // console.log('Data a array', propsTrack.name, propsTrack.image);
+    console.log('Opt place 1', opt1);
+
     if (selectedTrack) {
+      console.log('Track', selectedTrack.id);
       setOpt1((prevOpt1) => ({
         ...prevOpt1,
         place: selectedTrack.id.toString()
       }));
+      console.log('Opt1', opt1);
+    } else {
+      console.log('Que nea hermano');
     }
     // eslint-disable-next-line
   }, [selectedTrack]);
@@ -549,6 +573,28 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
           <Spinner animation="border" role="status" size="sm">
             <span className="sr-only">Cargando...</span>
           </Spinner>
+        ) : propsTrack ? (
+          <PaginationTable
+            onTableSearch={(text) => fetchTracks(text)}
+            columns={fields}
+            data={oneObjArr}
+            page={currentPage}
+            sizePerPage={sizePerPage}
+            totalSize={oneObjArr.length}
+            onPageChange={(page: any) => handlePageChange(page, false)}
+            onRowClick={selectRow}
+          />
+        ) : propsOptPlace1 ? (
+          <PaginationTable
+            onTableSearch={(text) => fetchTracks(text)}
+            columns={fields}
+            data={oneObjArr}
+            page={currentPage}
+            sizePerPage={sizePerPage}
+            totalSize={oneObjArr.length}
+            onPageChange={(page: any) => handlePageChange(page, false)}
+            onRowClick={selectRow}
+          />
         ) : (
           <PaginationTable
             onTableSearch={(text) => fetchTracks(text)}
@@ -557,7 +603,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
             page={currentPage}
             sizePerPage={sizePerPage}
             totalSize={totalTracks}
-            onPageChange={(page: any) => handlePageChange(page, false)}
+            onPageChange={(page: any) => handlePageChange(page, true)}
             onRowClick={selectRow}
           />
         )}
