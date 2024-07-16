@@ -32,16 +32,17 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   onUpdate
 }) => {
   const [instructors, setInstructors] = useState<any>([]);
-  const [
-    selectedInstructors,
-    setSelectedInstructors
-  ] = useState<SelectedInstructors>([]);
+  const [selectedInstructors, setSelectedInstructors] =
+    useState<SelectedInstructors>([]);
   const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
   const { SearchBar } = Search;
   const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
   const [instructorsToShow, setInstructorsToShow] = useState([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const SIZE_PER_PAGE = 25;
+  const [totalInstructors, setTotalInstructors] = useState(0);
 
   useEffect(() => {
     if (selectedInstructors.length > 0) {
@@ -77,12 +78,13 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
       tempArr.push(item);
     });
     setInstructors((x) => [...x, ...tempArr]);
-    if (response.next) {
-      return await fetchInstructors(response.next);
-    }
+    setTotalInstructors(response.count);
   };
   useEffect(() => {
-    fetchInstructors(`${process.env.REACT_APP_API_URL}/api/v1/instructors/`);
+    fetchInstructorsV2(
+      `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
+      'page'
+    );
     //eslint-disable-next-line
   }, []);
 
@@ -127,7 +129,8 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
       dataField: 'fare',
       text: 'Tarifa $',
       headerClasses: 'new-style',
-      editCellClasses: 'editing-cell'
+      //editCellClasses: 'editing-cell',
+      editor: { type: 'number' }
     }
   ];
 
@@ -234,6 +237,98 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     setShowAddInstructorsModal(true);
   };
 
+  const fetchInstructorsV2 = async (url: string, type: string) => {
+    if (type === 'page') {
+      let tempArr: any[] = [];
+      const response = await getInstructors(url);
+      response.results.forEach(async (item: any) => {
+        tempArr.push(item);
+      });
+      setInstructors((x): any => [...x, ...tempArr]);
+      setTotalInstructors(response.count);
+    } else if (type === 'word') {
+      const response = await getInstructors(url);
+      setInstructors(response.results);
+      setTotalInstructors(response.count);
+      setCurrentPage(1);
+    }
+  };
+  const MySearch = (props, placeholder) => {
+    let input;
+    const handleClick = () => {
+      props.onSearch(input.value);
+      search(input.value, 'search', 'word', 1);
+    };
+    return (
+      <div>
+        <input className="form-control" ref={(n) => (input = n)} type="text" />
+        <button className="btn btn-outline-secondary" onClick={handleClick}>
+          Buscar
+        </button>
+      </div>
+    );
+  };
+
+  const search = (
+    value: number | string | undefined,
+    param: string,
+    type: string,
+    pageToGo?: number
+  ) => {
+    if (value !== '') {
+      const url = `https://app-db.ridepro.co/api/v1/instructors/?${param}=${value}`;
+      fetchInstructorsV2(url, type);
+      if (pageToGo) {
+        setCurrentPage(pageToGo);
+      } else {
+        setCurrentPage(1);
+      }
+    }
+    if (value === '') {
+      const url = `https://app-db.ridepro.co/api/v1/instructors/`;
+      fetchInstructorsV2(url, type);
+      setCurrentPage(1);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    search(page, 'page', 'page');
+    setCurrentPage(page);
+  };
+
+  const pageButtonRenderer = ({ page, title }) => {
+    // just exclude  <<, >>
+    const arrayPages = [page];
+    const pageWithoutIndication = arrayPages.filter(
+      (p: number | string) => p === '<<' || p === '>>'
+    );
+    const handleClick = (page: number | string) => {
+      if (page === '<') {
+        handlePageChange(currentPage - 1);
+      }
+      if (page === '>') {
+        handlePageChange(currentPage + 1);
+      }
+      if (typeof page === 'number') {
+        handlePageChange(page);
+      }
+    };
+    return (
+      <div key={title}>
+        {pageWithoutIndication.map((p) => (
+          <button key={p} className={`btn`} onClick={() => handleClick(p)}>
+            {p}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  const paginationOptions = {
+    sizePerPage: SIZE_PER_PAGE,
+    pageButtonRenderer
+  };
+
   return (
     <React.Fragment>
       <Modal
@@ -254,7 +349,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
               <React.Fragment>
                 <div className="top d-flex flex-wrap">
                   <div className="action-filters flex-grow-1">
-                    <SearchBar
+                    <MySearch
                       {...props.searchProps}
                       className="custome-search-field"
                       placeholder="Buscar Instructor"
@@ -288,8 +383,31 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                     </ButtonGroup>
                   </div>
                 </div>
-
                 <BootstrapTable
+                  {...props.baseProps}
+                  expandRow={expandRow}
+                  totalSize={totalInstructors}
+                  selectRow={selectRow}
+                  pagination={paginationFactory(paginationOptions)}
+                  rowClasses="row-new-style"
+                  cellEdit={cellEditFactory({
+                    mode: 'click',
+                    afterSaveCell: (oldValue, newValue, row, column) => {
+                      if (containsObject(row, selectedInstructors)) {
+                        setSelectedInstructors(
+                          selectedInstructors.filter(
+                            (item) => item.id !== row.id
+                          )
+                        );
+                        setSelectedInstructors((oldArr) => [...oldArr, row]);
+                      }
+                    }
+                  })}
+                />
+                <div>
+                  <p>Total de instructores: {totalInstructors}</p>
+                </div>
+                {/* <BootstrapTable
                   {...props.baseProps}
                   expandRow={expandRow}
                   selectRow={selectRow}
@@ -308,7 +426,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                       }
                     }
                   })}
-                />
+                /> */}
               </React.Fragment>
             )}
           </ToolkitProvider>
