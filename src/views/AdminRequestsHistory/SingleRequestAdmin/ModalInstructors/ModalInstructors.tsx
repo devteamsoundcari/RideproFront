@@ -40,9 +40,8 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   const { SearchBar } = Search;
   const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
   const [instructorsToShow, setInstructorsToShow] = useState([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const SIZE_PER_PAGE = 25;
   const [totalInstructors, setTotalInstructors] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (selectedInstructors.length > 0) {
@@ -79,12 +78,12 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     });
     setInstructors((x) => [...x, ...tempArr]);
     setTotalInstructors(response.count);
+    // if (response.next) {
+    //   return await fetchInstructors(response.next);
+    // }
   };
   useEffect(() => {
-    fetchInstructorsV2(
-      `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
-      'page'
-    );
+    fetchInstructors(`${process.env.REACT_APP_API_URL}/api/v1/instructors/`);
     //eslint-disable-next-line
   }, []);
 
@@ -129,8 +128,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
       dataField: 'fare',
       text: 'Tarifa $',
       headerClasses: 'new-style',
-      //editCellClasses: 'editing-cell',
-      editor: { type: 'number' }
+      editCellClasses: 'editing-cell'
     }
   ];
 
@@ -253,7 +251,8 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
       setCurrentPage(1);
     }
   };
-  const MySearch = (props, placeholder) => {
+
+  const MySearch = (props) => {
     let input;
     const handleClick = () => {
       props.onSearch(input.value);
@@ -291,43 +290,10 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     }
   };
 
-  const handlePageChange = (page: number) => {
-    search(page, 'page', 'page');
-    setCurrentPage(page);
-  };
-
-  const pageButtonRenderer = ({ page, title }) => {
-    // just exclude  <<, >>
-    const arrayPages = [page];
-    const pageWithoutIndication = arrayPages.filter(
-      (p: number | string) => p === '<<' || p === '>>'
-    );
-    const handleClick = (page: number | string) => {
-      if (page === '<') {
-        handlePageChange(currentPage - 1);
-      }
-      if (page === '>') {
-        handlePageChange(currentPage + 1);
-      }
-      if (typeof page === 'number') {
-        handlePageChange(page);
-      }
-    };
-    return (
-      <div key={title}>
-        {pageWithoutIndication.map((p) => (
-          <button key={p} className={`btn`} onClick={() => handleClick(p)}>
-            {p}
-          </button>
-        ))}
-      </div>
-    );
-  };
-
-  const paginationOptions = {
-    sizePerPage: SIZE_PER_PAGE,
-    pageButtonRenderer
-  };
+  const pagination = paginationFactory({
+    page: 1,
+    sizePerPage: 2
+  });
 
   return (
     <React.Fragment>
@@ -352,7 +318,6 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                     <MySearch
                       {...props.searchProps}
                       className="custome-search-field"
-                      placeholder="Buscar Instructor"
                     />
                   </div>
                   <div className="action-btns d-flex align-items-center">
@@ -383,12 +348,12 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                     </ButtonGroup>
                   </div>
                 </div>
+
                 <BootstrapTable
                   {...props.baseProps}
                   expandRow={expandRow}
-                  totalSize={totalInstructors}
                   selectRow={selectRow}
-                  pagination={paginationFactory(paginationOptions)}
+                  pagination={pagination}
                   rowClasses="row-new-style"
                   cellEdit={cellEditFactory({
                     mode: 'click',
@@ -405,28 +370,8 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                   })}
                 />
                 <div>
-                  <p>Total de instructores: {totalInstructors}</p>
+                  <p>Total de resultados: {totalInstructors}</p>
                 </div>
-                {/* <BootstrapTable
-                  {...props.baseProps}
-                  expandRow={expandRow}
-                  selectRow={selectRow}
-                  pagination={paginationFactory()}
-                  rowClasses="row-new-style"
-                  cellEdit={cellEditFactory({
-                    mode: 'click',
-                    afterSaveCell: (oldValue, newValue, row, column) => {
-                      if (containsObject(row, selectedInstructors)) {
-                        setSelectedInstructors(
-                          selectedInstructors.filter(
-                            (item) => item.id !== row.id
-                          )
-                        );
-                        setSelectedInstructors((oldArr) => [...oldArr, row]);
-                      }
-                    }
-                  })}
-                /> */}
               </React.Fragment>
             )}
           </ToolkitProvider>
