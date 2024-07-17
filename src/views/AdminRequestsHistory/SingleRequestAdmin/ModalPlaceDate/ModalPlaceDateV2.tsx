@@ -41,6 +41,8 @@ interface ModalPlaceDateProps {
   propsOptPlace1: any;
   propsOptDate2: any;
   propsOptPlace2: any;
+  updates: any;
+  setUpdates: any;
 }
 
 // interface Track {
@@ -63,7 +65,9 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   propsOptPlace1,
   propsOptDate2,
   propsOptPlace2,
-  requestId
+  requestId,
+  updates,
+  setUpdates
 }) => {
   const { getTracksV2, loadingTracks, setLoadingTracks, url } =
     useContext(TracksContext);
@@ -90,6 +94,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   const { userInfoContext } = useContext(AuthContext);
   const [showModalTracks, setShowModalTracks] = useState(false);
   const [oneObjArr, setOneObjArr] = useState<any[]>([]);
+  const [altOneObjArr, setAltOneObjArr] = useState<any[]>([]);
 
   useEffect(() => {
     if (propsDate !== undefined) {
@@ -237,16 +242,37 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
   }
 
   useEffect(() => {
+    const fetchTracks = async (searchT: string) => {
+      // Se pone un condicional para verificar si el search term es = al propsCity.name y así agregar las búsquedasademás de la ciudad
+      const searchTerm =
+        searchT === propsCity.name ? searchT : `${propsCity.name} ${searchT}`;
+
+      const response = await getTracksV2(url, searchTerm);
+      // console.log('Response', response.data.results);
+      setFilteredTracks(response.data.results);
+      setAltFilteredTracks(response.data.results);
+      setSizePerPage(response.data.results.length);
+      setTotalTracks(response.data.count);
+    };
+
     fetchTracks(propsCity.name);
-    if (propsTrack) {
+    if (propsTrack && propsOptPlace1 && propsOptPlace2) {
       setSelectedTrack(propsTrack);
       setOneObjArr(transformObjectToArray(propsTrack));
+      setSelectedTrack2(propsOptPlace2);
+      setAltOneObjArr(transformObjectToArray(propsOptPlace2));
     } else if (propsOptPlace1) {
       setSelectedTrack(propsOptPlace1);
       setOneObjArr(transformObjectToArray(propsOptPlace1));
+    } else if (propsOptPlace2) {
+      // console.log('opt place 2', propsOptPlace2);
+      setSelectedTrack(propsOptPlace1);
+      setOneObjArr(transformObjectToArray(propsOptPlace1));
+      setSelectedTrack2(propsOptPlace2);
+      setAltOneObjArr(transformObjectToArray(propsOptPlace2));
     }
     // eslint-disable-next-line
-  }, []);
+  }, [propsTrack, updates]);
 
   // ================================ DATOS TABLA =============================================================
   // const [showAddTrack, setShowAddTrack] = useState(false);
@@ -293,17 +319,14 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
 
   useEffect(() => {
     // console.log('Data a array', propsTrack.name, propsTrack.image);
-    console.log('Opt place 1', opt1);
+    // console.log('Opt place 1', opt1);
 
     if (selectedTrack) {
-      console.log('Track', selectedTrack.id);
+      // console.log('Track', selectedTrack.id);
       setOpt1((prevOpt1) => ({
         ...prevOpt1,
         place: selectedTrack.id.toString()
       }));
-      console.log('Opt1', opt1);
-    } else {
-      console.log('Que nea hermano');
     }
     // eslint-disable-next-line
   }, [selectedTrack]);
@@ -682,10 +705,10 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                   <PaginationTable
                     onTableSearch={(text) => fetchTracks(text)}
                     columns={fields}
-                    data={altFilteredTracks}
+                    data={altOneObjArr}
                     page={altCurrentPage}
                     sizePerPage={sizePerPage}
-                    totalSize={totalTracks}
+                    totalSize={altOneObjArr.length}
                     onPageChange={(page: any) => handlePageChange(page, true)}
                     onRowClick={selectRow2}
                   />
@@ -702,10 +725,10 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                   <PaginationTable
                     onTableSearch={(text) => fetchTracks(text)}
                     columns={fields}
-                    data={altFilteredTracks}
+                    data={altOneObjArr}
                     page={altCurrentPage}
                     sizePerPage={sizePerPage}
-                    totalSize={totalTracks}
+                    totalSize={altOneObjArr.length}
                     onPageChange={(page: any) => handlePageChange(page, true)}
                     onRowClick={selectRow2}
                   />
@@ -785,6 +808,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                     optional_place1: opt1.place,
                     optional_date1: new Date(opt1.date).toISOString(),
                     track: opt1.place,
+                    start_time: new Date(opt1.date).toISOString(),
                     operator: userInfoContext.id
                   };
                   let payload2 = {
@@ -798,6 +822,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                         ? new Date().toISOString()
                         : new Date(opt2.date).toISOString(),
                     track: opt1.place,
+                    start_time: new Date(opt1.date).toISOString(),
                     operator: userInfoContext.id
                   };
 
@@ -811,6 +836,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                   );
                   if (res.status === 200) {
                     setDisabled(true);
+                    setUpdates(true);
 
                     // updateRequests();
                     swal('Solicitud actualizada!', {
