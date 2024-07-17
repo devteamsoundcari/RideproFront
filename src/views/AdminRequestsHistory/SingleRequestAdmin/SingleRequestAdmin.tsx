@@ -105,6 +105,7 @@ const SingleRequestAdmin = () => {
   const [participantsInfo, setParticipantsInfo] = useState([]);
   const [allReportsOk, setAllReportsOk] = useState(false);
   const [showModalInvoice, setShowModalInvoice] = useState(false);
+  const [updates, setUpdates] = useState(false);
 
   async function fetchRequest(id: string) {
     setLoading(true);
@@ -114,8 +115,15 @@ const SingleRequestAdmin = () => {
   }
 
   useEffect(() => {
+    async function fetchRequest(id: string) {
+      setLoading(true);
+      const responseRequest = await getRequest(id);
+      setLoading(false);
+      setData(responseRequest);
+    }
+
     fetchRequest(requestId);
-  }, [requestId]);
+  }, [requestId, updates]);
   // ============ Listening Socket==================
   useEffect(() => {
     let token = localStorage.getItem('token');
@@ -488,6 +496,8 @@ const SingleRequestAdmin = () => {
                         propsOptDate2={data?.optional_date2}
                         propsOptPlace2={data?.optional_place2}
                         operator={data?.operator}
+                        updates={updates}
+                        setUpdates={setUpdates}
                       />
                     )}
                   </div>
