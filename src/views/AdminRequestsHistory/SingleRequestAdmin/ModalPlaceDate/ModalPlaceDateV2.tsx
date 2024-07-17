@@ -261,6 +261,9 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
       setOneObjArr(transformObjectToArray(propsTrack));
       setSelectedTrack2(propsOptPlace2);
       setAltOneObjArr(transformObjectToArray(propsOptPlace2));
+    } else if (propsTrack) {
+      setSelectedTrack(propsTrack);
+      setOneObjArr(transformObjectToArray(propsTrack));
     } else if (propsOptPlace1) {
       setSelectedTrack(propsOptPlace1);
       setOneObjArr(transformObjectToArray(propsOptPlace1));
@@ -705,10 +708,10 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
                   <PaginationTable
                     onTableSearch={(text) => fetchTracks(text)}
                     columns={fields}
-                    data={altOneObjArr}
+                    data={altFilteredTracks}
                     page={altCurrentPage}
                     sizePerPage={sizePerPage}
-                    totalSize={altOneObjArr.length}
+                    totalSize={totalTracks}
                     onPageChange={(page: any) => handlePageChange(page, true)}
                     onRowClick={selectRow2}
                   />
