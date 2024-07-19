@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import { Row, Col, ButtonGroup, Button, Modal, Image } from 'react-bootstrap';
@@ -37,11 +37,10 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
-  const { SearchBar } = Search;
   const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
-  const [instructorsToShow, setInstructorsToShow] = useState([]);
   const [totalInstructors, setTotalInstructors] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageCount, setPageCount] = useState(24);
 
   useEffect(() => {
     if (selectedInstructors.length > 0) {
@@ -59,7 +58,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
         }
       });
     }
-    setInstructorsToShow(newArr);
+    setInstructors(newArr);
   }, [instructors, requestInstructors]);
 
   useEffect(() => {
@@ -78,6 +77,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     });
     setInstructors((x) => [...x, ...tempArr]);
     setTotalInstructors(response.count);
+    setPageCount(response.results.length);
     // if (response.next) {
     //   return await fetchInstructors(response.next);
     // }
@@ -244,11 +244,17 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
       });
       setInstructors((x): any => [...x, ...tempArr]);
       setTotalInstructors(response.count);
+      setPageCount(response.results.length);
+      if (!response.next || response.next === null) {
+      }
     } else if (type === 'word') {
       const response = await getInstructors(url);
       setInstructors(response.results);
       setTotalInstructors(response.count);
       setCurrentPage(1);
+      setPageCount(response.results.length);
+      if (!response.next || response.next === null) {
+      }
     }
   };
 
@@ -290,9 +296,36 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     }
   };
 
+  const handlePageChange = (page) => {
+    if (typeof page === 'number') {
+      //totalPages lo que hace es hacer la division de totalInstructors (389) / 25=16
+      const totalPages = Math.ceil(totalInstructors / 25);
+      if (page > totalPages) {
+        search(totalPages, 'page', 'page', totalPages);
+      }
+      if (page > 0 && page <= totalPages) {
+        search(page, 'page', 'page', page);
+      }
+    }
+  };
+
   const pagination = paginationFactory({
     page: 1,
-    sizePerPage: 2
+    sizePerPage: pageCount,
+    totalSize: totalInstructors,
+    nextPageText: '>',
+    prePageText: '<',
+    withFirstAndLast: false,
+    alwaysShowAllBtns: true,
+    paginationSize: 1,
+    hideSizePerPage: true,
+    onPageChange: function (page) {
+      handlePageChange(page);
+    }
+    // onSizePerPageChange: function (page, sizePerPage) {
+    //   console.log('page', page);
+    //   console.log('sizePerPage', sizePerPage);
+    // }
   });
 
   return (
@@ -308,7 +341,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
         <Modal.Body>
           <ToolkitProvider
             keyField="official_id"
-            data={instructorsToShow}
+            data={instructors}
             columns={columns}
             search>
             {(props) => (
