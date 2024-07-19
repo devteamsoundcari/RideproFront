@@ -41,6 +41,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   const [totalInstructors, setTotalInstructors] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState(24);
+  const [pagesCalled, setPagesCalled] = useState<any[]>([]);
 
   useEffect(() => {
     if (selectedInstructors.length > 0) {
@@ -280,37 +281,43 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     type: string,
     pageToGo?: number
   ) => {
-    if (value !== '') {
-      const url = `https://app-db.ridepro.co/api/v1/instructors/?${param}=${value}`;
-      fetchInstructorsV2(url, type);
-      if (pageToGo) {
-        setCurrentPage(pageToGo);
-      } else {
+    if (!pagesCalled.includes(value)) {
+      if (value !== '') {
+        const url = `https://app-db.ridepro.co/api/v1/instructors/?${param}=${value}`;
+        fetchInstructorsV2(url, type);
+        if (pageToGo) {
+          setCurrentPage(pageToGo);
+        } else {
+          setCurrentPage(1);
+        }
+      }
+      if (value === '') {
+        const url = `https://app-db.ridepro.co/api/v1/instructors/`;
+        fetchInstructorsV2(url, type);
         setCurrentPage(1);
       }
-    }
-    if (value === '') {
-      const url = `https://app-db.ridepro.co/api/v1/instructors/`;
-      fetchInstructorsV2(url, type);
-      setCurrentPage(1);
+      setPagesCalled((prev) => [...prev, value]);
+    } else {
+      return;
     }
   };
 
   const handlePageChange = (page) => {
     if (typeof page === 'number') {
-      //totalPages lo que hace es hacer la division de totalInstructors (389) / 25=16
+      //totalPages lo que hace es hacer la division de totalInstructors (389) / 25=17
       const totalPages = Math.ceil(totalInstructors / 25);
-      if (page > totalPages) {
-        search(totalPages, 'page', 'page', totalPages);
-      }
       if (page > 0 && page <= totalPages) {
         search(page, 'page', 'page', page);
+      }
+      if (page > totalPages) {
+        console.log(page, totalPages);
+        return null;
       }
     }
   };
 
   const pagination = paginationFactory({
-    page: 1,
+    page: currentPage,
     sizePerPage: pageCount,
     totalSize: totalInstructors,
     nextPageText: '>',
