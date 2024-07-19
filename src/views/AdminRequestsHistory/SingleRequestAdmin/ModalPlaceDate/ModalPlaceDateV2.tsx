@@ -241,6 +241,12 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     return array;
   }
 
+  // ================================ DATOS TABLA =============================================================
+  // const [showAddTrack, setShowAddTrack] = useState(false);
+  // const [showTrackEditModal, setShowTrackEditModal] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
+  const [selectedTrack2, setSelectedTrack2] = useState<Track | null>(null);
+
   useEffect(() => {
     const fetchTracks = async (searchT: string) => {
       // Se pone un condicional para verificar si el search term es = al propsCity.name y así agregar las búsquedasademás de la ciudad
@@ -261,6 +267,9 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
       setOneObjArr(transformObjectToArray(propsTrack));
       setSelectedTrack2(propsOptPlace2);
       setAltOneObjArr(transformObjectToArray(propsOptPlace2));
+    } else if (propsTrack) {
+      setSelectedTrack(propsTrack);
+      setOneObjArr(transformObjectToArray(propsTrack));
     } else if (propsOptPlace1) {
       setSelectedTrack(propsOptPlace1);
       setOneObjArr(transformObjectToArray(propsOptPlace1));
@@ -273,12 +282,6 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     }
     // eslint-disable-next-line
   }, [propsTrack, updates]);
-
-  // ================================ DATOS TABLA =============================================================
-  // const [showAddTrack, setShowAddTrack] = useState(false);
-  // const [showTrackEditModal, setShowTrackEditModal] = useState(false);
-  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
-  const [selectedTrack2, setSelectedTrack2] = useState<Track | null>(null);
 
   useEffect(() => {
     if (showAlternative) {
@@ -322,7 +325,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     // console.log('Opt place 1', opt1);
 
     if (selectedTrack) {
-      // console.log('Track', selectedTrack.id);
+      console.log('Track 1', selectedTrack.id);
       setOpt1((prevOpt1) => ({
         ...prevOpt1,
         place: selectedTrack.id.toString()
@@ -333,6 +336,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
 
   useEffect(() => {
     if (selectedTrack2) {
+      console.log('Track 2', selectedTrack2.id);
       setOpt2((prevOpt2) => ({
         ...prevOpt2,
         place: selectedTrack2.id.toString()
@@ -441,20 +445,25 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
     }
   };
 
-  const setTrackData = (row: any, alternative: boolean) => {
+  const setTrackData = (row: any, alternative?: boolean) => {
     const track: Track = row;
     track.contactName = row.contact_name;
     track.contactEmail = row.contact_email;
 
-    setSelectedTrack(track);
-
     // Se incluye un parámetro alternative, que permite actualizar la opción 1 o 2 que seleccione el usuario
-    alternative
-      ? setOpt1({
-          ...opt1,
-          place: track.name
-        })
-      : setOpt2({ ...opt2, place: track.name });
+    if (alternative) {
+      setSelectedTrack2(track);
+      setOpt2({
+        ...opt2,
+        place: track.id.toString()
+      });
+    } else {
+      setSelectedTrack(track);
+      setOpt1({
+        ...opt1,
+        place: track.id.toString()
+      });
+    }
   };
 
   const handlePageChange = async (page: number, alternative: boolean) => {
@@ -692,29 +701,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
               </Col>
             </Row>
 
-            {propsTrack ? (
-              <Form.Group as={Col} controlId="formGridPlace">
-                <Form.Label>
-                  Lugar <small>(Cliente)</small>
-                </Form.Label>
-                {loadingTracks ? (
-                  <Spinner animation="border" role="status" size="sm">
-                    <span className="sr-only">Cargando...</span>
-                  </Spinner>
-                ) : (
-                  <PaginationTable
-                    onTableSearch={(text) => fetchTracks(text)}
-                    columns={fields}
-                    data={altOneObjArr}
-                    page={altCurrentPage}
-                    sizePerPage={sizePerPage}
-                    totalSize={altOneObjArr.length}
-                    onPageChange={(page: any) => handlePageChange(page, true)}
-                    onRowClick={selectRow2}
-                  />
-                )}
-              </Form.Group>
-            ) : propsOptPlace2 ? (
+            {propsTrack && propsOptPlace2 ? (
               <Form.Group as={Col} controlId="formGridPlace">
                 <Form.Label>Lugar</Form.Label>
                 {loadingTracks ? (
@@ -828,7 +815,7 @@ const ModalPlaceDate: React.FC<ModalPlaceDateProps> = ({
 
                   // console.log('Date 1', opt1.date);
                   // console.log('Place 1', opt1.place);
-                  // console.log('Payload', payload);
+                  // console.log(showAlternative ? payload2 : payload);
 
                   let res = await updateRequest(
                     showAlternative ? payload2 : payload,
