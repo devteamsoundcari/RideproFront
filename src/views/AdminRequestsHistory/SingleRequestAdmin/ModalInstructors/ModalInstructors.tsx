@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import { Row, Col, ButtonGroup, Button, Modal, Image } from 'react-bootstrap';
@@ -32,16 +32,16 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
   onUpdate
 }) => {
   const [instructors, setInstructors] = useState<any>([]);
-  const [
-    selectedInstructors,
-    setSelectedInstructors
-  ] = useState<SelectedInstructors>([]);
+  const [selectedInstructors, setSelectedInstructors] =
+    useState<SelectedInstructors>([]);
   const [requestInstructors, setRequestInstructors] = useState<any[]>([]);
   const [disabled, setDisabled] = useState(true);
   const { userInfoContext } = useContext(AuthContext);
-  const { SearchBar } = Search;
   const [showAddInstructorsModal, setShowAddInstructorsModal] = useState(false);
-  const [instructorsToShow, setInstructorsToShow] = useState([]);
+  const [totalInstructors, setTotalInstructors] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageCount, setPageCount] = useState(24);
+  const [pagesCalled, setPagesCalled] = useState<any[]>([]);
 
   useEffect(() => {
     if (selectedInstructors.length > 0) {
@@ -59,7 +59,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
         }
       });
     }
-    setInstructorsToShow(newArr);
+    setInstructors(newArr);
   }, [instructors, requestInstructors]);
 
   useEffect(() => {
@@ -68,21 +68,11 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     }
   }, [propsInstructors]);
 
-  // ================================ FETCH INSTRUCTORS ON LOAD =====================================================
-  const fetchInstructors = async (url) => {
-    let tempArr: any = [];
-    const response = await getInstructors(url);
-    response.results.forEach(async (item: any) => {
-      item.fare = 0;
-      tempArr.push(item);
-    });
-    setInstructors((x) => [...x, ...tempArr]);
-    if (response.next) {
-      return await fetchInstructors(response.next);
-    }
-  };
   useEffect(() => {
-    fetchInstructors(`${process.env.REACT_APP_API_URL}/api/v1/instructors/`);
+    fetchInstructorsV2(
+      `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
+      'page'
+    );
     //eslint-disable-next-line
   }, []);
 
@@ -234,6 +224,113 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     setShowAddInstructorsModal(true);
   };
 
+  // ================================ FETCH INSTRUCTORS ON LOAD =====================================================
+  const fetchInstructorsV2 = async (url: string, type: string) => {
+    let tempArr: any[] = [];
+    const response = await getInstructors(url);
+    response.results.forEach(async (item: any) => {
+      item.fare = 0;
+      tempArr.push(item);
+    });
+    if (type === 'page') {
+      setInstructors((x): any => [...x, ...tempArr]);
+      setTotalInstructors(response.count);
+      setPageCount(response.results.length);
+      if (!response.next || response.next === null) {
+      }
+    } else if (type === 'word') {
+      setInstructors(response.results);
+      setTotalInstructors(response.count);
+      setCurrentPage(1);
+      setPageCount(response.results.length);
+      if (!response.next || response.next === null) {
+      }
+    }
+  };
+
+  const MySearch = (props) => {
+    let input;
+    const handleClick = () => {
+      props.onSearch(input.value);
+      search(input.value, 'search', 'word', 1);
+    };
+    return (
+      <div>
+        <input className="form-control" ref={(n) => (input = n)} type="text" />
+        <button className="btn btn-outline-secondary" onClick={handleClick}>
+          Buscar
+        </button>
+      </div>
+    );
+  };
+
+  const search = (
+    value: number | string | undefined,
+    param: string,
+    type: string,
+    pageToGo?: number
+  ) => {
+    if (!pagesCalled.includes(value)) {
+      if (value !== '') {
+        const url = `https://app-db.ridepro.co/api/v1/instructors/?${param}=${value}`;
+        fetchInstructorsV2(url, type);
+        if (pageToGo) {
+          setCurrentPage(pageToGo);
+        } else {
+          setCurrentPage(1);
+        }
+      }
+      if (value === '') {
+        const url = `https://app-db.ridepro.co/api/v1/instructors/`;
+        fetchInstructorsV2(url, type);
+        setCurrentPage(1);
+      }
+      setPagesCalled((prev) => [...prev, value]);
+    } else {
+      return;
+    }
+  };
+
+  const handlePageChange = (page) => {
+    if (typeof page === 'number') {
+      //totalPages lo que hace es hacer la division de totalInstructors (389) / 25=17
+      const totalPages = Math.ceil(totalInstructors / 25);
+      if (page > 0 && page <= totalPages) {
+        search(page, 'page', 'page', page);
+      }
+      if (page > totalPages) {
+        return null;
+      }
+    }
+  };
+
+  const pagination = paginationFactory({
+    page: currentPage,
+    sizePerPage: pageCount,
+    totalSize: totalInstructors,
+    nextPageText: '>',
+    prePageText: '<',
+    withFirstAndLast: false,
+    alwaysShowAllBtns: true,
+    paginationSize: 1,
+    hideSizePerPage: true,
+    onPageChange: function (page) {
+      handlePageChange(page);
+    }
+  });
+
+  const cellEdit = cellEditFactory({
+    mode: 'click',
+    afterSaveCell: (oldValue, newValue, row, column) => {
+      if (containsObject(row, selectedInstructors)) {
+        setSelectedInstructors(
+          selectedInstructors.filter((item) => item.id !== row.id)
+        );
+        setSelectedInstructors((oldArr) => [...oldArr, row]);
+      }
+    }
+  });
+
   return (
     <React.Fragment>
       <Modal
@@ -247,17 +344,16 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
         <Modal.Body>
           <ToolkitProvider
             keyField="official_id"
-            data={instructorsToShow}
+            data={instructors}
             columns={columns}
             search>
             {(props) => (
               <React.Fragment>
                 <div className="top d-flex flex-wrap">
                   <div className="action-filters flex-grow-1">
-                    <SearchBar
+                    <MySearch
                       {...props.searchProps}
                       className="custome-search-field"
-                      placeholder="Buscar Instructor"
                     />
                   </div>
                   <div className="action-btns d-flex align-items-center">
@@ -266,8 +362,9 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                         variant="outline-secondary"
                         size="sm"
                         onClick={() =>
-                          fetchInstructors(
-                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`
+                          fetchInstructorsV2(
+                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
+                            'page'
                           )
                         }>
                         <MdRefresh />
@@ -293,22 +390,13 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                   {...props.baseProps}
                   expandRow={expandRow}
                   selectRow={selectRow}
-                  pagination={paginationFactory()}
+                  pagination={pagination}
                   rowClasses="row-new-style"
-                  cellEdit={cellEditFactory({
-                    mode: 'click',
-                    afterSaveCell: (oldValue, newValue, row, column) => {
-                      if (containsObject(row, selectedInstructors)) {
-                        setSelectedInstructors(
-                          selectedInstructors.filter(
-                            (item) => item.id !== row.id
-                          )
-                        );
-                        setSelectedInstructors((oldArr) => [...oldArr, row]);
-                      }
-                    }
-                  })}
+                  cellEdit={cellEdit}
                 />
+                <div>
+                  <p>Total de resultados: {totalInstructors}</p>
+                </div>
               </React.Fragment>
             )}
           </ToolkitProvider>
