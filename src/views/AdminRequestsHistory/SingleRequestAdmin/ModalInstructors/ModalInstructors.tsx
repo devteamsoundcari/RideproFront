@@ -68,20 +68,11 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     }
   }, [propsInstructors]);
 
-  // ================================ FETCH INSTRUCTORS ON LOAD =====================================================
-  const fetchInstructors = async (url) => {
-    let tempArr: any = [];
-    const response = await getInstructors(url);
-    response.results.forEach(async (item: any) => {
-      item.fare = 0;
-      tempArr.push(item);
-    });
-    setInstructors((x) => [...x, ...tempArr]);
-    setTotalInstructors(response.count);
-    setPageCount(response.results.length);
-  };
   useEffect(() => {
-    fetchInstructors(`${process.env.REACT_APP_API_URL}/api/v1/instructors/`);
+    fetchInstructorsV2(
+      `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
+      'page'
+    );
     //eslint-disable-next-line
   }, []);
 
@@ -233,20 +224,21 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     setShowAddInstructorsModal(true);
   };
 
+  // ================================ FETCH INSTRUCTORS ON LOAD =====================================================
   const fetchInstructorsV2 = async (url: string, type: string) => {
+    let tempArr: any[] = [];
+    const response = await getInstructors(url);
+    response.results.forEach(async (item: any) => {
+      item.fare = 0;
+      tempArr.push(item);
+    });
     if (type === 'page') {
-      let tempArr: any[] = [];
-      const response = await getInstructors(url);
-      response.results.forEach(async (item: any) => {
-        tempArr.push(item);
-      });
       setInstructors((x): any => [...x, ...tempArr]);
       setTotalInstructors(response.count);
       setPageCount(response.results.length);
       if (!response.next || response.next === null) {
       }
     } else if (type === 'word') {
-      const response = await getInstructors(url);
       setInstructors(response.results);
       setTotalInstructors(response.count);
       setCurrentPage(1);
@@ -307,7 +299,6 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
         search(page, 'page', 'page', page);
       }
       if (page > totalPages) {
-        console.log(page, totalPages);
         return null;
       }
     }
@@ -325,6 +316,18 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     hideSizePerPage: true,
     onPageChange: function (page) {
       handlePageChange(page);
+    }
+  });
+
+  const cellEdit = cellEditFactory({
+    mode: 'click',
+    afterSaveCell: (oldValue, newValue, row, column) => {
+      if (containsObject(row, selectedInstructors)) {
+        setSelectedInstructors(
+          selectedInstructors.filter((item) => item.id !== row.id)
+        );
+        setSelectedInstructors((oldArr) => [...oldArr, row]);
+      }
     }
   });
 
@@ -359,8 +362,9 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                         variant="outline-secondary"
                         size="sm"
                         onClick={() =>
-                          fetchInstructors(
-                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`
+                          fetchInstructorsV2(
+                            `${process.env.REACT_APP_API_URL}/api/v1/instructors/`,
+                            'page'
                           )
                         }>
                         <MdRefresh />
@@ -388,19 +392,7 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
                   selectRow={selectRow}
                   pagination={pagination}
                   rowClasses="row-new-style"
-                  cellEdit={cellEditFactory({
-                    mode: 'click',
-                    afterSaveCell: (oldValue, newValue, row, column) => {
-                      if (containsObject(row, selectedInstructors)) {
-                        setSelectedInstructors(
-                          selectedInstructors.filter(
-                            (item) => item.id !== row.id
-                          )
-                        );
-                        setSelectedInstructors((oldArr) => [...oldArr, row]);
-                      }
-                    }
-                  })}
+                  cellEdit={cellEdit}
                 />
                 <div>
                   <p>Total de resultados: {totalInstructors}</p>
