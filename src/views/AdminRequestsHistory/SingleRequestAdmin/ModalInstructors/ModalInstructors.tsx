@@ -79,9 +79,6 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     setInstructors((x) => [...x, ...tempArr]);
     setTotalInstructors(response.count);
     setPageCount(response.results.length);
-    // if (response.next) {
-    //   return await fetchInstructors(response.next);
-    // }
   };
   useEffect(() => {
     fetchInstructors(`${process.env.REACT_APP_API_URL}/api/v1/instructors/`);
@@ -329,10 +326,6 @@ const ModalInstructors: React.FC<ModalInstructorsProps> = ({
     onPageChange: function (page) {
       handlePageChange(page);
     }
-    // onSizePerPageChange: function (page, sizePerPage) {
-    //   console.log('page', page);
-    //   console.log('sizePerPage', sizePerPage);
-    // }
   });
 
   return (
