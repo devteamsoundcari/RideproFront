@@ -236,6 +236,10 @@ const SideBar = (props) => {
             </React.Fragment>
           )}
         </ul>
+        <p className="copyright">
+          Copyright ©Ridepro2022 - Desarrollado por{' '}
+          <a href={'https://soundlutions.com/'}>soundlutions.com</a>
+        </p>
       </div>
     </nav>
   );
